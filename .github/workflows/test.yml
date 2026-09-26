@@ -100,6 +100,40 @@ jobs:
       - name: Generate documentation
         run: cargo doc --no-deps --workspace
 
+  # The `likec4_` tests are `#[ignore]`d because they need Node (for
+  # `npx likec4`) and Graphviz, which a fresh clone may lack. The ubuntu
+  # runner image has Node; this job adds Graphviz and runs only them.
+  likec4:
+    name: LikeC4 validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # stable
+        with:
+          toolchain: stable
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          shared-key: likec4
+
+      - name: Install cargo-nextest
+        uses: taiki-e/install-action@9114bf4d891761788c546334fd37538eae1bf8b3 # v2.87.16
+        with:
+          tool: cargo-nextest
+
+      - name: Install Graphviz
+        run: sudo apt-get update && sudo apt-get install -y graphviz
+
+      - name: Tool versions
+        run: node --version && npx --version && dot -V
+
+      - name: Run the tests that need LikeC4
+        run: cargo nextest run --workspace --profile ci --run-ignored only -E 'test(/^likec4_/)'
+
   test:
     name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}

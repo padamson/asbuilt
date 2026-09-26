@@ -37,8 +37,12 @@ examine_globs = ["crates/*/src/**/*.rs"]
 # surviving-mutant noise; a fake's behavior is whatever the test wants.
 # exclude_globs = ["src/generated/**/*.rs", "src/fakes.rs"]
 
-# Every exclude carries its equivalence argument next to it.
-# exclude_re = [
-#   # shoelace: += -> -= is .abs()'d two lines later, so the sign is lost
-#   "shoelace_area.*replace \\+= with -=",
-# ]
+# Every exclude carries its argument next to it.
+exclude_re = [
+  # likec4.rs `run` and `validate` are one-line wrappers over `run_program`
+  # that add the `npx` program and the pinned package; only the gated
+  # `likec4_` tests (Node required) can tell them from a stub, and
+  # cargo-mutants runs the default profile without them. `run_program`
+  # itself is tested with `cargo` standing in for `npx`.
+  "likec4\\.rs.*replace (run|validate) -> Result",
+]

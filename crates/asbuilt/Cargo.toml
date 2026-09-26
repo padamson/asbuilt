@@ -11,6 +11,9 @@ categories = ["development-tools", "command-line-utilities"]
 keywords = ["architecture", "c4", "likec4", "documentation"]
 
 [dependencies]
+asbuilt-core.workspace = true
 clap.workspace = true
+thiserror.workspace = true
 
 [dev-dependencies]
+tempfile.workspace = true

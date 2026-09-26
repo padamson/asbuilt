@@ -9,9 +9,12 @@
 //! spawns a process.
 
 pub mod config;
+pub mod emit;
 pub mod error;
+pub mod externals;
 pub mod model;
 
 pub use config::{Config, External, ExternalRelation, OutputConfig};
+pub use emit::{EmitOptions, emit};
 pub use error::{Error, Result};
 pub use model::{Deployment, Element, ElementKind, Id, Model, Relation, RelationKind};

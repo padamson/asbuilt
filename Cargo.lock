@@ -56,7 +56,10 @@ dependencies = [
 name = "asbuilt"
 version = "0.1.0"
 dependencies = [
+ "asbuilt-core",
  "clap",
+ "tempfile",
+ "thiserror",
 ]
 
 [[package]]

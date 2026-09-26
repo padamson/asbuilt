@@ -130,9 +130,66 @@ pub fn dotted(id: &[String]) -> String {
     id.join(".")
 }
 
+/// Words likec4 1.59.3 refuses as an element id, found by validating a
+/// model with each one as a nested element (`model`, `element`,
+/// `deployment` and `relationship` are accepted and so are not here).
+/// A module named one of these gets a trailing `_`.
+pub const RESERVED: &[&str] = &[
+    "BottomTop",
+    "LeftRight",
+    "RightLeft",
+    "TopBottom",
+    "and",
+    "autoLayout",
+    "border",
+    "color",
+    "deploymentNode",
+    "description",
+    "dynamic",
+    "exclude",
+    "extend",
+    "extends",
+    "false",
+    "from",
+    "global",
+    "icon",
+    "import",
+    "include",
+    "instanceOf",
+    "is",
+    "it",
+    "kind",
+    "likec4lib",
+    "link",
+    "metadata",
+    "multiple",
+    "navigateTo",
+    "not",
+    "notation",
+    "notes",
+    "of",
+    "opacity",
+    "or",
+    "padding",
+    "shape",
+    "size",
+    "specification",
+    "style",
+    "tag",
+    "technology",
+    "textSize",
+    "this",
+    "title",
+    "true",
+    "view",
+    "views",
+    "where",
+    "with",
+];
+
 /// One segment as a LikeC4 identifier: `-` and any other character
-/// outside `[A-Za-z0-9_]` become `_`, and a leading digit gets a `_`
-/// in front of it.
+/// outside `[A-Za-z0-9_]` become `_`, a leading digit gets a `_` in
+/// front of it, and a [`RESERVED`] word gets one after it.
 pub fn sanitize_segment(segment: &str) -> String {
     let mut out = String::with_capacity(segment.len() + 1);
     if segment.chars().next().is_some_and(|c| c.is_ascii_digit()) {
@@ -144,6 +201,9 @@ pub fn sanitize_segment(segment: &str) -> String {
         } else {
             '_'
         });
+    }
+    if RESERVED.contains(&out.as_str()) {
+        out.push('_');
     }
     out
 }
@@ -301,6 +361,28 @@ mod tests {
     #[test]
     fn a_leading_digit_is_prefixed() {
         assert_eq!(sanitize_segment("3d"), "_3d");
+    }
+
+    #[test]
+    fn a_reserved_word_gets_a_trailing_underscore() {
+        assert_eq!(sanitize_segment("view"), "view_");
+        assert_eq!(sanitize_segment("link"), "link_");
+    }
+
+    #[test]
+    fn model_and_element_are_not_reserved() {
+        // likec4 1.59.3 accepts both as ids; asbuilt-core's own `model`
+        // module keeps its name.
+        assert_eq!(sanitize_segment("model"), "model");
+        assert_eq!(sanitize_segment("element"), "element");
+    }
+
+    #[test]
+    fn the_reserved_list_is_sorted_and_unique() {
+        let mut sorted = RESERVED.to_vec();
+        sorted.sort_unstable();
+        sorted.dedup();
+        assert_eq!(sorted, RESERVED);
     }
 
     #[test]

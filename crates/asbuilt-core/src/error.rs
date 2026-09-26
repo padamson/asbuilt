@@ -29,6 +29,12 @@ pub enum Error {
     )]
     UnknownRelationSource { external: String, from: String },
 
+    /// An `[[externals]]` `id` that is not a LikeC4 identifier as written.
+    #[error(
+        "externals: id \"{id}\" is not an identifier (letters, digits and _, not starting with a digit, not a keyword)"
+    )]
+    InvalidExternalId { id: String },
+
     /// Two model ids that become the same LikeC4 identifier once `-`
     /// maps to `_` and a leading digit is prefixed.
     #[error("element ids \"{first}\" and \"{second}\" both become the LikeC4 id \"{id}\"")]
