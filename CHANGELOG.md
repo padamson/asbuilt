@@ -14,5 +14,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `asbuilt-core` emitter: a `Model` to LikeC4 text (specification, nested elements with tags first, `metadata { path }` and a `link` relative to the output file, relations labeled with the item names, an `index` view plus one scoped view per element with children); the header carries no version so a release is not drift
 - `asbuilt-core` externals: `[[externals]]` become tagged elements and their relations `uses` edges; a `from` naming no element is an error naming the external and the `from`
 - `asbuilt::likec4::validate` runs the pinned `npx likec4 validate`; two `likec4_` tests are gated on Node and run by the new `LikeC4 validate` CI job
+- `asbuilt-rust` structure: `[rust]` config (`extra_manifests`, `include_tests`, `include_examples`); crate and target discovery with `cargo metadata --no-deps --offline` over the workspace and each extra manifest (build scripts skipped, duplicate crate names an error); the module tree walk from each target root (`x.rs` or `x/mod.rs`, `#[path]`, inline modules, `#[cfg(test)]` skipped, the first `//!` paragraph as the description), read through a `FileSource` so its tests run in memory
 
 [Unreleased]: https://github.com/padamson/asbuilt/commits/main

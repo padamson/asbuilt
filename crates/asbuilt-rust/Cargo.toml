@@ -11,6 +11,11 @@ categories = ["development-tools"]
 keywords = ["architecture", "c4", "likec4", "documentation"]
 
 [dependencies]
+asbuilt-core.workspace = true
+cargo_metadata.workspace = true
+serde.workspace = true
+syn.workspace = true
+thiserror.workspace = true
 
 [dev-dependencies]
 tempfile.workspace = true

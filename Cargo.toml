@@ -21,8 +21,10 @@ authors = ["Paul Adamson"]
 asbuilt-core = { version = "0.1.0", path = "crates/asbuilt-core" }
 asbuilt-rust = { version = "0.1.0", path = "crates/asbuilt-rust" }
 clap = { version = "4", features = ["derive"] }
+cargo_metadata = "0.23"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+syn = { version = "2", features = ["full", "visit"] }
 thiserror = "2"
 toml = "1"
 # Scratch directories for integration-test fixtures in tests/common.

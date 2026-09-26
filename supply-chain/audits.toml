@@ -81,6 +81,18 @@ user-id = 6743 # Ed Page (epage)
 start = "2024-05-02"
 end = "2027-09-26"
 
+[[trusted.itoa]]
+criteria = "safe-to-deploy"
+user-id = 3618 # David Tolnay (dtolnay)
+start = "2019-05-02"
+end = "2027-09-26"
+
+[[trusted.memchr]]
+criteria = "safe-to-deploy"
+user-id = 189 # Andrew Gallant (BurntSushi)
+start = "2019-07-07"
+end = "2027-09-26"
+
 [[trusted.once_cell_polyfill]]
 criteria = "safe-to-deploy"
 user-id = 6743 # Ed Page (epage)
@@ -109,6 +121,12 @@ end = "2027-09-26"
 criteria = "safe-to-deploy"
 user-id = 3618 # David Tolnay (dtolnay)
 start = "2019-03-01"
+end = "2027-09-26"
+
+[[trusted.serde_json]]
+criteria = "safe-to-deploy"
+user-id = 3618 # David Tolnay (dtolnay)
+start = "2019-02-28"
 end = "2027-09-26"
 
 [[trusted.syn]]
@@ -157,4 +175,10 @@ end = "2027-09-26"
 criteria = "safe-to-deploy"
 user-id = 6743 # Ed Page (epage)
 start = "2023-02-22"
+end = "2027-09-26"
+
+[[trusted.zmij]]
+criteria = "safe-to-deploy"
+user-id = 3618 # David Tolnay (dtolnay)
+start = "2025-12-18"
 end = "2027-09-26"

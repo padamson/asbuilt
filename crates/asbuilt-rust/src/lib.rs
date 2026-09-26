@@ -3,10 +3,23 @@
 //! Reads a Cargo workspace and produces the language-agnostic model
 //! `asbuilt-core` emits: each crate a container, each module a
 //! component, each module-to-module reference a relation labeled with
-//! the item names it references. This crate is the detection half so
-//! far; the survey lands in the next commits.
+//! the item names it references. The stages, one module each:
+//! [`discover`] finds crates and targets with `cargo metadata`,
+//! [`walk`] follows `mod` declarations from each target root into a
+//! module tree, and the reference collection and resolution that turn
+//! the tree into relations follow in later commits. Only the first two
+//! touch the filesystem, through [`source::FileSource`].
+
+pub mod config;
+pub mod discover;
+pub mod error;
+pub mod source;
+pub mod walk;
 
 use std::path::Path;
+
+pub use config::RustConfig;
+pub use error::RustFrontendError;
 
 /// Whether `root` is a code base this front-end can survey: it has a
 /// `Cargo.toml` file at its top level.

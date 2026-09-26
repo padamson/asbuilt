@@ -92,6 +92,20 @@ user-id = 6743
 user-login = "epage"
 user-name = "Ed Page"
 
+[[publisher.itoa]]
+version = "1.0.18"
+when = "2026-03-20"
+user-id = 3618
+user-login = "dtolnay"
+user-name = "David Tolnay"
+
+[[publisher.memchr]]
+version = "2.8.3"
+when = "2026-07-08"
+user-id = 189
+user-login = "BurntSushi"
+user-name = "Andrew Gallant"
+
 [[publisher.once_cell_polyfill]]
 version = "1.70.2"
 when = "2025-10-21"
@@ -123,6 +137,20 @@ user-name = "David Tolnay"
 [[publisher.serde_derive]]
 version = "1.0.229"
 when = "2026-07-18"
+user-id = 3618
+user-login = "dtolnay"
+user-name = "David Tolnay"
+
+[[publisher.serde_json]]
+version = "1.0.151"
+when = "2026-07-20"
+user-id = 3618
+user-login = "dtolnay"
+user-name = "David Tolnay"
+
+[[publisher.syn]]
+version = "2.0.119"
+when = "2026-07-15"
 user-id = 3618
 user-login = "dtolnay"
 user-name = "David Tolnay"
@@ -183,6 +211,31 @@ user-id = 6743
 user-login = "epage"
 user-name = "Ed Page"
 
+[[publisher.zmij]]
+version = "1.0.23"
+when = "2026-07-13"
+user-id = 3618
+user-login = "dtolnay"
+user-name = "David Tolnay"
+
+[[audits.bytecode-alliance.audits.cargo_metadata]]
+who = "Pat Hickey <phickey@fastly.com>"
+criteria = "safe-to-deploy"
+version = "0.15.3"
+notes = "no build, no unsafe, inputs to cargo command are reasonably sanitized"
+
+[[audits.bytecode-alliance.audits.cargo_metadata]]
+who = "Alex Crichton <alex@alexcrichton.com>"
+criteria = "safe-to-deploy"
+delta = "0.17.0 -> 0.18.1"
+notes = "No major changes, no unsafe code here."
+
+[[audits.bytecode-alliance.audits.cargo_metadata]]
+who = "Alex Crichton <alex@alexcrichton.com>"
+criteria = "safe-to-deploy"
+delta = "0.18.1 -> 0.19.2"
+notes = "Dependency updates and minor changes, nothing suspicious."
+
 [[audits.bytecode-alliance.audits.errno]]
 who = "Dan Gohman <dev@sunfishcode.online>"
 criteria = "safe-to-deploy"
@@ -193,6 +246,24 @@ who = "Alex Crichton <alex@alexcrichton.com>"
 criteria = "safe-to-deploy"
 delta = "0.4.1 -> 0.5.0"
 notes = "Minor changes for a `no_std` upgrade but otherwise everything looks as expected."
+
+[[audits.bytecode-alliance.audits.semver]]
+who = "Pat Hickey <phickey@fastly.com>"
+criteria = "safe-to-deploy"
+version = "1.0.17"
+notes = "plenty of unsafe pointer and vec tricks, but in well-structured and commented code that appears to be correct"
+
+[[audits.embark-studios.audits.cargo_metadata]]
+who = "Johan Andersson <opensource@embark-studios.com>"
+criteria = "safe-to-deploy"
+delta = "0.15.3 -> 0.15.4"
+notes = "No notable changes"
+
+[[audits.embark-studios.audits.cargo_metadata]]
+who = "Johan Andersson <opensource@embark-studios.com>"
+criteria = "safe-to-deploy"
+delta = "0.15.4 -> 0.17.0"
+notes = "No notable changes"
 
 [[audits.embark-studios.audits.utf8parse]]
 who = "Johan Andersson <opensource@embark-studios.com>"
@@ -324,6 +395,20 @@ criteria = "safe-to-deploy"
 delta = "1.21.3 -> 1.21.4"
 notes = "The addition is a safe while loop around prior behavior. I don't see any way for that to become malicious."
 
+[[audits.mozilla.audits.cargo-platform]]
+who = "Ben Dean-Kawamura <bdk@mozilla.com>"
+criteria = "safe-to-deploy"
+version = "0.3.2"
+notes = "Defines a Platform enum for `cargo-metadata` to use.  No unsafe code."
+aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+
+[[audits.mozilla.audits.cargo_metadata]]
+who = "Ben Dean-Kawamura <bdk@mozilla.com>"
+criteria = "safe-to-deploy"
+delta = "0.19.2 -> 0.23.1"
+notes = "Some dependency updates and very minor API changes.  No new unsafe code."
+aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+
 [[audits.mozilla.audits.hashbrown]]
 who = "Erich Gubler <erichdongubler@gmail.com>"
 criteria = "safe-to-deploy"
@@ -384,6 +469,19 @@ who = "Jan-Erik Rediger <jrediger@mozilla.com>"
 criteria = "safe-to-deploy"
 delta = "1.0.45 -> 1.0.47"
 aggregated-from = "https://raw.githubusercontent.com/mozilla/glean/main/supply-chain/audits.toml"
+
+[[audits.mozilla.audits.semver]]
+who = "Ben Dean-Kawamura <bdk@mozilla.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.16 -> 1.0.28"
+notes = "Very few changes, mostly removes support for older Rust versions.  Some unsafe code refactored, but it seemed to be functionally equivalent to me."
+aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
+
+[[audits.mozilla.audits.semver]]
+who = "Bobby Holley <bobbyholley@gmail.com>"
+criteria = "safe-to-deploy"
+delta = "1.0.17 -> 1.0.16"
+aggregated-from = "https://hg.mozilla.org/mozilla-central/raw-file/tip/supply-chain/audits.toml"
 
 [[audits.mozilla.audits.serde_spanned]]
 who = "Ben Dean-Kawamura <bdk@mozilla.com>"
