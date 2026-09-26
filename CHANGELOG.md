@@ -19,5 +19,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `asbuilt-core::survey`: the `Frontend` trait and the survey that runs every front-end recognizing a root, merges their models, applies the externals and checks ids for collisions
 - `asbuilt_rust::analyze` and `RustFrontend`: the whole Rust survey, crates to containers (title the package name, technology from the targets, path relative to the surveyed root with `/` on every platform and `.` for the root), modules to components with their file paths and doc paragraphs, a bin beside a lib as a `bin`-tagged component, tests and examples as one component each
 - Six fixture workspaces under `crates/asbuilt-rust/tests/fixtures/` with byte-exact `expected.c4` snapshots (`UPDATE_EXPECT=1` rewrites one), each with a claim test on the relation it exists to prove; `likec4_validate_accepts_every_fixture_snapshot` runs every snapshot through the real parser
+- `asbuilt survey [root] [-o path]` writes the model at the configured path (parents created, `-o` relative to the root), `--config` reads a config from anywhere; `asbuilt check [root]` surveys in memory and exits 0 when the committed model is current, 1 with a unified diff on stdout when it is stale, 2 on any error (no model yet, no supported stack, a config typo, a bad externals `from`), and needs no Node
+- `asbuilt-core::check::compare`: the drift check as a unified diff, line endings normalized first
+- A consumer fixture under `crates/asbuilt/tests/fixtures/consumer/` (a workspace, an extra manifest, one external) with its committed `docs/architecture/model.c4`; the CLI tests spawn the binary over it and over scratch copies of it
 
 [Unreleased]: https://github.com/padamson/asbuilt/commits/main

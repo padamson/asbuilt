@@ -1,0 +1,14 @@
+[rust]
+extra_manifests = ["e2e/Cargo.toml"]
+
+[[externals]]
+id = "node_driver"
+kind = "process"
+title = "Driver process"
+technology = "Node.js"
+description = "The driver the server spawns."
+
+[[externals.relations]]
+from = "app.server"
+title = "spawns"
+technology = "stdio"

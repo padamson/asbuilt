@@ -8,6 +8,7 @@
 //! `.c4` emitter and drift check that follow in later commits. It never
 //! spawns a process.
 
+pub mod check;
 pub mod config;
 pub mod emit;
 pub mod error;
@@ -15,6 +16,7 @@ pub mod externals;
 pub mod frontend;
 pub mod model;
 
+pub use check::{Outcome, compare};
 pub use config::{Config, External, ExternalRelation, OutputConfig};
 pub use emit::{EmitOptions, emit};
 pub use error::{Error, Result};

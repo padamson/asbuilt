@@ -53,6 +53,31 @@ impl Workspace {
     }
 }
 
+impl Workspace {
+    /// Copy a directory tree into the workspace root, skipping any
+    /// `target` directory, so a test can modify a fixture without
+    /// touching the committed one.
+    pub fn copy_from(&self, source: &Path) {
+        fn copy_dir(from: &Path, to: &Path) {
+            fs::create_dir_all(to).expect("create dir");
+            for entry in fs::read_dir(from).expect("read dir") {
+                let entry = entry.expect("dir entry");
+                let name = entry.file_name();
+                if name == "target" {
+                    continue;
+                }
+                let dest = to.join(&name);
+                if entry.file_type().expect("file type").is_dir() {
+                    copy_dir(&entry.path(), &dest);
+                } else {
+                    fs::copy(entry.path(), &dest).expect("copy file");
+                }
+            }
+        }
+        copy_dir(source, &self.root);
+    }
+}
+
 impl Default for Workspace {
     fn default() -> Self {
         Self::new()

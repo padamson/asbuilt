@@ -172,3 +172,17 @@ fn likec4_validate_accepts_every_fixture_snapshot() {
     );
     assert!(validated > 0);
 }
+
+#[test]
+#[ignore = "needs npx (Node) and network; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_validate_accepts_the_consumer_fixture_model() {
+    let committed = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("tests/fixtures/consumer/docs/architecture/model.c4");
+    let text = std::fs::read_to_string(&committed).unwrap();
+    let ws = Workspace::new();
+    let path = ws.write("model.c4", &text);
+
+    let result = likec4::validate(path.parent().unwrap());
+
+    assert!(result.is_ok(), "{}", result.unwrap_err());
+}

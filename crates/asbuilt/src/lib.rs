@@ -5,6 +5,7 @@
 //! version. That pin lives here so the binary and the tests that need
 //! LikeC4 read the same constant.
 
+pub mod commands;
 pub mod likec4;
 
 /// The LikeC4 release every `npx likec4` call is pinned to. The emitter
