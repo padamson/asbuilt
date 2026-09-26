@@ -259,14 +259,13 @@ impl Model {
         self.normalize();
     }
 
-    /// Fail if two element ids become the same LikeC4 identifier.
+    /// Fail if two elements have the same id, or two ids that become the
+    /// same LikeC4 identifier.
     pub fn validate(&self) -> Result<()> {
         let mut seen: BTreeMap<String, &Id> = BTreeMap::new();
         for element in &self.elements {
             let key = sanitize_id(&element.id);
-            if let Some(first) = seen.insert(key.clone(), &element.id)
-                && *first != element.id
-            {
+            if let Some(first) = seen.insert(key.clone(), &element.id) {
                 return Err(Error::DuplicateId {
                     id: key,
                     first: dotted(first),
@@ -501,6 +500,23 @@ mod tests {
                 assert_eq!(id, "foo_bar");
                 assert_eq!(first, "foo-bar");
                 assert_eq!(second, "foo_bar");
+            }
+            other => panic!("expected DuplicateId, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn an_id_that_appears_twice_is_a_duplicate() {
+        let model = Model {
+            elements: vec![element("app"), element("app")],
+            ..Default::default()
+        };
+        match model.validate() {
+            Err(Error::DuplicateId { id, first, second }) => {
+                assert_eq!(
+                    (id.as_str(), first.as_str(), second.as_str()),
+                    ("app", "app", "app")
+                );
             }
             other => panic!("expected DuplicateId, got {other:?}"),
         }

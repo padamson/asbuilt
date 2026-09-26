@@ -34,9 +34,16 @@ model {
       }
       link ./src/b.rs
     }
+    c = component 'c' {
+      metadata {
+        path 'src/c.rs'
+      }
+      link ./src/c.rs
+    }
   }
 
   app.b -[calls]-> app.a.inner 'Thing, make'
+  app.c -[names]-> app.a.inner 'Thing'
 }
 
 views {

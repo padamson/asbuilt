@@ -15,6 +15,13 @@ pub enum RustFrontendError {
     #[error("[rust] extra_manifests: {manifest} does not exist")]
     ExtraManifestMissing { manifest: PathBuf },
 
+    /// A bin, `tests` or `examples` component would carry the same id as
+    /// one of the crate's modules.
+    #[error(
+        "package `{package}`: a module and a target component are both named `{name}`; rename one"
+    )]
+    TargetNameCollision { package: String, name: String },
+
     /// Two packages (a member and an extra manifest, say) whose crate
     /// names coincide, so a `use` of that name could mean either.
     #[error("two packages have the crate name `{crate_name}`: {} and {}", .manifests[0].display(), .manifests[1].display())]

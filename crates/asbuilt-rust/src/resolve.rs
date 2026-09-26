@@ -114,19 +114,16 @@ impl ResolveTree {
 /// Where a path written in `from` starts, as an absolute
 /// `(target, segments)`, or `None` for anything the model does not
 /// cover (`std`, external crates, locals, generics).
-pub fn anchor(
-    tree: &ResolveTree,
-    from: &Location,
-    path: &RawPath,
-) -> Option<(TargetKey, Vec<String>)> {
-    anchor_at(tree, from, path, 0)
-}
-
+///
+/// `alias_depth` bounds import-alias chains within one module;
+/// `glob_depth` is the glob recursion depth carried through any glob
+/// lookup this anchor needs.
 fn anchor_at(
     tree: &ResolveTree,
     from: &Location,
     path: &RawPath,
-    depth: usize,
+    alias_depth: usize,
+    glob_depth: usize,
 ) -> Option<(TargetKey, Vec<String>)> {
     let segs = &path.segments;
     match &path.anchor {
@@ -147,15 +144,21 @@ fn anchor_at(
             let first = segs.first()?;
             let module = tree.module(from)?;
             if let Some(target_path) = module.imports.get(first) {
-                if depth >= MAX_ALIAS_DEPTH {
+                if alias_depth >= MAX_ALIAS_DEPTH {
                     return None;
                 }
-                let (target, mut resolved) = anchor_at(tree, from, target_path, depth + 1)?;
+                let (target, mut resolved) =
+                    anchor_at(tree, from, target_path, alias_depth + 1, glob_depth)?;
                 resolved.extend(segs[1..].iter().cloned());
                 return Some((target, resolved));
             }
             if module.children.contains(first) || module.defines.contains(first) {
                 return Some((from.target.clone(), [from.module.as_slice(), segs].concat()));
+            }
+            // A name a glob import of this module brings in; globs
+            // shadow the extern prelude, so this comes before crate names.
+            if let Some(provider) = via_globs(tree, from, first, from, glob_depth) {
+                return Some((provider.target, [provider.module.as_slice(), segs].concat()));
             }
             let key = tree.by_crate_name.get(first)?;
             Some((key.clone(), segs[1..].to_vec()))
@@ -211,7 +214,7 @@ fn resolve_at(
     path: &RawPath,
     glob_depth: usize,
 ) -> Option<Resolved> {
-    let (mut target, mut segs) = anchor(tree, from, path)?;
+    let (mut target, mut segs) = anchor_at(tree, from, path, 0, glob_depth)?;
     // One pass to walk the path, plus one per re-export or glob hop.
     for _ in 0..=MAX_REEXPORT_HOPS {
         let modules = tree.targets.get(&target)?;
@@ -241,7 +244,7 @@ fn resolve_at(
         if let Some(import) = node.imports.get(&name)
             && (node.reexports.contains(&name) || visible_privately)
         {
-            let (t, mut s) = anchor(tree, &location, import)?;
+            let (t, mut s) = anchor_at(tree, &location, import, 0, glob_depth)?;
             s.extend(rest);
             target = t;
             segs = s;
@@ -681,6 +684,55 @@ mod tests {
             resolved(&t, &at("app", ""), "crate::a::Thing"),
             Some(("app".into(), "a".into(), Some("Thing".into())))
         );
+    }
+
+    #[test]
+    fn a_bare_name_from_a_glob_import_resolves_in_the_writing_module() {
+        let mut t = ResolveTree::default();
+        let app = TargetKey::main("app");
+        t.add_target(app.clone(), true);
+        t.module_mut(&app, &m("a")).defines.insert("Thing".into());
+        t.module_mut(&app, &m("b"))
+            .globs
+            .push((p("crate::a"), false));
+        assert_eq!(
+            resolved(&t, &at("app", "b"), "Thing::new"),
+            Some(("app".into(), "a".into(), Some("Thing".into())))
+        );
+        assert_eq!(
+            resolved(&t, &at("app", "b"), "Thing"),
+            Some(("app".into(), "a".into(), Some("Thing".into())))
+        );
+    }
+
+    #[test]
+    fn a_glob_import_shadows_a_crate_name() {
+        let mut t = ResolveTree::default();
+        let app = TargetKey::main("app");
+        t.add_target(app.clone(), true);
+        t.add_target(TargetKey::main("other"), true);
+        t.module_mut(&app, &m("a.other"));
+        t.module_mut(&app, &m("b"))
+            .globs
+            .push((p("crate::a"), false));
+        assert_eq!(
+            resolved(&t, &at("app", "b"), "other::X"),
+            Some(("app".into(), "a.other".into(), Some("X".into())))
+        );
+    }
+
+    #[test]
+    fn a_glob_whose_path_is_only_reachable_through_a_glob_in_a_cycle_terminates() {
+        let mut t = ResolveTree::default();
+        let app = TargetKey::main("app");
+        t.add_target(app.clone(), true);
+        t.module_mut(&app, &m("a"))
+            .globs
+            .push((p("b_alias"), false));
+        t.module_mut(&app, &m("b"))
+            .globs
+            .push((p("a_alias"), false));
+        assert_eq!(resolved(&t, &at("app", "a"), "Thing"), None);
     }
 
     #[test]

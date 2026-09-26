@@ -59,6 +59,22 @@ fn quote(text: &str) -> String {
     out
 }
 
+/// A path as a LikeC4 link target, which is an unquoted URI: every byte
+/// outside the unreserved set and `/` is percent-encoded, so a space
+/// or a quote in a directory name cannot break the parse.
+pub fn link_encode(path: &str) -> String {
+    let mut out = String::with_capacity(path.len());
+    for byte in path.bytes() {
+        let keep = byte.is_ascii_alphanumeric() || matches!(byte, b'-' | b'.' | b'_' | b'~' | b'/');
+        if keep {
+            out.push(byte as char);
+        } else {
+            out.push_str(&format!("%{byte:02X}"));
+        }
+    }
+    out
+}
+
 fn kind_keyword(kind: &ElementKind) -> &str {
     match kind {
         ElementKind::Container => "container",
@@ -214,7 +230,13 @@ fn emit_element(
         // that is only a prefix (`./`), and the file's own directory
         // needs no link to be found.
         if path != "." {
-            writeln!(out, "{inner}link {}{path}", options.link_prefix).unwrap();
+            writeln!(
+                out,
+                "{inner}link {}{}",
+                options.link_prefix,
+                link_encode(path)
+            )
+            .unwrap();
         }
     }
     for child in children {
@@ -223,8 +245,9 @@ fn emit_element(
     writeln!(out, "{indent}}}").unwrap();
 }
 
-/// The view id for an element: its sanitized id with `_` for `.`, so it
-/// cannot collide with another element's view or with `index`.
+/// The view id for an element: its sanitized id with `_` for `.`. Two
+/// elements can share one (`a.b_c` and `a_b.c`); the emitter suffixes
+/// the later one.
 pub fn view_id(id: &Id) -> String {
     format!("view_{}", sanitize_id(id).replace('.', "_"))
 }
@@ -240,15 +263,24 @@ fn emit_views(out: &mut String, model: &Model) {
         writeln!(out, "    include {}", top.join(", ")).unwrap();
     }
     out.push_str("    autoLayout LeftRight\n  }\n");
+    // `a.b_c` and `a_b.c` share a view id; the second and later take a
+    // numeric suffix, in element order, so the output stays stable.
+    let mut used: BTreeSet<String> = BTreeSet::from(["index".to_string()]);
     for element in &model.elements {
         if children_of(model, &element.id).is_empty() {
             continue;
         }
         let fqn = sanitize_id(&element.id);
+        let base = view_id(&element.id);
+        let mut id = base.clone();
+        let mut n = 2;
+        while !used.insert(id.clone()) {
+            id = format!("{base}_{n}");
+            n += 1;
+        }
         writeln!(
             out,
-            "\n  view {} of {fqn} {{\n    title {}\n    include *\n    autoLayout TopBottom\n  }}",
-            view_id(&element.id),
+            "\n  view {id} of {fqn} {{\n    title {}\n    include *\n    autoLayout TopBottom\n  }}",
             quote(&element.id.join("."))
         )
         .unwrap();
@@ -541,6 +573,48 @@ mod tests {
         let head: String = app_block.lines().take(4).collect::<Vec<_>>().join("\n");
         assert!(head.contains("path '.'"), "{head}");
         assert!(!head.contains("link"), "{head}");
+    }
+
+    #[test]
+    fn a_space_or_quote_in_a_path_is_percent_encoded_in_the_link_only() {
+        let mut model = sample();
+        model
+            .elements
+            .iter_mut()
+            .find(|e| e.id == ["app", "server"])
+            .unwrap()
+            .path = Some("crates/my tool/it's.rs".into());
+        let text = emit(&model, &options());
+        assert!(text.contains("path 'crates/my tool/it\\'s.rs'"), "{text}");
+        assert!(
+            text.contains("link ../../crates/my%20tool/it%27s.rs\n"),
+            "{text}"
+        );
+    }
+
+    #[test]
+    fn link_encoding_keeps_unreserved_characters_and_slashes() {
+        assert_eq!(link_encode("a-b_c.d~/e"), "a-b_c.d~/e");
+        assert_eq!(link_encode("é"), "%C3%A9");
+    }
+
+    #[test]
+    fn two_ids_that_collapse_to_one_view_id_get_distinct_views() {
+        let model = Model {
+            elements: vec![
+                element("a.b_c", ElementKind::Container),
+                element("a.b_c.x", ElementKind::Component),
+                element("a_b.c", ElementKind::Container),
+                element("a_b.c.y", ElementKind::Component),
+                element("a_b_c", ElementKind::Container),
+                element("a_b_c.z", ElementKind::Component),
+            ],
+            ..Default::default()
+        };
+        let text = emit(&model, &options());
+        assert!(text.contains("view view_a_b_c of a.b_c {"), "{text}");
+        assert!(text.contains("view view_a_b_c_2 of a_b.c {"), "{text}");
+        assert!(text.contains("view view_a_b_c_3 of a_b_c {"), "{text}");
     }
 
     #[test]

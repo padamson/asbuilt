@@ -3,6 +3,7 @@
 specification {
   element component
   element container
+  tag tests
   relationship implements
   relationship constructs
   relationship calls
@@ -36,9 +37,17 @@ model {
         link ./src/protocol/page.rs
       }
     }
+    tests = component 'tests' {
+      #tests
+      metadata {
+        path 'tests'
+      }
+      link ./tests
+    }
   }
 
   app.consumer -[constructs]-> app.protocol.page 'Frame, Page'
+  app.tests -[constructs]-> app.protocol.page 'Page'
 }
 
 views {

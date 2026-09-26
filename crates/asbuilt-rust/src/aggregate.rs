@@ -8,7 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use asbuilt_core::model::{Id, Relation, RelationKind, is_lineal};
 
 use crate::resolve::{Location, ResolveTree, TargetRole, resolve};
-use crate::visit::{Anchor, ModuleFacts};
+use crate::visit::ModuleFacts;
 use crate::walk::ModulePath;
 
 /// The tag on a crate's `tests` component.
@@ -45,26 +45,15 @@ pub fn relations(tree: &ResolveTree, facts: &BTreeMap<Location, ModuleFacts>) ->
     let mut acc: BTreeMap<(Id, Id), (RelationKind, BTreeSet<String>)> = BTreeMap::new();
     for (from, module_facts) in facts {
         let source = element_id(from);
-        let Some(node) = tree.module(from) else {
-            continue;
-        };
+        // Every non-glob `use`, then every other path; resolution
+        // decides what a bare name means in this module (an import
+        // alias, a glob import, a child, a local, or nothing).
         let candidates = module_facts
             .uses
             .iter()
             .filter(|u| !u.glob)
             .map(|u| (&u.path, RelationKind::Uses))
-            .chain(module_facts.refs.iter().filter_map(|r| {
-                // A bare single segment was brought in by a `use` that is
-                // already counted, unless it is that use's alias, in which
-                // case this reference can only strengthen the kind.
-                let bare_single = r.path.anchor == Anchor::Bare && r.path.segments.len() == 1;
-                let is_alias = r
-                    .path
-                    .segments
-                    .first()
-                    .is_some_and(|s| node.imports.contains_key(s));
-                (!bare_single || is_alias).then_some((&r.path, r.kind))
-            }));
+            .chain(module_facts.refs.iter().map(|r| (&r.path, r.kind)));
         for (path, kind) in candidates {
             let Some(resolved) = resolve(tree, from, path) else {
                 continue;
@@ -256,7 +245,24 @@ mod tests {
     }
 
     #[test]
-    fn a_bare_single_segment_is_dropped_unless_it_is_an_import_alias() {
+    fn a_bare_name_nothing_in_scope_explains_yields_nothing() {
+        let (t, app, _) = tree();
+        let mut facts = BTreeMap::new();
+        facts.insert(
+            location(&app, &m("b")),
+            ModuleFacts {
+                refs: vec![
+                    r("Vec", RelationKind::NamesType),
+                    r("Vec::new", RelationKind::Constructs),
+                ],
+                ..Default::default()
+            },
+        );
+        assert_eq!(rel(&t, &facts), []);
+    }
+
+    #[test]
+    fn a_bare_import_alias_strengthens_the_kind() {
         let (mut t, app, _) = tree();
         t.module_mut(&app, &m("b"))
             .imports
@@ -265,10 +271,7 @@ mod tests {
         facts.insert(
             location(&app, &m("b")),
             ModuleFacts {
-                refs: vec![
-                    r("Vec", RelationKind::NamesType),
-                    r("Thing", RelationKind::Constructs),
-                ],
+                refs: vec![r("Thing", RelationKind::Constructs)],
                 ..Default::default()
             },
         );
@@ -281,14 +284,31 @@ mod tests {
                 vec!["Thing".to_string()]
             )]
         );
+    }
+
+    #[test]
+    fn a_bare_name_from_a_glob_import_is_a_relation() {
+        let (mut t, app, _) = tree();
+        t.module_mut(&app, &m("b"))
+            .globs
+            .push((p("crate::a"), false));
+        let mut facts = BTreeMap::new();
         facts.insert(
             location(&app, &m("b")),
             ModuleFacts {
-                refs: vec![r("Vec", RelationKind::NamesType)],
+                refs: vec![r("Thing", RelationKind::NamesType)],
                 ..Default::default()
             },
         );
-        assert_eq!(rel(&t, &facts), []);
+        assert_eq!(
+            rel(&t, &facts),
+            [(
+                "app.b".to_string(),
+                "app.a".to_string(),
+                RelationKind::NamesType,
+                vec!["Thing".to_string()]
+            )]
+        );
     }
 
     #[test]

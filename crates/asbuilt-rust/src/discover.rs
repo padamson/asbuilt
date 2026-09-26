@@ -125,8 +125,16 @@ fn packages_of(manifest: &Path) -> Result<Vec<Package>, RustFrontendError> {
 }
 
 /// Every crate the survey covers, sorted by crate name: the workspace at
-/// `root`, then each extra manifest's packages.
+/// `root`, then each extra manifest's packages. Only packages under the
+/// root count: surveying one member of a larger workspace scopes the
+/// model to that member (cargo reports every member regardless).
 pub fn discover(root: &Path, config: &RustConfig) -> Result<Vec<CrateSpec>, RustFrontendError> {
+    let root_canonical = root
+        .canonicalize()
+        .map_err(|source| RustFrontendError::Io {
+            path: root.to_path_buf(),
+            source,
+        })?;
     let mut manifests = vec![root.join("Cargo.toml")];
     for extra in &config.extra_manifests {
         let path = root.join(extra);
@@ -140,6 +148,13 @@ pub fn discover(root: &Path, config: &RustConfig) -> Result<Vec<CrateSpec>, Rust
     for manifest in &manifests {
         for package in packages_of(manifest)? {
             let spec = CrateSpec::from_package(&package);
+            let under_root = spec
+                .manifest_dir
+                .canonicalize()
+                .is_ok_and(|dir| dir.starts_with(&root_canonical));
+            if !under_root {
+                continue;
+            }
             if let Some(first) = by_name.get(&spec.crate_name) {
                 if first.manifest_path == spec.manifest_path {
                     continue;

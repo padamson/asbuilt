@@ -23,4 +23,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `asbuilt-core::check::compare`: the drift check as a unified diff, line endings normalized first
 - A consumer fixture under `crates/asbuilt/tests/fixtures/consumer/` (a workspace, an extra manifest, one external) with its committed `docs/architecture/model.c4`; the CLI tests spawn the binary over it and over scratch copies of it
 
+### Fixed
+- A bare name brought in by a glob import (`use crate::a::*; Thing::new()`) now resolves; modules that glob-import a prelude were missing from the graph
+- `#[path]` on a `mod` inside an inline module block is relative to the inline module's directory, as rustc requires
+- A bin, `tests` or `examples` component whose id would equal a lib module's is an error naming the package and the name, instead of two elements with one id
+- `Model::validate` rejects any repeated id, including an `[[externals]]` id equal to a surveyed crate's
+- An empty `[[externals]]` id is rejected
+- Surveying one member of a larger workspace scopes the model to the packages under that root; a root with no package under it is an error
+- A root-level crate's `tests` and `examples` components get the path `tests`, not `./tests`
+- `-o` is resolved against the canonical root, so an absolute path, `..`, or a `.` root all give correct `link` lines
+- Two element ids that collapse to one view id (`a.b_c`, `a_b.c`) get distinct view names
+- `link` values are percent-encoded, so a space or quote in a path cannot break the parse
+
 [Unreleased]: https://github.com/padamson/asbuilt/commits/main

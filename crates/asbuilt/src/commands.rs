@@ -53,26 +53,123 @@ fn slashes(path: &Path) -> String {
         .join("/")
 }
 
-/// Where the model goes: the `-o` override (relative to the root, or
-/// absolute) or the config's path. Returns the root-relative spelling
-/// used for links and messages, and the file to write.
-pub fn output_path(
+/// `root` canonicalized, with the Windows verbatim prefix dropped.
+fn canonical_root(root: &Path) -> Result<PathBuf, CliError> {
+    let canonical = root.canonicalize().map_err(|source| CliError::Read {
+        path: root.to_path_buf(),
+        source,
+    })?;
+    let text = canonical.to_string_lossy();
+    Ok(PathBuf::from(text.strip_prefix(r"\\?\").unwrap_or(&text)))
+}
+
+/// Canonicalize the deepest ancestor of `path` that exists and re-append
+/// the rest, so an output file that is not written yet still compares
+/// against the canonical root (`/tmp` is a symlink on macOS).
+fn canonicalize_partial(path: &Path) -> PathBuf {
+    let mut existing = path;
+    let mut tail: Vec<std::ffi::OsString> = Vec::new();
+    while !existing.exists() {
+        match (existing.parent(), existing.file_name()) {
+            (Some(parent), Some(name)) => {
+                tail.push(name.to_os_string());
+                existing = parent;
+            }
+            _ => return path.to_path_buf(),
+        }
+    }
+    let Ok(canonical) = existing.canonicalize() else {
+        return path.to_path_buf();
+    };
+    let text = canonical.to_string_lossy();
+    let mut out = PathBuf::from(text.strip_prefix(r"\\?\").unwrap_or(&text));
+    for name in tail.into_iter().rev() {
+        out.push(name);
+    }
+    out
+}
+
+/// Resolve `.` and `..` lexically, for a path that may not exist yet.
+fn normalize_lexically(path: &Path) -> PathBuf {
+    let mut out = PathBuf::new();
+    for component in path.components() {
+        match component {
+            Component::CurDir => {}
+            Component::ParentDir => {
+                if !out.pop() {
+                    out.push("..");
+                }
+            }
+            other => out.push(other),
+        }
+    }
+    out
+}
+
+/// The `link` prefix that takes a file in `out_dir` back to `root`:
+/// `../` per directory below the common ancestor, then the root's own
+/// path below it; `./` when the file sits at the root.
+fn link_prefix(out_dir: &Path, root: &Path) -> String {
+    let out: Vec<Component> = out_dir.components().collect();
+    let base: Vec<Component> = root.components().collect();
+    let common = out
+        .iter()
+        .zip(base.iter())
+        .take_while(|(a, b)| a == b)
+        .count();
+    let mut prefix = "../".repeat(out.len() - common);
+    for component in &base[common..] {
+        prefix.push_str(&component.as_os_str().to_string_lossy());
+        prefix.push('/');
+    }
+    if prefix.is_empty() {
+        "./".to_string()
+    } else {
+        prefix
+    }
+}
+
+/// Where the model goes and how its links get back to the root.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct OutputTarget {
+    /// The path as shown in messages and the diff header: relative to
+    /// the root when under it, otherwise absolute.
+    pub label: String,
+    pub path: PathBuf,
+    pub link_prefix: String,
+}
+
+/// The `-o` override (relative to the root, or absolute) or the config's
+/// path, resolved against the canonical root so `..`, symlinks and a
+/// `.` root all count directories correctly.
+pub fn output_target(
     root: &Path,
     config: &Config,
     override_path: Option<&Path>,
-) -> (String, PathBuf) {
-    match override_path {
-        None => (config.output.path.clone(), root.join(&config.output.path)),
-        Some(p) if p.is_absolute() => {
-            let rel = p.strip_prefix(root).map(slashes).unwrap_or_else(|_| {
-                p.file_name()
-                    .map(|f| f.to_string_lossy().into_owned())
-                    .unwrap_or_default()
-            });
-            (rel, p.to_path_buf())
-        }
-        Some(p) => (slashes(p), root.join(p)),
-    }
+) -> Result<OutputTarget, CliError> {
+    let root = canonical_root(root)?;
+    let requested = override_path
+        .map(Path::to_path_buf)
+        .unwrap_or_else(|| PathBuf::from(&config.output.path));
+    let absolute = if requested.is_absolute() {
+        requested
+    } else {
+        root.join(requested)
+    };
+    let path = canonicalize_partial(&normalize_lexically(&absolute));
+    let out_dir = path
+        .parent()
+        .map(Path::to_path_buf)
+        .unwrap_or_else(|| root.clone());
+    let label = match path.strip_prefix(&root) {
+        Ok(rel) => slashes(rel),
+        Err(_) => path.to_string_lossy().into_owned(),
+    };
+    Ok(OutputTarget {
+        label,
+        link_prefix: link_prefix(&out_dir, &root),
+        path,
+    })
 }
 
 /// A fresh model of `root` with every front-end this binary carries.
@@ -88,9 +185,15 @@ pub fn survey(
     override_path: Option<&Path>,
 ) -> Result<i32, CliError> {
     let config = load_config(root, config_path)?;
-    let (rel, path) = output_path(root, &config, override_path);
+    let target = output_target(root, &config, override_path)?;
     let model = survey_model(root, &config)?;
-    let text = emit(&model, &EmitOptions::for_output_path(&rel));
+    let text = emit(
+        &model,
+        &EmitOptions {
+            link_prefix: target.link_prefix,
+        },
+    );
+    let path = target.path;
     if let Some(parent) = path.parent() {
         std::fs::create_dir_all(parent).map_err(|source| CliError::Write {
             path: parent.to_path_buf(),
@@ -110,7 +213,8 @@ pub fn check(
     err: &mut dyn Write,
 ) -> Result<i32, CliError> {
     let config = load_config(root, config_path)?;
-    let (rel, path) = output_path(root, &config, None);
+    let target = output_target(root, &config, None)?;
+    let (rel, path) = (target.label, target.path);
     let committed = std::fs::read_to_string(&path).map_err(|source| {
         if source.kind() == io::ErrorKind::NotFound {
             CliError::NoModel { path: path.clone() }
@@ -122,7 +226,12 @@ pub fn check(
         }
     })?;
     let model = survey_model(root, &config)?;
-    let fresh = emit(&model, &EmitOptions::for_output_path(&rel));
+    let fresh = emit(
+        &model,
+        &EmitOptions {
+            link_prefix: target.link_prefix,
+        },
+    );
     match compare(&committed, &fresh, &rel) {
         Outcome::Current => {
             let _ = writeln!(out, "{rel} is current");
@@ -143,45 +252,104 @@ pub fn check(
 mod tests {
     use super::*;
 
-    #[test]
-    fn the_default_output_is_the_config_path_under_the_root() {
-        let config = Config::default();
-        let (rel, path) = output_path(Path::new("/r"), &config, None);
-        assert_eq!(rel, "docs/architecture/model.c4");
-        assert_eq!(path, PathBuf::from("/r/docs/architecture/model.c4"));
+    fn root() -> tempfile::TempDir {
+        tempfile::tempdir().unwrap()
+    }
+
+    fn target(dir: &tempfile::TempDir, override_path: Option<&str>) -> OutputTarget {
+        output_target(dir.path(), &Config::default(), override_path.map(Path::new)).unwrap()
     }
 
     #[test]
-    fn a_relative_override_is_under_the_root_and_spelled_with_slashes() {
-        let (rel, path) = output_path(
-            Path::new("/r"),
-            &Config::default(),
-            Some(Path::new("out/m.c4")),
+    fn the_default_output_is_the_config_path_under_the_root_two_levels_down() {
+        let dir = root();
+        let t = target(&dir, None);
+        assert_eq!(t.label, "docs/architecture/model.c4");
+        assert_eq!(t.link_prefix, "../../");
+        assert!(t.path.ends_with("docs/architecture/model.c4"));
+    }
+
+    #[test]
+    fn a_relative_override_is_under_the_root_and_counts_its_own_depth() {
+        let dir = root();
+        let t = target(&dir, Some("out/m.c4"));
+        assert_eq!(t.label, "out/m.c4");
+        assert_eq!(t.link_prefix, "../");
+    }
+
+    #[test]
+    fn a_file_at_the_root_links_with_a_dot_prefix() {
+        let dir = root();
+        let t = target(&dir, Some("m.c4"));
+        assert_eq!(t.label, "m.c4");
+        assert_eq!(t.link_prefix, "./");
+    }
+
+    #[test]
+    fn a_relative_override_that_climbs_out_of_the_root_links_back_through_the_root_name() {
+        let dir = root();
+        let t = target(&dir, Some("../out/m.c4"));
+        let root_name = canonical_root(dir.path())
+            .unwrap()
+            .file_name()
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
+        assert_eq!(t.link_prefix, format!("../{root_name}/"));
+        assert!(Path::new(&t.label).is_absolute(), "{}", t.label);
+        assert!(
+            t.path.ends_with("out/m.c4") && !t.path.to_string_lossy().contains(".."),
+            "{:?}",
+            t.path
         );
-        assert_eq!(rel, "out/m.c4");
-        assert_eq!(path, PathBuf::from("/r/out/m.c4"));
     }
 
     #[test]
     fn an_absolute_override_inside_the_root_keeps_its_relative_spelling() {
-        let (rel, path) = output_path(
-            Path::new("/r"),
-            &Config::default(),
-            Some(Path::new("/r/a/m.c4")),
-        );
-        assert_eq!(rel, "a/m.c4");
-        assert_eq!(path, PathBuf::from("/r/a/m.c4"));
+        let dir = root();
+        let inside = canonical_root(dir.path()).unwrap().join("a/m.c4");
+        let t = output_target(dir.path(), &Config::default(), Some(&inside)).unwrap();
+        assert_eq!(t.label, "a/m.c4");
+        assert_eq!(t.link_prefix, "../");
     }
 
     #[test]
-    fn an_absolute_override_outside_the_root_is_labeled_by_its_file_name() {
-        let (rel, path) = output_path(
-            Path::new("/r"),
-            &Config::default(),
-            Some(Path::new("/elsewhere/m.c4")),
+    fn an_absolute_override_through_an_uncanonical_root_still_counts_its_real_depth() {
+        // `dir.path()` is not canonical on macOS (`/tmp` is a symlink);
+        // the output file does not exist yet either.
+        let dir = root();
+        let inside = dir.path().join("docs/arch/m.c4");
+        let t = output_target(dir.path(), &Config::default(), Some(&inside)).unwrap();
+        assert_eq!(t.label, "docs/arch/m.c4");
+        assert_eq!(t.link_prefix, "../../");
+    }
+
+    #[test]
+    fn a_path_with_no_existing_ancestor_is_returned_as_is() {
+        assert_eq!(
+            canonicalize_partial(Path::new("relative/nowhere")),
+            PathBuf::from("relative/nowhere")
         );
-        assert_eq!(rel, "m.c4");
-        assert_eq!(path, PathBuf::from("/elsewhere/m.c4"));
+    }
+
+    #[test]
+    fn lexical_normalization_resolves_dots_without_touching_the_disk() {
+        assert_eq!(
+            normalize_lexically(Path::new("/a/b/../c/./d")),
+            PathBuf::from("/a/c/d")
+        );
+        assert_eq!(
+            normalize_lexically(Path::new("../x")),
+            PathBuf::from("../x")
+        );
+    }
+
+    #[test]
+    fn a_missing_root_is_a_read_error_naming_it() {
+        match output_target(Path::new("/no/such/root"), &Config::default(), None) {
+            Err(CliError::Read { path, .. }) => assert_eq!(path, PathBuf::from("/no/such/root")),
+            other => panic!("expected Read, got {other:?}"),
+        }
     }
 
     #[test]

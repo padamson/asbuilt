@@ -153,7 +153,16 @@ fn load_file(
     node.doc = first_doc_paragraph(&ast.attrs);
 
     let mut pending = Vec::new();
-    collect_mods(tree, &ast.items, &module, file, dir, source, &mut pending)?;
+    let reading = Reading { file, source };
+    collect_mods(
+        tree,
+        &ast.items,
+        &module,
+        &reading,
+        dir,
+        false,
+        &mut pending,
+    )?;
     tree.files.push(ParsedFile {
         path: file.to_path_buf(),
         module,
@@ -167,15 +176,23 @@ fn load_file(
 
 /// Record every `mod` among `items`, entering inline ones now and
 /// queueing file ones for `load_file`.
+/// The file being read and where its text comes from.
+struct Reading<'a> {
+    file: &'a Path,
+    source: &'a dyn FileSource,
+}
+
 fn collect_mods(
     tree: &mut ModuleTree,
     items: &[Item],
     module: &ModulePath,
-    file: &Path,
+    reading: &Reading<'_>,
     dir: &Path,
-    source: &dyn FileSource,
+    in_inline: bool,
     pending: &mut Vec<(ModulePath, PathBuf, PathBuf)>,
 ) -> Result<(), RustFrontendError> {
+    let file = reading.file;
+    let source = reading.source;
     for item in items {
         let Item::Mod(m) = item else { continue };
         if is_cfg_test(&m.attrs) {
@@ -203,20 +220,27 @@ fn collect_mods(
                     tree,
                     content,
                     &child_module,
-                    file,
+                    reading,
                     &child_dir,
-                    source,
+                    true,
                     pending,
                 )?;
             }
             None => {
-                // `#[path]` wins outright and makes the target file's
-                // directory the module's own; otherwise `dir/x.rs` or
-                // `dir/x/mod.rs`, and children of either live under
-                // `dir/x/`.
+                // `#[path]` wins outright: relative to the file's directory
+                // at the top level of a file, and to the inline module's
+                // directory inside an inline block (rustc's rule); the
+                // target file's directory becomes the module's own.
+                // Otherwise `dir/x.rs` or `dir/x/mod.rs`, and children of
+                // either live under `dir/x/`.
                 let (child_file, child_dir) = match string_attr(&m.attrs, "path") {
                     Some(explicit) => {
-                        let child_file = file.parent().unwrap_or(Path::new("")).join(explicit);
+                        let base = if in_inline {
+                            dir.to_path_buf()
+                        } else {
+                            file.parent().unwrap_or(Path::new("")).to_path_buf()
+                        };
+                        let child_file = base.join(explicit);
                         let child_dir = child_file
                             .parent()
                             .map(Path::to_path_buf)
@@ -393,6 +417,33 @@ mod tests {
         assert_eq!(
             t.get(&path("renamed")).unwrap().file,
             PathBuf::from("src/place.rs")
+        );
+    }
+
+    #[test]
+    fn a_path_attribute_inside_an_inline_module_is_relative_to_the_inline_directory() {
+        let t = tree(&[
+            ("src/lib.rs", "mod outer { #[path = \"x.rs\"] mod inner; }"),
+            ("src/outer/x.rs", ""),
+        ])
+        .unwrap();
+        assert_eq!(
+            t.get(&path("outer.inner")).unwrap().file,
+            PathBuf::from("src/outer/x.rs")
+        );
+    }
+
+    #[test]
+    fn a_path_attribute_at_the_top_of_a_plain_file_module_is_relative_to_that_file() {
+        let t = tree(&[
+            ("src/lib.rs", "mod a;"),
+            ("src/a.rs", "#[path = \"x.rs\"] mod inner;"),
+            ("src/x.rs", ""),
+        ])
+        .unwrap();
+        assert_eq!(
+            t.get(&path("a.inner")).unwrap().file,
+            PathBuf::from("src/x.rs")
         );
     }
 

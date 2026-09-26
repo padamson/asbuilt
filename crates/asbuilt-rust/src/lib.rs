@@ -173,6 +173,25 @@ pub fn analyze(root: &Path, config: &RustConfig) -> Result<Model, RustFrontendEr
     let mut tree = ResolveTree::default();
     let mut facts: BTreeMap<Location, ModuleFacts> = BTreeMap::new();
     let mut elements: Vec<Element> = Vec::new();
+    let mut ids: BTreeSet<Id> = BTreeSet::new();
+
+    /// Push an element unless its id is already taken: a bin named like
+    /// a module, or a module named `tests` or `examples`.
+    fn add(
+        elements: &mut Vec<Element>,
+        ids: &mut BTreeSet<Id>,
+        element: Element,
+        package: &str,
+    ) -> Result<(), RustFrontendError> {
+        if !ids.insert(element.id.clone()) {
+            return Err(RustFrontendError::TargetNameCollision {
+                package: package.to_string(),
+                name: element.id.last().cloned().unwrap_or_default(),
+            });
+        }
+        elements.push(element);
+        Ok(())
+    }
 
     for krate in &crates {
         let crate_id = vec![krate.crate_name.clone()];
@@ -184,7 +203,7 @@ pub fn analyze(root: &Path, config: &RustConfig) -> Result<Model, RustFrontendEr
         container.technology = Some(krate.technology.to_string());
         container.path = Some(relative(&root_canonical, &krate.manifest_dir)?);
         let container_index = elements.len();
-        elements.push(container);
+        add(&mut elements, &mut ids, container, &krate.package)?;
         let mut synthetic: BTreeSet<Id> = BTreeSet::new();
 
         for target in &krate.targets {
@@ -248,7 +267,7 @@ pub fn analyze(root: &Path, config: &RustConfig) -> Result<Model, RustFrontendEr
                         if path.is_empty() {
                             component.tags.push(BIN_TAG.to_string());
                         }
-                        elements.push(component);
+                        add(&mut elements, &mut ids, component, &krate.package)?;
                     }
                 }
                 TargetRole::Tests(_) | TargetRole::Examples(_) => {
@@ -268,12 +287,12 @@ pub fn analyze(root: &Path, config: &RustConfig) -> Result<Model, RustFrontendEr
                     let mut component = element(id, ElementKind::Component, name.to_string());
                     component.tags.push(name.to_string());
                     let dir = relative(&root_canonical, &krate.manifest_dir)?;
-                    component.path = Some(if dir.is_empty() {
+                    component.path = Some(if dir == "." {
                         name.to_string()
                     } else {
                         format!("{dir}/{name}")
                     });
-                    elements.push(component);
+                    add(&mut elements, &mut ids, component, &krate.package)?;
                 }
             }
         }
@@ -352,6 +371,49 @@ mod tests {
                 assert_eq!(r, root_c);
             }
             other => panic!("expected PathOutsideRoot, got {other:?}"),
+        }
+    }
+
+    fn package_with(files: &[(&str, &str)]) -> tempfile::TempDir {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(
+            dir.path().join("Cargo.toml"),
+            "[package]\nname = \"server\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+        )
+        .unwrap();
+        for (name, text) in files {
+            let path = dir.path().join(name);
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(path, text).unwrap();
+        }
+        dir
+    }
+
+    #[test]
+    fn a_bin_named_like_a_lib_module_is_a_collision_naming_both() {
+        let dir = package_with(&[
+            ("src/lib.rs", "pub mod cli;"),
+            ("src/cli.rs", ""),
+            ("src/bin/cli.rs", "fn main() {}"),
+        ]);
+        match analyze(dir.path(), &RustConfig::default()) {
+            Err(RustFrontendError::TargetNameCollision { package, name }) => {
+                assert_eq!((package.as_str(), name.as_str()), ("server", "cli"));
+            }
+            other => panic!("expected TargetNameCollision, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn a_lib_module_named_tests_collides_with_the_tests_component() {
+        let dir = package_with(&[
+            ("src/lib.rs", "pub mod tests;"),
+            ("src/tests.rs", ""),
+            ("tests/it.rs", ""),
+        ]);
+        match analyze(dir.path(), &RustConfig::default()) {
+            Err(RustFrontendError::TargetNameCollision { name, .. }) => assert_eq!(name, "tests"),
+            other => panic!("expected TargetNameCollision, got {other:?}"),
         }
     }
 

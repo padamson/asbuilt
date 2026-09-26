@@ -19,7 +19,7 @@ pub const EXTERNAL_TAG: &str = "external";
 /// id or as LikeC4 will (`-` as `_`); both resolve.
 pub fn apply(model: &mut Model, config: &Config) -> Result<()> {
     for external in &config.externals {
-        if sanitize_segment(&external.id) != external.id {
+        if external.id.is_empty() || sanitize_segment(&external.id) != external.id {
             return Err(Error::InvalidExternalId {
                 id: external.id.clone(),
             });
@@ -179,6 +179,16 @@ technology = "stdio"
         let text = DRIVER.replace("id = \"node_driver\"", "id = \"node-driver\"");
         match apply(&mut model, &config(&text)) {
             Err(Error::InvalidExternalId { id }) => assert_eq!(id, "node-driver"),
+            other => panic!("expected InvalidExternalId, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn an_empty_external_id_is_an_error() {
+        let mut model = surveyed();
+        let text = DRIVER.replace("id = \"node_driver\"", "id = \"\"");
+        match apply(&mut model, &config(&text)) {
+            Err(Error::InvalidExternalId { id }) => assert_eq!(id, ""),
             other => panic!("expected InvalidExternalId, got {other:?}"),
         }
     }

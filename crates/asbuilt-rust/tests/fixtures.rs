@@ -140,6 +140,15 @@ fn a_description_is_the_first_doc_paragraph() {
 }
 
 #[test]
+fn a_root_level_test_target_resolves_through_the_crate_root_reexport_and_sits_in_tests() {
+    let (model, _) = survey("reexport_chain");
+    let r = relation(&model, "app.tests", "app.protocol.page");
+    assert_eq!(r.kind, RelationKind::Constructs);
+    assert_eq!(r.items, ["Page"]);
+    assert_eq!(element(&model, "app.tests").path.as_deref(), Some("tests"));
+}
+
+#[test]
 fn the_reexport_chain_snapshot_is_current() {
     let (_, text) = survey("reexport_chain");
     assert_snapshot("reexport_chain", &text);
@@ -154,6 +163,22 @@ fn a_glob_reexport_is_followed_to_the_defining_module() {
     assert_eq!(r.kind, RelationKind::Calls);
     assert_eq!(r.items, ["Thing", "make"]);
     no_relation(&model, "app.b", "app.a");
+}
+
+#[test]
+fn a_bare_name_from_a_glob_import_lands_where_the_glob_points() {
+    let (model, _) = survey("glob_reexport");
+    let r = relation(&model, "app.c", "app.a.inner");
+    assert_eq!(r.items, ["Thing"]);
+}
+
+#[test]
+fn surveying_one_member_scopes_the_model_to_the_packages_under_it() {
+    let root = fixture_root("workspace_crates").join("consumer");
+    let model = analyze(&root, &RustConfig::default()).unwrap();
+    let ids: Vec<String> = model.elements.iter().map(|e| e.id.join(".")).collect();
+    assert_eq!(ids, ["consumer"]);
+    assert!(model.relations.is_empty(), "{:?}", model.relations);
 }
 
 #[test]

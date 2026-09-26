@@ -139,6 +139,18 @@ mod tests {
     }
 
     #[test]
+    fn an_external_whose_id_is_a_surveyed_crate_is_a_duplicate() {
+        let a = fake("a", true, &["app"]);
+        let config: Config = "[[externals]]\nid = \"app\"\nkind = \"process\"\ntitle = \"D\"\n"
+            .parse()
+            .unwrap();
+        assert!(matches!(
+            survey(Path::new("."), &config, &[&a]),
+            Err(Error::DuplicateId { .. })
+        ));
+    }
+
+    #[test]
     fn colliding_ids_across_front_ends_are_an_error() {
         let a = fake("a", true, &["my-app"]);
         let b = fake("b", true, &["my_app"]);

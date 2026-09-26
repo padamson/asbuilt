@@ -96,6 +96,26 @@ fn survey_writes_to_an_output_override_relative_to_the_root() {
 }
 
 #[test]
+fn survey_with_an_absolute_output_inside_the_root_links_by_its_real_depth() {
+    let ws = scratch_copy();
+    let out = ws.root().join("docs/arch/m.c4");
+
+    let result = run(&[
+        "survey",
+        ws.root().to_str().unwrap(),
+        "-o",
+        out.to_str().unwrap(),
+    ]);
+
+    assert_eq!(result.status.code(), Some(0), "{}", text(&result.stderr));
+    let written = std::fs::read_to_string(&out).unwrap();
+    assert!(
+        written.contains("link ../../app/src/server.rs\n"),
+        "{written}"
+    );
+}
+
+#[test]
 fn survey_reads_a_config_from_outside_the_root() {
     let ws = scratch_copy();
     let elsewhere = Workspace::new();
