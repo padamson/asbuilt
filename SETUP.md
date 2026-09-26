@@ -15,14 +15,14 @@ After creating a repo from this template, complete these steps.
 
 ## Search and replace
 
-- [ ] Replace `my-project` with your project name in `Cargo.toml`, `README.md`, and `CLAUDE.md`
-- [ ] Replace `OWNER/REPO` with your GitHub path in `Cargo.toml` and `CHANGELOG.md`
-- [ ] Replace `Your Name` with your name in `Cargo.toml`, and `Paul Adamson` in `LICENSE-MIT`
-- [ ] Decide about `skills/my-project`: ship it under your crate's name, or delete it (see "Agent skill" below)
-- [ ] Update `description`, `categories`, and `keywords` in `Cargo.toml`
-- [ ] Update `README.md` with your project description and usage
-- [ ] Update `CLAUDE.md` with project-specific context
-- [ ] Strip `<!-- Template users: ... -->` and similar meta-comments from `README.md` and `CLAUDE.md` after the placeholder substitutions
+- [x] Replace `my-project` with your project name in `Cargo.toml`, `README.md`, and `CLAUDE.md`
+- [x] Replace `OWNER/REPO` with your GitHub path in `Cargo.toml` and `CHANGELOG.md`
+- [x] Replace `Your Name` with your name in `Cargo.toml`, and `Paul Adamson` in `LICENSE-MIT`
+- [x] Decide about `skills/my-project`: ship it under your crate's name, or delete it (see "Agent skill" below). Shipped as `skills/asbuilt`
+- [x] Update `description`, `categories`, and `keywords` in `Cargo.toml`
+- [x] Update `README.md` with your project description and usage
+- [x] Update `CLAUDE.md` with project-specific context
+- [x] Strip `<!-- Template users: ... -->` and similar meta-comments from `README.md` and `CLAUDE.md` after the placeholder substitutions
 
 ## GitHub Settings (manual)
 
@@ -47,6 +47,7 @@ These settings cannot be configured via code and must be set in the GitHub UI.
   - `Test on ubuntu-latest`, `Test on macos-latest`, `Test on windows-latest`
   - `License & Dependency Check`, `Supply Chain Review`
   - `Mutation Testing (diff)`, `Skill version guard`
+  - `LikeC4 validate` — the `#[ignore]` tests that need `npx likec4`, ubuntu-only
 
   **Leave "require branches to be up to date" off** (`strict: false`).
   With it on, the second green Dependabot PR of the week is stale the moment
@@ -61,7 +62,7 @@ These settings cannot be configured via code and must be set in the GitHub UI.
   Either click through the UI, or apply via `gh api` (requires `admin:repo` scope — run `gh auth refresh -s admin:repo` first if needed):
 
   ```bash
-  gh api -X PUT repos/OWNER/REPO/branches/main/protection \
+  gh api -X PUT repos/padamson/asbuilt/branches/main/protection \
     --input - <<'JSON'
   {
     "required_status_checks": {
@@ -75,7 +76,8 @@ These settings cannot be configured via code and must be set in the GitHub UI.
         {"context": "License & Dependency Check"},
         {"context": "Supply Chain Review"},
         {"context": "Mutation Testing (diff)"},
-        {"context": "Skill version guard"}
+        {"context": "Skill version guard"},
+        {"context": "LikeC4 validate"}
       ]
     },
     "enforce_admins": false,
@@ -106,7 +108,7 @@ The release workflow publishes with a short-lived token minted from
 GitHub's OIDC identity for this repo and this workflow. There is no
 `CARGO_REGISTRY_TOKEN` secret to create, leak, or rotate.
 
-- [ ] On crates.io, for your crate: **Settings > Trusted Publishing > Add a GitHub publisher** with owner `OWNER`, repository `REPO`, workflow `release.yml`, and no environment (unless you add one below).
+- [ ] On crates.io, for each of `asbuilt-core`, `asbuilt-rust` and `asbuilt`: **Settings > Trusted Publishing > Add a GitHub publisher** with owner `padamson`, repository `asbuilt`, workflow `release.yml`, and no environment (unless you add one below). The workflow runs `cargo publish --workspace`, so all three need the entry.
 
   A crate that has never been published has no settings page yet. Publish
   the first version from your machine with a token scoped to
@@ -242,13 +244,13 @@ For each unvetted entry in a failing PR:
 
 ## Agent skill
 
-`skills/my-project/` is the shape of the skill this crate would ship:
-the directory `npx skills add OWNER/REPO` installs into a consumer's
+`skills/asbuilt/` is the shape of the skill this crate would ship:
+the directory `npx skills add padamson/asbuilt` installs into a consumer's
 repo, so an agent there knows how to use the crate. As scaffolded it is
 hidden from installers (`metadata.internal: true`) and nothing loads it.
 Decide now:
 
-- [ ] **Ship it.** Rename the directory to your crate name, remove the
+- [x] **Ship it.** Rename the directory to your crate name, remove the
   `internal` line from `SKILL.md`, write it for an agent that has never
   seen the crate, and fill `references/`. Every later content edit bumps
   `metadata.version`; the pre-commit hook and the `Skill version guard`
@@ -400,9 +402,9 @@ Only run this after every box above is checked and your first feature PR has mer
 
 1. Promote `## [Unreleased]` in `CHANGELOG.md` to `## [X.Y.Z] - YYYY-MM-DD` (use today's date); leave a fresh `## [Unreleased]` above it for future work.
 2. Update the compare links at the bottom of `CHANGELOG.md`:
-   - Change `[Unreleased]` to `https://github.com/OWNER/REPO/compare/vX.Y.Z...HEAD`.
-   - Add `[X.Y.Z]: https://github.com/OWNER/REPO/releases/tag/vX.Y.Z`.
-3. Update the version in `Cargo.toml` to `X.Y.Z`.
+   - Change `[Unreleased]` to `https://github.com/padamson/asbuilt/compare/vX.Y.Z...HEAD`.
+   - Add `[X.Y.Z]: https://github.com/padamson/asbuilt/releases/tag/vX.Y.Z`.
+3. Update the version in the root `Cargo.toml` to `X.Y.Z` (`workspace.package.version` and the two path-dep entries).
 4. Remove this file — you won't need it again: `git rm SETUP.md`.
 5. Commit, tag, push:
    ```bash

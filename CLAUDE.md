@@ -1,15 +1,31 @@
-# Project Name
+# asbuilt
 
-<!-- Replace with a one-line description of what this project does -->
+`asbuilt` keeps a LikeC4 architecture model that describes the code as
+it is: `asbuilt survey` generates the `.c4` model from a code base, and
+`asbuilt check` fails when the committed model no longer matches. The
+model is generated, never edited by hand, and the code carries no
+annotations for it. `README.md` has the longer description.
+
+## Crates
+
+- `crates/asbuilt-core`: the language-agnostic model, the LikeC4 emitter,
+  `asbuilt.toml` parsing, externals, and the drift check. Never spawns a
+  process.
+- `crates/asbuilt-rust`: the Rust front-end. `cargo metadata` for crates,
+  `syn` for references, pure resolution over an in-memory module tree.
+- `crates/asbuilt`: the CLI. The only crate that shells out to `npx likec4`
+  (validate, export, render), at the version pinned in its `lib.rs`.
+
+One version for the workspace, set in the root `Cargo.toml`.
 
 ## Development
 
 ```bash
-cargo build              # build
-cargo nextest run        # run tests
-cargo test --doc         # doc tests
-cargo clippy             # lint
-cargo fmt                # format
+cargo build --workspace
+cargo nextest run --workspace
+cargo test --doc --workspace
+cargo clippy --all-targets --all-features -- -D warnings
+cargo fmt --all
 cargo deny check         # advisories, licenses, bans, sources (one ignore list: deny.toml)
 cargo vet                # supply chain review
 ```
@@ -44,10 +60,10 @@ script is excluded as a whole in `.claude/settings.json`.
 
 ## Agent skills
 
-`skills/my-project/` is the skill this crate ships to consumers (see
-SETUP.md "Agent skill" to ship or delete it). Edits to it must bump
-`metadata.version` in its `SKILL.md`; the pre-commit hook and the
-`Skill version guard` CI job both enforce that.
+`skills/asbuilt/` is the skill this repo ships to consumers (`npx skills
+add padamson/asbuilt`). Edits to it must bump `metadata.version` in its
+`SKILL.md`; the pre-commit hook and the `Skill version guard` CI job both
+enforce that.
 
 Skills of tools this crate depends on are managed installs, not vendored:
 `skills-lock.json` (tracked) records each source and a content hash, and
@@ -110,12 +126,16 @@ step is not a no-op.
 
 ## Release process
 
-1. Update version in `Cargo.toml`
+1. Update `workspace.package.version` in the root `Cargo.toml`, and the
+   `version` on the `asbuilt-core` and `asbuilt-rust` entries under
+   `[workspace.dependencies]` in the same file (crates.io needs a version
+   on a path dep)
 2. Update `CHANGELOG.md`
 3. Commit: `git commit -m "Release vX.Y.Z"`
 4. Tag: `git tag vX.Y.Z`
 5. Push: `git push origin main --tags`
 
-The tag triggers CI which builds, tests, creates a GitHub Release, and publishes to crates.io.
+The tag triggers CI which builds, tests, creates a GitHub Release, and
+publishes all three crates to crates.io with `cargo publish --workspace`.
 
 <!-- Add custom skills under .claude/skills/ as needed -->

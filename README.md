@@ -1,39 +1,52 @@
-<!-- Replace "Project Name" with your project name. -->
-# Project Name
+# asbuilt
 
-<!-- Replace this line with a one-sentence description of your project. -->
+Keep a [LikeC4](https://likec4.dev) architecture model that describes the
+code as it is, the way as-built drawings describe a building as
+constructed rather than as designed.
 
-<!--
-Template users: after creating your repo from this template, see SETUP.md
-for the full onboarding checklist. At minimum, replace every occurrence of
-`my-project` and `Project Name` throughout this file, and update
-`Cargo.toml` (name, description, repository, authors, keywords, categories).
--->
+`asbuilt survey` reads a code base and writes the `.c4` model: crates as
+containers, modules as components, module-to-module references as
+relations labeled with the item names they reference, and the metadata
+that ties every element to a path in the tree. Nothing in the model is
+hand-written and nothing in the code is annotated. `asbuilt check` surveys
+again and fails when the committed model no longer matches, so it runs as
+a pre-commit hook and as a CI step. Validation, export and rendering are
+LikeC4's; `asbuilt` shells out to a pinned `npx likec4` for those and
+reimplements none of it.
+
+The core is language-agnostic, with one front-end per language. The Rust
+front-end (`asbuilt-rust`) ships first. It is implemented in Rust so it
+installs as one static binary that a pre-commit hook in any repo can
+call, and so later front-ends can use Rust-native parsers without a Node
+or Python runtime present.
+
+## Status
+
+The workspace is in place: `asbuilt` (the CLI), `asbuilt-core` (model,
+emitter, config, check) and `asbuilt-rust` (the Rust front-end). The
+survey itself is being written; `asbuilt --version` is the only command
+that does anything yet.
 
 ## Installation
 
-<!-- Replace `my-project` with your crate name. -->
 ```bash
-cargo install my-project
+cargo install asbuilt
 ```
 
 ## Usage
 
-<!-- Replace `my-project` with your binary name, or replace this section
-     entirely with library usage examples if this is a library crate. -->
 ```bash
-my-project --help
+asbuilt --help
 ```
+
+`asbuilt survey` and `asbuilt check` are documented here as they land.
 
 ## Agent skill
 
-<!-- Template users: keep this block if the crate ships a skill under
-     `skills/`; delete it (and the skills/ directory) if not. SETUP.md has
-     the checklist. -->
-[![skills.sh](https://skills.sh/b/OWNER/REPO)](https://skills.sh/OWNER/REPO)
+[![skills.sh](https://skills.sh/b/padamson/asbuilt)](https://skills.sh/padamson/asbuilt)
 
 ```bash
-npx skills add OWNER/REPO
+npx skills add padamson/asbuilt
 ```
 
 Works with [Claude Code](https://claude.ai/code),
@@ -49,12 +62,14 @@ See [CLAUDE.md](CLAUDE.md) for development commands.
 
 - [Rust toolchain](https://rustup.rs/) (MSRV: 1.88)
 - [prek](https://github.com/j178/prek) for pre-commit hooks: `cargo install prek && prek install`
+- Node (for `npx likec4`) and Graphviz `dot`, only for the tests and
+  commands that validate or render a model
 
 ### Build and test
 
 ```bash
-cargo build
-cargo nextest run
+cargo build --workspace
+cargo nextest run --workspace
 ```
 
 ## License

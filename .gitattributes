@@ -1,0 +1,5 @@
+# Generated models and the fixture snapshots they are compared against
+# are byte-exact. A Windows checkout with autocrlf on would turn them
+# into CRLF and fail every comparison.
+*.c4 text eol=lf
+crates/*/tests/fixtures/** text eol=lf

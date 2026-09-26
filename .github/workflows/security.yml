@@ -84,6 +84,10 @@ jobs:
     name: Semver Compatibility
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Never fires today: this workflow's push trigger lists branches
+    # only, and there is no published baseline to compare against before
+    # 0.1.0 ships. Moves into release.yml, gating the publish, once the
+    # first release is out.
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7

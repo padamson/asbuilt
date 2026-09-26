@@ -18,17 +18,19 @@ repos:
         name: Check for case conflicts
       - id: detect-private-key
         name: Detect private keys
-      # Byte-exact fixtures (golden files, recorded protocol traces,
-      # binary-ish text) must not be normalized by the whitespace hooks
-      # or the tests that compare against them go red. Exclude the
-      # fixture directories from all three:
-      #   exclude: ^tests/fixtures/
+      # Byte-exact fixtures (the crates the front-end tests survey and
+      # the `.c4` snapshots they are compared against) must not be
+      # normalized by the whitespace hooks or the tests that compare
+      # against them go red. All three exclude the fixture directories.
       - id: trailing-whitespace
         name: Trim trailing whitespace
+        exclude: ^crates/[^/]+/tests/fixtures/
       - id: end-of-file-fixer
         name: Fix end of files
+        exclude: ^crates/[^/]+/tests/fixtures/
       - id: mixed-line-ending
         name: Fix mixed line endings
+        exclude: ^crates/[^/]+/tests/fixtures/
 
   - repo: local
     hooks:

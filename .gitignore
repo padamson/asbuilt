@@ -5,6 +5,12 @@
 /mutants.out/
 /mutants.out.old/
 
+# Fixture crates are surveyed with `cargo metadata --no-deps`, which never
+# writes a lockfile; a stray `cargo build` inside one must not dirty the
+# tree either.
+crates/*/tests/fixtures/**/Cargo.lock
+crates/*/tests/fixtures/**/target/
+
 # Environment variables (secrets, config)
 .env
 
