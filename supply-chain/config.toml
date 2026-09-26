@@ -49,10 +49,6 @@ criteria = "safe-to-run"
 version = "0.12.1"
 criteria = "safe-to-run"
 
-[[exemptions.proc-macro2]]
-version = "1.0.107"
-criteria = "safe-to-deploy"
-
 [[exemptions.r-efi]]
 version = "6.0.0"
 criteria = "safe-to-run"
@@ -60,14 +56,6 @@ criteria = "safe-to-run"
 [[exemptions.rustix]]
 version = "1.1.5"
 criteria = "safe-to-run"
-
-[[exemptions.syn]]
-version = "3.0.6"
-criteria = "safe-to-deploy"
-
-[[exemptions.unicode-ident]]
-version = "1.0.26"
-criteria = "safe-to-deploy"
 
 [[exemptions.windows-sys]]
 version = "0.61.2"

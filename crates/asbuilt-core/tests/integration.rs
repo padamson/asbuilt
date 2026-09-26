@@ -1,9 +1,5 @@
-// Template placeholder. Replace with integration tests for your crate.
-//
-// Integration tests live in `tests/` and exercise your crate as an
-// external consumer would: only `pub` items are accessible. Each file
-// here is compiled as a separate binary. Shared fixtures go in
-// `tests/common/mod.rs`, once.
+// The crate as a consumer sees it: only `pub` items. Shared fixtures are
+// in `tests/common/mod.rs`, once.
 
 mod common;
 
@@ -11,23 +7,38 @@ use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
 
-use asbuilt_core::{DEFAULT_LARGE_THRESHOLD, Size, classify};
+use asbuilt_core::{Config, Error};
 use common::{PollError, Workspace, poll_until};
 
 #[test]
-fn a_file_with_enough_lines_classifies_as_large() {
+fn a_config_written_at_the_root_is_what_load_returns() {
     let ws = Workspace::new();
-    let lines = "x\n".repeat(DEFAULT_LARGE_THRESHOLD as usize);
-    let path = ws.write("items.txt", &lines);
+    ws.write("asbuilt.toml", "[output]\npath = \"arch/model.c4\"\n");
 
-    let count = std::fs::read_to_string(&path).unwrap().lines().count() as i64;
+    let config = Config::load(ws.root()).unwrap();
 
-    assert_eq!(
-        classify(count),
-        Ok(Size::Large),
-        "counted {count} lines in {}",
-        path.display()
-    );
+    assert_eq!(config.output.path, "arch/model.c4");
+}
+
+#[test]
+fn a_config_in_a_subdirectory_is_not_found_from_the_root() {
+    let ws = Workspace::new();
+    ws.write("sub/asbuilt.toml", "[output]\npath = \"never.c4\"\n");
+
+    let config = Config::load(ws.root()).unwrap();
+
+    assert_eq!(config, Config::default());
+}
+
+#[test]
+fn a_typo_in_the_output_table_names_the_file_it_is_in() {
+    let ws = Workspace::new();
+    let path = ws.write("asbuilt.toml", "[output]\npth = \"x\"\n");
+
+    match Config::load(ws.root()) {
+        Err(Error::Config { path: p, .. }) => assert_eq!(p, path),
+        other => panic!("expected Config error, got {other:?}"),
+    }
 }
 
 #[test]
@@ -66,8 +77,7 @@ fn a_probe_error_fails_the_poll_immediately() {
 // The shape for a test that needs something a fresh clone may not have
 // (a tool, a service, real time). It is gated, never skipped: a missing
 // precondition is a reason string on the attribute, and the lane that has
-// the precondition runs it with `--run-ignored only`. A test that
-// `return`s when the tool is missing reports a pass it did not earn.
+// the precondition runs it with `--run-ignored only`.
 #[test]
 #[ignore = "waits on real time; run with: cargo nextest run --run-ignored only -E 'test(/^live_/)'"]
 fn live_poll_sees_a_value_produced_on_another_thread() {
@@ -77,8 +87,6 @@ fn live_poll_sees_a_value_produced_on_another_thread() {
         tx.send(7).unwrap();
     });
 
-    // `Empty` is "not yet"; `Disconnected` means the producer died and the
-    // poll must fail now rather than wait out the deadline.
     let got = poll_until(
         "a value from the producer thread",
         Duration::from_secs(2),

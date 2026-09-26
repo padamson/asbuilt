@@ -11,6 +11,9 @@ categories = ["development-tools"]
 keywords = ["architecture", "c4", "likec4", "documentation"]
 
 [dependencies]
+serde.workspace = true
+thiserror.workspace = true
+toml.workspace = true
 
 [dev-dependencies]
 tempfile.workspace = true
