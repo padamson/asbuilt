@@ -1,0 +1,35 @@
+name: Dependabot auto-merge
+
+# Dependabot opens PRs but never merges them. This enables auto-merge on
+# every Dependabot PR so it merges once the required status checks pass.
+# Applies to all update types (major, minor, patch); the status checks are
+# the gate, so a bump that breaks the build simply won't merge.
+#
+# The gate is only as wide as main's branch protection, and it is the whole
+# gate: merges made with GITHUB_TOKEN do not trigger workflows, so the push
+# run on main never fires for these merge commits. Every job that should
+# block a bump must be a required status check (SETUP.md lists them), and
+# "require branches to be up to date" stays off so green PRs merge without
+# rebasing onto each sibling that merged first.
+#
+# Private repos on a free plan have no branch protection and no native
+# auto-merge; use the self-gating variant from rust-service-template there.
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Enable auto-merge
+    runs-on: ubuntu-latest
+    # Only Dependabot's own PRs, never anyone else's.
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Enable auto-merge (squash)
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
