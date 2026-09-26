@@ -6,14 +6,18 @@
 //! the item names it references. The stages, one module each:
 //! [`discover`] finds crates and targets with `cargo metadata`,
 //! [`walk`] follows `mod` declarations from each target root into a
-//! module tree, and the reference collection and resolution that turn
-//! the tree into relations follow in later commits. Only the first two
-//! touch the filesystem, through [`source::FileSource`].
+//! module tree, [`visit`] collects what each file references,
+//! [`resolve`] turns those paths into modules and items, and
+//! [`aggregate`] makes relations of them. Only the first two touch the
+//! filesystem, through [`source::FileSource`].
 
+pub mod aggregate;
 pub mod config;
 pub mod discover;
 pub mod error;
+pub mod resolve;
 pub mod source;
+pub mod visit;
 pub mod walk;
 
 use std::path::Path;
