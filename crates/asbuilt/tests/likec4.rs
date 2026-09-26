@@ -137,3 +137,38 @@ fn likec4_validate_rejects_a_relation_to_an_unknown_element() {
         other => panic!("expected Failed, got {other:?}"),
     }
 }
+
+/// Every fixture snapshot, one directory at a time (likec4 merges every
+/// `.c4` under a path into one model). The count is asserted so an
+/// empty glob cannot pass.
+#[test]
+#[ignore = "needs npx (Node) and network; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_validate_accepts_every_fixture_snapshot() {
+    let fixtures =
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../asbuilt-rust/tests/fixtures");
+    let ws = Workspace::new();
+    let mut validated = 0;
+    let mut cases: Vec<_> = std::fs::read_dir(&fixtures)
+        .unwrap()
+        .map(|e| e.unwrap().path())
+        .collect();
+    cases.sort();
+    for case in &cases {
+        let snapshot = case.join("expected.c4");
+        if !snapshot.is_file() {
+            continue;
+        }
+        let name = case.file_name().unwrap().to_str().unwrap();
+        let text = std::fs::read_to_string(&snapshot).unwrap();
+        let path = ws.write(&format!("{name}/model.c4"), &text);
+        let result = likec4::validate(path.parent().unwrap());
+        assert!(result.is_ok(), "{name}: {}", result.unwrap_err());
+        validated += 1;
+    }
+    assert_eq!(
+        validated,
+        cases.len(),
+        "every fixture directory must carry an expected.c4"
+    );
+    assert!(validated > 0);
+}

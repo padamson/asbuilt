@@ -1,0 +1,2 @@
+[rust]
+extra_manifests = ["standalone/Cargo.toml"]

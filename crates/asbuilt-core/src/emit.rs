@@ -210,7 +210,12 @@ fn emit_element(
             quote(path)
         )
         .unwrap();
-        writeln!(out, "{inner}link {}{path}", options.link_prefix).unwrap();
+        // The surveyed root itself has no link: likec4 rejects a link
+        // that is only a prefix (`./`), and the file's own directory
+        // needs no link to be found.
+        if path != "." {
+            writeln!(out, "{inner}link {}{path}", options.link_prefix).unwrap();
+        }
     }
     for child in children {
         emit_element(out, model, child, options, depth + 1);
@@ -520,6 +525,22 @@ mod tests {
         let text = emit(&model, &options());
         assert!(!text.contains('\r'), "{text:?}");
         assert!(text.contains("description 'line\nnext'"), "{text}");
+    }
+
+    #[test]
+    fn the_root_path_keeps_its_metadata_but_has_no_link() {
+        let mut model = sample();
+        model
+            .elements
+            .iter_mut()
+            .find(|e| e.id == ["app"])
+            .unwrap()
+            .path = Some(".".into());
+        let text = emit(&model, &options());
+        let app_block = text.split("  app = container 'app' {").nth(1).unwrap();
+        let head: String = app_block.lines().take(4).collect::<Vec<_>>().join("\n");
+        assert!(head.contains("path '.'"), "{head}");
+        assert!(!head.contains("link"), "{head}");
     }
 
     #[test]

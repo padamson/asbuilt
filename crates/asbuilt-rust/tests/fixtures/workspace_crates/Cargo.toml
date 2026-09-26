@@ -1,0 +1,3 @@
+[workspace]
+members = ["core-lib", "unused-lib", "consumer", "e2e"]
+resolver = "2"

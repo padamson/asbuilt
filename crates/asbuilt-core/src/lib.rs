@@ -12,9 +12,11 @@ pub mod config;
 pub mod emit;
 pub mod error;
 pub mod externals;
+pub mod frontend;
 pub mod model;
 
 pub use config::{Config, External, ExternalRelation, OutputConfig};
 pub use emit::{EmitOptions, emit};
 pub use error::{Error, Result};
+pub use frontend::{Frontend, survey};
 pub use model::{Deployment, Element, ElementKind, Id, Model, Relation, RelationKind};
