@@ -33,10 +33,14 @@ slow-timeout = { period = "120s", terminate-after = 2 }
 # serialize in a group. An in-process mutex serializes nothing under
 # nextest's process-per-test model.
 #
-# [test-groups]
-# database = { max-threads = 1 }
-#
-# [[profile.default.overrides]]
-# filter = 'test(/postgres_/)'
-# test-group = 'database'
-# slow-timeout = { period = "180s", terminate-after = 1 }
+# The `site_` tests in crates/site-e2e (run with `--manifest-path` and
+# `--config-file .config/nextest.toml`) each launch a Chromium; two at a
+# time keeps the runner responsive, and a browser run needs longer than
+# a unit test before it counts as hung.
+[test-groups]
+browser = { max-threads = 2 }
+
+[[profile.default.overrides]]
+filter = 'test(/^site_/)'
+test-group = 'browser'
+slow-timeout = { period = "120s", terminate-after = 2 }

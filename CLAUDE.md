@@ -32,6 +32,12 @@ survey and commit `model.c4` with the change. Never edit it by hand.
   from the workspace with its own `Cargo.lock`; see its README for the
   per-manifest commands. Surveyed into this repo's model via
   `[rust] extra_manifests`.
+- `crates/site-e2e`: the deploy gate, also excluded with its own
+  `Cargo.lock`: `site_` tests that serve `crates/site/dist` and drive it
+  with playwright-rs. They are `#[ignore]`d (a built site and Chromium);
+  the command is at the top of `tests/landing_page.rs`. Chromium cannot
+  launch inside the Claude Code sandbox (a Seatbelt Mach-port denial), so
+  run them from a plain terminal or let the Pages job prove them.
 
 One version for the workspace, set in the root `Cargo.toml`.
 
@@ -81,6 +87,10 @@ script is excluded as a whole in `.claude/settings.json`.
 add padamson/asbuilt`). Edits to it must bump `metadata.version` in its
 `SKILL.md`; the pre-commit hook and the `Skill version guard` CI job both
 enforce that.
+
+`crates/site-e2e` consumes playwright-rs, whose skill is
+`playwright-rs-usage`: `npx skills add padamson/playwright-rust -a
+claude-code -y` from a plain terminal, once per clone.
 
 Skills of tools this crate depends on are managed installs, not vendored:
 `skills-lock.json` (tracked) records each source and a content hash, and

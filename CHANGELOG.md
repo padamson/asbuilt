@@ -33,6 +33,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 - `crates/site`: the landing page at padamson.github.io/asbuilt, a Leptos CSR app built by Trunk, excluded from the workspace with its own lockfile; embeds this repo's own context view and links the generated architecture docs; a version switcher for the `/asbuilt/dev/` and `/asbuilt/vX.Y.Z/` snapshots. The site crate is surveyed too, through `[rust] extra_manifests`
 
+- `crates/site-e2e`: the deploy gate, excluded from the workspace with its own lockfile; four `site_` tests drive the Trunk-built page with playwright-rs 0.19 (the landing page as advertised, with trace, HAR, ARIA-snapshot and screenshot receipts; the version switcher against a stubbed manifest under the site prefix; the dev build's unreleased state; the deployed snapshot under its base path with every response checked). Gated with `#[ignore]`; a missing `dist/` fails, it does not skip. The e2e crate and the Chromium it drives are in this repo's model too
+
 ### Fixed
 - A bare name brought in by a glob import (`use crate::a::*; Thing::new()`) now resolves; modules that glob-import a prelude were missing from the graph
 - `#[path]` on a `mod` inside an inline module block is relative to the inline module's directory, as rustc requires

@@ -5,7 +5,7 @@
 views {
   view context {
     title 'asbuilt: the three crates and what they run'
-    include asbuilt, asbuilt_core, asbuilt_rust, asbuilt_site, cargo, likec4, graphviz
+    include asbuilt, asbuilt_core, asbuilt_rust, asbuilt_site, asbuilt_site_e2e, cargo, likec4, graphviz, chromium
     autoLayout LeftRight
   }
 

@@ -11,7 +11,7 @@ source_url = "https://github.com/padamson/asbuilt/blob/main/"
 [rust]
 # The landing site crates are excluded from the workspace (wasm32, big
 # trees); they are still part of the architecture.
-extra_manifests = ["crates/site/Cargo.toml"]
+extra_manifests = ["crates/site/Cargo.toml", "crates/site-e2e/Cargo.toml"]
 
 [[externals]]
 id = "cargo"
@@ -45,3 +45,14 @@ description = "Renders the Graphviz files LikeC4 generates to SVG."
 [[externals.relations]]
 from = "asbuilt.likec4"
 title = "renders with"
+
+[[externals]]
+id = "chromium"
+kind = "process"
+title = "Chromium"
+technology = "Playwright driver, via playwright-rs"
+description = "The browser the site's end-to-end tests drive against the built landing page."
+
+[[externals.relations]]
+from = "asbuilt_site_e2e.tests"
+title = "drives"

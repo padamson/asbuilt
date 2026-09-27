@@ -1,0 +1,25 @@
+# Standalone (excluded from the root workspace): a tests-only crate that
+# serves the Trunk-built site and drives it with playwright-rs. It is the
+# deploy gate in pages.yml. Kept out of `members` so the publishable crates'
+# CI and supply-chain graph are untouched; its own `Cargo.lock` is committed
+# and the empty `[workspace]` table makes it a root in its own right.
+[package]
+name = "asbuilt-site-e2e"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+license = "MIT OR Apache-2.0"
+authors = ["Paul Adamson"]
+repository = "https://github.com/padamson/asbuilt"
+publish = false
+
+[workspace]
+
+[dev-dependencies]
+# The binding under dogfood; its build script assembles the Playwright
+# driver into the user cache (PLAYWRIGHT_SKIP_DRIVER_DOWNLOAD=1 on jobs
+# that only compile).
+playwright-rs = "0.19"
+tokio = { version = "1", features = ["full"] }
+axum = "0.8"
+tower-http = { version = "0.7", features = ["fs"] }

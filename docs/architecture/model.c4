@@ -352,10 +352,29 @@ version switcher needs to know that: every other asset path is relative.'
       link ../../crates/site/src/version.rs
     }
   }
+  asbuilt_site_e2e = container 'asbuilt-site-e2e' {
+    technology 'test crate'
+    metadata {
+      path 'crates/site-e2e'
+    }
+    link ../../crates/site-e2e
+    tests = component 'tests' {
+      #tests
+      metadata {
+        path 'crates/site-e2e/tests'
+      }
+      link ../../crates/site-e2e/tests
+    }
+  }
   cargo = process 'cargo metadata' {
     #external
     description 'Lists the workspace\'s packages and targets; `--no-deps --offline`, so no lockfile is touched.'
     technology 'cargo subprocess'
+  }
+  chromium = process 'Chromium' {
+    #external
+    description 'The browser the site\'s end-to-end tests drive against the built landing page.'
+    technology 'Playwright driver, via playwright-rs'
   }
   graphviz = process 'Graphviz dot' {
     #external
@@ -446,12 +465,13 @@ version switcher needs to know that: every other asset path is relative.'
   asbuilt_site.components.install -[uses]-> asbuilt_site.snippets 'snippets'
   asbuilt_site.components.install -[calls]-> asbuilt_site.version 'is_dev'
   asbuilt_site.components.version_switcher -[calls]-> asbuilt_site.version 'SITE_VERSION, is_dev, manifest_url, snapshot_url'
+  asbuilt_site_e2e.tests -[uses]-> chromium 'drives'
 }
 
 views {
   view index {
     title 'Overview'
-    include asbuilt, asbuilt_core, asbuilt_rust, asbuilt_site, cargo, graphviz, likec4
+    include asbuilt, asbuilt_core, asbuilt_rust, asbuilt_site, asbuilt_site_e2e, cargo, chromium, graphviz, likec4
     autoLayout LeftRight
   }
 
@@ -481,6 +501,12 @@ views {
 
   view view_asbuilt_site_components of asbuilt_site.components {
     title 'asbuilt_site.components'
+    include *
+    autoLayout TopBottom
+  }
+
+  view view_asbuilt_site_e2e of asbuilt_site_e2e {
+    title 'asbuilt_site_e2e'
     include *
     autoLayout TopBottom
   }
