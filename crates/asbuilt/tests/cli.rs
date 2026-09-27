@@ -281,3 +281,233 @@ fn render_without_npx_exits_two_and_writes_no_svg() {
     assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
     assert!(!ws.root().join("docs/architecture/views/index.svg").exists());
 }
+
+// `asbuilt docs` without Node: `--no-render` reuses whatever SVGs exist
+// and the pages are proven here; the `likec4_docs_*` test covers the
+// rendering path.
+
+fn docs_run(ws: &Workspace, extra: &[&str]) -> Output {
+    let mut args = vec!["docs", ws.root().to_str().unwrap(), "--no-render"];
+    args.extend_from_slice(extra);
+    run(&args)
+}
+
+#[test]
+fn docs_no_render_writes_the_tree_with_placeholders_and_names_the_missing_views() {
+    let ws = scratch_copy();
+
+    let out = docs_run(&ws, &["-o", "out"]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    let root = ws.root().join("out");
+    for file in [
+        "index.html",
+        "style.css",
+        "containers/app.html",
+        "containers/e2e.html",
+    ] {
+        assert!(root.join(file).is_file(), "missing {file}");
+    }
+    assert!(!root.join("views.html").exists());
+    let stderr = text(&out.stderr);
+    for view in ["index", "view_app", "view_e2e"] {
+        assert!(
+            stderr.contains(&format!("no SVG for view {view} (views/{view}.svg)")),
+            "{stderr}"
+        );
+    }
+    assert!(stderr.contains("wrote 4 pages to"), "{stderr}");
+    let index = std::fs::read_to_string(root.join("index.html")).unwrap();
+    assert!(
+        index.contains("No diagram for <code>index</code>"),
+        "{index}"
+    );
+    assert!(index.contains("href=\"containers/app.html\""), "{index}");
+    assert!(index.contains("<tr id=\"node_driver\">"), "{index}");
+}
+
+#[test]
+fn docs_no_render_copies_the_svgs_render_left_and_not_the_dot_files() {
+    let ws = scratch_copy();
+    ws.write(
+        "docs/architecture/views/index.svg",
+        "<svg xmlns=\"http://www.w3.org/2000/svg\"/>",
+    );
+    ws.write("docs/architecture/views/index.dot", "digraph {}");
+
+    let out = docs_run(&ws, &["-o", "out"]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    let copied = ws.root().join("out/views/index.svg");
+    assert_eq!(
+        std::fs::read_to_string(&copied).unwrap(),
+        "<svg xmlns=\"http://www.w3.org/2000/svg\"/>"
+    );
+    assert!(!ws.root().join("out/views/index.dot").exists());
+    let stderr = text(&out.stderr);
+    assert!(!stderr.contains("no SVG for view index "), "{stderr}");
+    assert!(stderr.contains("no SVG for view view_app "), "{stderr}");
+    let index = std::fs::read_to_string(ws.root().join("out/index.html")).unwrap();
+    assert!(index.contains("<img src=\"views/index.svg\""), "{index}");
+}
+
+#[test]
+fn docs_into_the_model_directory_keeps_an_existing_svg_intact() {
+    let ws = scratch_copy();
+    let svg = ws.write("docs/architecture/views/index.svg", "<svg/>");
+
+    let out = docs_run(&ws, &["-o", "docs/architecture"]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    assert_eq!(std::fs::read_to_string(&svg).unwrap(), "<svg/>");
+    assert!(ws.root().join("docs/architecture/index.html").is_file());
+}
+
+#[test]
+fn docs_defaults_to_site_under_the_model_directory() {
+    let ws = scratch_copy();
+
+    let out = docs_run(&ws, &[]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    assert!(
+        ws.root()
+            .join("docs/architecture/site/index.html")
+            .is_file()
+    );
+    assert!(
+        ws.root()
+            .join("docs/architecture/site/containers/app.html")
+            .is_file()
+    );
+}
+
+#[test]
+fn docs_on_a_stale_model_exits_one_and_writes_nothing() {
+    let ws = scratch_copy();
+    ws.write("app/src/extra.rs", "");
+    let lib = ws.root().join("app/src/lib.rs");
+    let mut src = std::fs::read_to_string(&lib).unwrap();
+    src.push_str("pub mod extra;\n");
+    std::fs::write(&lib, src).unwrap();
+
+    let out = docs_run(&ws, &["-o", "out"]);
+
+    assert_eq!(out.status.code(), Some(1), "{}", text(&out.stderr));
+    assert!(text(&out.stderr).contains("stale"), "{}", text(&out.stderr));
+    assert!(!ws.root().join("out").exists());
+}
+
+#[test]
+fn docs_without_a_committed_model_exits_two_naming_the_path() {
+    let ws = scratch_copy();
+    std::fs::remove_file(ws.root().join("docs/architecture/model.c4")).unwrap();
+
+    let out = docs_run(&ws, &["-o", "out"]);
+
+    assert_eq!(out.status.code(), Some(2));
+    assert!(
+        text(&out.stderr).contains("docs/architecture/model.c4"),
+        "{}",
+        text(&out.stderr)
+    );
+}
+
+#[test]
+fn docs_with_a_failing_npx_exits_two_and_writes_nothing() {
+    // A fake `npx` first on the PATH: the survey (cargo) still works, the
+    // render does not, and nothing may be written.
+    let ws = scratch_copy();
+    let bin = Workspace::new();
+    let fake = if cfg!(windows) { "npx.cmd" } else { "npx" };
+    let script = if cfg!(windows) {
+        "@echo off\r\nexit /b 1\r\n"
+    } else {
+        "#!/bin/sh\nexit 1\n"
+    };
+    let fake_path = bin.write(fake, script);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        std::fs::set_permissions(&fake_path, std::fs::Permissions::from_mode(0o755)).unwrap();
+    }
+    let path = format!(
+        "{}{}{}",
+        bin.root().display(),
+        if cfg!(windows) { ";" } else { ":" },
+        std::env::var("PATH").unwrap_or_default()
+    );
+
+    let out = asbuilt()
+        .args(["docs", ws.root().to_str().unwrap(), "-o", "out"])
+        .env("PATH", path)
+        .output()
+        .unwrap();
+
+    assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
+    assert!(text(&out.stderr).contains("npx"), "{}", text(&out.stderr));
+    assert!(!ws.root().join("out").exists());
+}
+
+#[test]
+fn docs_title_and_source_url_come_from_flags_over_the_config_over_the_root_name() {
+    let ws = scratch_copy();
+    let config = ws.root().join("asbuilt.toml");
+    let mut toml = std::fs::read_to_string(&config).unwrap();
+    toml.push_str("\n[docs]\ntitle = \"From config\"\nsource_url = \"https://cfg/\"\n");
+    std::fs::write(&config, toml).unwrap();
+
+    let flagged = docs_run(
+        &ws,
+        &[
+            "-o",
+            "flagged",
+            "--title",
+            "From flag",
+            "--source-url",
+            "https://flag/",
+        ],
+    );
+    assert_eq!(flagged.status.code(), Some(0), "{}", text(&flagged.stderr));
+    let app = std::fs::read_to_string(ws.root().join("flagged/containers/app.html")).unwrap();
+    assert!(app.contains("<h1>app</h1>"), "{app}");
+    assert!(
+        app.contains("href=\"https://flag/app/src/server.rs\""),
+        "{app}"
+    );
+    assert!(app.contains("<title>app · From flag</title>"), "{app}");
+
+    let configured = docs_run(&ws, &["-o", "configured"]);
+    assert_eq!(configured.status.code(), Some(0));
+    let index = std::fs::read_to_string(ws.root().join("configured/index.html")).unwrap();
+    assert!(index.contains("<h1>From config</h1>"), "{index}");
+    let app = std::fs::read_to_string(ws.root().join("configured/containers/app.html")).unwrap();
+    assert!(
+        app.contains("href=\"https://cfg/app/src/server.rs\""),
+        "{app}"
+    );
+
+    std::fs::write(
+        &config,
+        std::fs::read_to_string(&config)
+            .unwrap()
+            .split("[docs]")
+            .next()
+            .unwrap(),
+    )
+    .unwrap();
+    let bare = docs_run(&ws, &["-o", "bare"]);
+    assert_eq!(bare.status.code(), Some(0));
+    let index = std::fs::read_to_string(ws.root().join("bare/index.html")).unwrap();
+    let root_name = ws
+        .root()
+        .canonicalize()
+        .unwrap()
+        .file_name()
+        .unwrap()
+        .to_string_lossy()
+        .into_owned();
+    assert!(index.contains(&format!("<h1>{root_name}</h1>")), "{index}");
+    let app = std::fs::read_to_string(ws.root().join("bare/containers/app.html")).unwrap();
+    assert!(!app.contains("href=\"https://"), "{app}");
+}

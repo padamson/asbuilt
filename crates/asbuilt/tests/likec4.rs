@@ -286,3 +286,32 @@ fn likec4_the_cli_validate_exits_one_on_a_broken_curated_view() {
         "{stderr}"
     );
 }
+
+#[test]
+#[ignore = "needs npx (Node), network and Graphviz dot; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_docs_renders_every_view_and_embeds_them() {
+    let ws = consumer_copy();
+    let out = std::process::Command::new(env!("CARGO_BIN_EXE_asbuilt"))
+        .args(["docs", ws.root().to_str().unwrap(), "-o", "out"])
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        out.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    assert!(!stderr.contains("no SVG"), "{stderr}");
+    for view in ["index", "view_app", "view_e2e"] {
+        assert!(
+            ws.root().join(format!("out/views/{view}.svg")).is_file(),
+            "{view}.svg"
+        );
+    }
+    let index = std::fs::read_to_string(ws.root().join("out/index.html")).unwrap();
+    assert!(index.contains("<img src=\"views/index.svg\""), "{index}");
+    let app = std::fs::read_to_string(ws.root().join("out/containers/app.html")).unwrap();
+    assert!(app.contains("<img src=\"../views/view_app.svg\""), "{app}");
+}

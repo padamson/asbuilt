@@ -28,6 +28,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - README usage, configuration and hook sections; CLAUDE.md sections on fixtures and the `likec4_` tests
 - asbuilt surveys itself: `asbuilt.toml` at the root (externals: cargo, the LikeC4 CLI, Graphviz), `docs/architecture/model.c4`, curated views in `docs/architecture/views.c4`, an `asbuilt-check` pre-commit hook, an `asbuilt check` step on every CI platform and an `asbuilt validate` step on the LikeC4 job
 
+- `asbuilt docs [root] [-o DIR] [--no-render] [--title] [--source-url]`: a static HTML documentation tree generated natively from the survey (index, one page per container with its modules, relations both ways) embedding the SVGs `render` produced; refuses to write when the committed model is stale; `[docs] title` and `source_url` in `asbuilt.toml`; `--no-render` for machines without Node
+- `asbuilt_core::docs::generate`, the pure generator behind it, with pulldown-cmark for the description paragraphs; `emit::view_ids` exposes the view names it shares with the emitter
+
 ### Fixed
 - A bare name brought in by a glob import (`use crate::a::*; Thing::new()`) now resolves; modules that glob-import a prelude were missing from the graph
 - `#[path]` on a `mod` inside an inline module block is relative to the inline module's directory, as rustc requires

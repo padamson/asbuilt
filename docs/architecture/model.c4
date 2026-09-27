@@ -25,8 +25,9 @@ model {
     asbuilt = component 'asbuilt' {
       #bin
       description 'The `asbuilt` command line: `survey` writes the model, `check` fails
-when the committed one is stale, and `validate`, `export json` and
-`render` hand the model to the pinned LikeC4.'
+when the committed one is stale, `docs` writes the documentation
+tree, and `validate`, `export json` and `render` hand the model to
+the pinned LikeC4.'
       metadata {
         path 'crates/asbuilt/src/main.rs'
       }
@@ -251,10 +252,11 @@ directory listing, so discovery order is out of the picture.'
     technology 'Node.js via npx, pinned version'
   }
 
-  asbuilt.asbuilt -[calls]-> asbuilt.commands 'EXIT_ERROR, check, commands, export_json, render, survey, validate'
+  asbuilt.asbuilt -[calls]-> asbuilt.commands 'EXIT_ERROR, check, commands, docs, export_json, render, survey, validate'
   asbuilt.commands -[calls]-> asbuilt.likec4 'LikeC4Error, export_json, likec4, render, validate'
   asbuilt.commands -[calls]-> asbuilt_core.check 'Outcome, compare'
   asbuilt.commands -[calls]-> asbuilt_core.config 'Config'
+  asbuilt.commands -[constructs]-> asbuilt_core.docs 'DocsOptions, generate'
   asbuilt.commands -[calls]-> asbuilt_core.emit 'emit'
   asbuilt.commands -[names]-> asbuilt_core.error 'Error'
   asbuilt.commands -[calls]-> asbuilt_core.frontend 'survey'

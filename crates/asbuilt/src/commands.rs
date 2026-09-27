@@ -6,6 +6,9 @@
 use std::io::{self, Write};
 use std::path::{Component, Path, PathBuf};
 
+use std::collections::BTreeSet;
+
+use asbuilt_core::docs::{DocsOptions, generate};
 use asbuilt_core::{Config, EmitOptions, Model, Outcome, compare, emit};
 use asbuilt_rust::RustFrontend;
 
@@ -208,6 +211,39 @@ pub fn survey(
     Ok(EXIT_OK)
 }
 
+/// A fresh survey of `root` and how it compares with the committed
+/// model: the shared half of `check` and `docs`. Errors name the
+/// root-relative label, which is what the user configured and reads the
+/// same on every platform.
+fn drift(
+    root: &Path,
+    config: &Config,
+    target: &OutputTarget,
+) -> Result<(Model, Outcome), CliError> {
+    let rel = &target.label;
+    let committed = std::fs::read_to_string(&target.path).map_err(|source| {
+        if source.kind() == io::ErrorKind::NotFound {
+            CliError::NoModel {
+                path: PathBuf::from(rel),
+            }
+        } else {
+            CliError::Read {
+                path: PathBuf::from(rel),
+                source,
+            }
+        }
+    })?;
+    let model = survey_model(root, config)?;
+    let fresh = emit(
+        &model,
+        &EmitOptions {
+            link_prefix: target.link_prefix.clone(),
+        },
+    );
+    let outcome = compare(&committed, &fresh, rel);
+    Ok((model, outcome))
+}
+
 /// Survey in memory and compare with the committed model. The diff, if
 /// any, goes to `out`; the verdict line goes to `err`.
 pub fn check(
@@ -218,29 +254,8 @@ pub fn check(
 ) -> Result<i32, CliError> {
     let config = load_config(root, config_path)?;
     let target = output_target(root, &config, None)?;
-    let (rel, path) = (target.label, target.path);
-    // Errors name the root-relative label, which is what the user
-    // configured and reads the same on every platform.
-    let committed = std::fs::read_to_string(&path).map_err(|source| {
-        if source.kind() == io::ErrorKind::NotFound {
-            CliError::NoModel {
-                path: PathBuf::from(&rel),
-            }
-        } else {
-            CliError::Read {
-                path: PathBuf::from(&rel),
-                source,
-            }
-        }
-    })?;
-    let model = survey_model(root, &config)?;
-    let fresh = emit(
-        &model,
-        &EmitOptions {
-            link_prefix: target.link_prefix,
-        },
-    );
-    match compare(&committed, &fresh, &rel) {
+    let rel = target.label.clone();
+    match drift(root, &config, &target)?.1 {
         Outcome::Current => {
             let _ = writeln!(out, "{rel} is current");
             Ok(EXIT_OK)
@@ -343,6 +358,117 @@ pub fn render(
     for svg in likec4::render(&dir, &out_dir)? {
         let _ = writeln!(err, "wrote {}", svg.display());
     }
+    Ok(EXIT_OK)
+}
+
+/// File stems of the `.svg` files directly under `dir`; empty when the
+/// directory does not exist.
+pub fn svg_stems(dir: &Path) -> BTreeSet<String> {
+    let Ok(entries) = std::fs::read_dir(dir) else {
+        return BTreeSet::new();
+    };
+    entries
+        .filter_map(|entry| entry.ok().map(|e| e.path()))
+        .filter(|p| p.extension().is_some_and(|e| e == "svg"))
+        .filter_map(|p| p.file_stem().map(|s| s.to_string_lossy().into_owned()))
+        .collect()
+}
+
+/// `rel`, a `/`-separated page path, under `dir` with the platform's
+/// own separators.
+fn page_path(dir: &Path, rel: &str) -> PathBuf {
+    let mut path = dir.to_path_buf();
+    for segment in rel.split('/') {
+        path.push(segment);
+    }
+    path
+}
+
+/// Write the documentation tree: survey, refuse to write when the
+/// committed model is stale (the SVGs come from it, the pages from the
+/// survey), render the views unless told not to, generate, write, copy
+/// the SVGs beside the pages, and report the views that have none.
+#[allow(clippy::too_many_arguments)]
+pub fn docs(
+    root: &Path,
+    config_path: Option<&Path>,
+    override_path: Option<&Path>,
+    no_render: bool,
+    title: Option<&str>,
+    source_url: Option<&str>,
+    err: &mut dyn Write,
+) -> Result<i32, CliError> {
+    let config = load_config(root, config_path)?;
+    let target = output_target(root, &config, None)?;
+    let (model, outcome) = drift(root, &config, &target)?;
+    if let Outcome::Drift(_) = outcome {
+        let _ = writeln!(
+            err,
+            "asbuilt: {} is stale; run `asbuilt survey` and commit the result before `asbuilt docs`",
+            target.label
+        );
+        return Ok(EXIT_DRIFT);
+    }
+    let model_dir = target
+        .path
+        .parent()
+        .map(Path::to_path_buf)
+        .unwrap_or_else(|| target.path.clone());
+    let svg_dir = model_dir.join("views");
+    if !no_render {
+        likec4::render(&model_dir, &svg_dir)?;
+    }
+    let root_name = canonical_root(root)?
+        .file_name()
+        .map(|n| n.to_string_lossy().into_owned())
+        .unwrap_or_else(|| "asbuilt".to_string());
+    let options = DocsOptions {
+        title: title
+            .map(str::to_string)
+            .or_else(|| config.docs.title.clone())
+            .unwrap_or(root_name),
+        source_url: source_url
+            .map(str::to_string)
+            .or_else(|| config.docs.source_url.clone()),
+        views: svg_stems(&svg_dir),
+    };
+    let site = generate(&model, &options);
+
+    let out = under_model_dir(root, &model_dir, override_path, "site");
+    for (rel, contents) in &site.pages {
+        let path = page_path(&out, rel);
+        if let Some(parent) = path.parent() {
+            std::fs::create_dir_all(parent).map_err(|source| CliError::Write {
+                path: parent.to_path_buf(),
+                source,
+            })?;
+        }
+        std::fs::write(&path, contents).map_err(|source| CliError::Write { path, source })?;
+    }
+    let out_views = out.join("views");
+    let same_dir = svg_dir.canonicalize().ok() == out_views.canonicalize().ok();
+    if svg_dir.is_dir() && !same_dir {
+        std::fs::create_dir_all(&out_views).map_err(|source| CliError::Write {
+            path: out_views.clone(),
+            source,
+        })?;
+        for stem in &options.views {
+            let name = format!("{stem}.svg");
+            std::fs::copy(svg_dir.join(&name), out_views.join(&name)).map_err(|source| {
+                CliError::Write {
+                    path: out_views.join(&name),
+                    source,
+                }
+            })?;
+        }
+    }
+    for view in &site.missing_views {
+        let _ = writeln!(
+            err,
+            "asbuilt: no SVG for view {view} (views/{view}.svg); run `asbuilt render`"
+        );
+    }
+    let _ = writeln!(err, "wrote {} pages to {}", site.pages.len(), out.display());
     Ok(EXIT_OK)
 }
 
@@ -496,6 +622,25 @@ mod tests {
         assert_eq!(
             under_model_dir(root, dir, Some(Path::new("/abs/v")), "views"),
             PathBuf::from("/abs/v")
+        );
+    }
+
+    #[test]
+    fn svg_stems_are_the_svg_files_only_and_an_absent_directory_is_empty() {
+        let dir = tempfile::tempdir().unwrap();
+        for name in ["b.svg", "a.svg", "a.dot", "notes.txt"] {
+            std::fs::write(dir.path().join(name), "").unwrap();
+        }
+        let stems: Vec<String> = svg_stems(dir.path()).into_iter().collect();
+        assert_eq!(stems, ["a", "b"]);
+        assert!(svg_stems(&dir.path().join("nowhere")).is_empty());
+    }
+
+    #[test]
+    fn a_page_path_is_joined_segment_by_segment() {
+        assert_eq!(
+            page_path(Path::new("out"), "containers/app.html"),
+            Path::new("out").join("containers").join("app.html")
         );
     }
 

@@ -24,7 +24,9 @@ survey and commit `model.c4` with the change. Never edit it by hand.
 - `crates/asbuilt-rust`: the Rust front-end. `cargo metadata` for crates,
   `syn` for references, pure resolution over an in-memory module tree.
 - `crates/asbuilt`: the CLI. The only crate that shells out to `npx likec4`
-  (validate, export, render), at the version pinned in its `lib.rs`.
+  (validate, export, render, docs), at the version pinned in its `lib.rs`.
+  `docs` writes the documentation tree from `asbuilt_core::docs`, a pure
+  generator, and refuses to run on a stale model.
 
 One version for the workspace, set in the root `Cargo.toml`.
 

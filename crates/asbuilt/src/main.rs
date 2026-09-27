@@ -1,6 +1,7 @@
 //! The `asbuilt` command line: `survey` writes the model, `check` fails
-//! when the committed one is stale, and `validate`, `export json` and
-//! `render` hand the model to the pinned LikeC4.
+//! when the committed one is stale, `docs` writes the documentation
+//! tree, and `validate`, `export json` and `render` hand the model to
+//! the pinned LikeC4.
 
 use std::path::PathBuf;
 
@@ -47,6 +48,24 @@ enum Command {
     Export {
         #[command(subcommand)]
         format: ExportFormat,
+    },
+    /// Write the documentation tree: pages from a fresh survey, diagrams
+    /// from `render` (needs Node and Graphviz unless `--no-render`).
+    Docs {
+        /// The repository root; the current directory by default.
+        root: Option<PathBuf>,
+        /// Write here instead of `<model dir>/site` (relative to the root).
+        #[arg(short, long, value_name = "DIR")]
+        output: Option<PathBuf>,
+        /// Reuse the SVGs under `<model dir>/views` instead of rendering.
+        #[arg(long)]
+        no_render: bool,
+        /// The site title; `[docs] title`, else the root directory's name.
+        #[arg(long, value_name = "TEXT")]
+        title: Option<String>,
+        /// A URL prefix that turns each path into a link; `[docs] source_url` by default.
+        #[arg(long, value_name = "URL")]
+        source_url: Option<String>,
     },
     /// Render every view to an SVG (needs Node and Graphviz `dot`).
     Render {
@@ -96,6 +115,21 @@ fn main() {
             root.as_deref().unwrap_or(".".as_ref()),
             config,
             output.as_deref(),
+            &mut std::io::stderr().lock(),
+        ),
+        Command::Docs {
+            root,
+            output,
+            no_render,
+            title,
+            source_url,
+        } => commands::docs(
+            root.as_deref().unwrap_or(".".as_ref()),
+            config,
+            output.as_deref(),
+            *no_render,
+            title.as_deref(),
+            source_url.as_deref(),
             &mut std::io::stderr().lock(),
         ),
         Command::Render { root, output } => commands::render(

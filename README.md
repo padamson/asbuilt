@@ -32,9 +32,10 @@ crates.io, install from `main`.
 cargo install --git https://github.com/padamson/asbuilt asbuilt
 ```
 
-`survey` and `check` need only cargo. `validate`, `export json` and
-`render` shell out to `npx likec4@1.59.3` (Node), and `render` also
-needs Graphviz `dot`.
+`survey` and `check` need only cargo. `validate`, `export json`,
+`render` and `docs` shell out to `npx likec4@1.59.3` (Node), and
+`render` and `docs` also need Graphviz `dot`; `docs --no-render`
+reuses SVGs already rendered and needs neither.
 
 ## Usage
 
@@ -44,6 +45,7 @@ asbuilt check                  # exit 1 with a diff when the committed model is 
 asbuilt validate               # likec4 validate over the model directory (and curated views beside it)
 asbuilt export json            # docs/architecture/model.json, machine-independent
 asbuilt render                 # one SVG per view under docs/architecture/views/
+asbuilt docs                   # a static HTML tree under docs/architecture/site/, embedding those SVGs
 ```
 
 Every subcommand takes an optional root (the current directory by
@@ -88,7 +90,8 @@ technology = "stdio"
 ```
 
 A `from` that names no generated element fails the survey, so a typo is
-an error rather than a missing edge. Curated views go in a sibling `.c4`
+an error rather than a missing edge. `[docs] title` and `source_url`
+name the documentation tree and turn its paths into links. Curated views go in a sibling `.c4`
 file that references generated ids; `asbuilt validate` catches a stale
 one.
 

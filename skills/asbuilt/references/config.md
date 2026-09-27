@@ -1,13 +1,20 @@
 # asbuilt.toml
 
 Optional, at the repository root. Every key has a default; an unknown key
-inside `[output]`, `[rust]` or an `[[externals]]` entry is an error naming
-the file.
+inside `[output]`, `[docs]`, `[rust]` or an `[[externals]]` entry is an
+error naming the file.
 
 ```toml
 [output]
 # Where `survey` writes and `check` reads, relative to the root.
 path = "docs/architecture/model.c4"
+
+[docs]
+# The title of the documentation tree `asbuilt docs` writes; the root
+# directory's name when absent.
+title = "playwright-rust"
+# Turns every element's path into a link. Absent: paths are plain text.
+source_url = "https://github.com/padamson/playwright-rust/blob/main/"
 
 [rust]
 # Crates inside the repo but outside the workspace, each with its own

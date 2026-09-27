@@ -3,7 +3,7 @@ name: asbuilt
 description: Use when a repo has an `asbuilt.toml` or a `docs/architecture/model.c4`, when `asbuilt check` fails in a pre-commit hook or CI, or when asked to draw, update or explain a code base's architecture with LikeC4. Covers survey, check, externals config, curated views, and what the model does and does not record.
 license: MIT OR Apache-2.0
 metadata:
-  version: "0.2.1"
+  version: "0.3.0"
 ---
 
 # asbuilt
@@ -67,9 +67,13 @@ its edge; the fix is in asbuilt, not in a hand-written overlay.
 
 ## Commands
 
-`survey` and `check` need only cargo. `validate`, `export json` and
-`render` shell out to `npx likec4@1.59.3`, and `render` also needs
-Graphviz `dot`. Details, exit codes and the `asbuilt.toml` keys:
+`survey` and `check` need only cargo. `validate`, `export json`,
+`render` and `docs` shell out to `npx likec4@1.59.3`, and `render` and
+`docs` also need Graphviz `dot` (`docs --no-render` reuses rendered
+SVGs and needs neither). `asbuilt docs` writes a static HTML tree
+(index, one page per crate with its modules and relations, the
+diagrams embedded) that serves from any directory; mount it under a
+docs site or Pages. Details, exit codes and the `asbuilt.toml` keys:
 
 - [`references/cli.md`](references/cli.md): every subcommand and its exit codes.
 - [`references/config.md`](references/config.md): `asbuilt.toml`.

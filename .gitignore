@@ -11,6 +11,13 @@
 crates/*/tests/fixtures/**/Cargo.lock
 crates/*/tests/fixtures/**/target/
 
+# What `asbuilt render`, `export json` and `docs` write beside this repo's
+# own model. SVGs vary with the Graphviz version and the site is a build
+# artifact; only model.c4 and views.c4 are the source of truth.
+/docs/architecture/views/
+/docs/architecture/site/
+/docs/architecture/model.json
+
 # Environment variables (secrets, config)
 .env
 

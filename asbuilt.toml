@@ -4,6 +4,10 @@
 [output]
 path = "docs/architecture/model.c4"
 
+[docs]
+title = "asbuilt"
+source_url = "https://github.com/padamson/asbuilt/blob/main/"
+
 [[externals]]
 id = "cargo"
 kind = "process"
