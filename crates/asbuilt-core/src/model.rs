@@ -130,10 +130,12 @@ pub fn dotted(id: &[String]) -> String {
     id.join(".")
 }
 
-/// Words likec4 1.59.3 refuses as an element id, found by validating a
-/// model with each one as a nested element (`model`, `element`,
-/// `deployment` and `relationship` are accepted and so are not here).
-/// A module named one of these gets a trailing `_`.
+/// Words likec4 1.59.3 refuses as an element id: every keyword token of
+/// its grammar (extracted from the language server bundle) plus `this`,
+/// `it`, `true` and `false`, each confirmed by validating a model with
+/// the word as a nested element. `model`, `element`, `deployment` and
+/// `relationship` are accepted and so are not here. A module named one
+/// of these gets a trailing `_`.
 pub const RESERVED: &[&str] = &[
     "BottomTop",
     "LeftRight",
@@ -146,20 +148,28 @@ pub const RESERVED: &[&str] = &[
     "deploymentNode",
     "description",
     "dynamic",
+    "dynamicPredicateGroup",
     "exclude",
     "extend",
     "extends",
     "false",
     "from",
     "global",
+    "head",
     "icon",
+    "iconColor",
+    "iconPosition",
+    "iconSize",
+    "icons",
     "import",
     "include",
+    "includeAncestors",
     "instanceOf",
     "is",
     "it",
     "kind",
     "likec4lib",
+    "line",
     "link",
     "metadata",
     "multiple",
@@ -170,17 +180,27 @@ pub const RESERVED: &[&str] = &[
     "of",
     "opacity",
     "or",
+    "order",
     "padding",
+    "predicate",
+    "predicateGroup",
+    "rank",
+    "rgb",
+    "rgba",
     "shape",
     "size",
     "specification",
     "style",
+    "styleGroup",
+    "summary",
     "tag",
+    "tail",
     "technology",
     "textSize",
     "this",
     "title",
     "true",
+    "variant",
     "view",
     "views",
     "where",
@@ -366,6 +386,9 @@ mod tests {
     fn a_reserved_word_gets_a_trailing_underscore() {
         assert_eq!(sanitize_segment("view"), "view_");
         assert_eq!(sanitize_segment("link"), "link_");
+        // `icons` was found the hard way: a playwright-rust module.
+        assert_eq!(sanitize_segment("icons"), "icons_");
+        assert_eq!(sanitize_segment("summary"), "summary_");
     }
 
     #[test]

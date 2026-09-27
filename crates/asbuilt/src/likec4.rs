@@ -374,9 +374,14 @@ mod tests {
     }
 
     #[test]
-    fn gen_dot_on_a_missing_directory_that_cannot_be_created_is_an_io_error() {
-        let out = Path::new("/no/such/parent/for/dots");
-        match gen_dot(Path::new("."), out) {
+    fn gen_dot_on_a_directory_that_cannot_be_created_is_an_io_error() {
+        // A path beneath a regular file cannot be created on any
+        // platform; `/no/such/...` can, on Windows, under the drive root.
+        let dir = tempfile::tempdir().unwrap();
+        let file = dir.path().join("a-file");
+        std::fs::write(&file, "").unwrap();
+        let out = file.join("dots");
+        match gen_dot(Path::new("."), &out) {
             Err(LikeC4Error::Io { path, .. }) => assert_eq!(path, out),
             other => panic!("expected Io, got {other:?}"),
         }

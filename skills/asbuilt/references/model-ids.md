@@ -12,11 +12,12 @@ the survey spells them.
   directly under the crate.
 - **Tests and examples:** `crate.tests` and `crate.examples`, one each
   per crate, whatever the number of targets.
-- **Reserved words:** likec4 1.59.3 refuses about fifty words as ids
-  (`view`, `views`, `link`, `title`, `kind`, `from`, `import`, `style`,
-  `icon`, `size` and more), so a module with one of those names gets a
-  trailing `_`: a module `view` is `crate.view_`. `model` and `element`
-  are accepted as they are.
+- **Reserved words:** likec4 1.59.3 refuses its grammar's keywords as
+  ids (`view`, `views`, `link`, `title`, `kind`, `from`, `import`,
+  `style`, `icon`, `icons`, `size`, `summary`, `order` and about fifty
+  more), so a module with one of those names gets a trailing `_`: a
+  module `icons` is `crate.icons_`. `model` and `element` are accepted
+  as they are.
 - **Externals:** the `id` from `asbuilt.toml`, top level.
 - **Generated views:** `index`, and `view_<id with _ for .>` for every
   element with children (`view_playwright_rs_server`). Two ids that

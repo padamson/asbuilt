@@ -39,5 +39,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `-o` is resolved against the canonical root, so an absolute path, `..`, or a `.` root all give correct `link` lines
 - Two element ids that collapse to one view id (`a.b_c`, `a_b.c`) get distinct view names
 - `link` values are percent-encoded, so a space or quote in a path cannot break the parse
+- The reserved-word list is every keyword token of likec4 1.59.3's grammar, probed one by one, not a hand-picked sample; `icons` (a playwright-rust module) was the one that got through
 
 [Unreleased]: https://github.com/padamson/asbuilt/commits/main
