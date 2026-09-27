@@ -84,6 +84,14 @@ parse.'
       }
       link ../../crates/asbuilt-core/src/config.rs
     }
+    docs = component 'docs' {
+      description 'The documentation generator: a [`Model`] and the SVGs `asbuilt render`
+produced, to a static HTML tree that mounts anywhere.'
+      metadata {
+        path 'crates/asbuilt-core/src/docs.rs'
+      }
+      link ../../crates/asbuilt-core/src/docs.rs
+    }
     emit = component 'emit' {
       description 'The LikeC4 emitter: a [`Model`] to the text of one `.c4` file.'
       metadata {
@@ -258,6 +266,8 @@ directory listing, so discovery order is out of the picture.'
   asbuilt.tests -[calls]-> asbuilt_core.emit 'emit'
   asbuilt.tests -[constructs]-> asbuilt_core.model 'Element, ElementKind, Id, Model, Relation, RelationKind'
   asbuilt_core.config -[constructs]-> asbuilt_core.error 'Error, Result'
+  asbuilt_core.docs -[calls]-> asbuilt_core.emit 'children_of, link_encode, view_ids'
+  asbuilt_core.docs -[calls]-> asbuilt_core.model 'Element, ElementKind, Id, Model, Relation, dotted, sanitize_id'
   asbuilt_core.emit -[calls]-> asbuilt_core.model 'Element, ElementKind, Id, Model, RelationKind, sanitize_id, sanitize_segment'
   asbuilt_core.externals -[names]-> asbuilt_core.config 'Config'
   asbuilt_core.externals -[constructs]-> asbuilt_core.error 'Error, Result'

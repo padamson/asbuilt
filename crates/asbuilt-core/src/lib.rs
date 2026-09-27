@@ -10,6 +10,7 @@
 
 pub mod check;
 pub mod config;
+pub mod docs;
 pub mod emit;
 pub mod error;
 pub mod externals;
@@ -17,7 +18,8 @@ pub mod frontend;
 pub mod model;
 
 pub use check::{Outcome, compare};
-pub use config::{Config, External, ExternalRelation, OutputConfig};
+pub use config::{Config, DocsConfig, External, ExternalRelation, OutputConfig};
+pub use docs::{DocsOptions, Site};
 pub use emit::{EmitOptions, emit, view_ids};
 pub use error::{Error, Result};
 pub use frontend::{Frontend, survey};

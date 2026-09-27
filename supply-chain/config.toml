@@ -27,7 +27,7 @@ url = "https://raw.githubusercontent.com/zcash/rust-ecosystem/main/supply-chain/
 
 [[exemptions.bitflags]]
 version = "2.13.2"
-criteria = "safe-to-run"
+criteria = "safe-to-deploy"
 
 [[exemptions.camino]]
 version = "1.2.6"
@@ -52,6 +52,14 @@ criteria = "safe-to-run"
 [[exemptions.linux-raw-sys]]
 version = "0.12.1"
 criteria = "safe-to-run"
+
+[[exemptions.pulldown-cmark]]
+version = "0.13.4"
+criteria = "safe-to-deploy"
+
+[[exemptions.pulldown-cmark-escape]]
+version = "0.11.0"
+criteria = "safe-to-deploy"
 
 [[exemptions.r-efi]]
 version = "6.0.0"

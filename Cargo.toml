@@ -21,6 +21,9 @@ authors = ["Paul Adamson"]
 asbuilt-core = { version = "0.1.0", path = "crates/asbuilt-core" }
 asbuilt-rust = { version = "0.1.0", path = "crates/asbuilt-rust" }
 clap = { version = "4", features = ["derive"] }
+# Markdown in the one-paragraph descriptions the docs generator renders;
+# `html` only, no CLI helpers.
+pulldown-cmark = { version = "0.13", default-features = false, features = ["html"] }
 cargo_metadata = "0.23"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

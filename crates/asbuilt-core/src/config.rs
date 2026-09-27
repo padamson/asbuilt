@@ -45,6 +45,8 @@ pub struct Config {
     #[serde(default)]
     pub output: OutputConfig,
     #[serde(default)]
+    pub docs: DocsConfig,
+    #[serde(default)]
     pub externals: Vec<External>,
     #[serde(flatten)]
     pub sections: BTreeMap<String, toml::Value>,
@@ -72,6 +74,20 @@ impl Default for OutputConfig {
             path: default_output_path(),
         }
     }
+}
+
+/// What `asbuilt docs` cannot read off the code.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Default)]
+#[serde(deny_unknown_fields)]
+pub struct DocsConfig {
+    /// The site title; the root directory's name when absent.
+    #[serde(default)]
+    pub title: Option<String>,
+    /// A URL prefix that turns a repo-relative path into a link, e.g.
+    /// `https://github.com/owner/repo/blob/main/`. Paths stay plain text
+    /// when absent.
+    #[serde(default)]
+    pub source_url: Option<String>,
 }
 
 /// Something outside the code that a module talks to: a spawned
@@ -260,6 +276,26 @@ technology = "stdio"
     fn an_unknown_key_in_an_external_is_rejected() {
         let result: std::result::Result<Config, _> =
             "[[externals]]\nid = \"x\"\nkind = \"k\"\ntitle = \"t\"\nlabel = \"no\"\n".parse();
+        assert!(result.is_err(), "got {result:?}");
+    }
+
+    #[test]
+    fn the_docs_table_parses_and_defaults_to_nothing() {
+        let config: Config = "[docs]\ntitle = \"asbuilt\"\nsource_url = \"https://x/blob/main/\"\n"
+            .parse()
+            .unwrap();
+        assert_eq!(config.docs.title.as_deref(), Some("asbuilt"));
+        assert_eq!(
+            config.docs.source_url.as_deref(),
+            Some("https://x/blob/main/")
+        );
+        let empty: Config = "".parse().unwrap();
+        assert_eq!(empty.docs, DocsConfig::default());
+    }
+
+    #[test]
+    fn an_unknown_key_under_docs_is_rejected() {
+        let result: std::result::Result<Config, _> = "[docs]\ntitel = \"x\"\n".parse();
         assert!(result.is_err(), "got {result:?}");
     }
 

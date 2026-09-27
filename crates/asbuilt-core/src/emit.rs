@@ -124,7 +124,7 @@ fn emit_specification(out: &mut String, model: &Model) {
 /// Elements whose parent id is `parent` (or every top-level element when
 /// `parent` is empty). "Top-level" means no element in the model has the
 /// id one segment shorter, so an orphan component still gets emitted.
-fn children_of<'a>(model: &'a Model, parent: &[String]) -> Vec<&'a Element> {
+pub(crate) fn children_of<'a>(model: &'a Model, parent: &[String]) -> Vec<&'a Element> {
     model
         .elements
         .iter()
