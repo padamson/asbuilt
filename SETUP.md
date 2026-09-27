@@ -31,7 +31,7 @@ These settings cannot be configured via code and must be set in the GitHub UI.
 ### Repository settings
 
 - [ ] **Settings > General > Features:** Enable "Issues" and "Projects" if not already
-- [ ] **Settings > Branches > Branch protection:** Add rule for `main`.
+- [x] **Settings > Branches > Branch protection:** Add rule for `main`. Applied 2026-09-27 from `.github/branch-protection.json`.
 
   **Apply protection only after the first PR has merged** — otherwise the rules block the very PR that first makes the required checks real.
 
@@ -76,7 +76,7 @@ These settings cannot be configured via code and must be set in the GitHub UI.
 
 ### GitHub Pages
 
-- [ ] After the first push to `main` with `pages.yml` has created the
+- [x] After the first push to `main` with `pages.yml` has created the
   `gh-pages` branch: **Settings > Pages > Build and deployment > Source:
   Deploy from a branch > Branch: `gh-pages` / (root)**, or
   `gh api -X POST repos/padamson/asbuilt/pages -f build_type=legacy -f 'source[branch]=gh-pages' -f 'source[path]=/'`.
