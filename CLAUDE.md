@@ -106,6 +106,32 @@ Scope the baseline with `.cargo/mutants.toml`, which ships live (a
 `.mutants.toml` at the repo root is ignored silently); `--in-diff`
 narrows from there.
 
+## Fixtures and snapshots
+
+`crates/asbuilt-rust/tests/fixtures/<case>/` are small workspaces, one
+per resolver rule, each with an `expected.c4` beside it that the test
+compares byte for byte. `UPDATE_EXPECT=1 cargo nextest run -p
+asbuilt-rust --test fixtures` rewrites a stale snapshot; read the diff
+before committing it. Every fixture root carries its own `[workspace]`
+table and the root manifest excludes the directory, so no fixture joins
+this workspace. The CLI's fixture is `crates/asbuilt/tests/fixtures/
+consumer/` with a committed `docs/architecture/model.c4`; `cargo run -p
+asbuilt -- survey crates/asbuilt/tests/fixtures/consumer` regenerates it.
+
+## Tests that need LikeC4
+
+Tests named `likec4_*` are `#[ignore]`d because they need `npx` (Node)
+and, for `render`, Graphviz `dot`. Run them with
+
+```bash
+cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'
+```
+
+The `LikeC4 validate` CI job runs exactly that on ubuntu. They are the
+only place the emitter meets the real parser, so a change to
+`asbuilt-core::emit` is not done until they pass. The likec4 version is
+pinned in `crates/asbuilt/src/lib.rs`.
+
 ## Tests
 
 A test is a claim about behavior, named as the claim, one claim per

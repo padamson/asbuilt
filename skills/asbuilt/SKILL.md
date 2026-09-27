@@ -1,32 +1,76 @@
 ---
 name: asbuilt
-description: Use when a repo has an `asbuilt.toml` or a `docs/architecture/model.c4`, when `asbuilt check` fails in a pre-commit hook or CI, or when asked to document a code base's architecture with LikeC4. The CLI is still being written; this skill fills in as commands land.
+description: Use when a repo has an `asbuilt.toml` or a `docs/architecture/model.c4`, when `asbuilt check` fails in a pre-commit hook or CI, or when asked to draw, update or explain a code base's architecture with LikeC4. Covers survey, check, externals config, curated views, and what the model does and does not record.
 license: MIT OR Apache-2.0
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # asbuilt
 
-`asbuilt` keeps a LikeC4 architecture model that describes the code as
-it is. `asbuilt survey` reads a code base and writes the `.c4` model;
-`asbuilt check` surveys again and fails when the committed model no
-longer matches. The model is generated, never edited by hand, and the
-code carries no annotations for it.
+`asbuilt` keeps a [LikeC4](https://likec4.dev) architecture model that
+describes the code as it is, the way as-built drawings describe a
+building as constructed rather than as designed. `asbuilt survey` reads
+the code base and writes the `.c4` model; `asbuilt check` surveys again
+and exits 1 with a diff when the committed model no longer matches.
+Nothing in the model is hand-written and nothing in the code is
+annotated, so the model cannot drift from the code without `check`
+saying so.
 
 ## When to use
 
-- The repo has an `asbuilt.toml` at its root or a `docs/architecture/model.c4`.
+- The repo has an `asbuilt.toml` at its root, or a committed
+  `docs/architecture/model.c4`.
 - A pre-commit hook or CI step running `asbuilt check` is red.
-- You are asked to draw or update an architecture diagram of a code base.
+- You are asked to draw, update or explain the architecture of a Rust
+  code base.
 
-## How it works
+## The three rules
 
-The commands are not written yet. What will be true when they are:
+1. **Never edit `model.c4`.** It is generated. Run `asbuilt survey` and
+   commit the result; that is the whole fix for a red `check`.
+2. **Curated views go in a sibling file** (`docs/architecture/views.c4`,
+   say) that references generated ids. `asbuilt validate` runs LikeC4's
+   parser over the directory and rejects a stale id, which is the gate
+   for hand-written views.
+3. **Externals go in `asbuilt.toml`, not in the code.** Nothing static
+   says a module spawns a Node process; `[[externals]]` does, and a
+   `from` that names no generated element is an error, not a missing
+   edge.
 
-- Never edit `model.c4`. Run `asbuilt survey` and commit the result.
-- Curated views go in a sibling `.c4` file that references generated ids.
-- `asbuilt check` needs no Node; `asbuilt validate` and `asbuilt render`
-  shell out to a pinned `npx likec4`.
+## What the model records
 
-- [`references/usage.md`](references/usage.md): the CLI surface, as it lands.
+- One **container** per crate (id is the crate name with `_`, title the
+  package name, technology `library crate`, `proc-macro crate`,
+  `binary` or `test crate`), one **component** per module nested in the
+  real hierarchy, plus one `tests` and one `examples` component per
+  crate that has them, and one `bin`-tagged component per bin beside a
+  lib.
+- Every element carries `metadata { path }` and a `link` relative to
+  the model file, and the first paragraph of the module's `//!` doc as
+  its description.
+- One **relation** per (source module, target module) pair, kind the
+  strongest evidence found (`implements` > `constructs` > `calls` >
+  `names` > `uses`), label the referenced item names, sorted. Paths
+  resolve through `pub use` chains and glob re-exports to the defining
+  module. An edge between a module and its own ancestor or descendant
+  is never recorded: `mod x;` is structure, not coupling.
+- Generated views: `index` (containers and externals) and one scoped
+  view per element with children, named `view_<id with _ for .>`.
+
+## What it does not record
+
+Macro token streams are not parsed, method calls on values are not
+resolved (`conn.send()` records nothing), and `#[cfg(test)]` items are
+skipped. A module that reaches another only through those is missing
+its edge; the fix is in asbuilt, not in a hand-written overlay.
+
+## Commands
+
+`survey` and `check` need only cargo. `validate`, `export json` and
+`render` shell out to `npx likec4@1.59.3`, and `render` also needs
+Graphviz `dot`. Details, exit codes and the `asbuilt.toml` keys:
+
+- [`references/cli.md`](references/cli.md): every subcommand and its exit codes.
+- [`references/config.md`](references/config.md): `asbuilt.toml`.
+- [`references/model-ids.md`](references/model-ids.md): how ids are spelled, for curated views.

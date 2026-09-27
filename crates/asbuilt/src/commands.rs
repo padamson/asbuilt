@@ -1,5 +1,7 @@
-//! `survey` and `check`, as functions that return an exit code, so the
-//! binary is a thin `main` and the tests can drive either path.
+//! The subcommands, as functions that return an exit code, so the binary
+//! is a thin `main` and the tests can drive each path. `survey` and
+//! `check` need no Node; `validate`, `export json` and `render` shell
+//! out to the pinned LikeC4 (and `render` to Graphviz).
 
 use std::io::{self, Write};
 use std::path::{Component, Path, PathBuf};
@@ -7,8 +9,11 @@ use std::path::{Component, Path, PathBuf};
 use asbuilt_core::{Config, EmitOptions, Model, Outcome, compare, emit};
 use asbuilt_rust::RustFrontend;
 
+use crate::likec4::{self, LikeC4Error};
+
 pub const EXIT_OK: i32 = 0;
-/// The committed model no longer matches a fresh survey.
+/// The committed model no longer matches a fresh survey, or LikeC4
+/// rejects the model directory.
 pub const EXIT_DRIFT: i32 = 1;
 /// Anything else that went wrong.
 pub const EXIT_ERROR: i32 = 2;
@@ -34,6 +39,9 @@ pub enum CliError {
 
     #[error("no model at {path}; run `asbuilt survey` to create it")]
     NoModel { path: PathBuf },
+
+    #[error(transparent)]
+    LikeC4(#[from] LikeC4Error),
 }
 
 fn load_config(root: &Path, config_path: Option<&Path>) -> Result<Config, CliError> {
@@ -151,12 +159,8 @@ pub fn output_target(
     let requested = override_path
         .map(Path::to_path_buf)
         .unwrap_or_else(|| PathBuf::from(&config.output.path));
-    let absolute = if requested.is_absolute() {
-        requested
-    } else {
-        root.join(requested)
-    };
-    let path = canonicalize_partial(&normalize_lexically(&absolute));
+    // `join` keeps an absolute `requested` as is.
+    let path = canonicalize_partial(&normalize_lexically(&root.join(requested)));
     let out_dir = path
         .parent()
         .map(Path::to_path_buf)
@@ -250,6 +254,96 @@ pub fn check(
             Ok(EXIT_DRIFT)
         }
     }
+}
+
+/// The directory holding the committed model and any curated `.c4`
+/// files beside it: the configured output path's parent.
+fn model_dir(root: &Path, config_path: Option<&Path>) -> Result<(String, PathBuf), CliError> {
+    let config = load_config(root, config_path)?;
+    let target = output_target(root, &config, None)?;
+    let dir = target
+        .path
+        .parent()
+        .map(Path::to_path_buf)
+        .unwrap_or_else(|| target.path.clone());
+    let label = Path::new(&target.label)
+        .parent()
+        .map(slashes)
+        .filter(|s| !s.is_empty())
+        .unwrap_or_else(|| ".".to_string());
+    Ok((label, dir))
+}
+
+/// A path for a LikeC4 output: the override (relative to the root, or
+/// absolute, which `join` keeps as is) or `model_dir/<default>`.
+fn under_model_dir(
+    root: &Path,
+    dir: &Path,
+    override_path: Option<&Path>,
+    default: &str,
+) -> PathBuf {
+    match override_path {
+        Some(p) => root.join(p),
+        None => dir.join(default),
+    }
+}
+
+/// `likec4 validate` over the model directory. Exit 1 when LikeC4
+/// rejects it (the diagnostics go to `err`), 2 when it cannot run.
+pub fn validate(
+    root: &Path,
+    config_path: Option<&Path>,
+    err: &mut dyn Write,
+) -> Result<i32, CliError> {
+    let (label, dir) = model_dir(root, config_path)?;
+    match likec4::validate(&dir) {
+        Ok(()) => {
+            let _ = writeln!(err, "{label}: valid");
+            Ok(EXIT_OK)
+        }
+        Err(LikeC4Error::Failed { output, .. }) => {
+            let _ = write!(err, "{output}");
+            let _ = writeln!(err, "asbuilt: {label}: likec4 rejected the model");
+            Ok(EXIT_DRIFT)
+        }
+        Err(other) => Err(other.into()),
+    }
+}
+
+/// `likec4 export json` over the model directory, normalized, to the
+/// override or `model_dir/model.json`.
+pub fn export_json(
+    root: &Path,
+    config_path: Option<&Path>,
+    override_path: Option<&Path>,
+    err: &mut dyn Write,
+) -> Result<i32, CliError> {
+    let (_, dir) = model_dir(root, config_path)?;
+    let out = under_model_dir(root, &dir, override_path, "model.json");
+    if let Some(parent) = out.parent() {
+        std::fs::create_dir_all(parent).map_err(|source| CliError::Write {
+            path: parent.to_path_buf(),
+            source,
+        })?;
+    }
+    likec4::export_json(&dir, &out)?;
+    let _ = writeln!(err, "wrote {}", out.display());
+    Ok(EXIT_OK)
+}
+
+/// Render every view to an SVG under the override or `model_dir/views`.
+pub fn render(
+    root: &Path,
+    config_path: Option<&Path>,
+    override_path: Option<&Path>,
+    err: &mut dyn Write,
+) -> Result<i32, CliError> {
+    let (_, dir) = model_dir(root, config_path)?;
+    let out_dir = under_model_dir(root, &dir, override_path, "views");
+    for svg in likec4::render(&dir, &out_dir)? {
+        let _ = writeln!(err, "wrote {}", svg.display());
+    }
+    Ok(EXIT_OK)
 }
 
 #[cfg(test)]
@@ -364,6 +458,45 @@ mod tests {
             Err(CliError::Read { path, .. }) => assert_eq!(path, PathBuf::from("/no/such/root")),
             other => panic!("expected Read, got {other:?}"),
         }
+    }
+
+    #[test]
+    fn the_model_directory_is_the_output_path_parent_with_a_relative_label() {
+        let dir = root();
+        let (label, path) = model_dir(dir.path(), None).unwrap();
+        assert_eq!(label, "docs/architecture");
+        assert!(path.ends_with("docs/architecture"), "{path:?}");
+    }
+
+    #[test]
+    fn a_model_at_the_root_has_the_dot_label() {
+        let dir = root();
+        std::fs::write(
+            dir.path().join("asbuilt.toml"),
+            "[output]\npath = \"model.c4\"\n",
+        )
+        .unwrap();
+        let (label, path) = model_dir(dir.path(), None).unwrap();
+        assert_eq!(label, ".");
+        assert_eq!(path, canonical_root(dir.path()).unwrap());
+    }
+
+    #[test]
+    fn likec4_outputs_default_under_the_model_directory_and_honor_an_override() {
+        let root = Path::new("/r");
+        let dir = Path::new("/r/docs/architecture");
+        assert_eq!(
+            under_model_dir(root, dir, None, "views"),
+            PathBuf::from("/r/docs/architecture/views")
+        );
+        assert_eq!(
+            under_model_dir(root, dir, Some(Path::new("out/v")), "views"),
+            PathBuf::from("/r/out/v")
+        );
+        assert_eq!(
+            under_model_dir(root, dir, Some(Path::new("/abs/v")), "views"),
+            PathBuf::from("/abs/v")
+        );
     }
 
     #[test]

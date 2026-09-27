@@ -22,24 +22,89 @@ or Python runtime present.
 
 ## Status
 
-The workspace is in place: `asbuilt` (the CLI), `asbuilt-core` (model,
-emitter, config, check) and `asbuilt-rust` (the Rust front-end). The
-survey itself is being written; `asbuilt --version` is the only command
-that does anything yet.
+Pre-release. The Rust front-end, `survey`, `check`, and the LikeC4
+wrappers work; the first consumer is being wired up. Until 0.1.0 is on
+crates.io, install from `main`.
 
 ## Installation
 
 ```bash
-cargo install asbuilt
+cargo install --git https://github.com/padamson/asbuilt asbuilt
 ```
+
+`survey` and `check` need only cargo. `validate`, `export json` and
+`render` shell out to `npx likec4@1.59.3` (Node), and `render` also
+needs Graphviz `dot`.
 
 ## Usage
 
 ```bash
-asbuilt --help
+asbuilt survey                 # writes docs/architecture/model.c4
+asbuilt check                  # exit 1 with a diff when the committed model is stale
+asbuilt validate               # likec4 validate over the model directory (and curated views beside it)
+asbuilt export json            # docs/architecture/model.json, machine-independent
+asbuilt render                 # one SVG per view under docs/architecture/views/
 ```
 
-`asbuilt survey` and `asbuilt check` are documented here as they land.
+Every subcommand takes an optional root (the current directory by
+default) and `--config <path>`. Exit codes: 0 done or current, 1 drift or
+an invalid model, 2 anything else, with the file or id in the message.
+
+### What the model says
+
+One container per crate, one component per module nested as in the code,
+a `tests` and an `examples` component per crate that has them, and one
+relation per pair of modules with the referenced item names as the label
+and the strongest evidence as the kind (`implements`, `constructs`,
+`calls`, `names`, `uses`). Descriptions come from the first paragraph of
+each module's `//!` doc. Paths resolve through `pub use` chains and glob
+re-exports to the defining module; an edge from a module to its own
+ancestor or descendant is never recorded. Macro bodies are not parsed and
+method calls on values are not resolved.
+
+### Configuration
+
+Optional `asbuilt.toml` at the root:
+
+```toml
+[output]
+path = "docs/architecture/model.c4"
+
+[rust]
+extra_manifests = ["crates/site-e2e/Cargo.toml"]   # crates in the repo but outside the workspace
+include_tests = true
+include_examples = true
+
+[[externals]]                                       # what the code cannot state
+id = "node_driver"
+kind = "process"
+title = "Playwright driver"
+technology = "Node.js process"
+
+[[externals.relations]]
+from = "playwright_rs.server.playwright_server"
+title = "spawns"
+technology = "stdio"
+```
+
+A `from` that names no generated element fails the survey, so a typo is
+an error rather than a missing edge. Curated views go in a sibling `.c4`
+file that references generated ids; `asbuilt validate` catches a stale
+one.
+
+### Keeping it honest
+
+```yaml
+# .pre-commit-config.yaml
+- id: asbuilt-check
+  name: asbuilt check
+  entry: asbuilt check
+  language: system
+  pass_filenames: false
+  files: (docs/architecture/|crates/|src/)
+```
+
+and the same command as a CI step on every platform.
 
 ## Agent skill
 

@@ -23,6 +23,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `asbuilt-core::check::compare`: the drift check as a unified diff, line endings normalized first
 - A consumer fixture under `crates/asbuilt/tests/fixtures/consumer/` (a workspace, an extra manifest, one external) with its committed `docs/architecture/model.c4`; the CLI tests spawn the binary over it and over scratch copies of it
 
+- `asbuilt validate` (likec4 validate over the model directory, exit 1 when it rejects the model or a curated view), `asbuilt export json` (normalized: `links[].relative` stripped, so the file is the same on every machine), `asbuilt render` (`likec4 gen dot` then Graphviz `dot -Tsvg`, one SVG per view); four more `likec4_` tests
+- The `asbuilt` skill (`npx skills add padamson/asbuilt`) written for a consumer agent: the three rules, what the model records, and references for the CLI, `asbuilt.toml` and id spelling
+- README usage, configuration and hook sections; CLAUDE.md sections on fixtures and the `likec4_` tests
+
 ### Fixed
 - A bare name brought in by a glob import (`use crate::a::*; Thing::new()`) now resolves; modules that glob-import a prelude were missing from the graph
 - `#[path]` on a `mod` inside an inline module block is relative to the inline module's directory, as rustc requires

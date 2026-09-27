@@ -1,5 +1,6 @@
 //! The `asbuilt` command line: `survey` writes the model, `check` fails
-//! when the committed one is stale.
+//! when the committed one is stale, and `validate`, `export json` and
+//! `render` hand the model to the pinned LikeC4.
 
 use std::path::PathBuf;
 
@@ -37,6 +38,36 @@ enum Command {
         /// The repository root; the current directory by default.
         root: Option<PathBuf>,
     },
+    /// Run `likec4 validate` over the model directory (needs Node).
+    Validate {
+        /// The repository root; the current directory by default.
+        root: Option<PathBuf>,
+    },
+    /// Export the model through LikeC4 (needs Node).
+    Export {
+        #[command(subcommand)]
+        format: ExportFormat,
+    },
+    /// Render every view to an SVG (needs Node and Graphviz `dot`).
+    Render {
+        /// The repository root; the current directory by default.
+        root: Option<PathBuf>,
+        /// Write here instead of `<model dir>/views` (relative to the root).
+        #[arg(short, long, value_name = "DIR")]
+        output: Option<PathBuf>,
+    },
+}
+
+#[derive(Subcommand)]
+enum ExportFormat {
+    /// The computed model as JSON, with the machine-specific link fields removed.
+    Json {
+        /// The repository root; the current directory by default.
+        root: Option<PathBuf>,
+        /// Write here instead of `<model dir>/model.json` (relative to the root).
+        #[arg(short, long, value_name = "PATH")]
+        output: Option<PathBuf>,
+    },
 }
 
 fn main() {
@@ -52,6 +83,25 @@ fn main() {
             root.as_deref().unwrap_or(".".as_ref()),
             config,
             &mut std::io::stdout().lock(),
+            &mut std::io::stderr().lock(),
+        ),
+        Command::Validate { root } => commands::validate(
+            root.as_deref().unwrap_or(".".as_ref()),
+            config,
+            &mut std::io::stderr().lock(),
+        ),
+        Command::Export {
+            format: ExportFormat::Json { root, output },
+        } => commands::export_json(
+            root.as_deref().unwrap_or(".".as_ref()),
+            config,
+            output.as_deref(),
+            &mut std::io::stderr().lock(),
+        ),
+        Command::Render { root, output } => commands::render(
+            root.as_deref().unwrap_or(".".as_ref()),
+            config,
+            output.as_deref(),
             &mut std::io::stderr().lock(),
         ),
     };

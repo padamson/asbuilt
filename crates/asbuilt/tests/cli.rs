@@ -240,3 +240,44 @@ fn a_config_typo_exits_two_naming_the_file() {
         text(&out.stderr)
     );
 }
+
+// The LikeC4 and Graphviz wrappers without Node on the PATH: every one
+// must report that `npx` could not start and exit 2, which is what
+// separates a real call from a stub without needing Node at all. The
+// `likec4_` tests cover the calls themselves.
+
+fn without_path(args: &[&str]) -> Output {
+    let empty = Workspace::new();
+    asbuilt()
+        .args(args)
+        .env("PATH", empty.root())
+        .output()
+        .unwrap()
+}
+
+#[test]
+fn validate_without_npx_exits_two_and_says_it_could_not_run() {
+    let out = without_path(&["validate", fixture().to_str().unwrap()]);
+    assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
+    assert!(
+        text(&out.stderr).contains("could not run"),
+        "{}",
+        text(&out.stderr)
+    );
+}
+
+#[test]
+fn export_json_without_npx_exits_two_and_writes_nothing() {
+    let ws = scratch_copy();
+    let out = without_path(&["export", "json", ws.root().to_str().unwrap()]);
+    assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
+    assert!(!ws.root().join("docs/architecture/model.json").exists());
+}
+
+#[test]
+fn render_without_npx_exits_two_and_writes_no_svg() {
+    let ws = scratch_copy();
+    let out = without_path(&["render", ws.root().to_str().unwrap()]);
+    assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
+    assert!(!ws.root().join("docs/architecture/views/index.svg").exists());
+}

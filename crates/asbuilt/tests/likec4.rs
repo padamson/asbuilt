@@ -186,3 +186,103 @@ fn likec4_validate_accepts_the_consumer_fixture_model() {
 
     assert!(result.is_ok(), "{}", result.unwrap_err());
 }
+
+fn consumer_copy() -> Workspace {
+    let ws = Workspace::new();
+    ws.copy_from(&std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/consumer"));
+    ws
+}
+
+#[test]
+#[ignore = "needs npx (Node) and network; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_export_json_is_free_of_relative_links_and_keeps_the_elements() {
+    let ws = consumer_copy();
+    let dir = ws.root().join("docs/architecture");
+    let out = dir.join("model.json");
+
+    likec4::export_json(&dir, &out).unwrap();
+
+    let text = std::fs::read_to_string(&out).unwrap();
+    assert!(
+        !text.contains("\"relative\""),
+        "relative links survived:\n{text}"
+    );
+    assert!(
+        !text.contains("file://"),
+        "an absolute file URL survived:\n{text}"
+    );
+    let value: serde_json::Value = serde_json::from_str(&text).unwrap();
+    assert!(value["elements"]["app.server"].is_object(), "{text}");
+    assert!(value["elements"]["node_driver"].is_object(), "{text}");
+    assert!(
+        text.ends_with("}\n"),
+        "pretty-printed with a trailing newline"
+    );
+}
+
+#[test]
+#[ignore = "needs npx (Node), network and Graphviz dot; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_render_writes_one_svg_per_view() {
+    let ws = consumer_copy();
+    let dir = ws.root().join("docs/architecture");
+    let out = dir.join("views");
+
+    let svgs = likec4::render(&dir, &out).unwrap();
+
+    let names: Vec<String> = svgs
+        .iter()
+        .map(|p| p.file_name().unwrap().to_string_lossy().into_owned())
+        .collect();
+    assert_eq!(names, ["index.svg", "view_app.svg", "view_e2e.svg"]);
+    for svg in &svgs {
+        let text = std::fs::read_to_string(svg).unwrap();
+        assert!(text.contains("<svg"), "{} is not an SVG", svg.display());
+    }
+}
+
+#[test]
+#[ignore = "needs npx (Node), network and Graphviz dot; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_the_cli_validate_export_and_render_subcommands_exit_zero() {
+    let ws = consumer_copy();
+    let root = ws.root().to_str().unwrap();
+    for args in [
+        vec!["validate", root],
+        vec!["export", "json", root],
+        vec!["render", root, "-o", "out/views"],
+    ] {
+        let out = std::process::Command::new(env!("CARGO_BIN_EXE_asbuilt"))
+            .args(&args)
+            .output()
+            .unwrap();
+        assert_eq!(
+            out.status.code(),
+            Some(0),
+            "{args:?}: {}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+    }
+    assert!(ws.root().join("docs/architecture/model.json").is_file());
+    assert!(ws.root().join("out/views/index.svg").is_file());
+}
+
+#[test]
+#[ignore = "needs npx (Node) and network; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_the_cli_validate_exits_one_on_a_broken_curated_view() {
+    let ws = consumer_copy();
+    ws.write(
+        "docs/architecture/views.c4",
+        "views {\n  view broken {\n    include app.nope\n  }\n}\n",
+    );
+
+    let out = std::process::Command::new(env!("CARGO_BIN_EXE_asbuilt"))
+        .args(["validate", ws.root().to_str().unwrap()])
+        .output()
+        .unwrap();
+
+    assert_eq!(out.status.code(), Some(1));
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    assert!(
+        stderr.contains("nope") && stderr.contains("rejected"),
+        "{stderr}"
+    );
+}

@@ -59,6 +59,7 @@ dependencies = [
  "asbuilt-core",
  "asbuilt-rust",
  "clap",
+ "serde_json",
  "tempfile",
  "thiserror",
 ]
