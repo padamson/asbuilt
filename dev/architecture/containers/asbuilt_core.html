@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asbuilt-core · asbuilt</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header><a class="site" href="../index.html">asbuilt</a><nav><a href="../containers/asbuilt.html">asbuilt</a> <a href="../containers/asbuilt_core.html">asbuilt-core</a> <a href="../containers/asbuilt_rust.html">asbuilt-rust</a> <a href="../containers/asbuilt_site.html">asbuilt-site</a> <a href="../containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a> </nav></header>
+<main>
+<nav class="crumbs"><a href="../index.html">asbuilt</a> / asbuilt-core</nav>
+<h1>asbuilt-core</h1>
+<p class="meta">library crate · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core"><code>crates/asbuilt-core</code></a></p>
+<p>The language-agnostic core of asbuilt.</p>
+<figure><img src="../views/view_asbuilt_core.svg" alt="asbuilt-core" loading="lazy"></figure>
+<h2>Modules</h2>
+<div class="modules"><ul>
+<li><a href="#asbuilt_core.check">check</a></li>
+<li><a href="#asbuilt_core.config">config</a></li>
+<li><a href="#asbuilt_core.docs">docs</a></li>
+<li><a href="#asbuilt_core.emit">emit</a></li>
+<li><a href="#asbuilt_core.error">error</a></li>
+<li><a href="#asbuilt_core.externals">externals</a></li>
+<li><a href="#asbuilt_core.frontend">frontend</a></li>
+<li><a href="#asbuilt_core.model">model</a></li>
+<li><a href="#asbuilt_core.tests">tests</a></li>
+</ul>
+</div>
+<section id="asbuilt_core.check">
+<h2>check <small>asbuilt_core.check</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/check.rs"><code>crates/asbuilt-core/src/check.rs</code></a></p>
+<p>The drift check: the committed model against a fresh survey, as a
+unified diff when they differ. Line endings are normalized first so
+a consumer with <code>autocrlf</code> gets a clean check.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>Outcome, compare</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.config">
+<h2>config <small>asbuilt_core.config</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/config.rs"><code>crates/asbuilt-core/src/config.rs</code></a></p>
+<p><code>asbuilt.toml</code>: the output path, the externals nothing static in the
+code can state, and every front-end's own table kept raw for it to
+parse.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error, Result</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.externals">asbuilt_core.externals</a></td><td>Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>Config</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.tests">asbuilt_core.tests</a></td><td>Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.config">asbuilt_rust.config</a></td><td>Config</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>Config</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.docs">
+<h2>docs <small>asbuilt_core.docs</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/docs.rs"><code>crates/asbuilt-core/src/docs.rs</code></a></p>
+<p>The documentation generator: a [<code>Model</code>] and the SVGs <code>asbuilt render</code>
+produced, to a static HTML tree that mounts anywhere.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>children_of, link_encode, view_ids</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, ElementKind, Id, Model, Relation, dotted, sanitize_id</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>DocsOptions, generate</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.emit">
+<h2>emit <small>asbuilt_core.emit</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/emit.rs"><code>crates/asbuilt-core/src/emit.rs</code></a></p>
+<p>The LikeC4 emitter: a [<code>Model</code>] to the text of one <code>.c4</code> file.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, ElementKind, Id, Model, RelationKind, sanitize_id, sanitize_segment</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>emit</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.tests">asbuilt.tests</a></td><td>emit</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>children_of, link_encode, view_ids</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>emit</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.error">
+<h2>error <small>asbuilt_core.error</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/error.rs"><code>crates/asbuilt-core/src/error.rs</code></a></p>
+<p>Errors that name the offending input, so a message reads without a
+rerun.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>Error</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.externals">asbuilt_core.externals</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.tests">asbuilt_core.tests</a></td><td>Error</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.config">asbuilt_rust.config</a></td><td>Result</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.externals">
+<h2>externals <small>asbuilt_core.externals</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/externals.rs"><code>crates/asbuilt-core/src/externals.rs</code></a></p>
+<p>Externals from <code>asbuilt.toml</code>: elements outside the code (a spawned
+process, a browser) and the edges from surveyed modules to them.
+Nothing static in the code states these, so the config does, and a
+<code>from</code> that names no element is an error rather than a missing edge.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, ElementKind, Id, Model, Relation, RelationKind, dotted, sanitize_id, sanitize_segment</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>apply, externals</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.frontend">
+<h2>frontend <small>asbuilt_core.frontend</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/frontend.rs"><code>crates/asbuilt-core/src/frontend.rs</code></a></p>
+<p>The front-end contract and the survey that runs every front-end
+that recognizes a root, merges their models, and applies the config.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.externals">asbuilt_core.externals</a></td><td>apply, externals</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Model</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>survey</td><td></td></tr>
+<tr><td>implements</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>Frontend</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>survey</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.model">
+<h2>model <small>asbuilt_core.model</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/model.rs"><code>crates/asbuilt-core/src/model.rs</code></a></p>
+<p>The architecture model every front-end produces and the emitter
+consumes.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error, Result</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>Model</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt.html#asbuilt.tests">asbuilt.tests</a></td><td>Element, ElementKind, Id, Model, Relation, RelationKind</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>Element, ElementKind, Id, Model, Relation, dotted, sanitize_id</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>Element, ElementKind, Id, Model, RelationKind, sanitize_id, sanitize_segment</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.externals">asbuilt_core.externals</a></td><td>Element, ElementKind, Id, Model, Relation, RelationKind, dotted, sanitize_id, sanitize_segment</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>Model</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>Element, ElementKind, Id, Model</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.aggregate">asbuilt_rust.aggregate</a></td><td>Id, Relation, RelationKind, is_lineal</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>Element, Model, Relation, RelationKind</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.visit">asbuilt_rust.visit</a></td><td>RelationKind</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.tests">
+<h2>tests <small>asbuilt_core.tests</small></h2>
+<p class="meta"><span class="tag">tests</span> · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/tests"><code>crates/asbuilt-core/tests</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error</td><td></td></tr>
+</tbody></table>
+</section>
+</main>
+</body>
+</html>

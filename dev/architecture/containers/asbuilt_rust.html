@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asbuilt-rust · asbuilt</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header><a class="site" href="../index.html">asbuilt</a><nav><a href="../containers/asbuilt.html">asbuilt</a> <a href="../containers/asbuilt_core.html">asbuilt-core</a> <a href="../containers/asbuilt_rust.html">asbuilt-rust</a> <a href="../containers/asbuilt_site.html">asbuilt-site</a> <a href="../containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a> </nav></header>
+<main>
+<nav class="crumbs"><a href="../index.html">asbuilt</a> / asbuilt-rust</nav>
+<h1>asbuilt-rust</h1>
+<p class="meta">library crate · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust"><code>crates/asbuilt-rust</code></a></p>
+<p>Rust front-end for asbuilt.</p>
+<figure><img src="../views/view_asbuilt_rust.svg" alt="asbuilt-rust" loading="lazy"></figure>
+<h2>Modules</h2>
+<div class="modules"><ul>
+<li><a href="#asbuilt_rust.aggregate">aggregate</a></li>
+<li><a href="#asbuilt_rust.config">config</a></li>
+<li><a href="#asbuilt_rust.discover">discover</a></li>
+<li><a href="#asbuilt_rust.error">error</a></li>
+<li><a href="#asbuilt_rust.resolve">resolve</a></li>
+<li><a href="#asbuilt_rust.source">source</a></li>
+<li><a href="#asbuilt_rust.tests">tests</a></li>
+<li><a href="#asbuilt_rust.visit">visit</a></li>
+<li><a href="#asbuilt_rust.walk">walk</a></li>
+</ul>
+</div>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>implements</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>Frontend</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, ElementKind, Id, Model</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>RustFrontend</td><td></td></tr>
+</tbody></table>
+<section id="asbuilt_rust.aggregate">
+<h2>aggregate <small>asbuilt_rust.aggregate</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/aggregate.rs"><code>crates/asbuilt-rust/src/aggregate.rs</code></a></p>
+<p>From resolved references to model relations: element ids per target
+role, one relation per (source, target) pair with the strongest
+kind and the sorted item names, and nothing between an element and
+its own ancestors or descendants.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Id, Relation, RelationKind, is_lineal</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.resolve">asbuilt_rust.resolve</a></td><td>Location, ResolveTree, TargetKey, TargetRole, resolve</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.visit">asbuilt_rust.visit</a></td><td>ModuleFacts</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.walk">asbuilt_rust.walk</a></td><td>ModulePath</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.config">
+<h2>config <small>asbuilt_rust.config</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/config.rs"><code>crates/asbuilt-rust/src/config.rs</code></a></p>
+<p>The <code>[rust]</code> table of <code>asbuilt.toml</code>.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Result</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.discover">asbuilt_rust.discover</a></td><td>RustConfig</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>RustConfig</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.discover">
+<h2>discover <small>asbuilt_rust.discover</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/discover.rs"><code>crates/asbuilt-rust/src/discover.rs</code></a></p>
+<p>Crates and their targets, from <code>cargo metadata --no-deps --offline</code>
+on the root manifest and on each <code>[rust] extra_manifests</code> entry.
+<code>--no-deps</code> reads manifests only: no resolution, no network, no
+lockfile written.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.config">asbuilt_rust.config</a></td><td>RustConfig</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.error">asbuilt_rust.error</a></td><td>RustFrontendError</td><td></td></tr>
+<tr><td>uses</td><td><a href="../index.html#cargo">cargo</a></td><td>runs</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>TECHNOLOGY_BINARY, TECHNOLOGY_LIBRARY, TECHNOLOGY_PROC_MACRO, TECHNOLOGY_TESTS, TargetKind, discover</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.error">
+<h2>error <small>asbuilt_rust.error</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/error.rs"><code>crates/asbuilt-rust/src/error.rs</code></a></p>
+<p>What the Rust front-end can get wrong, each naming the path or
+module involved.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.discover">asbuilt_rust.discover</a></td><td>RustFrontendError</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>RustFrontendError</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.walk">asbuilt_rust.walk</a></td><td>RustFrontendError</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.resolve">
+<h2>resolve <small>asbuilt_rust.resolve</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/resolve.rs"><code>crates/asbuilt-rust/src/resolve.rs</code></a></p>
+<p>Path resolution over an in-memory tree of targets and modules: which
+module, and which item in it, a path written in some module refers
+to. Pure functions; the tests build trees by hand. Re-exports are
+followed by substitution to a fixed point, globs are consulted when
+a direct lookup fails, and a path that stops at a segment that is
+neither module nor re-export is attributed to the module reached
+(the lenient stop), which is what keeps derive-generated names
+resolvable.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.visit">asbuilt_rust.visit</a></td><td>Anchor, RawPath</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.walk">asbuilt_rust.walk</a></td><td>ModulePath</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.aggregate">asbuilt_rust.aggregate</a></td><td>Location, ResolveTree, TargetKey, TargetRole, resolve</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.source">
+<h2>source <small>asbuilt_rust.source</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/source.rs"><code>crates/asbuilt-rust/src/source.rs</code></a></p>
+<p>Where source text comes from. The walk reads through this trait so
+its tests run over an in-memory map and never touch a disk.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.walk">asbuilt_rust.walk</a></td><td>FileSource</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.tests">
+<h2>tests <small>asbuilt_rust.tests</small></h2>
+<p class="meta"><span class="tag">tests</span> · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/tests"><code>crates/asbuilt-rust/tests</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>emit</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>survey</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, Model, Relation, RelationKind</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.config">asbuilt_rust.config</a></td><td>RustConfig</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.discover">asbuilt_rust.discover</a></td><td>TECHNOLOGY_BINARY, TECHNOLOGY_LIBRARY, TECHNOLOGY_PROC_MACRO, TECHNOLOGY_TESTS, TargetKind, discover</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.error">asbuilt_rust.error</a></td><td>RustFrontendError</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.visit">
+<h2>visit <small>asbuilt_rust.visit</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/visit.rs"><code>crates/asbuilt-rust/src/visit.rs</code></a></p>
+<p>What one parsed file references, per module: every <code>use</code>, every
+path in a type, expression or pattern, every <code>impl Trait for</code>, and
+the names the module defines. Pure over a <code>syn::File</code>; the tests
+parse strings. Macro token streams are not parsed, and method calls
+on values are not paths, so neither produces a reference.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>RelationKind</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.walk">asbuilt_rust.walk</a></td><td>ModulePath, is_cfg_test</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.aggregate">asbuilt_rust.aggregate</a></td><td>ModuleFacts</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.resolve">asbuilt_rust.resolve</a></td><td>Anchor, RawPath</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.walk">
+<h2>walk <small>asbuilt_rust.walk</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/walk.rs"><code>crates/asbuilt-rust/src/walk.rs</code></a></p>
+<p>The module tree of one target, from its root file down every <code>mod</code>
+declaration. Follows <code>mod x;</code> to <code>x.rs</code> or <code>x/mod.rs</code>, honors
+<code>#[path]</code>, enters inline <code>mod x { }</code>, and skips anything under
+<code>#[cfg(test)]</code>. Every file comes from a declaration, never from a
+directory listing, so discovery order is out of the picture.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.error">asbuilt_rust.error</a></td><td>RustFrontendError</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.source">asbuilt_rust.source</a></td><td>FileSource</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.aggregate">asbuilt_rust.aggregate</a></td><td>ModulePath</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.resolve">asbuilt_rust.resolve</a></td><td>ModulePath</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.visit">asbuilt_rust.visit</a></td><td>ModulePath, is_cfg_test</td><td></td></tr>
+</tbody></table>
+</section>
+</main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asbuilt · asbuilt</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><a class="site" href="index.html">asbuilt</a><nav><a href="containers/asbuilt.html">asbuilt</a> <a href="containers/asbuilt_core.html">asbuilt-core</a> <a href="containers/asbuilt_rust.html">asbuilt-rust</a> <a href="containers/asbuilt_site.html">asbuilt-site</a> <a href="containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a> </nav></header>
+<main>
+<h1>asbuilt</h1>
+<figure><img src="views/index.svg" alt="Overview" loading="lazy"></figure>
+<h2>Containers</h2>
+<table><thead><tr><th>Name</th><th>Technology</th><th>Description</th></tr></thead><tbody>
+<tr><td><a href="containers/asbuilt.html">asbuilt</a></td><td>library crate</td><td><p>The library half of the <code>asbuilt</code> binary.</p>
+</td></tr>
+<tr><td><a href="containers/asbuilt_core.html">asbuilt-core</a></td><td>library crate</td><td><p>The language-agnostic core of asbuilt.</p>
+</td></tr>
+<tr><td><a href="containers/asbuilt_rust.html">asbuilt-rust</a></td><td>library crate</td><td><p>Rust front-end for asbuilt.</p>
+</td></tr>
+<tr><td><a href="containers/asbuilt_site.html">asbuilt-site</a></td><td>binary</td><td></td></tr>
+<tr><td><a href="containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a></td><td>test crate</td><td></td></tr>
+</tbody></table>
+<h2>Externals</h2>
+<table><thead><tr><th>Name</th><th>Kind</th><th>Technology</th><th>Description</th><th>Used by</th></tr></thead><tbody>
+<tr id="cargo"><td>cargo metadata</td><td>process</td><td>cargo subprocess</td><td><p>Lists the workspace's packages and targets; <code>--no-deps --offline</code>, so no lockfile is touched.</p>
+</td><td><a href="containers/asbuilt_rust.html#asbuilt_rust.discover">asbuilt_rust.discover</a> (uses: runs)</td></tr>
+<tr id="chromium"><td>Chromium</td><td>process</td><td>Playwright driver, via playwright-rs</td><td><p>The browser the site's end-to-end tests drive against the built landing page.</p>
+</td><td><a href="containers/asbuilt_site_e2e.html#asbuilt_site_e2e.tests">asbuilt_site_e2e.tests</a> (uses: drives)</td></tr>
+<tr id="graphviz"><td>Graphviz dot</td><td>process</td><td>dot subprocess</td><td><p>Renders the Graphviz files LikeC4 generates to SVG.</p>
+</td><td><a href="containers/asbuilt.html#asbuilt.likec4">asbuilt.likec4</a> (uses: renders with)</td></tr>
+<tr id="likec4"><td>LikeC4 CLI</td><td>process</td><td>Node.js via npx, pinned version</td><td><p>Validates, exports and lays out the model. Only <code>validate</code>, <code>export json</code> and <code>render</code> reach it.</p>
+</td><td><a href="containers/asbuilt.html#asbuilt.likec4">asbuilt.likec4</a> (uses: runs)</td></tr>
+</tbody></table>
+</main>
+</body>
+</html>

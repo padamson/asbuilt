@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>asbuilt · asbuilt</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header><a class="site" href="../index.html">asbuilt</a><nav><a href="../containers/asbuilt.html">asbuilt</a> <a href="../containers/asbuilt_core.html">asbuilt-core</a> <a href="../containers/asbuilt_rust.html">asbuilt-rust</a> <a href="../containers/asbuilt_site.html">asbuilt-site</a> <a href="../containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a> </nav></header>
+<main>
+<nav class="crumbs"><a href="../index.html">asbuilt</a> / asbuilt</nav>
+<h1>asbuilt</h1>
+<p class="meta">library crate · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt"><code>crates/asbuilt</code></a></p>
+<p>The library half of the <code>asbuilt</code> binary.</p>
+<figure><img src="../views/view_asbuilt.svg" alt="asbuilt" loading="lazy"></figure>
+<h2>Modules</h2>
+<div class="modules"><ul>
+<li><a href="#asbuilt.asbuilt">asbuilt</a></li>
+<li><a href="#asbuilt.commands">commands</a></li>
+<li><a href="#asbuilt.likec4">likec4</a></li>
+<li><a href="#asbuilt.tests">tests</a></li>
+</ul>
+</div>
+<section id="asbuilt.asbuilt">
+<h2>asbuilt <small>asbuilt.asbuilt</small></h2>
+<p class="meta"><span class="tag">bin</span> · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt/src/main.rs"><code>crates/asbuilt/src/main.rs</code></a></p>
+<p>The <code>asbuilt</code> command line: <code>survey</code> writes the model, <code>check</code> fails
+when the committed one is stale, <code>docs</code> writes the documentation
+tree, and <code>validate</code>, <code>export json</code> and <code>render</code> hand the model to
+the pinned LikeC4.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>EXIT_ERROR, check, commands, docs, export_json, render, survey, validate</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt.commands">
+<h2>commands <small>asbuilt.commands</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt/src/commands.rs"><code>crates/asbuilt/src/commands.rs</code></a></p>
+<p>The subcommands, as functions that return an exit code, so the binary
+is a thin <code>main</code> and the tests can drive each path. <code>survey</code> and
+<code>check</code> need no Node; <code>validate</code>, <code>export json</code> and <code>render</code> shell
+out to the pinned LikeC4 (and <code>render</code> to Graphviz).</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.likec4">asbuilt.likec4</a></td><td>LikeC4Error, export_json, likec4, render, validate</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.check">asbuilt_core.check</a></td><td>Outcome, compare</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>DocsOptions, generate</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>emit</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>survey</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Model</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>RustFrontend</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.asbuilt">asbuilt.asbuilt</a></td><td>EXIT_ERROR, check, commands, docs, export_json, render, survey, validate</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt.likec4">
+<h2>likec4 <small>asbuilt.likec4</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt/src/likec4.rs"><code>crates/asbuilt/src/likec4.rs</code></a></p>
+<p>The pinned <code>npx likec4</code> calls, plus Graphviz for rendering. Everything
+downstream of the model is LikeC4's; this module runs it and reports
+what it said.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../index.html#graphviz">graphviz</a></td><td>renders with</td><td></td></tr>
+<tr><td>uses</td><td><a href="../index.html#likec4">likec4</a></td><td>runs</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>LikeC4Error, export_json, likec4, render, validate</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.tests">asbuilt.tests</a></td><td>LikeC4Error, export_json, likec4, render, validate</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt.tests">
+<h2>tests <small>asbuilt.tests</small></h2>
+<p class="meta"><span class="tag">tests</span> · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt/tests"><code>crates/asbuilt/tests</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.likec4">asbuilt.likec4</a></td><td>LikeC4Error, export_json, likec4, render, validate</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>emit</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, ElementKind, Id, Model, Relation, RelationKind</td><td></td></tr>
+</tbody></table>
+</section>
+</main>
+</body>
+</html>

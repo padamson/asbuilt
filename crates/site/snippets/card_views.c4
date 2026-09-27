@@ -1,8 +1,0 @@
-// docs/architecture/views.c4
-views {
-  view context {
-    title 'asbuilt: the three crates and what they run'
-    include asbuilt, asbuilt_core, asbuilt_rust, cargo, likec4, graphviz
-    autoLayout LeftRight
-  }
-}
