@@ -215,12 +215,16 @@ pub fn check(
     let config = load_config(root, config_path)?;
     let target = output_target(root, &config, None)?;
     let (rel, path) = (target.label, target.path);
+    // Errors name the root-relative label, which is what the user
+    // configured and reads the same on every platform.
     let committed = std::fs::read_to_string(&path).map_err(|source| {
         if source.kind() == io::ErrorKind::NotFound {
-            CliError::NoModel { path: path.clone() }
+            CliError::NoModel {
+                path: PathBuf::from(&rel),
+            }
         } else {
             CliError::Read {
-                path: path.clone(),
+                path: PathBuf::from(&rel),
                 source,
             }
         }

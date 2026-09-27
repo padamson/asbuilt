@@ -589,8 +589,11 @@ mod tests {
     fn a_parsed_file_debugs_as_its_path_and_module() {
         let t = tree(&[("src/lib.rs", "mod a;"), ("src/a.rs", "")]).unwrap();
         let shown = format!("{:?}", t.files[1]);
+        // The path joins with the platform separator, so compare against
+        // the same join rather than a literal.
+        let expected_path = format!("{:?}", Path::new("src").join("a.rs"));
         assert!(
-            shown.contains("src/a.rs") && shown.contains("[\"a\"]"),
+            shown.contains(&expected_path) && shown.contains("[\"a\"]"),
             "{shown}"
         );
     }
