@@ -100,7 +100,7 @@ These settings cannot be configured via code and must be set in the GitHub UI.
 - [ ] After the first push to `main` with `pages.yml` has created the
   `gh-pages` branch: **Settings > Pages > Build and deployment > Source:
   Deploy from a branch > Branch: `gh-pages` / (root)**, or
-  `gh api -X POST repos/padamson/asbuilt/pages -f build_type=legacy -f source[branch]=gh-pages -f source[path]=/`.
+  `gh api -X POST repos/padamson/asbuilt/pages -f build_type=legacy -f 'source[branch]=gh-pages' -f 'source[path]=/'`.
   The site is served at https://padamson.github.io/asbuilt/; the workflow
   writes `/asbuilt/dev/` from main and `/asbuilt/vX.Y.Z/` per release
   (`docs/versioned-site.md`).

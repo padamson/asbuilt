@@ -68,7 +68,7 @@ Triggers:
    Source: **Deploy from a branch** → Branch: **`gh-pages` / (root)**.
    Or:
    ```
-   gh api -X POST repos/padamson/asbuilt/pages -f build_type=legacy -f source[branch]=gh-pages -f source[path]=/
+   gh api -X POST repos/padamson/asbuilt/pages -f build_type=legacy -f 'source[branch]=gh-pages' -f 'source[path]=/'
    ```
 
 ## Per release
