@@ -61,39 +61,18 @@ These settings cannot be configured via code and must be set in the GitHub UI.
   on `Cargo.lock` and get rebased and re-tested, and an actions bump beside
   a cargo bump touches disjoint files.
 
-  Either click through the UI, or apply via `gh api` (requires `admin:repo` scope — run `gh auth refresh -s admin:repo` first if needed):
+  Either click through the UI, or apply via `gh api` (requires `admin:repo`
+  scope; run `gh auth refresh -s admin:repo` first if needed). The rule
+  lives in `.github/branch-protection.json` so the list of required checks
+  is tracked beside the workflows that define them; add a job there when
+  you add one that should block a merge, then re-run the command:
 
   ```bash
-  gh api -X PUT repos/padamson/asbuilt/branches/main/protection \
-    --input - <<'JSON'
-  {
-    "required_status_checks": {
-      "strict": false,
-      "checks": [
-        {"context": "MSRV Check"},
-        {"context": "Lint"},
-        {"context": "Test on ubuntu-latest"},
-        {"context": "Test on macos-latest"},
-        {"context": "Test on windows-latest"},
-        {"context": "License & Dependency Check"},
-        {"context": "Supply Chain Review"},
-        {"context": "Mutation Testing (diff)"},
-        {"context": "Skill version guard"},
-        {"context": "LikeC4 validate"},
-        {"context": "Excluded crates compile"},
-        {"context": "Build, dogfood-gate, and deploy"}
-      ]
-    },
-    "enforce_admins": false,
-    "required_pull_request_reviews": null,
-    "restrictions": null,
-    "required_linear_history": false,
-    "allow_force_pushes": false,
-    "allow_deletions": false,
-    "required_conversation_resolution": true
-  }
-  JSON
+  gh api -X PUT repos/padamson/asbuilt/branches/main/protection --input .github/branch-protection.json
   ```
+
+  (Not a heredoc: a code block inside this list is indented, and an
+  indented heredoc terminator never matches, so the shell waits forever.)
 
 ### GitHub Pages
 

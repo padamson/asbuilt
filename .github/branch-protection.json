@@ -1,0 +1,26 @@
+{
+  "required_status_checks": {
+    "strict": false,
+    "checks": [
+      {"context": "MSRV Check"},
+      {"context": "Lint"},
+      {"context": "Test on ubuntu-latest"},
+      {"context": "Test on macos-latest"},
+      {"context": "Test on windows-latest"},
+      {"context": "License & Dependency Check"},
+      {"context": "Supply Chain Review"},
+      {"context": "Mutation Testing (diff)"},
+      {"context": "Skill version guard"},
+      {"context": "LikeC4 validate"},
+      {"context": "Excluded crates compile"},
+      {"context": "Build, dogfood-gate, and deploy"}
+    ]
+  },
+  "enforce_admins": false,
+  "required_pull_request_reviews": null,
+  "restrictions": null,
+  "required_linear_history": false,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "required_conversation_resolution": true
+}
