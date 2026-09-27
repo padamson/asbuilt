@@ -1,23 +1,16 @@
 version: 2
 updates:
   - package-ecosystem: "cargo"
-    # `directory: "/"` reads only the root Cargo.lock. When a manifest range
-    # moves, the root lock follows and any crate excluded from the workspace
-    # (`[workspace] exclude`, or its own `[workspace]` table, which is how
-    # wasm site and app crates, e2e crates, and cargo-fuzz dirs are usually
-    # set up) keeps its own lock where it was, until a local build silently
-    # re-resolves it. Once this repo has such a crate that commits its own
-    # Cargo.lock, replace `directory:` with `directories:` naming the root
-    # plus every one of them; `git ls-files '*Cargo.lock'` prints the list.
-    # One entry keeps the schedule, cooldown, and groups on all of them and
-    # opens one PR per group across the whole list.
-    #
-    # directories:
-    #   - "/"
-    #   - "/crates/site"
-    #   - "/crates/e2e"
-    #   - "/fuzz"
-    directory: "/"
+    # Every directory with a tracked Cargo.lock: the root, and the two site
+    # crates excluded from the workspace, which keep their own. A single
+    # `directory: "/"` would read only the root lock and leave theirs
+    # stale until a local build silently re-resolved them. One entry keeps
+    # the schedule, cooldown and groups on all three and opens one PR per
+    # group across the list; `git ls-files '*Cargo.lock'` is the check.
+    directories:
+      - "/"
+      - "/crates/site"
+      - "/crates/site-e2e"
     schedule:
       interval: "weekly"
       day: "saturday"

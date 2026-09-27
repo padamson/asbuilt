@@ -40,8 +40,9 @@ jobs:
         with:
           tool: cargo-deny
 
+      # Over the root and the two excluded site crates, one deny.toml.
       - name: Run cargo deny
-        run: cargo deny check
+        run: scripts/deny-all-manifests.sh
 
   supply-chain:
     name: Supply Chain Review

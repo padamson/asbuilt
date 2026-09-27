@@ -41,6 +41,30 @@ survey and commit `model.c4` with the change. Never edit it by hand.
 
 One version for the workspace, set in the root `Cargo.toml`.
 
+**`crates/site` and `crates/site-e2e` are excluded from the workspace**
+(wasm target, a large tree), so every `--workspace` command above skips
+them. What covers them instead:
+
+- `scripts/check-external-lockfiles.sh` (pre-commit) fails when either
+  lockfile is behind its manifest; refresh with `cargo metadata
+  --manifest-path crates/<crate>/Cargo.toml >/dev/null` and stage the lock.
+  CI checks both crates with `--locked`.
+- `scripts/deny-all-manifests.sh` runs `cargo deny` over the root and both
+  crates with the one `deny.toml`; the hook, the security job and the
+  advisory monitor all use it. The four unmaintained-crate advisories the
+  site's wasm and build-script tree carries are accepted in `deny.toml`'s
+  ignore list, each with its path; the root workspace reaches none of them.
+- The `site-crates-lint` hook runs fmt, clippy (wasm target for the site)
+  and the site's host tests whenever a file under either crate is staged.
+- `Excluded crates compile` in `test.yml` does the same compile check on
+  every push with the driver download skipped; `pages.yml` builds, tests
+  and deploys them for real.
+- Dependabot lists both directories on its cargo entry.
+- cargo-vet is deliberately **not** extended to them: their wasm and
+  browser-driver tree ships nothing to a user's machine, deny covers
+  advisories and licenses, and folding a few hundred exemptions into the
+  store the shipped crates' reviewers read would bury the signal.
+
 ## Development
 
 ```bash

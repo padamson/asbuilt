@@ -49,7 +49,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          report="$(cargo deny check advisories 2>&1)"
+          report="$(scripts/deny-all-manifests.sh advisories 2>&1)"
           code=$?
           set -e
           echo "$report"

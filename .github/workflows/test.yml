@@ -139,6 +139,42 @@ jobs:
       - name: Validate this repo's own model
         run: cargo run -p asbuilt -- validate
 
+  # The site crates are excluded from the workspace, so nothing above
+  # compiles them; this catches an API change that breaks them before the
+  # Pages job (which builds them for real) runs. Compile-only, never a
+  # browser launch: PLAYWRIGHT_SKIP_DRIVER_DOWNLOAD at job level skips
+  # playwright-rs's ~90 MB driver assembly (job level, not step level:
+  # rerun-if-env-changed would rebuild it on the next step). `--locked`
+  # fails on a lockfile the pre-commit hook would have flagged.
+  excluded-crates:
+    name: Excluded crates compile
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PLAYWRIGHT_SKIP_DRIVER_DOWNLOAD: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # stable
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          shared-key: excluded
+          workspaces: |
+            crates/site
+            crates/site-e2e
+
+      - name: Check the site crate for its real target
+        run: cargo check --manifest-path crates/site/Cargo.toml --locked --target wasm32-unknown-unknown --all-targets
+
+      - name: Check the e2e crate
+        run: cargo check --manifest-path crates/site-e2e/Cargo.toml --locked --all-targets
+
   test:
     name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}

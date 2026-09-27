@@ -14,7 +14,20 @@ feature-depth = 1
 # and the daily advisory monitor all run `cargo deny`, so nothing mirrors
 # this list and nothing can drift from it. Give each entry a reason:
 #   { id = "RUSTSEC-2026-XXXX", reason = "no fix upstream; not reachable from our call graph" }
-ignore = []
+#
+# `scripts/deny-all-manifests.sh` applies this file to the root workspace
+# and to crates/site and crates/site-e2e, so an entry here is accepted for
+# all three. The four below are unmaintained-crate notices, not
+# vulnerabilities, all reached only from the site's wasm and build-script
+# tree; none ships in a crate a user installs. Each names its path, so a
+# future root dependency on the same crate is a reason to revisit, not a
+# silent pass.
+ignore = [
+  { id = "RUSTSEC-2025-0141", reason = "bincode 1 is unmaintained; syntect's dump-load feature reads its bundled syntax set with it at site build time only; no syntect release without it" },
+  { id = "RUSTSEC-2024-0320", reason = "yaml-rust is unmaintained; syntect 5's yaml-load feature, site build time only; syntect 5 has no other loader" },
+  { id = "RUSTSEC-2024-0436", reason = "paste is archived; leptos 0.8 and reactive_graph use it at compile time only, wasm target; leptos has not replaced it" },
+  { id = "RUSTSEC-2026-0173", reason = "proc-macro-error2 is unmaintained; reached through rstml under leptos_macro at compile time only; no leptos release without it" },
+]
 
 [licenses]
 allow = [

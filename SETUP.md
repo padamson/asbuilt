@@ -48,6 +48,8 @@ These settings cannot be configured via code and must be set in the GitHub UI.
   - `License & Dependency Check`, `Supply Chain Review`
   - `Mutation Testing (diff)`, `Skill version guard`
   - `LikeC4 validate` — the `#[ignore]` tests that need `npx likec4`, ubuntu-only
+  - `Excluded crates compile` — the site crates, which no `--workspace` command sees
+  - `Build, dogfood-gate, and deploy` — the Pages job, which gates on the playwright-rs test
 
   **Leave "require branches to be up to date" off** (`strict: false`).
   With it on, the second green Dependabot PR of the week is stale the moment
@@ -77,7 +79,9 @@ These settings cannot be configured via code and must be set in the GitHub UI.
         {"context": "Supply Chain Review"},
         {"context": "Mutation Testing (diff)"},
         {"context": "Skill version guard"},
-        {"context": "LikeC4 validate"}
+        {"context": "LikeC4 validate"},
+        {"context": "Excluded crates compile"},
+        {"context": "Build, dogfood-gate, and deploy"}
       ]
     },
     "enforce_admins": false,
@@ -90,6 +94,16 @@ These settings cannot be configured via code and must be set in the GitHub UI.
   }
   JSON
   ```
+
+### GitHub Pages
+
+- [ ] After the first push to `main` with `pages.yml` has created the
+  `gh-pages` branch: **Settings > Pages > Build and deployment > Source:
+  Deploy from a branch > Branch: `gh-pages` / (root)**, or
+  `gh api -X POST repos/padamson/asbuilt/pages -f build_type=legacy -f source[branch]=gh-pages -f source[path]=/`.
+  The site is served at https://padamson.github.io/asbuilt/; the workflow
+  writes `/asbuilt/dev/` from main and `/asbuilt/vX.Y.Z/` per release
+  (`docs/versioned-site.md`).
 
 ### Code security
 

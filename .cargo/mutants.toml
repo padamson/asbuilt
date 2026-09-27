@@ -30,6 +30,11 @@ test_workspace = true
 #   - workspace, one focus crate: ["my-crate/src/**/*.rs"]
 #   - workspace, all crates: ["crates/*/src/**/*.rs"]
 examine_globs = ["crates/*/src/**/*.rs"]
+# crates/site and crates/site-e2e match that glob but are excluded from the
+# workspace, and cargo-mutants enumerates source files from workspace
+# packages only, so they are never visited and no exclude is needed. A
+# site-only diff prints "No mutants to filter". The check, should that ever
+# change: `cargo mutants --list | grep -c crates/site` prints 0.
 
 # Keep codegen output and test doubles out of scope. Generated code
 # (panschema, prost, tonic, bindgen) has its source of truth in the
