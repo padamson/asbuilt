@@ -272,12 +272,10 @@ fn emit_views(out: &mut String, model: &Model) {
         }
         let fqn = sanitize_id(&element.id);
         let base = view_id(&element.id);
-        let mut id = base.clone();
-        let mut n = 2;
-        while !used.insert(id.clone()) {
-            id = format!("{base}_{n}");
-            n += 1;
-        }
+        let id = std::iter::once(base.clone())
+            .chain((2..).map(|n| format!("{base}_{n}")))
+            .find(|candidate| used.insert(candidate.clone()))
+            .expect("an unbounded sequence of candidates always has a free one");
         writeln!(
             out,
             "\n  view {id} of {fqn} {{\n    title {}\n    include *\n    autoLayout TopBottom\n  }}",

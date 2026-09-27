@@ -329,6 +329,16 @@ mod tests {
     }
 
     #[test]
+    fn the_deepest_existing_ancestor_is_canonicalized_and_the_tail_reattached() {
+        // `.` exists and canonicalizes to the absolute current directory;
+        // `x/nowhere` does not exist and rides along. Holds on every
+        // platform, unlike a symlinked temp root.
+        let got = canonicalize_partial(Path::new("./x/nowhere"));
+        let cwd = canonical_root(Path::new(".")).unwrap();
+        assert_eq!(got, cwd.join("x").join("nowhere"));
+    }
+
+    #[test]
     fn a_path_with_no_existing_ancestor_is_returned_as_is() {
         assert_eq!(
             canonicalize_partial(Path::new("relative/nowhere")),
