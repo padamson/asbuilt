@@ -286,10 +286,45 @@ fn render_without_npx_exits_two_and_writes_no_svg() {
 // and the pages are proven here; the `likec4_docs_*` test covers the
 // rendering path.
 
+/// A directory holding an `npx` that exits 1, to put first on the PATH:
+/// the survey (cargo) still works, a render cannot, and it fails at once
+/// rather than fetching LikeC4. Every `docs` test runs with it so a docs
+/// that ignored `--no-render` would exit 2 in milliseconds on any machine.
+fn fake_npx() -> Workspace {
+    let bin = Workspace::new();
+    let fake = if cfg!(windows) { "npx.cmd" } else { "npx" };
+    let script = if cfg!(windows) {
+        "@echo off\r\nexit /b 1\r\n"
+    } else {
+        "#!/bin/sh\nexit 1\n"
+    };
+    let path = bin.write(fake, script);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o755)).unwrap();
+    }
+    bin
+}
+
+fn path_with(first: &Path) -> String {
+    format!(
+        "{}{}{}",
+        first.display(),
+        if cfg!(windows) { ";" } else { ":" },
+        std::env::var("PATH").unwrap_or_default()
+    )
+}
+
 fn docs_run(ws: &Workspace, extra: &[&str]) -> Output {
+    let bin = fake_npx();
     let mut args = vec!["docs", ws.root().to_str().unwrap(), "--no-render"];
     args.extend_from_slice(extra);
-    run(&args)
+    asbuilt()
+        .args(&args)
+        .env("PATH", path_with(bin.root()))
+        .output()
+        .unwrap()
 }
 
 #[test]
@@ -415,32 +450,12 @@ fn docs_without_a_committed_model_exits_two_naming_the_path() {
 
 #[test]
 fn docs_with_a_failing_npx_exits_two_and_writes_nothing() {
-    // A fake `npx` first on the PATH: the survey (cargo) still works, the
-    // render does not, and nothing may be written.
     let ws = scratch_copy();
-    let bin = Workspace::new();
-    let fake = if cfg!(windows) { "npx.cmd" } else { "npx" };
-    let script = if cfg!(windows) {
-        "@echo off\r\nexit /b 1\r\n"
-    } else {
-        "#!/bin/sh\nexit 1\n"
-    };
-    let fake_path = bin.write(fake, script);
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::PermissionsExt;
-        std::fs::set_permissions(&fake_path, std::fs::Permissions::from_mode(0o755)).unwrap();
-    }
-    let path = format!(
-        "{}{}{}",
-        bin.root().display(),
-        if cfg!(windows) { ";" } else { ":" },
-        std::env::var("PATH").unwrap_or_default()
-    );
+    let bin = fake_npx();
 
     let out = asbuilt()
         .args(["docs", ws.root().to_str().unwrap(), "-o", "out"])
-        .env("PATH", path)
+        .env("PATH", path_with(bin.root()))
         .output()
         .unwrap();
 
