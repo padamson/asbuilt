@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `asbuilt validate` (likec4 validate over the model directory, exit 1 when it rejects the model or a curated view), `asbuilt export json` (normalized: `links[].relative` stripped, so the file is the same on every machine), `asbuilt render` (`likec4 gen dot` then Graphviz `dot -Tsvg`, one SVG per view); four more `likec4_` tests
 - The `asbuilt` skill (`npx skills add padamson/asbuilt`) written for a consumer agent: the three rules, what the model records, and references for the CLI, `asbuilt.toml` and id spelling
 - README usage, configuration and hook sections; CLAUDE.md sections on fixtures and the `likec4_` tests
+- asbuilt surveys itself: `asbuilt.toml` at the root (externals: cargo, the LikeC4 CLI, Graphviz), `docs/architecture/model.c4`, curated views in `docs/architecture/views.c4`, an `asbuilt-check` pre-commit hook, an `asbuilt check` step on every CI platform and an `asbuilt validate` step on the LikeC4 job
 
 ### Fixed
 - A bare name brought in by a glob import (`use crate::a::*; Thing::new()`) now resolves; modules that glob-import a prelude were missing from the graph

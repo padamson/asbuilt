@@ -134,6 +134,11 @@ jobs:
       - name: Run the tests that need LikeC4
         run: cargo nextest run --workspace --profile ci --run-ignored only -E 'test(/^likec4_/)'
 
+      # The committed model and the curated views beside it, through the
+      # real parser.
+      - name: Validate this repo's own model
+        run: cargo run -p asbuilt -- validate
+
   test:
     name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -169,3 +174,10 @@ jobs:
       # pass is reported FLAKY instead of hiding, and a longer slow-timeout.
       - name: Run tests
         run: cargo nextest run --workspace --profile ci
+
+      # asbuilt surveying itself on every platform: the committed model
+      # must be byte-identical to a fresh survey here, which is the
+      # cheapest cross-platform determinism proof there is and needs no
+      # Node.
+      - name: Run asbuilt check
+        run: cargo run -p asbuilt -- check

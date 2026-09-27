@@ -106,6 +106,18 @@ repos:
         pass_filenames: false
         files: (Cargo\.toml$|Cargo\.lock$|^supply-chain/)
 
+      # asbuilt surveying itself: the committed model must match a fresh
+      # survey of the code. No Node on this path; `cargo run` builds the
+      # CLI if it is stale. The regex covers the model, the curated views
+      # beside it, and every crate.
+      - id: asbuilt-check
+        name: asbuilt check
+        description: The committed architecture model matches the code
+        entry: cargo run -q -p asbuilt -- check
+        language: system
+        pass_filenames: false
+        files: (docs/architecture/|crates/|asbuilt\.toml$)
+
       # A shipped skill's `metadata.version` is the only version an
       # installed copy carries: `npx skills add` copies and compares
       # nothing, so a content edit that leaves it alone is invisible to
