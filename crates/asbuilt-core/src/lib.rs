@@ -18,7 +18,7 @@ pub mod model;
 
 pub use check::{Outcome, compare};
 pub use config::{Config, External, ExternalRelation, OutputConfig};
-pub use emit::{EmitOptions, emit};
+pub use emit::{EmitOptions, emit, view_ids};
 pub use error::{Error, Result};
 pub use frontend::{Frontend, survey};
 pub use model::{Deployment, Element, ElementKind, Id, Model, Relation, RelationKind};

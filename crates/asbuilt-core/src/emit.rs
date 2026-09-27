@@ -6,7 +6,7 @@
 //! function of the normalized model: same model, same bytes, on every
 //! platform.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write;
 
 use crate::model::{Element, ElementKind, Id, Model, RelationKind, sanitize_id, sanitize_segment};
@@ -245,11 +245,34 @@ fn emit_element(
     writeln!(out, "{indent}}}").unwrap();
 }
 
-/// The view id for an element: its sanitized id with `_` for `.`. Two
-/// elements can share one (`a.b_c` and `a_b.c`); the emitter suffixes
-/// the later one.
+/// The base view id for an element: its sanitized id with `_` for `.`.
+/// Two elements can share one (`a.b_c` and `a_b.c`); [`view_ids`] is
+/// where the later one gets its suffix.
 pub fn view_id(id: &Id) -> String {
     format!("view_{}", sanitize_id(id).replace('.', "_"))
+}
+
+/// The generated view of every element with children, keyed by element
+/// id: the view name as the emitter declares it and as `asbuilt render`
+/// names the SVG. Where two ids collapse to one base name, the second
+/// and later take a numeric suffix in element order, so the names are
+/// stable for a normalized model (`emit` normalizes first; call this on
+/// the same model to get the same names).
+pub fn view_ids(model: &Model) -> BTreeMap<Id, String> {
+    let mut used: BTreeSet<String> = BTreeSet::from(["index".to_string()]);
+    let mut names = BTreeMap::new();
+    for element in &model.elements {
+        if children_of(model, &element.id).is_empty() {
+            continue;
+        }
+        let base = view_id(&element.id);
+        let id = std::iter::once(base.clone())
+            .chain((2..).map(|n| format!("{base}_{n}")))
+            .find(|candidate| used.insert(candidate.clone()))
+            .expect("an unbounded sequence of candidates always has a free one");
+        names.insert(element.id.clone(), id);
+    }
+    names
 }
 
 fn emit_views(out: &mut String, model: &Model) {
@@ -263,19 +286,12 @@ fn emit_views(out: &mut String, model: &Model) {
         writeln!(out, "    include {}", top.join(", ")).unwrap();
     }
     out.push_str("    autoLayout LeftRight\n  }\n");
-    // `a.b_c` and `a_b.c` share a view id; the second and later take a
-    // numeric suffix, in element order, so the output stays stable.
-    let mut used: BTreeSet<String> = BTreeSet::from(["index".to_string()]);
+    let names = view_ids(model);
     for element in &model.elements {
-        if children_of(model, &element.id).is_empty() {
+        let Some(id) = names.get(&element.id) else {
             continue;
-        }
+        };
         let fqn = sanitize_id(&element.id);
-        let base = view_id(&element.id);
-        let id = std::iter::once(base.clone())
-            .chain((2..).map(|n| format!("{base}_{n}")))
-            .find(|candidate| used.insert(candidate.clone()))
-            .expect("an unbounded sequence of candidates always has a free one");
         writeln!(
             out,
             "\n  view {id} of {fqn} {{\n    title {}\n    include *\n    autoLayout TopBottom\n  }}",
@@ -613,6 +629,24 @@ mod tests {
         assert!(text.contains("view view_a_b_c of a.b_c {"), "{text}");
         assert!(text.contains("view view_a_b_c_2 of a_b.c {"), "{text}");
         assert!(text.contains("view view_a_b_c_3 of a_b_c {"), "{text}");
+        let mut normalized = model.clone();
+        normalized.normalize();
+        let names: Vec<String> = view_ids(&normalized).into_values().collect();
+        assert_eq!(names, ["view_a_b_c", "view_a_b_c_2", "view_a_b_c_3"]);
+    }
+
+    #[test]
+    fn view_ids_names_every_element_with_children_and_only_those() {
+        let mut model = sample();
+        model.normalize();
+        let names = view_ids(&model);
+        let keyed: Vec<(String, String)> = names
+            .iter()
+            .map(|(id, name)| (id.join("."), name.clone()))
+            .collect();
+        assert_eq!(keyed, [("app".to_string(), "view_app".to_string())]);
+        assert!(!names.contains_key(&id("app.server")));
+        assert!(!names.contains_key(&id("node_driver")));
     }
 
     #[test]
