@@ -36,6 +36,13 @@ user-id = 6743
 user-login = "epage"
 user-name = "Ed Page"
 
+[[publisher.bstr]]
+version = "1.13.1"
+when = "2026-08-10"
+user-id = 189
+user-login = "BurntSushi"
+user-name = "Andrew Gallant"
+
 [[publisher.clap]]
 version = "4.6.7"
 when = "2026-09-14"

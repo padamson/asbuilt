@@ -298,7 +298,7 @@ impl<'ast> Visit<'ast> for Collector {
     }
 
     fn visit_item_impl(&mut self, i: &'ast syn::ItemImpl) {
-        if let Some((_, trait_path, _)) = &i.trait_ {
+        if let Some((trait_path, _)) = &i.trait_ {
             self.record(trait_path, RelationKind::Implements);
             self.visit_generics(&i.generics);
             self.visit_type(&i.self_ty);
