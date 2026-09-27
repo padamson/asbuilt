@@ -1,0 +1,10 @@
+[[externals]]
+id = "node_driver"
+kind = "process"
+title = "Playwright driver"
+technology = "Node.js process"
+
+[[externals.relations]]
+from = "playwright_rs.server.playwright_server"
+title = "spawns"
+technology = "stdio"

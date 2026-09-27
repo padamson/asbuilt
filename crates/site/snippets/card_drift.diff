@@ -1,0 +1,5 @@
+$ asbuilt check
+--- a/docs/architecture/model.c4
++++ b/docs/architecture/model.c4
++  app.client -[calls]-> app.server 'Driver, spawn'
+asbuilt: docs/architecture/model.c4 is stale

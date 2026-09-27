@@ -236,6 +236,122 @@ directory listing, so discovery order is out of the picture.'
       link ../../crates/asbuilt-rust/src/walk.rs
     }
   }
+  asbuilt_site = container 'asbuilt-site' {
+    technology 'binary'
+    metadata {
+      path 'crates/site'
+    }
+    link ../../crates/site
+    app = component 'app' {
+      metadata {
+        path 'crates/site/src/app.rs'
+      }
+      link ../../crates/site/src/app.rs
+    }
+    components = component 'components' {
+      metadata {
+        path 'crates/site/src/components/mod.rs'
+      }
+      link ../../crates/site/src/components/mod.rs
+      code_block = component 'code_block' {
+        metadata {
+          path 'crates/site/src/components/code_block.rs'
+        }
+        link ../../crates/site/src/components/code_block.rs
+      }
+      code_tabs = component 'code_tabs' {
+        metadata {
+          path 'crates/site/src/components/code_tabs.rs'
+        }
+        link ../../crates/site/src/components/code_tabs.rs
+      }
+      dogfood_banner = component 'dogfood_banner' {
+        metadata {
+          path 'crates/site/src/components/dogfood_banner.rs'
+        }
+        link ../../crates/site/src/components/dogfood_banner.rs
+      }
+      example = component 'example' {
+        metadata {
+          path 'crates/site/src/components/example.rs'
+        }
+        link ../../crates/site/src/components/example.rs
+      }
+      feature_card = component 'feature_card' {
+        metadata {
+          path 'crates/site/src/components/feature_card.rs'
+        }
+        link ../../crates/site/src/components/feature_card.rs
+      }
+      features = component 'features' {
+        metadata {
+          path 'crates/site/src/components/features.rs'
+        }
+        link ../../crates/site/src/components/features.rs
+      }
+      footer = component 'footer' {
+        metadata {
+          path 'crates/site/src/components/footer.rs'
+        }
+        link ../../crates/site/src/components/footer.rs
+      }
+      hero = component 'hero' {
+        metadata {
+          path 'crates/site/src/components/hero.rs'
+        }
+        link ../../crates/site/src/components/hero.rs
+      }
+      how_it_works = component 'how_it_works' {
+        metadata {
+          path 'crates/site/src/components/how_it_works.rs'
+        }
+        link ../../crates/site/src/components/how_it_works.rs
+      }
+      icons_ = component 'icons' {
+        metadata {
+          path 'crates/site/src/components/icons.rs'
+        }
+        link ../../crates/site/src/components/icons.rs
+      }
+      install = component 'install' {
+        metadata {
+          path 'crates/site/src/components/install.rs'
+        }
+        link ../../crates/site/src/components/install.rs
+      }
+      unreleased_badge = component 'unreleased_badge' {
+        metadata {
+          path 'crates/site/src/components/unreleased_badge.rs'
+        }
+        link ../../crates/site/src/components/unreleased_badge.rs
+      }
+      version_switcher = component 'version_switcher' {
+        metadata {
+          path 'crates/site/src/components/version_switcher.rs'
+        }
+        link ../../crates/site/src/components/version_switcher.rs
+      }
+    }
+    snippets = component 'snippets' {
+      description 'Syntax-highlighted code snippets, generated at build time by `build.rs` from
+the files in `snippets/`. Each constant holds highlighted inner HTML
+(token spans with inline colors) rendered via `inner_html`.'
+      metadata {
+        path 'crates/site/src/snippets.rs'
+      }
+      link ../../crates/site/src/snippets.rs
+    }
+    version = component 'version' {
+      description 'The build\'s version identity and the one place the site\'s path prefix
+is spelled. `build.rs` injects `SITE_VERSION`; the deploy serves every
+snapshot under `/asbuilt/<dev|vX.Y.Z>/` (project Pages), and only the
+version switcher needs to know that: every other asset path is relative.'
+      metadata {
+        path 'crates/site/src/version.rs'
+      }
+      link ../../crates/site/src/version.rs
+    }
+  }
   cargo = process 'cargo metadata' {
     #external
     description 'Lists the workspace\'s packages and targets; `--no-deps --offline`, so no lockfile is touched.'
@@ -307,12 +423,35 @@ directory listing, so discovery order is out of the picture.'
   asbuilt_rust.visit -[calls]-> asbuilt_rust.walk 'ModulePath, is_cfg_test'
   asbuilt_rust.walk -[constructs]-> asbuilt_rust.error 'RustFrontendError'
   asbuilt_rust.walk -[names]-> asbuilt_rust.source 'FileSource'
+  asbuilt_site.app -[uses]-> asbuilt_site.components.dogfood_banner 'DogfoodBanner'
+  asbuilt_site.app -[uses]-> asbuilt_site.components.example 'Example'
+  asbuilt_site.app -[uses]-> asbuilt_site.components.features 'Features'
+  asbuilt_site.app -[uses]-> asbuilt_site.components.footer 'Footer'
+  asbuilt_site.app -[uses]-> asbuilt_site.components.hero 'Hero'
+  asbuilt_site.app -[uses]-> asbuilt_site.components.how_it_works 'HowItWorks'
+  asbuilt_site.app -[uses]-> asbuilt_site.components.install 'Install'
+  asbuilt_site.app -[uses]-> asbuilt_site.components.version_switcher 'VersionSwitcher'
+  asbuilt_site.components.example -[uses]-> asbuilt_site.components.code_block 'CodeBlock'
+  asbuilt_site.components.example -[uses]-> asbuilt_site.snippets 'snippets'
+  asbuilt_site.components.feature_card -[calls]-> asbuilt_site.version 'is_dev'
+  asbuilt_site.components.features -[uses]-> asbuilt_site.components.code_block 'CodeBlock'
+  asbuilt_site.components.features -[uses]-> asbuilt_site.components.feature_card 'FeatureCard'
+  asbuilt_site.components.features -[uses]-> asbuilt_site.snippets 'snippets'
+  asbuilt_site.components.footer -[calls]-> asbuilt_site.version 'is_dev'
+  asbuilt_site.components.hero -[uses]-> asbuilt_site.components.icons_ 'Icon, icons'
+  asbuilt_site.components.hero -[calls]-> asbuilt_site.version 'is_dev'
+  asbuilt_site.components.how_it_works -[uses]-> asbuilt_site.components.code_tabs 'CodeTabs'
+  asbuilt_site.components.how_it_works -[uses]-> asbuilt_site.snippets 'snippets'
+  asbuilt_site.components.install -[uses]-> asbuilt_site.components.code_block 'CodeBlock'
+  asbuilt_site.components.install -[uses]-> asbuilt_site.snippets 'snippets'
+  asbuilt_site.components.install -[calls]-> asbuilt_site.version 'is_dev'
+  asbuilt_site.components.version_switcher -[calls]-> asbuilt_site.version 'SITE_VERSION, is_dev, manifest_url, snapshot_url'
 }
 
 views {
   view index {
     title 'Overview'
-    include asbuilt, asbuilt_core, asbuilt_rust, cargo, graphviz, likec4
+    include asbuilt, asbuilt_core, asbuilt_rust, asbuilt_site, cargo, graphviz, likec4
     autoLayout LeftRight
   }
 
@@ -330,6 +469,18 @@ views {
 
   view view_asbuilt_rust of asbuilt_rust {
     title 'asbuilt_rust'
+    include *
+    autoLayout TopBottom
+  }
+
+  view view_asbuilt_site of asbuilt_site {
+    title 'asbuilt_site'
+    include *
+    autoLayout TopBottom
+  }
+
+  view view_asbuilt_site_components of asbuilt_site.components {
+    title 'asbuilt_site.components'
     include *
     autoLayout TopBottom
   }

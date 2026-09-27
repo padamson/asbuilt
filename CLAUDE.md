@@ -28,6 +28,11 @@ survey and commit `model.c4` with the change. Never edit it by hand.
   `docs` writes the documentation tree from `asbuilt_core::docs`, a pure
   generator, and refuses to run on a stale model.
 
+- `crates/site`: the landing page (Leptos CSR, built by Trunk), excluded
+  from the workspace with its own `Cargo.lock`; see its README for the
+  per-manifest commands. Surveyed into this repo's model via
+  `[rust] extra_manifests`.
+
 One version for the workspace, set in the root `Cargo.toml`.
 
 ## Development

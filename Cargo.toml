@@ -3,7 +3,17 @@ members = ["crates/*"]
 # Fixture crates under a member's tests/ carry their own `[workspace]`
 # table; this is the second belt, so a fixture that forgets one still
 # never joins this workspace.
-exclude = ["crates/asbuilt-rust/tests/fixtures", "crates/asbuilt/tests/fixtures"]
+exclude = [
+    "crates/asbuilt-rust/tests/fixtures",
+    "crates/asbuilt/tests/fixtures",
+    "crates/site",
+    "crates/site-e2e",
+]
+# The landing site crates are excluded too: `crates/site` targets wasm32 and
+# both pull a large tree that has no place in the shipped crates' supply
+# chain. They carry their own `[workspace]` table and `Cargo.lock`, and
+# `asbuilt.toml` lists them under `extra_manifests` so the survey still
+# covers them.
 resolver = "3"
 
 [workspace.package]

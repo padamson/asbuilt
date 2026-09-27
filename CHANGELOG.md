@@ -31,6 +31,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `asbuilt docs [root] [-o DIR] [--no-render] [--title] [--source-url]`: a static HTML documentation tree generated natively from the survey (index, one page per container with its modules, relations both ways) embedding the SVGs `render` produced; refuses to write when the committed model is stale; `[docs] title` and `source_url` in `asbuilt.toml`; `--no-render` for machines without Node
 - `asbuilt_core::docs::generate`, the pure generator behind it, with pulldown-cmark for the description paragraphs; `emit::view_ids` exposes the view names it shares with the emitter
 
+- `crates/site`: the landing page at padamson.github.io/asbuilt, a Leptos CSR app built by Trunk, excluded from the workspace with its own lockfile; embeds this repo's own context view and links the generated architecture docs; a version switcher for the `/asbuilt/dev/` and `/asbuilt/vX.Y.Z/` snapshots. The site crate is surveyed too, through `[rust] extra_manifests`
+
 ### Fixed
 - A bare name brought in by a glob import (`use crate::a::*; Thing::new()`) now resolves; modules that glob-import a prelude were missing from the graph
 - `#[path]` on a `mod` inside an inline module block is relative to the inline module's directory, as rustc requires

@@ -18,6 +18,23 @@ crates/*/tests/fixtures/**/target/
 /docs/architecture/site/
 /docs/architecture/model.json
 
+# The landing-site crates are excluded from the workspace, so they build into
+# their own target/ dirs; the site also emits dist/ (the dogfood build) and
+# dist-snapshot/ (the deployed artifact) via Trunk. Their Cargo.lock is
+# committed (they are apps). /gh/ is the gh-pages worktree the deploy
+# assembles in CI. Receipts are written by the dogfood test and views/ holds
+# the SVGs `asbuilt render` writes for the landing page; both directories
+# keep a .gitkeep so Trunk's copy-dir works on a fresh checkout.
+/crates/site/dist/
+/crates/site/dist-snapshot/
+/crates/site/target/
+/crates/site-e2e/target/
+/gh/
+/crates/site/public/receipts/*
+!/crates/site/public/receipts/.gitkeep
+/crates/site/public/views/*
+!/crates/site/public/views/.gitkeep
+
 # Environment variables (secrets, config)
 .env
 
