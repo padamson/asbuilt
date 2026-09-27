@@ -211,6 +211,9 @@ step is not a no-op.
 3. Commit: `git commit -m "Release vX.Y.Z"`
 4. Tag: `git tag vX.Y.Z`
 5. Push: `git push origin main --tags`
+6. Publish the site snapshot from the tag:
+   `gh workflow run pages.yml -f version=X.Y.Z --ref vX.Y.Z`
+   (builds `/asbuilt/vX.Y.Z/` and makes it `latest`; `docs/versioned-site.md`)
 
 The tag triggers CI which builds, tests, creates a GitHub Release, and
 publishes all three crates to crates.io with `cargo publish --workspace`.

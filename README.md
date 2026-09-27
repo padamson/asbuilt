@@ -20,6 +20,13 @@ installs as one static binary that a pre-commit hook in any repo can
 call, and so later front-ends can use Rust-native parsers without a Node
 or Python runtime present.
 
+The landing site is at https://padamson.github.io/asbuilt/, versioned
+per release, and every snapshot carries this repo's own architecture
+documentation under `architecture/`: `asbuilt docs` over the model that
+`asbuilt survey` wrote for this very code base, with the views LikeC4
+rendered. The site is built, driven with playwright-rs, and deployed by
+`.github/workflows/pages.yml` (`docs/versioned-site.md`).
+
 ## Status
 
 Pre-release. The Rust front-end, `survey`, `check`, and the LikeC4

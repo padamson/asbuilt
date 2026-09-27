@@ -37,6 +37,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 - Gates for the excluded site crates: a pre-commit lockfile check and per-manifest fmt/clippy/host tests, `cargo deny` over every manifest (hook, security job, advisory monitor), an `Excluded crates compile` CI job, Dependabot `directories:` for all three lockfiles; the site tree's four unmaintained-crate advisories accepted in `deny.toml` with reasons
 
+- `.github/workflows/pages.yml`: the versioned Pages deploy to https://padamson.github.io/asbuilt/ (`/asbuilt/dev/` from main, `/asbuilt/vX.Y.Z/` on dispatch), gated on the playwright-rs suite; every snapshot carries `asbuilt docs` over this repo's model at `architecture/`, and `site_architecture_section_lists_every_crate_and_embeds_a_view` gates that tree (`docs/versioned-site.md`)
+
 ### Fixed
 - A bare name brought in by a glob import (`use crate::a::*; Thing::new()`) now resolves; modules that glob-import a prelude were missing from the graph
 - `#[path]` on a `mod` inside an inline module block is relative to the inline module's directory, as rustc requires
