@@ -8,6 +8,13 @@ path = "docs/architecture/model.c4"
 title = "asbuilt"
 source_url = "https://github.com/padamson/asbuilt/blob/main/"
 
+# The site's palette, emitted as LikeC4 element styles: crates in the
+# rust accent, everything the tool shells out to in a neutral grey. A
+# kind without an entry keeps LikeC4's default blue.
+[theme]
+container = { light = "#f0a884", dark = "#b5673f" }
+process = { light = "#d4d4d4", dark = "#5a5a5a" }
+
 [rust]
 # The landing site crates are excluded from the workspace (wasm32, big
 # trees); they are still part of the architecture.

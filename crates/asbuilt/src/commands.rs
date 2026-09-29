@@ -203,6 +203,7 @@ pub fn survey(
         &model,
         &EmitOptions {
             link_prefix: target.link_prefix,
+            theme: config.light_theme(),
         },
     );
     let path = target.path;
@@ -243,6 +244,7 @@ fn drift(
         &model,
         &EmitOptions {
             link_prefix: target.link_prefix.clone(),
+            theme: config.light_theme(),
         },
     );
     let outcome = compare(&committed, &fresh, rel);

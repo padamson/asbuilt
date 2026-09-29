@@ -42,6 +42,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `[docs] stylesheet` (flag `--stylesheet`): a stylesheet linked last on every page, so a host site can restate the page tokens (`--bg`, `--fg`, `--muted`, `--accent`, `--rule`, `--code`, `--figure-bg`, light and dark defaults) in its own palette
 - Every page carries `<meta name="generator" content="asbuilt docs">`
 - The Rust front-end walks a macro invocation's body where it is Rust (an expression, a comma-separated list of them, or items), so `fuzz_target!`, `assert_eq!`, `vec!` and friends yield their references; a body in another syntax (Leptos `view!`, `macro_rules!` arms) still yields only the macro's path. A consumer's model gains the edges that were hidden inside macros
+- `[theme]` in `asbuilt.toml`: a color per element kind (`container`, `component`, or an external kind), as `"#rrggbb"` or `{ light, dark }`; the light color is declared in the specification and applied as the kind's style, so `render` draws the diagrams in the consumer's palette. A kind the model lacks is an error naming it and the kinds there are; a bad hex is a config error naming the value
 
 ### Changed
 - `asbuilt docs` owns its output directory: a tree a previous run wrote is cleared of what that run owns (root pages, `containers/`, the stylesheets, copied SVGs) before writing, so a renamed crate's page cannot ship; a non-empty directory nobody's run wrote is refused unless `--force`, and even then only the owned set is removed

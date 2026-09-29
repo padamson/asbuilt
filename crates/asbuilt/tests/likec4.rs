@@ -253,6 +253,31 @@ fn likec4_render_writes_one_svg_per_view_and_drops_stale_renders() {
 
 #[test]
 #[ignore = "needs npx (Node), network and Graphviz dot; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_a_themed_kind_validates_and_renders_in_its_color() {
+    let ws = consumer_copy();
+    let config = ws.root().join("asbuilt.toml");
+    let mut toml = std::fs::read_to_string(&config).unwrap();
+    toml.push_str("\n[theme]\ncontainer = \"#f0a884\"\n");
+    std::fs::write(&config, toml).unwrap();
+    let root = ws.root().to_str().unwrap();
+    for args in [["survey", root], ["validate", root], ["render", root]] {
+        let out = std::process::Command::new(env!("CARGO_BIN_EXE_asbuilt"))
+            .args(args)
+            .output()
+            .unwrap();
+        assert_eq!(
+            out.status.code(),
+            Some(0),
+            "{args:?}: {}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+    }
+    let dot = std::fs::read_to_string(ws.root().join("docs/architecture/views/index.dot")).unwrap();
+    assert!(dot.contains("fillcolor=\"#f0a884\""), "{dot}");
+}
+
+#[test]
+#[ignore = "needs npx (Node), network and Graphviz dot; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
 fn likec4_the_cli_validate_export_and_render_subcommands_exit_zero() {
     let ws = consumer_copy();
     let root = ws.root().to_str().unwrap();

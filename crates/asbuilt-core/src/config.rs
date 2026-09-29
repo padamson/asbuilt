@@ -46,6 +46,11 @@ pub struct Config {
     pub output: OutputConfig,
     #[serde(default)]
     pub docs: DocsConfig,
+    /// `[theme]`: a color per element kind (`container`, `component`, or
+    /// an external kind), emitted as LikeC4 element styles so the
+    /// diagrams come out in the consumer's palette.
+    #[serde(default)]
+    pub theme: BTreeMap<String, ThemeColor>,
     #[serde(default)]
     pub externals: Vec<External>,
     #[serde(flatten)]
@@ -73,6 +78,60 @@ impl Default for OutputConfig {
         Self {
             path: default_output_path(),
         }
+    }
+}
+
+/// A kind's color: one value for every scheme, or a light and a dark
+/// one. Written as `"#3b82f6"` or `{ light = "#3b82f6", dark = "#1e40af" }`.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(try_from = "ThemeColorRaw")]
+pub struct ThemeColor {
+    pub light: String,
+    pub dark: Option<String>,
+}
+
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum ThemeColorRaw {
+    One(String),
+    Pair {
+        light: String,
+        #[serde(default)]
+        dark: Option<String>,
+    },
+}
+
+impl TryFrom<ThemeColorRaw> for ThemeColor {
+    type Error = String;
+
+    fn try_from(raw: ThemeColorRaw) -> std::result::Result<Self, String> {
+        let (light, dark) = match raw {
+            ThemeColorRaw::One(light) => (light, None),
+            ThemeColorRaw::Pair { light, dark } => (light, dark),
+        };
+        for value in std::iter::once(&light).chain(dark.iter()) {
+            if !is_hex_color(value) {
+                return Err(format!(
+                    "theme color \"{value}\" is not #rrggbb (six hex digits after #)"
+                ));
+            }
+        }
+        Ok(ThemeColor { light, dark })
+    }
+}
+
+/// `#rrggbb`, six hex digits after the `#`.
+pub fn is_hex_color(value: &str) -> bool {
+    value.len() == 7 && value.starts_with('#') && value[1..].chars().all(|c| c.is_ascii_hexdigit())
+}
+
+impl Config {
+    /// The light color per themed kind, the emitter's input.
+    pub fn light_theme(&self) -> BTreeMap<String, String> {
+        self.theme
+            .iter()
+            .map(|(kind, color)| (kind.clone(), color.light.clone()))
+            .collect()
     }
 }
 
@@ -307,6 +366,48 @@ technology = "stdio"
         assert_eq!(config.docs.stylesheet.as_deref(), Some("../site.css"));
         let empty: Config = "".parse().unwrap();
         assert_eq!(empty.docs, DocsConfig::default());
+    }
+
+    #[test]
+    fn a_theme_color_is_a_string_or_a_light_dark_pair() {
+        let config: Config =
+            "[theme]\ncontainer = \"#3b82f6\"\nprocess = { light = \"#c9c9c9\", dark = \"#444444\" }\n"
+                .parse()
+                .unwrap();
+        assert_eq!(
+            config.theme["container"],
+            ThemeColor {
+                light: "#3b82f6".into(),
+                dark: None
+            }
+        );
+        assert_eq!(
+            config.theme["process"],
+            ThemeColor {
+                light: "#c9c9c9".into(),
+                dark: Some("#444444".into())
+            }
+        );
+        assert_eq!(
+            config.light_theme(),
+            BTreeMap::from([
+                ("container".to_string(), "#3b82f6".to_string()),
+                ("process".to_string(), "#c9c9c9".to_string()),
+            ])
+        );
+    }
+
+    #[test]
+    fn a_theme_color_that_is_not_six_hex_digits_is_rejected_naming_the_value() {
+        for bad in ["blue", "#fff", "#12345g", "3b82f6"] {
+            let result: std::result::Result<Config, _> =
+                format!("[theme]\ncontainer = \"{bad}\"\n").parse();
+            let err = result.err().map(|e| e.to_string()).unwrap_or_default();
+            assert!(err.contains(bad), "{bad}: {err}");
+        }
+        let result: std::result::Result<Config, _> =
+            "[theme]\ncontainer = { light = \"#3b82f6\", dark = \"nope\" }\n".parse();
+        assert!(result.is_err(), "{result:?}");
     }
 
     #[test]

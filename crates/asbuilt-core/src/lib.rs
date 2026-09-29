@@ -18,7 +18,7 @@ pub mod frontend;
 pub mod model;
 
 pub use check::{Outcome, compare};
-pub use config::{Config, DocsConfig, External, ExternalRelation, OutputConfig};
+pub use config::{Config, DocsConfig, External, ExternalRelation, OutputConfig, ThemeColor};
 pub use docs::{DocsOptions, Site};
 pub use emit::{EmitOptions, emit, view_ids};
 pub use error::{Error, Result};

@@ -36,7 +36,30 @@ pub fn survey(root: &Path, config: &Config, frontends: &[&dyn Frontend]) -> Resu
     }
     externals::apply(&mut model, config)?;
     model.validate()?;
+    check_theme_kinds(&model, config)?;
     Ok(model)
+}
+
+/// Every `[theme]` key names a kind the model has.
+fn check_theme_kinds(model: &Model, config: &Config) -> Result<()> {
+    let have: std::collections::BTreeSet<String> = model
+        .elements
+        .iter()
+        .map(|e| match &e.kind {
+            crate::model::ElementKind::Container => "container".to_string(),
+            crate::model::ElementKind::Component => "component".to_string(),
+            crate::model::ElementKind::External(name) => name.clone(),
+        })
+        .collect();
+    for kind in config.theme.keys() {
+        if !have.contains(kind) {
+            return Err(Error::UnknownThemeKind {
+                kind: kind.clone(),
+                have: have.iter().cloned().collect::<Vec<_>>().join(", "),
+            });
+        }
+    }
+    Ok(())
 }
 
 #[cfg(test)]
@@ -101,6 +124,21 @@ mod tests {
             Err(Error::NoFrontend { root }) => assert_eq!(root, PathBuf::from("/some/root")),
             other => panic!("expected NoFrontend, got {other:?}"),
         }
+    }
+
+    #[test]
+    fn a_theme_key_naming_no_kind_in_the_model_is_an_error_naming_it_and_the_kinds_there_are() {
+        let rust = fake("rust", true, &["a"]);
+        let config: Config = "[theme]\nbrowser = \"#000000\"\n".parse().unwrap();
+        match survey(Path::new("/some/root"), &config, &[&rust]) {
+            Err(Error::UnknownThemeKind { kind, have }) => {
+                assert_eq!(kind, "browser");
+                assert_eq!(have, "container");
+            }
+            other => panic!("expected UnknownThemeKind, got {other:?}"),
+        }
+        let config: Config = "[theme]\ncontainer = \"#000000\"\n".parse().unwrap();
+        assert!(survey(Path::new("/some/root"), &config, &[&rust]).is_ok());
     }
 
     #[test]

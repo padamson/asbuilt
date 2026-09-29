@@ -22,6 +22,10 @@ pub struct EmitOptions {
     /// back to the surveyed root: `../../` for `docs/architecture/x.c4`,
     /// `./` for a file at the root.
     pub link_prefix: String,
+    /// The color per element kind (`container`, `component`, an external
+    /// kind), declared in the specification and applied as that kind's
+    /// style. Kinds absent here get LikeC4's default.
+    pub theme: BTreeMap<String, String>,
 }
 
 impl EmitOptions {
@@ -38,7 +42,16 @@ impl EmitOptions {
         } else {
             "../".repeat(depth)
         };
-        Self { link_prefix }
+        Self {
+            link_prefix,
+            theme: BTreeMap::new(),
+        }
+    }
+
+    /// The same options with a theme.
+    pub fn with_theme(mut self, theme: BTreeMap<String, String>) -> Self {
+        self.theme = theme;
+        self
     }
 }
 
@@ -93,7 +106,7 @@ pub fn emit(model: &Model, options: &EmitOptions) -> String {
     out.push_str(HEADER);
     out.push('\n');
     out.push('\n');
-    emit_specification(&mut out, &model);
+    emit_specification(&mut out, &model, &options.theme);
     out.push('\n');
     emit_model(&mut out, &model, options);
     out.push('\n');
@@ -101,7 +114,12 @@ pub fn emit(model: &Model, options: &EmitOptions) -> String {
     out
 }
 
-fn emit_specification(out: &mut String, model: &Model) {
+/// The name of a themed kind's color in the specification.
+pub fn theme_color_name(kind: &str) -> String {
+    format!("theme_{kind}")
+}
+
+fn emit_specification(out: &mut String, model: &Model, theme: &BTreeMap<String, String>) {
     let mut kinds: BTreeSet<&str> = BTreeSet::new();
     let mut tags: BTreeSet<&str> = BTreeSet::new();
     for element in &model.elements {
@@ -109,8 +127,22 @@ fn emit_specification(out: &mut String, model: &Model) {
         tags.extend(element.tags.iter().map(String::as_str));
     }
     out.push_str("specification {\n");
-    for kind in kinds {
-        writeln!(out, "  element {kind}").unwrap();
+    for kind in &kinds {
+        if let Some(color) = theme.get(*kind) {
+            writeln!(out, "  color {} {color}", theme_color_name(kind)).unwrap();
+        }
+    }
+    for kind in &kinds {
+        if theme.contains_key(*kind) {
+            writeln!(
+                out,
+                "  element {kind} {{\n    style {{\n      color {}\n    }}\n  }}",
+                theme_color_name(kind)
+            )
+            .unwrap();
+        } else {
+            writeln!(out, "  element {kind}").unwrap();
+        }
     }
     for tag in tags {
         writeln!(out, "  tag {tag}").unwrap();
@@ -388,6 +420,33 @@ mod tests {
                 "missing {line:?} in:\n{spec}"
             );
         }
+    }
+
+    #[test]
+    fn a_themed_kind_declares_its_color_and_styles_the_element_with_it() {
+        let opts = options().with_theme(BTreeMap::from([
+            ("container".to_string(), "#f0a884".to_string()),
+            ("process".to_string(), "#c9c9c9".to_string()),
+        ]));
+        let text = emit(&sample(), &opts);
+        let spec = text.split("model {").next().unwrap();
+        assert!(
+            spec.starts_with(&format!(
+                "{HEADER}\n\nspecification {{\n  color theme_container #f0a884\n  color theme_process #c9c9c9\n  element component\n  element container {{\n    style {{\n      color theme_container\n    }}\n  }}\n  element process {{\n    style {{\n      color theme_process\n    }}\n  }}\n  tag external\n"
+            )),
+            "{spec}"
+        );
+    }
+
+    #[test]
+    fn a_theme_for_a_kind_the_model_lacks_emits_nothing_for_it() {
+        let opts = options().with_theme(BTreeMap::from([(
+            "browser".to_string(),
+            "#000000".to_string(),
+        )]));
+        let text = emit(&sample(), &opts);
+        assert!(!text.contains("browser"), "{text}");
+        assert_eq!(text, emit(&sample(), &options()));
     }
 
     #[test]

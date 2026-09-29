@@ -227,6 +227,51 @@ fn a_bad_externals_from_exits_two_naming_the_external_and_the_from() {
 }
 
 #[test]
+fn survey_with_a_theme_styles_the_kinds_in_the_specification_and_check_agrees() {
+    let ws = scratch_copy();
+    let config = ws.root().join("asbuilt.toml");
+    let mut toml = std::fs::read_to_string(&config).unwrap();
+    toml.push_str("\n[theme]\ncontainer = { light = \"#f0a884\", dark = \"#b5673f\" }\n");
+    std::fs::write(&config, toml).unwrap();
+
+    let out = run(&["survey", ws.root().to_str().unwrap()]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    let model = std::fs::read_to_string(ws.root().join("docs/architecture/model.c4")).unwrap();
+    assert!(
+        model.contains("  color theme_container #f0a884\n"),
+        "{model}"
+    );
+    assert!(
+        model.contains(
+            "  element container {\n    style {\n      color theme_container\n    }\n  }\n"
+        ),
+        "{model}"
+    );
+    assert!(model.contains("  element process\n"), "{model}");
+    let check = run(&["check", ws.root().to_str().unwrap()]);
+    assert_eq!(check.status.code(), Some(0), "{}", text(&check.stderr));
+}
+
+#[test]
+fn a_theme_for_a_kind_the_model_lacks_exits_two_naming_it() {
+    let ws = scratch_copy();
+    let config = ws.root().join("asbuilt.toml");
+    let mut toml = std::fs::read_to_string(&config).unwrap();
+    toml.push_str("\n[theme]\nbrowser = \"#000000\"\n");
+    std::fs::write(&config, toml).unwrap();
+
+    let out = run(&["survey", ws.root().to_str().unwrap()]);
+
+    assert_eq!(out.status.code(), Some(2));
+    let stderr = text(&out.stderr);
+    assert!(
+        stderr.contains("\"browser\"") && stderr.contains("process"),
+        "{stderr}"
+    );
+}
+
+#[test]
 fn a_config_typo_exits_two_naming_the_file() {
     let ws = scratch_copy();
     ws.write("asbuilt.toml", "[rust]\ninclude_test = true\n");

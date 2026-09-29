@@ -44,6 +44,11 @@ pub enum Error {
         second: String,
     },
 
+    /// A `[theme]` key naming an element kind the surveyed model does not
+    /// have; a typo would otherwise style nothing, silently.
+    #[error("theme: \"{kind}\" is not an element kind of the surveyed model (have {have})")]
+    UnknownThemeKind { kind: String, have: String },
+
     /// No front-end recognized the root.
     #[error("no supported stack detected at {root}")]
     NoFrontend { root: PathBuf },
