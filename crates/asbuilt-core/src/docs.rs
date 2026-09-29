@@ -192,20 +192,26 @@ impl Ctx<'_> {
     /// there is nothing to climb to.
     fn crumbs(&self, depth: usize, trail: &[&str]) -> String {
         let mut items: Vec<String> = self.home_link(depth).into_iter().collect();
-        if trail.is_empty() {
-            items.push(escape(&self.options.title));
-        } else {
-            items.push(format!(
-                "<a href=\"{}index.html\">{}</a>",
-                up(depth),
-                escape(&self.options.title)
-            ));
-            items.extend(trail.iter().map(|t| escape(t)));
-        }
+        let current = match trail.split_last() {
+            None => escape(&self.options.title),
+            Some((last, between)) => {
+                items.push(format!(
+                    "<a href=\"{}index.html\">{}</a>",
+                    up(depth),
+                    escape(&self.options.title)
+                ));
+                items.extend(between.iter().map(|t| escape(t)));
+                escape(last)
+            }
+        };
+        items.push(format!("<span aria-current=\"page\">{current}</span>"));
         if items.len() < 2 {
             return String::new();
         }
-        format!("<nav class=\"crumbs\">{}</nav>\n", items.join(" / "))
+        format!(
+            "<nav class=\"crumbs\" aria-label=\"Breadcrumb\">{}</nav>\n",
+            items.join(" / ")
+        )
     }
 
     fn layout(&self, depth: usize, page_title: &str, body: &str) -> String {
@@ -250,7 +256,7 @@ impl Ctx<'_> {
         };
         let control = if toggle { SCHEME_CONTROL } else { "" };
         format!(
-            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{page} · {site}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header>{home}<a class=\"site\" href=\"{prefix}index.html\">{site}</a><nav>{nav}</nav>{control}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
+            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{page} · {site}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header>{home}<a class=\"site\" href=\"{prefix}index.html\">{site}</a><nav aria-label=\"Crates\">{nav}</nav>{control}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
             page = escape(page_title),
             site = escape(&self.options.title),
         )
@@ -1208,7 +1214,7 @@ mod tests {
             "{app}"
         );
         assert!(
-            app.contains("<nav class=\"crumbs\"><a href=\"../index.html\">Sample</a> / app</nav>"),
+            app.contains("<nav class=\"crumbs\" aria-label=\"Breadcrumb\"><a href=\"../index.html\">Sample</a> / <span aria-current=\"page\">app</span></nav>"),
             "{app}"
         );
         assert!(app.contains("<title>app · Sample</title>"), "{app}");
@@ -1254,7 +1260,7 @@ mod tests {
         );
         assert!(
             index.contains(
-                "<nav class=\"crumbs\"><a class=\"home\" href=\"../\">Home</a> / Sample</nav>"
+                "<nav class=\"crumbs\" aria-label=\"Breadcrumb\"><a class=\"home\" href=\"../\">Home</a> / <span aria-current=\"page\">Sample</span></nav>"
             ),
             "{index}"
         );
@@ -1264,7 +1270,7 @@ mod tests {
             "{app}"
         );
         assert!(
-            app.contains("<nav class=\"crumbs\"><a class=\"home\" href=\"../../\">Home</a> / <a href=\"../index.html\">Sample</a> / app</nav>"),
+            app.contains("<nav class=\"crumbs\" aria-label=\"Breadcrumb\"><a class=\"home\" href=\"../../\">Home</a> / <a href=\"../index.html\">Sample</a> / <span aria-current=\"page\">app</span></nav>"),
             "{app}"
         );
     }
@@ -1350,6 +1356,29 @@ mod tests {
         assert_eq!(
             ctx.view_figure(0, "a<b", "alt"),
             "<p class=\"missing\">No diagram for <code>a&lt;b</code>: run <code>asbuilt render</code>.</p>\n"
+        );
+    }
+
+    #[test]
+    fn the_views_page_crumbs_end_at_the_curated_views() {
+        let mut opts = options();
+        opts.views.insert("context".into(), plain_view());
+        let site = generate(&sample(), &opts);
+        assert!(
+            page(&site, "views.html").contains("<nav class=\"crumbs\" aria-label=\"Breadcrumb\"><a href=\"index.html\">Sample</a> / <span aria-current=\"page\">Curated views</span></nav>"),
+            "{}",
+            page(&site, "views.html")
+        );
+    }
+
+    #[test]
+    fn the_header_s_crate_list_is_a_labeled_navigation_region() {
+        let site = generate(&sample(), &options());
+        assert!(
+            page(&site, "index.html")
+                .contains("<nav aria-label=\"Crates\"><a href=\"containers/app.html\">"),
+            "{}",
+            page(&site, "index.html")
         );
     }
 

@@ -5,7 +5,11 @@
 path = "docs/architecture/model.c4"
 
 [docs]
-title = "asbuilt"
+# The tree is the site's Architecture section: the crumbs read
+# asbuilt / Architecture / <crate>, and the header links home.
+title = "Architecture"
+home_url = "../"
+home_title = "asbuilt"
 source_url = "https://github.com/padamson/asbuilt/blob/main/"
 # The landing site's page colors, served from the site root beside the
 # tree (crates/site/architecture.css, copied there by Trunk).
