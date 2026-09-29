@@ -11,8 +11,11 @@ set -euo pipefail
 cd "$(dirname "$0")"
 ROOT="$(cd ../.. && pwd)"
 
-# The landing page embeds this repo's own context view.
+# The landing page embeds this repo's own context view, and links the
+# architecture tree, which Trunk copies from public/architecture/ into
+# every build. `docs` replaces only what its previous run wrote there.
 (cd "$ROOT" && cargo run -q -p asbuilt -- render && cp docs/architecture/views/context.svg crates/site/public/views/)
+(cd "$ROOT" && cargo run -q -p asbuilt -- docs --no-render -o crates/site/public/architecture)
 trunk build
 # The dogfood gate, which also writes the receipts into public/receipts/.
 (cd "$ROOT" && cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml \

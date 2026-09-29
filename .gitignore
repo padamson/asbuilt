@@ -34,6 +34,8 @@ crates/*/tests/fixtures/**/target/
 !/crates/site/public/receipts/.gitkeep
 /crates/site/public/views/*
 !/crates/site/public/views/.gitkeep
+/crates/site/public/architecture/*
+!/crates/site/public/architecture/.gitkeep
 
 # Environment variables (secrets, config)
 .env

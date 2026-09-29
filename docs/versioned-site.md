@@ -39,9 +39,10 @@ resolve under the subpath.
 ## Deploy ([.github/workflows/pages.yml](../.github/workflows/pages.yml))
 
 One job: lint the site crates, `asbuilt render` this repo's model (the
-context view is the landing page's example figure), build a root-served
-`SITE_VERSION=dev` site with `asbuilt docs --no-render` written into its
-`architecture/`, and run the playwright-rs **dogfood gate** against it.
+context view is the landing page's example figure) and write its
+`asbuilt docs` tree into `crates/site/public/architecture/`, which Trunk
+copies into every build. Then build a root-served `SITE_VERSION=dev` site
+and run the playwright-rs **dogfood gate** against it.
 Then build the target snapshot the same way, serve it under its real
 base path for the snapshot tests (assets resolve, release-only rendering,
 the architecture section links every crate and embeds a view that
@@ -92,12 +93,11 @@ workflow runs, from the repo root:
 
 ```
 cargo run -p asbuilt -- render && cp docs/architecture/views/context.svg crates/site/public/views/
+cargo run -p asbuilt -- docs --no-render -o crates/site/public/architecture
 (cd crates/site && SITE_VERSION=dev trunk build --release)
-cargo run -p asbuilt -- docs --no-render -o crates/site/dist/architecture
 cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml \
   --run-ignored only -E 'test(/^site_/) and not test(/^site_(deployed_snapshot|architecture)/)'
 (cd crates/site && SITE_VERSION=dev trunk build --release --public-url /asbuilt/dev/ --dist dist-snapshot)
-cargo run -p asbuilt -- docs --no-render -o crates/site/dist-snapshot/architecture
 SNAPSHOT_DIST=$PWD/crates/site/dist-snapshot SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev \
   cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml \
   --run-ignored only -E 'test(/^site_(deployed_snapshot|architecture)/)'

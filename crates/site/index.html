@@ -19,11 +19,13 @@
     <meta property="og:url" content="https://padamson.github.io/asbuilt/" />
     <meta name="twitter:card" content="summary" />
     <link data-trunk rel="tailwind-css" href="input.css" />
-    <!-- Receipts (written by the dogfood test) and the rendered views
-         (written by `asbuilt render`). Copied on every build, so they
-         survive `trunk serve` rebuilds. -->
+    <!-- Receipts (written by the dogfood test), the rendered views
+         (written by `asbuilt render`) and the architecture tree (written
+         by `asbuilt docs`). Copied on every build, so they survive
+         `trunk serve` rebuilds. -->
     <link data-trunk rel="copy-dir" href="public/receipts" />
     <link data-trunk rel="copy-dir" href="public/views" />
+    <link data-trunk rel="copy-dir" href="public/architecture" />
   </head>
   <body></body>
 </html>

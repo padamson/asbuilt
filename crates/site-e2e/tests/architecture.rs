@@ -62,7 +62,7 @@ async fn open_snapshot() -> (
     let _version = snapshot_var("SNAPSHOT_VERSION");
     assert!(
         dist.join("architecture/index.html").exists(),
-        "SNAPSHOT_DIST has no architecture/index.html: {} (run `asbuilt docs --no-render -o <dist>/architecture`)",
+        "SNAPSHOT_DIST has no architecture/index.html: {} (run `asbuilt docs --no-render -o crates/site/public/architecture` before the Trunk build)",
         dist.display()
     );
     let mount = base.trim_end_matches('/').to_string();
