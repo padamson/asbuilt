@@ -212,10 +212,27 @@ pub fn svg_args(dot_file: &Path) -> (PathBuf, Vec<String>) {
     (svg, args)
 }
 
+/// Remove the `.dot` and `.svg` files directly under `dir`, so a view
+/// that no longer exists leaves no render behind. A missing directory is
+/// nothing to clear.
+pub fn clear_renders(dir: &Path) -> Result<(), LikeC4Error> {
+    let Ok(entries) = std::fs::read_dir(dir) else {
+        return Ok(());
+    };
+    for path in entries.flatten().map(|e| e.path()) {
+        if path.extension().is_some_and(|e| e == "dot" || e == "svg") {
+            std::fs::remove_file(&path).map_err(|source| LikeC4Error::Io { path, source })?;
+        }
+    }
+    Ok(())
+}
+
 /// Render every view of the model under `dir` to an SVG in `out_dir`:
-/// `likec4 gen dot`, then Graphviz `dot -Tsvg` per file. Returns the
-/// SVGs written, sorted. The `.dot` files stay beside them.
+/// clear the previous renders, `likec4 gen dot`, then Graphviz `dot
+/// -Tsvg` per file. Returns the SVGs written, sorted. The `.dot` files
+/// stay beside them.
 pub fn render(dir: &Path, out_dir: &Path) -> Result<Vec<PathBuf>, LikeC4Error> {
+    clear_renders(out_dir)?;
     let mut svgs = Vec::new();
     for dot_file in gen_dot(dir, out_dir)? {
         let (svg, args) = svg_args(&dot_file);
@@ -306,6 +323,29 @@ mod tests {
                 "docs/arch"
             ]
         );
+    }
+
+    #[test]
+    fn clear_renders_drops_dot_and_svg_files_and_leaves_the_rest() {
+        let dir = tempfile::tempdir().unwrap();
+        for name in ["old.dot", "old.svg", "keep.txt", ".gitkeep"] {
+            std::fs::write(dir.path().join(name), "").unwrap();
+        }
+        std::fs::create_dir(dir.path().join("sub")).unwrap();
+
+        clear_renders(dir.path()).unwrap();
+
+        assert!(!dir.path().join("old.dot").exists());
+        assert!(!dir.path().join("old.svg").exists());
+        assert!(dir.path().join("keep.txt").exists());
+        assert!(dir.path().join(".gitkeep").exists());
+        assert!(dir.path().join("sub").is_dir());
+    }
+
+    #[test]
+    fn clear_renders_on_a_missing_directory_is_nothing_to_do() {
+        let dir = tempfile::tempdir().unwrap();
+        assert!(clear_renders(&dir.path().join("nowhere")).is_ok());
     }
 
     #[test]

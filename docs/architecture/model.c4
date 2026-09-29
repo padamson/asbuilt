@@ -387,11 +387,11 @@ version switcher needs to know that: every other asset path is relative.'
     technology 'Node.js via npx, pinned version'
   }
 
-  asbuilt.asbuilt -[calls]-> asbuilt.commands 'EXIT_ERROR, check, commands, docs, export_json, render, survey, validate'
+  asbuilt.asbuilt -[constructs]-> asbuilt.commands 'DocsArgs, EXIT_ERROR, check, commands, docs, export_json, render, survey, validate'
   asbuilt.commands -[calls]-> asbuilt.likec4 'LikeC4Error, export_json, likec4, render, validate'
   asbuilt.commands -[calls]-> asbuilt_core.check 'Outcome, compare'
   asbuilt.commands -[calls]-> asbuilt_core.config 'Config'
-  asbuilt.commands -[constructs]-> asbuilt_core.docs 'DocsOptions, generate'
+  asbuilt.commands -[constructs]-> asbuilt_core.docs 'DocsOptions, GENERATOR_META, generate'
   asbuilt.commands -[calls]-> asbuilt_core.emit 'emit'
   asbuilt.commands -[names]-> asbuilt_core.error 'Error'
   asbuilt.commands -[calls]-> asbuilt_core.frontend 'survey'

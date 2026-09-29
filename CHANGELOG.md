@@ -38,6 +38,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Gates for the excluded site crates: a pre-commit lockfile check and per-manifest fmt/clippy/host tests, `cargo deny` over every manifest (hook, security job, advisory monitor), an `Excluded crates compile` CI job, Dependabot `directories:` for all three lockfiles; the site tree's four unmaintained-crate advisories accepted in `deny.toml` with reasons
 
 - `.github/workflows/pages.yml`: the versioned Pages deploy to https://padamson.github.io/asbuilt/ (`/asbuilt/dev/` from main, `/asbuilt/vX.Y.Z/` on dispatch), gated on the playwright-rs suite; every snapshot carries `asbuilt docs` over this repo's model at `architecture/`, and `site_architecture_section_lists_every_crate_and_embeds_a_view` gates that tree (`docs/versioned-site.md`)
+- `[docs] home_url` and `home_title` (flags `--home-url`, `--home-title`): a link back to the site that hosts the tree, as the first crumb and a header link on every page; relative values resolve from each page's depth so they hold under a versioned snapshot
+- `[docs] stylesheet` (flag `--stylesheet`): a stylesheet linked last on every page, so a host site can restate the page tokens (`--bg`, `--fg`, `--muted`, `--accent`, `--rule`, `--code`, `--figure-bg`, light and dark defaults) in its own palette
+- Every page carries `<meta name="generator" content="asbuilt docs">`
+
+### Changed
+- `asbuilt docs` owns its output directory: a tree a previous run wrote is cleared of what that run owns (root pages, `containers/`, the stylesheets, copied SVGs) before writing, so a renamed crate's page cannot ship; a non-empty directory nobody's run wrote is refused unless `--force`, and even then only the owned set is removed
+- `asbuilt render` (and the render inside `docs`) clears stale `.svg` and `.dot` files first, so a dropped view leaves no render behind
+- Diagrams are no longer `loading="lazy"`; a page has few and a gate would otherwise have to force them
+- No hard-coded white behind figures; the page follows the OS light or dark setting through the tokens
 
 ### Fixed
 - A bare name brought in by a glob import (`use crate::a::*; Thing::new()`) now resolves; modules that glob-import a prelude were missing from the graph

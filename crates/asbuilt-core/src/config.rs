@@ -88,6 +88,19 @@ pub struct DocsConfig {
     /// when absent.
     #[serde(default)]
     pub source_url: Option<String>,
+    /// A link back to the site that hosts the tree, as the first crumb
+    /// and a header link on every page; relative values (`../`) resolve
+    /// from each page's depth. No link when absent.
+    #[serde(default)]
+    pub home_url: Option<String>,
+    /// The text of that link; the URL itself when absent.
+    #[serde(default)]
+    pub home_title: Option<String>,
+    /// A stylesheet linked last in every page, after the tree's own, so
+    /// the host can restate the page tokens in its palette. Resolved
+    /// like `home_url`.
+    #[serde(default)]
+    pub stylesheet: Option<String>,
 }
 
 /// Something outside the code that a module talks to: a spawned
@@ -281,7 +294,7 @@ technology = "stdio"
 
     #[test]
     fn the_docs_table_parses_and_defaults_to_nothing() {
-        let config: Config = "[docs]\ntitle = \"asbuilt\"\nsource_url = \"https://x/blob/main/\"\n"
+        let config: Config = "[docs]\ntitle = \"asbuilt\"\nsource_url = \"https://x/blob/main/\"\nhome_url = \"../\"\nhome_title = \"Home\"\nstylesheet = \"../site.css\"\n"
             .parse()
             .unwrap();
         assert_eq!(config.docs.title.as_deref(), Some("asbuilt"));
@@ -289,6 +302,9 @@ technology = "stdio"
             config.docs.source_url.as_deref(),
             Some("https://x/blob/main/")
         );
+        assert_eq!(config.docs.home_url.as_deref(), Some("../"));
+        assert_eq!(config.docs.home_title.as_deref(), Some("Home"));
+        assert_eq!(config.docs.stylesheet.as_deref(), Some("../site.css"));
         let empty: Config = "".parse().unwrap();
         assert_eq!(empty.docs, DocsConfig::default());
     }

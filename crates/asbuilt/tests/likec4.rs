@@ -222,12 +222,23 @@ fn likec4_export_json_is_free_of_relative_links_and_keeps_the_elements() {
 
 #[test]
 #[ignore = "needs npx (Node), network and Graphviz dot; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
-fn likec4_render_writes_one_svg_per_view() {
+fn likec4_render_writes_one_svg_per_view_and_drops_stale_renders() {
     let ws = consumer_copy();
     let dir = ws.root().join("docs/architecture");
     let out = dir.join("views");
+    ws.write("docs/architecture/views/gone.svg", "<svg/>");
+    ws.write("docs/architecture/views/gone.dot", "digraph {}");
 
     let svgs = likec4::render(&dir, &out).unwrap();
+
+    assert!(
+        !out.join("gone.svg").exists(),
+        "a stale SVG survived render"
+    );
+    assert!(
+        !out.join("gone.dot").exists(),
+        "a stale dot survived render"
+    );
 
     let names: Vec<String> = svgs
         .iter()

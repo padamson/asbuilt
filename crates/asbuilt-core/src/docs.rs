@@ -24,10 +24,26 @@ pub struct DocsOptions {
     /// (`https://github.com/owner/repo/blob/main/`); paths are plain
     /// text when absent.
     pub source_url: Option<String>,
+    /// Where the tree is mounted: a link back to the site that hosts it,
+    /// as the first crumb and a header link on every page. Relative
+    /// values (`../`) are resolved from each page's own depth, so they
+    /// hold under a versioned snapshot; absolute URLs are used verbatim.
+    pub home_url: Option<String>,
+    /// The text of that link; `home_url` itself when absent.
+    pub home_title: Option<String>,
+    /// A stylesheet linked last in every page's head, after the tree's
+    /// own, so a host site can restate the page tokens in its palette.
+    /// Resolved like `home_url`.
+    pub stylesheet: Option<String>,
     /// File stems of the SVGs that exist under `views/` (`index`,
     /// `view_app`, `context`).
     pub views: BTreeSet<String>,
 }
+
+/// The `<meta name="generator">` every page carries. `asbuilt docs` looks
+/// for it before clearing an output directory: a tree that has it was
+/// written by a previous run and is safe to replace.
+pub const GENERATOR_META: &str = "<meta name=\"generator\" content=\"asbuilt docs\">";
 
 /// The generated tree.
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
@@ -108,6 +124,17 @@ fn up(depth: usize) -> String {
     "../".repeat(depth)
 }
 
+/// A configured URL as a page at `depth` should write it: absolute URLs
+/// and root-relative paths verbatim, anything else relative to the tree
+/// root and so prefixed by the climb.
+fn resolve(depth: usize, url: &str) -> String {
+    if url.contains("://") || url.starts_with('/') {
+        url.to_string()
+    } else {
+        format!("{}{url}", up(depth))
+    }
+}
+
 fn is_external(element: &Element) -> bool {
     matches!(element.kind, ElementKind::External(_))
 }
@@ -123,6 +150,38 @@ struct Ctx<'a> {
 }
 
 impl Ctx<'_> {
+    /// The home link as `<a class="home">`, when there is a home.
+    fn home_link(&self, depth: usize) -> Option<String> {
+        let url = self.options.home_url.as_deref()?;
+        let title = self.options.home_title.as_deref().unwrap_or(url);
+        Some(format!(
+            "<a class=\"home\" href=\"{}\">{}</a>",
+            escape(&resolve(depth, url)),
+            escape(title)
+        ))
+    }
+
+    /// The crumbs of a page: home (when there is one), the tree's index
+    /// unless this is the index, then `trail` as plain text. Empty when
+    /// there is nothing to climb to.
+    fn crumbs(&self, depth: usize, trail: &[&str]) -> String {
+        let mut items: Vec<String> = self.home_link(depth).into_iter().collect();
+        if trail.is_empty() {
+            items.push(escape(&self.options.title));
+        } else {
+            items.push(format!(
+                "<a href=\"{}index.html\">{}</a>",
+                up(depth),
+                escape(&self.options.title)
+            ));
+            items.extend(trail.iter().map(|t| escape(t)));
+        }
+        if items.len() < 2 {
+            return String::new();
+        }
+        format!("<nav class=\"crumbs\">{}</nav>\n", items.join(" / "))
+    }
+
     fn layout(&self, depth: usize, page_title: &str, body: &str) -> String {
         let prefix = up(depth);
         let mut nav = String::new();
@@ -137,8 +196,20 @@ impl Ctx<'_> {
                 escape(&element.title)
             );
         }
+        let home = self.home_link(depth).unwrap_or_default();
+        let host_css = self
+            .options
+            .stylesheet
+            .as_deref()
+            .map(|css| {
+                format!(
+                    "<link rel=\"stylesheet\" href=\"{}\">\n",
+                    escape(&resolve(depth, css))
+                )
+            })
+            .unwrap_or_default();
         format!(
-            "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>{page} · {site}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n</head>\n<body>\n<header><a class=\"site\" href=\"{prefix}index.html\">{site}</a><nav>{nav}</nav></header>\n<main>\n{body}</main>\n</body>\n</html>\n",
+            "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{page} · {site}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n{host_css}</head>\n<body>\n<header>{home}<a class=\"site\" href=\"{prefix}index.html\">{site}</a><nav>{nav}</nav></header>\n<main>\n{body}</main>\n</body>\n</html>\n",
             page = escape(page_title),
             site = escape(&self.options.title),
         )
@@ -149,14 +220,15 @@ impl Ctx<'_> {
     fn view_figure(&mut self, depth: usize, view: &str, alt: &str) -> String {
         if self.options.views.contains(view) {
             format!(
-                "<figure><img src=\"{}views/{view}.svg\" alt=\"{}\" loading=\"lazy\"></figure>\n",
+                "<figure><img src=\"{}views/{view}.svg\" alt=\"{}\"></figure>\n",
                 up(depth),
                 escape(alt)
             )
         } else {
             self.missing.insert(view.to_string());
             format!(
-                "<p class=\"missing\">No diagram for <code>{view}</code>: run <code>asbuilt render</code>.</p>\n"
+                "<p class=\"missing\">No diagram for <code>{}</code>: run <code>asbuilt render</code>.</p>\n",
+                escape(view)
             )
         }
     }
@@ -284,7 +356,7 @@ impl Ctx<'_> {
     }
 
     fn index_page(&mut self) -> String {
-        let mut body = String::new();
+        let mut body = self.crumbs(0, &[]);
         let _ = writeln!(body, "<h1>{}</h1>", escape(&self.options.title));
         body.push_str(&self.view_figure(0, "index", "Overview"));
         let top = children_of(self.model, &[]);
@@ -359,13 +431,7 @@ impl Ctx<'_> {
     }
 
     fn container_page_html(&mut self, element: &Element) -> String {
-        let mut body = String::new();
-        let _ = writeln!(
-            body,
-            "<nav class=\"crumbs\"><a href=\"../index.html\">{}</a> / {}</nav>",
-            escape(&self.options.title),
-            escape(&element.title)
-        );
+        let mut body = self.crumbs(1, &[&element.title]);
         let _ = writeln!(body, "<h1>{}</h1>", escape(&element.title));
         body.push_str(&self.meta_html(element));
         if let Some(view) = self.views.get(&element.id).cloned() {
@@ -415,11 +481,12 @@ impl Ctx<'_> {
         if curated.is_empty() {
             return None;
         }
-        let mut body = String::from("<h1>Curated views</h1>\n");
+        let mut body = self.crumbs(0, &["Curated views"]);
+        body.push_str("<h1>Curated views</h1>\n");
         for view in curated {
             let _ = writeln!(
                 body,
-                "<figure><figcaption>{0}</figcaption><img src=\"views/{0}.svg\" alt=\"{0}\" loading=\"lazy\"></figure>",
+                "<figure><figcaption>{0}</figcaption><img src=\"views/{0}.svg\" alt=\"{0}\"></figure>",
                 escape(view)
             );
         }
@@ -593,8 +660,8 @@ mod tests {
     fn options() -> DocsOptions {
         DocsOptions {
             title: "Sample".into(),
-            source_url: None,
             views: all_views(),
+            ..Default::default()
         }
     }
 
@@ -937,6 +1004,137 @@ mod tests {
             index.contains("<a class=\"site\" href=\"index.html\">Sample</a>"),
             "{index}"
         );
+    }
+
+    #[test]
+    fn every_page_carries_the_generator_meta() {
+        let site = generate(&sample(), &options());
+        for (path, contents) in &site.pages {
+            if path.ends_with(".html") {
+                assert!(contents.contains(GENERATOR_META), "{path}: {contents}");
+            }
+        }
+    }
+
+    #[test]
+    fn no_image_is_lazy() {
+        let site = generate(&sample(), &options());
+        for (path, contents) in &site.pages {
+            assert!(!contents.contains("loading="), "{path}: {contents}");
+        }
+    }
+
+    #[test]
+    fn a_home_url_is_the_first_crumb_and_a_header_link_resolved_from_each_depth() {
+        let mut opts = options();
+        opts.home_url = Some("../".into());
+        opts.home_title = Some("Home".into());
+        let site = generate(&sample(), &opts);
+        let index = page(&site, "index.html");
+        assert!(
+            index.contains("<header><a class=\"home\" href=\"../\">Home</a><a class=\"site\""),
+            "{index}"
+        );
+        assert!(
+            index.contains(
+                "<nav class=\"crumbs\"><a class=\"home\" href=\"../\">Home</a> / Sample</nav>"
+            ),
+            "{index}"
+        );
+        let app = page(&site, "containers/app.html");
+        assert!(
+            app.contains("<header><a class=\"home\" href=\"../../\">Home</a><a class=\"site\""),
+            "{app}"
+        );
+        assert!(
+            app.contains("<nav class=\"crumbs\"><a class=\"home\" href=\"../../\">Home</a> / <a href=\"../index.html\">Sample</a> / app</nav>"),
+            "{app}"
+        );
+    }
+
+    #[test]
+    fn an_absolute_home_url_is_verbatim_and_names_itself_without_a_title() {
+        let mut opts = options();
+        opts.home_url = Some("https://example.test/".into());
+        let site = generate(&sample(), &opts);
+        let app = page(&site, "containers/app.html");
+        assert!(
+            app.contains(
+                "<a class=\"home\" href=\"https://example.test/\">https://example.test/</a>"
+            ),
+            "{app}"
+        );
+    }
+
+    #[test]
+    fn without_a_home_url_there_is_no_home_link_and_the_index_has_no_crumbs() {
+        let site = generate(&sample(), &options());
+        let index = page(&site, "index.html");
+        assert!(!index.contains("class=\"home\""), "{index}");
+        assert!(!index.contains("class=\"crumbs\""), "{index}");
+        assert!(
+            index.contains("<header><a class=\"site\" href=\"index.html\">Sample</a>"),
+            "{index}"
+        );
+    }
+
+    #[test]
+    fn a_stylesheet_is_linked_last_in_the_head_and_resolved_from_each_depth() {
+        let mut opts = options();
+        opts.stylesheet = Some("site.css".into());
+        let site = generate(&sample(), &opts);
+        let index = page(&site, "index.html");
+        assert!(
+            index.contains("<link rel=\"stylesheet\" href=\"style.css\">\n<link rel=\"stylesheet\" href=\"site.css\">\n</head>"),
+            "{index}"
+        );
+        let app = page(&site, "containers/app.html");
+        assert!(
+            app.contains("<link rel=\"stylesheet\" href=\"../style.css\">\n<link rel=\"stylesheet\" href=\"../site.css\">\n</head>"),
+            "{app}"
+        );
+        let mut opts = options();
+        opts.stylesheet = Some("/theme.css".into());
+        let site = generate(&sample(), &opts);
+        assert!(
+            page(&site, "containers/app.html").contains("href=\"/theme.css\">\n</head>"),
+            "root-relative is verbatim"
+        );
+        assert!(
+            !page(&site, "index.html").contains("site.css"),
+            "no host link without a stylesheet"
+        );
+    }
+
+    #[test]
+    fn the_stylesheet_defines_the_page_tokens_for_light_and_dark_and_no_white_slab() {
+        for token in ["--bg:", "--fg:", "--muted:", "--accent:", "--figure-bg:"] {
+            assert!(STYLESHEET.contains(token), "{token}");
+        }
+        assert!(STYLESHEET.contains("@media (prefers-color-scheme: dark)"));
+        assert!(!STYLESHEET.contains("background: #fff"), "{STYLESHEET}");
+        assert!(STYLESHEET.contains(".modules ul"), "{STYLESHEET}");
+    }
+
+    #[test]
+    fn a_missing_view_name_is_escaped_in_the_placeholder() {
+        let mut model = sample();
+        model.elements.push(element("a<b", ElementKind::Container));
+        model
+            .elements
+            .push(element("a<b.child", ElementKind::Component));
+        let site = generate(&model, &options());
+        let page = site
+            .pages
+            .iter()
+            .find(|(k, _)| k.starts_with("containers/a"))
+            .map(|(_, v)| v.clone())
+            .unwrap();
+        assert!(
+            page.contains("No diagram for <code>view_a_b</code>") || !page.contains("<code>a<b"),
+            "{page}"
+        );
+        assert!(!page.contains("<code>a<"), "{page}");
     }
 
     #[test]

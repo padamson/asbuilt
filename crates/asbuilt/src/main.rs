@@ -66,6 +66,18 @@ enum Command {
         /// A URL prefix that turns each path into a link; `[docs] source_url` by default.
         #[arg(long, value_name = "URL")]
         source_url: Option<String>,
+        /// A link back to the hosting site on every page; `[docs] home_url` by default.
+        #[arg(long, value_name = "URL")]
+        home_url: Option<String>,
+        /// The text of that link; `[docs] home_title`, else the URL.
+        #[arg(long, value_name = "TEXT")]
+        home_title: Option<String>,
+        /// A stylesheet linked last on every page; `[docs] stylesheet` by default.
+        #[arg(long, value_name = "URL")]
+        stylesheet: Option<String>,
+        /// Write into a non-empty directory that no previous run wrote.
+        #[arg(long)]
+        force: bool,
     },
     /// Render every view to an SVG (needs Node and Graphviz `dot`).
     Render {
@@ -123,13 +135,23 @@ fn main() {
             no_render,
             title,
             source_url,
+            home_url,
+            home_title,
+            stylesheet,
+            force,
         } => commands::docs(
             root.as_deref().unwrap_or(".".as_ref()),
-            config,
-            output.as_deref(),
-            *no_render,
-            title.as_deref(),
-            source_url.as_deref(),
+            &commands::DocsArgs {
+                config_path: config,
+                output: output.as_deref(),
+                no_render: *no_render,
+                force: *force,
+                title: title.as_deref(),
+                source_url: source_url.as_deref(),
+                home_url: home_url.as_deref(),
+                home_title: home_title.as_deref(),
+                stylesheet: stylesheet.as_deref(),
+            },
             &mut std::io::stderr().lock(),
         ),
         Command::Render { root, output } => commands::render(

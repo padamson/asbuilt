@@ -387,15 +387,114 @@ fn docs_no_render_copies_the_svgs_render_left_and_not_the_dot_files() {
 }
 
 #[test]
-fn docs_into_the_model_directory_keeps_an_existing_svg_intact() {
+fn docs_into_the_model_directory_needs_force_and_keeps_an_existing_svg_intact() {
     let ws = scratch_copy();
     let svg = ws.write("docs/architecture/views/index.svg", "<svg/>");
 
-    let out = docs_run(&ws, &["-o", "docs/architecture"]);
+    let refused = docs_run(&ws, &["-o", "docs/architecture"]);
+    assert_eq!(refused.status.code(), Some(2), "{}", text(&refused.stderr));
+    assert!(!ws.root().join("docs/architecture/index.html").exists());
+
+    for _ in 0..2 {
+        let out = docs_run(&ws, &["-o", "docs/architecture", "--force"]);
+        assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+        assert_eq!(std::fs::read_to_string(&svg).unwrap(), "<svg/>");
+        assert!(ws.root().join("docs/architecture/index.html").is_file());
+        assert!(ws.root().join("docs/architecture/model.c4").is_file());
+    }
+}
+
+#[test]
+fn docs_refuses_a_foreign_non_empty_directory_without_force_and_names_the_flag() {
+    let ws = scratch_copy();
+    ws.write("out/notes.txt", "mine");
+
+    let out = docs_run(&ws, &["-o", "out"]);
+
+    assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
+    let stderr = text(&out.stderr);
+    assert!(stderr.contains("--force"), "{stderr}");
+    assert!(stderr.contains("not written by `asbuilt docs`"), "{stderr}");
+    assert!(!ws.root().join("out/index.html").exists());
+    assert_eq!(
+        std::fs::read_to_string(ws.root().join("out/notes.txt")).unwrap(),
+        "mine"
+    );
+}
+
+#[test]
+fn docs_force_writes_beside_a_stranger_file_and_keeps_it() {
+    let ws = scratch_copy();
+    ws.write("out/notes.txt", "mine");
+    ws.write("out/.gitkeep", "");
+
+    let out = docs_run(&ws, &["-o", "out", "--force"]);
 
     assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
-    assert_eq!(std::fs::read_to_string(&svg).unwrap(), "<svg/>");
-    assert!(ws.root().join("docs/architecture/index.html").is_file());
+    assert!(ws.root().join("out/index.html").is_file());
+    assert_eq!(
+        std::fs::read_to_string(ws.root().join("out/notes.txt")).unwrap(),
+        "mine"
+    );
+    assert!(ws.root().join("out/.gitkeep").is_file());
+}
+
+#[test]
+fn docs_run_twice_removes_what_the_first_run_owned_and_nothing_else() {
+    let ws = scratch_copy();
+    assert_eq!(docs_run(&ws, &["-o", "out"]).status.code(), Some(0));
+    // What a renamed crate and a dropped curated view would leave behind,
+    // plus a host's own file.
+    ws.write("out/containers/old.html", "stale");
+    ws.write("out/stale.html", "stale");
+    ws.write("out/views/stale.svg", "<svg/>");
+    ws.write("out/.gitkeep", "");
+
+    let out = docs_run(&ws, &["-o", "out"]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    let root = ws.root().join("out");
+    assert!(!root.join("containers/old.html").exists());
+    assert!(!root.join("stale.html").exists());
+    assert!(!root.join("views/stale.svg").exists());
+    assert!(root.join(".gitkeep").is_file());
+    assert!(root.join("containers/app.html").is_file());
+}
+
+#[test]
+fn docs_home_and_stylesheet_flags_reach_every_page_resolved_from_its_depth() {
+    let ws = scratch_copy();
+
+    let out = docs_run(
+        &ws,
+        &[
+            "-o",
+            "out",
+            "--home-url",
+            "../",
+            "--home-title",
+            "Site",
+            "--stylesheet",
+            "../site.css",
+        ],
+    );
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    let index = std::fs::read_to_string(ws.root().join("out/index.html")).unwrap();
+    assert!(
+        index.contains("<a class=\"home\" href=\"../\">Site</a>"),
+        "{index}"
+    );
+    assert!(
+        index.contains("<link rel=\"stylesheet\" href=\"../site.css\">\n</head>"),
+        "{index}"
+    );
+    let app = std::fs::read_to_string(ws.root().join("out/containers/app.html")).unwrap();
+    assert!(
+        app.contains("<a class=\"home\" href=\"../../\">Site</a>"),
+        "{app}"
+    );
+    assert!(app.contains("href=\"../../site.css\">\n</head>"), "{app}");
 }
 
 #[test]

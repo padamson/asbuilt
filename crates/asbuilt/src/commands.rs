@@ -8,7 +8,7 @@ use std::path::{Component, Path, PathBuf};
 
 use std::collections::BTreeSet;
 
-use asbuilt_core::docs::{DocsOptions, generate};
+use asbuilt_core::docs::{DocsOptions, GENERATOR_META, generate};
 use asbuilt_core::{Config, EmitOptions, Model, Outcome, compare, emit};
 use asbuilt_rust::RustFrontend;
 
@@ -42,6 +42,11 @@ pub enum CliError {
 
     #[error("no model at {path}; run `asbuilt survey` to create it")]
     NoModel { path: PathBuf },
+
+    #[error(
+        "output directory {path} is not empty and was not written by `asbuilt docs`; empty it or pass --force"
+    )]
+    OutputNotOurs { path: PathBuf },
 
     #[error(transparent)]
     LikeC4(#[from] LikeC4Error),
@@ -384,20 +389,98 @@ fn page_path(dir: &Path, rel: &str) -> PathBuf {
     path
 }
 
+/// What a previous `docs` run owns in its output directory, and what is
+/// removed before the next one writes: the pages at the root, the
+/// container pages, the stylesheets, and the copied SVGs. Anything else
+/// (a `.gitkeep`, a host's files) is left alone. `keep_views` skips the
+/// SVGs when the output directory is the model directory itself, where
+/// they are `render`'s output rather than a copy.
+fn clear_owned(out: &Path, keep_views: bool) -> Result<(), CliError> {
+    let write_err = |path: PathBuf| move |source| CliError::Write { path, source };
+    let entries = std::fs::read_dir(out).map_err(write_err(out.to_path_buf()))?;
+    for entry in entries.flatten() {
+        let path = entry.path();
+        let name = entry.file_name().to_string_lossy().into_owned();
+        let owned_file = path.is_file()
+            && (name.ends_with(".html") || matches!(name.as_str(), "style.css" | "theme.css"));
+        if owned_file {
+            std::fs::remove_file(&path).map_err(write_err(path.clone()))?;
+        } else if path.is_dir() && name == "containers" {
+            std::fs::remove_dir_all(&path).map_err(write_err(path.clone()))?;
+        } else if path.is_dir() && name == "views" && !keep_views {
+            for svg in std::fs::read_dir(&path)
+                .map_err(write_err(path.clone()))?
+                .flatten()
+            {
+                let svg = svg.path();
+                if svg.extension().is_some_and(|e| e == "svg") {
+                    std::fs::remove_file(&svg).map_err(write_err(svg.clone()))?;
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Make `out` safe to write into: absent or empty is fine; a tree a
+/// previous run wrote (its `index.html` carries the generator meta) is
+/// cleared of what that run owns; anything else is refused unless
+/// `force`, which clears the same owned set and nothing more.
+fn prepare_output(out: &Path, force: bool, keep_views: bool) -> Result<(), CliError> {
+    if !out.exists() {
+        return Ok(());
+    }
+    let mut entries = std::fs::read_dir(out).map_err(|source| CliError::Read {
+        path: out.to_path_buf(),
+        source,
+    })?;
+    if entries.next().is_none() {
+        return Ok(());
+    }
+    let ours = std::fs::read_to_string(out.join("index.html"))
+        .is_ok_and(|index| index.contains(GENERATOR_META));
+    if !ours && !force {
+        return Err(CliError::OutputNotOurs {
+            path: out.to_path_buf(),
+        });
+    }
+    clear_owned(out, keep_views)
+}
+
+/// The inputs of `asbuilt docs` beyond the root.
+#[derive(Debug, Clone, Default)]
+pub struct DocsArgs<'a> {
+    pub config_path: Option<&'a Path>,
+    /// Write here instead of `<model dir>/site`, relative to the root.
+    pub output: Option<&'a Path>,
+    /// Reuse the SVGs under `<model dir>/views` instead of rendering.
+    pub no_render: bool,
+    /// Write into a non-empty directory that no previous run wrote.
+    pub force: bool,
+    pub title: Option<&'a str>,
+    pub source_url: Option<&'a str>,
+    pub home_url: Option<&'a str>,
+    pub home_title: Option<&'a str>,
+    pub stylesheet: Option<&'a str>,
+}
+
 /// Write the documentation tree: survey, refuse to write when the
 /// committed model is stale (the SVGs come from it, the pages from the
-/// survey), render the views unless told not to, generate, write, copy
-/// the SVGs beside the pages, and report the views that have none.
-#[allow(clippy::too_many_arguments)]
-pub fn docs(
-    root: &Path,
-    config_path: Option<&Path>,
-    override_path: Option<&Path>,
-    no_render: bool,
-    title: Option<&str>,
-    source_url: Option<&str>,
-    err: &mut dyn Write,
-) -> Result<i32, CliError> {
+/// survey), render the views unless told not to, generate, clear what a
+/// previous run left, write, copy the SVGs beside the pages, and report
+/// the views that have none.
+pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32, CliError> {
+    let DocsArgs {
+        config_path,
+        output: override_path,
+        no_render,
+        force,
+        title,
+        source_url,
+        home_url,
+        home_title,
+        stylesheet,
+    } = *args;
     let config = load_config(root, config_path)?;
     let target = output_target(root, &config, None)?;
     let (model, outcome) = drift(root, &config, &target)?;
@@ -422,19 +505,23 @@ pub fn docs(
         .file_name()
         .map(|n| n.to_string_lossy().into_owned())
         .unwrap_or_else(|| "asbuilt".to_string());
+    let flag_or_config = |flag: Option<&str>, configured: &Option<String>| {
+        flag.map(str::to_string).or_else(|| configured.clone())
+    };
     let options = DocsOptions {
-        title: title
-            .map(str::to_string)
-            .or_else(|| config.docs.title.clone())
-            .unwrap_or(root_name),
-        source_url: source_url
-            .map(str::to_string)
-            .or_else(|| config.docs.source_url.clone()),
+        title: flag_or_config(title, &config.docs.title).unwrap_or(root_name),
+        source_url: flag_or_config(source_url, &config.docs.source_url),
+        home_url: flag_or_config(home_url, &config.docs.home_url),
+        home_title: flag_or_config(home_title, &config.docs.home_title),
+        stylesheet: flag_or_config(stylesheet, &config.docs.stylesheet),
         views: svg_stems(&svg_dir),
     };
     let site = generate(&model, &options);
 
     let out = under_model_dir(root, &model_dir, override_path, "site");
+    let out_views = out.join("views");
+    let same_dir = svg_dir.canonicalize().ok() == out_views.canonicalize().ok();
+    prepare_output(&out, force, same_dir)?;
     for (rel, contents) in &site.pages {
         let path = page_path(&out, rel);
         if let Some(parent) = path.parent() {
@@ -445,8 +532,6 @@ pub fn docs(
         }
         std::fs::write(&path, contents).map_err(|source| CliError::Write { path, source })?;
     }
-    let out_views = out.join("views");
-    let same_dir = svg_dir.canonicalize().ok() == out_views.canonicalize().ok();
     if svg_dir.is_dir() && !same_dir {
         std::fs::create_dir_all(&out_views).map_err(|source| CliError::Write {
             path: out_views.clone(),
