@@ -1,20 +1,182 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme-default="system">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="generator" content="asbuilt docs">
 <title>asbuilt · asbuilt</title>
 <link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../theme.css">
+<script src="../theme.js"></script>
+<link rel="stylesheet" href="../../architecture.css">
 </head>
 <body>
-<header><a class="site" href="../index.html">asbuilt</a><nav><a href="../containers/asbuilt.html">asbuilt</a> <a href="../containers/asbuilt_core.html">asbuilt-core</a> <a href="../containers/asbuilt_rust.html">asbuilt-rust</a> <a href="../containers/asbuilt_site.html">asbuilt-site</a> <a href="../containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a> </nav></header>
+<header><a class="site" href="../index.html">asbuilt</a><nav><a href="../containers/asbuilt.html">asbuilt</a> <a href="../containers/asbuilt_core.html">asbuilt-core</a> <a href="../containers/asbuilt_rust.html">asbuilt-rust</a> <a href="../containers/asbuilt_site.html">asbuilt-site</a> <a href="../containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a> </nav><label class="scheme" hidden>Theme <select id="scheme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></header>
 <main>
 <nav class="crumbs"><a href="../index.html">asbuilt</a> / asbuilt</nav>
 <h1>asbuilt</h1>
 <p class="meta">library crate · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt"><code>crates/asbuilt</code></a></p>
 <p>The library half of the <code>asbuilt</code> binary.</p>
-<figure><img src="../views/view_asbuilt.svg" alt="asbuilt"></figure>
+<figure class="view"><svg viewBox="0.00 0.00 2303.10 950.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="c4" data-view="view_asbuilt" role="img" aria-label="asbuilt">
+<g id="view_asbuilt-graph0" class="graph" transform="scale(1 1) rotate(0) translate(15.05 935.05)">
+
+<g id="view_asbuilt-clust1" class="cluster c4-k-container">
+
+<polygon fill="#722f24" stroke="#57130f" points="8,-281 8,-912 1182,-912 1182,-281 8,-281"/>
+<text text-anchor="start" x="16" y="-900.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT</text>
+</g>
+
+<g id="view_asbuilt-node1" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="376.5,-852 47.5,-852 47.5,-672 376.5,-672 376.5,-852"/>
+<text text-anchor="start" x="183.5" y="-801" font-family="Arial" font-size="20.00" fill="#5b5b5b">asbuilt</text>
+<text text-anchor="start" x="68" y="-779" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The `asbuilt` command line: `survey` writes</text>
+<text text-anchor="start" x="134.5" y="-762" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">the model, `check` fails</text>
+<text text-anchor="start" x="79" y="-745" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">when the committed one is stale, `docs`</text>
+<text text-anchor="start" x="128.5" y="-728" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">writes the documentation</text>
+<text text-anchor="start" x="88" y="-711" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">tree, and `validate`, `export json` and</text>
+</g>
+
+<g id="view_asbuilt-node2" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1084,-501 764,-501 764,-321 1084,-321 1084,-501"/>
+<text text-anchor="start" x="903" y="-406" font-family="Arial" font-size="20.00" fill="#5b5b5b">tests</text>
+</g>
+
+<g id="view_asbuilt-node3" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="653.5,-501 300.5,-501 300.5,-321 653.5,-321 653.5,-501"/>
+<text text-anchor="start" x="428.5" y="-450" font-family="Arial" font-size="20.00" fill="#5b5b5b">commands</text>
+<text text-anchor="start" x="321" y="-428" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The subcommands, as functions that return an</text>
+<text text-anchor="start" x="399.5" y="-411" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">exit code, so the binary</text>
+<text text-anchor="start" x="331" y="-394" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">is a thin `main` and the tests can drive each</text>
+<text text-anchor="start" x="416" y="-377" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">path. `survey` and</text>
+<text text-anchor="start" x="340" y="-360" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`check` need no Node; `validate`, `export</text>
+</g>
+
+<g id="view_asbuilt-node4" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1089,-852 759,-852 759,-672 1089,-672 1089,-852"/>
+<text text-anchor="start" x="898" y="-801" font-family="Arial" font-size="20.00" fill="#5b5b5b">likec4</text>
+<text text-anchor="start" x="779" y="-779" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The pinned `npx likec4` calls, plus Graphviz</text>
+<text text-anchor="start" x="841" y="-762" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">for rendering. Everything</text>
+<text text-anchor="start" x="785" y="-745" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">downstream of the model is LikeC4&#39;s; this</text>
+<text text-anchor="start" x="836" y="-728" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">module runs it and reports</text>
+<text text-anchor="start" x="884" y="-711" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">what it said.</text>
+</g>
+
+<g id="view_asbuilt-node5" class="node c4-k-container">
+
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="1084,-180 764,-180 764,0 1084,0 1084,-180"/>
+<text text-anchor="start" x="872.5" y="-104" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;core</text>
+<text text-anchor="start" x="889" y="-83.6" font-family="Arial" font-size="13.00" fill="#ffffe5" class="c4-muted">library crate</text>
+<text text-anchor="start" x="797" y="-64" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">The language&#45;agnostic core of asbuilt.</text>
+</g>
+
+<g id="view_asbuilt-node6" class="node c4-k-container">
+
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="637,-180 317,-180 317,0 637,0 637,-180"/>
+<text text-anchor="start" x="428.5" y="-104" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;rust</text>
+<text text-anchor="start" x="442" y="-83.6" font-family="Arial" font-size="13.00" fill="#ffffe5" class="c4-muted">library crate</text>
+<text text-anchor="start" x="392" y="-64" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">Rust front&#45;end for asbuilt.</text>
+</g>
+
+<g id="view_asbuilt-node7" class="node c4-k-process">
+
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="1842.5,-501 1503.5,-501 1503.5,-321 1842.5,-321 1842.5,-501"/>
+<text text-anchor="start" x="1616.5" y="-434" font-family="Arial" font-size="20.00" fill="#48382f">Graphviz dot</text>
+<text text-anchor="start" x="1627.5" y="-413.6" font-family="Arial" font-size="13.00" fill="#59493f" class="c4-muted">dot subprocess</text>
+<text text-anchor="start" x="1524" y="-394" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">Renders the Graphviz files LikeC4 generates</text>
+<text text-anchor="start" x="1646.5" y="-377" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">to SVG.</text>
+</g>
+
+<g id="view_asbuilt-node8" class="node c4-k-process">
+
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="2273,-501 1953,-501 1953,-321 2273,-321 2273,-501"/>
+<text text-anchor="start" x="2063.5" y="-442" font-family="Arial" font-size="20.00" fill="#48382f">LikeC4 CLI</text>
+<text text-anchor="start" x="2019" y="-421.6" font-family="Arial" font-size="13.00" fill="#59493f" class="c4-muted">Node.js via npx, pinned version</text>
+<text text-anchor="start" x="1973" y="-402" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">Validates, exports and lays out the model.</text>
+<text text-anchor="start" x="1974" y="-385" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">Only `validate`, `export json` and `render`</text>
+<text text-anchor="start" x="2085.5" y="-368" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">reach it.</text>
+</g>
+
+<g id="view_asbuilt-edge1" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M179.17,-671.84C171.3,-635.19 170.09,-593.76 190,-561 214.09,-521.35 252.54,-491.77 293.57,-469.89"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="295.01,-472.1 300.44,-466.31 292.58,-467.44 295.01,-472.1"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="190,-561 190,-612 471,-612 471,-561 190,-561" class="c4-label-bg"/>
+<text text-anchor="start" x="193.5" y="-597.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">DocsArgs, EXIT_ERROR, check, commands,</text>
+<text text-anchor="start" x="193.5" y="-582.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">docs, export_json, render, survey,</text>
+<text text-anchor="start" x="193.5" y="-567.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">validate</text>
+</g>
+
+<g id="view_asbuilt-edge2" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M376.77,-729.04C472.16,-711.08 594.63,-688.94 704,-672 806.96,-656.06 1100.2,-690.25 1169,-612 1213.37,-561.54 1341.56,-673.05 1139,-281 1120.38,-244.96 1091.85,-212.63 1061.6,-185.28"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1063.28,-183.27 1055.94,-180.24 1059.79,-187.19 1063.28,-183.27"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1239,-400.5 1239,-421.5 1328,-421.5 1328,-400.5 1239,-400.5" class="c4-label-bg"/>
+<text text-anchor="start" x="1242.5" y="-406.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">ColorScheme</text>
+</g>
+
+<g id="view_asbuilt-edge3" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M924,-501.19C924,-550.91 924,-612.87 924,-663.82"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="921.38,-664.08 924,-671.58 926.63,-664.08 921.38,-664.08"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="924,-568.5 924,-604.5 1142,-604.5 1142,-568.5 924,-568.5" class="c4-label-bg"/>
+<text text-anchor="start" x="927" y="-590.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">LikeC4Error, RENDER_SCRATCH,</text>
+<text text-anchor="start" x="927" y="-575.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">export_json, likec4, render, validate</text>
+</g>
+
+<g id="view_asbuilt-edge4" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M924,-320.72C924,-279.33 924,-230.07 924,-187.8"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="926.63,-187.76 924,-180.26 921.38,-187.76 926.63,-187.76"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="924,-240 924,-261 951,-261 951,-240 924,-240" class="c4-label-bg"/>
+<text text-anchor="start" x="927.5" y="-247.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+
+<g id="view_asbuilt-edge5" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M567.89,-501.08C606.21,-537.01 652.05,-577.93 696,-612 720.39,-630.91 747.17,-649.86 773.52,-667.61"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="772.16,-669.85 779.85,-671.85 775.08,-665.49 772.16,-669.85"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="696,-568.5 696,-604.5 897,-604.5 897,-568.5 696,-568.5" class="c4-label-bg"/>
+<text text-anchor="start" x="699.5" y="-590.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">LikeC4Error, export_json, likec4,</text>
+<text text-anchor="start" x="699.5" y="-575.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">render, validate</text>
+</g>
+
+<g id="view_asbuilt-edge6" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M601.81,-320.93C661.37,-278.42 732.63,-227.57 792.97,-184.51"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="794.57,-186.59 799.15,-180.1 791.52,-182.32 794.57,-186.59"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="714,-240 714,-261 741,-261 741,-240 714,-240" class="c4-label-bg"/>
+<text text-anchor="start" x="717.5" y="-247.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+
+<g id="view_asbuilt-edge7" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M477,-320.72C477,-279.33 477,-230.07 477,-187.8"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="479.63,-187.76 477,-180.26 474.38,-187.76 479.63,-187.76"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="477,-240 477,-261 565,-261 565,-240 477,-240" class="c4-label-bg"/>
+<text text-anchor="start" x="480" y="-246.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustFrontend</text>
+</g>
+
+<g id="view_asbuilt-edge8" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1089.1,-720.83C1179.63,-695.63 1292.36,-658.98 1387,-612 1445.8,-582.81 1506.06,-542.5 1556,-505.72"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1557.57,-507.82 1562.04,-501.25 1554.45,-503.6 1557.57,-507.82"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1471,-576 1471,-597 1551,-597 1551,-576 1471,-576" class="c4-label-bg"/>
+<text text-anchor="start" x="1474" y="-582.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">renders with</text>
+</g>
+
+<g id="view_asbuilt-edge9" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1089.22,-728.6C1222.22,-701.27 1413.43,-659.13 1578,-612 1722.72,-570.55 1757.28,-554.48 1898,-501 1913.47,-495.12 1929.5,-488.84 1945.51,-482.44"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1946.88,-484.72 1952.86,-479.5 1944.92,-479.85 1946.88,-484.72"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1739,-576 1739,-597 1772,-597 1772,-576 1739,-576" class="c4-label-bg"/>
+<text text-anchor="start" x="1742.5" y="-582.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">runs</text>
+</g>
+</g>
+</svg></figure>
 <h2>Modules</h2>
 <div class="modules"><ul>
 <li><a href="#asbuilt.asbuilt">asbuilt</a></li>
@@ -33,6 +195,7 @@ the pinned LikeC4.</p>
 <h3>Uses</h3>
 <table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
 <tr><td>constructs</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>DocsArgs, EXIT_ERROR, check, commands, docs, export_json, render, survey, validate</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>ColorScheme</td><td></td></tr>
 </tbody></table>
 </section>
 <section id="asbuilt.commands">
@@ -46,12 +209,13 @@ out to the pinned LikeC4 (and <code>render</code> to Graphviz).</p>
 <table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
 <tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.likec4">asbuilt.likec4</a></td><td>LikeC4Error, export_json, likec4, render, validate</td><td></td></tr>
 <tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.check">asbuilt_core.check</a></td><td>Outcome, compare</td><td></td></tr>
-<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>ColorScheme, Config</td><td></td></tr>
 <tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>DocsOptions, GENERATOR_META, generate</td><td></td></tr>
 <tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>emit</td><td></td></tr>
 <tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error</td><td></td></tr>
 <tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>survey</td><td></td></tr>
 <tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Model</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.svg">asbuilt_core.svg</a></td><td>ViewSource</td><td></td></tr>
 <tr><td>names</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>RustFrontend</td><td></td></tr>
 </tbody></table>
 <h3>Used by</h3>

@@ -11,78 +11,78 @@
 <!-- asbuilt -->
 <g id="node1" class="node">
 <title>asbuilt</title>
-<polygon fill="#f0a884" stroke="#c68260" stroke-width="0" points="599,-1450 279,-1450 279,-1270 599,-1270 599,-1450"/>
-<text text-anchor="start" x="410.5" y="-1374" font-family="Arial" font-size="20.00" fill="#280000">asbuilt</text>
-<text text-anchor="start" x="404" y="-1353.6" font-family="Arial" font-size="13.00" fill="#310000">library crate</text>
-<text text-anchor="start" x="315" y="-1334" font-family="Arial" font-size="15.00" fill="#310000">The library half of the `asbuilt` binary.</text>
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="599,-1450 279,-1450 279,-1270 599,-1270 599,-1450"/>
+<text text-anchor="start" x="410.5" y="-1374" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt</text>
+<text text-anchor="start" x="404" y="-1353.6" font-family="Arial" font-size="13.00" fill="#ffffe5">library crate</text>
+<text text-anchor="start" x="315" y="-1334" font-family="Arial" font-size="15.00" fill="#ffffe5">The library half of the `asbuilt` binary.</text>
 </g>
 <!-- asbuilt_rust -->
 <g id="node2" class="node">
 <title>asbuilt_rust</title>
-<polygon fill="#f0a884" stroke="#c68260" stroke-width="0" points="1136.5,-1050 816.5,-1050 816.5,-870 1136.5,-870 1136.5,-1050"/>
-<text text-anchor="start" x="928" y="-974" font-family="Arial" font-size="20.00" fill="#280000">asbuilt&#45;rust</text>
-<text text-anchor="start" x="941.5" y="-953.6" font-family="Arial" font-size="13.00" fill="#310000">library crate</text>
-<text text-anchor="start" x="891.5" y="-934" font-family="Arial" font-size="15.00" fill="#310000">Rust front&#45;end for asbuilt.</text>
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="1136.5,-1050 816.5,-1050 816.5,-870 1136.5,-870 1136.5,-1050"/>
+<text text-anchor="start" x="928" y="-974" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;rust</text>
+<text text-anchor="start" x="941.5" y="-953.6" font-family="Arial" font-size="13.00" fill="#ffffe5">library crate</text>
+<text text-anchor="start" x="891.5" y="-934" font-family="Arial" font-size="15.00" fill="#ffffe5">Rust front&#45;end for asbuilt.</text>
 </g>
 <!-- graphviz -->
 <g id="node3" class="node">
 <title>graphviz</title>
-<polygon fill="#d4d4d4" stroke="#acacac" stroke-width="0" points="608.5,-470 269.5,-470 269.5,-290 608.5,-290 608.5,-470"/>
-<text text-anchor="start" x="382.5" y="-403" font-family="Arial" font-size="20.00" fill="#383838">Graphviz dot</text>
-<text text-anchor="start" x="393.5" y="-382.6" font-family="Arial" font-size="13.00" fill="#494949">dot subprocess</text>
-<text text-anchor="start" x="290" y="-363" font-family="Arial" font-size="15.00" fill="#494949">Renders the Graphviz files LikeC4 generates</text>
-<text text-anchor="start" x="412.5" y="-346" font-family="Arial" font-size="15.00" fill="#494949">to SVG.</text>
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="608.5,-470 269.5,-470 269.5,-290 608.5,-290 608.5,-470"/>
+<text text-anchor="start" x="382.5" y="-403" font-family="Arial" font-size="20.00" fill="#48382f">Graphviz dot</text>
+<text text-anchor="start" x="393.5" y="-382.6" font-family="Arial" font-size="13.00" fill="#59493f">dot subprocess</text>
+<text text-anchor="start" x="290" y="-363" font-family="Arial" font-size="15.00" fill="#59493f">Renders the Graphviz files LikeC4 generates</text>
+<text text-anchor="start" x="412.5" y="-346" font-family="Arial" font-size="15.00" fill="#59493f">to SVG.</text>
 </g>
 <!-- likec4 -->
 <g id="node4" class="node">
 <title>likec4</title>
-<polygon fill="#d4d4d4" stroke="#acacac" stroke-width="0" points="599,-760 279,-760 279,-580 599,-580 599,-760"/>
-<text text-anchor="start" x="389.5" y="-701" font-family="Arial" font-size="20.00" fill="#383838">LikeC4 CLI</text>
-<text text-anchor="start" x="345" y="-680.6" font-family="Arial" font-size="13.00" fill="#494949">Node.js via npx, pinned version</text>
-<text text-anchor="start" x="299" y="-661" font-family="Arial" font-size="15.00" fill="#494949">Validates, exports and lays out the model.</text>
-<text text-anchor="start" x="300" y="-644" font-family="Arial" font-size="15.00" fill="#494949">Only `validate`, `export json` and `render`</text>
-<text text-anchor="start" x="411.5" y="-627" font-family="Arial" font-size="15.00" fill="#494949">reach it.</text>
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="599,-760 279,-760 279,-580 599,-580 599,-760"/>
+<text text-anchor="start" x="389.5" y="-701" font-family="Arial" font-size="20.00" fill="#48382f">LikeC4 CLI</text>
+<text text-anchor="start" x="345" y="-680.6" font-family="Arial" font-size="13.00" fill="#59493f">Node.js via npx, pinned version</text>
+<text text-anchor="start" x="299" y="-661" font-family="Arial" font-size="15.00" fill="#59493f">Validates, exports and lays out the model.</text>
+<text text-anchor="start" x="300" y="-644" font-family="Arial" font-size="15.00" fill="#59493f">Only `validate`, `export json` and `render`</text>
+<text text-anchor="start" x="411.5" y="-627" font-family="Arial" font-size="15.00" fill="#59493f">reach it.</text>
 </g>
 <!-- asbuilt_core -->
 <g id="node5" class="node">
 <title>asbuilt_core</title>
-<polygon fill="#f0a884" stroke="#c68260" stroke-width="0" points="599,-1050 279,-1050 279,-870 599,-870 599,-1050"/>
-<text text-anchor="start" x="387.5" y="-974" font-family="Arial" font-size="20.00" fill="#280000">asbuilt&#45;core</text>
-<text text-anchor="start" x="404" y="-953.6" font-family="Arial" font-size="13.00" fill="#310000">library crate</text>
-<text text-anchor="start" x="312" y="-934" font-family="Arial" font-size="15.00" fill="#310000">The language&#45;agnostic core of asbuilt.</text>
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="599,-1050 279,-1050 279,-870 599,-870 599,-1050"/>
+<text text-anchor="start" x="387.5" y="-974" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;core</text>
+<text text-anchor="start" x="404" y="-953.6" font-family="Arial" font-size="13.00" fill="#ffffe5">library crate</text>
+<text text-anchor="start" x="312" y="-934" font-family="Arial" font-size="15.00" fill="#ffffe5">The language&#45;agnostic core of asbuilt.</text>
 </g>
 <!-- asbuilt_site -->
 <g id="node6" class="node">
 <title>asbuilt_site</title>
-<polygon fill="#f0a884" stroke="#c68260" stroke-width="0" points="599,-1740 279,-1740 279,-1560 599,-1560 599,-1740"/>
-<text text-anchor="start" x="391" y="-1654" font-family="Arial" font-size="20.00" fill="#280000">asbuilt&#45;site</text>
-<text text-anchor="start" x="420.5" y="-1633.6" font-family="Arial" font-size="13.00" fill="#310000">binary</text>
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="599,-1740 279,-1740 279,-1560 599,-1560 599,-1740"/>
+<text text-anchor="start" x="391" y="-1654" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;site</text>
+<text text-anchor="start" x="420.5" y="-1633.6" font-family="Arial" font-size="13.00" fill="#ffffe5">binary</text>
 </g>
 <!-- asbuilt_site_e2e -->
 <g id="node7" class="node">
 <title>asbuilt_site_e2e</title>
-<polygon fill="#f0a884" stroke="#c68260" stroke-width="0" points="599,-2430 279,-2430 279,-2250 599,-2250 599,-2430"/>
-<text text-anchor="start" x="371" y="-2344" font-family="Arial" font-size="20.00" fill="#280000">asbuilt&#45;site&#45;e2e</text>
-<text text-anchor="start" x="411" y="-2323.6" font-family="Arial" font-size="13.00" fill="#310000">test crate</text>
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="599,-2430 279,-2430 279,-2250 599,-2250 599,-2430"/>
+<text text-anchor="start" x="371" y="-2344" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;site&#45;e2e</text>
+<text text-anchor="start" x="411" y="-2323.6" font-family="Arial" font-size="13.00" fill="#ffffe5">test crate</text>
 </g>
 <!-- chromium -->
 <g id="node8" class="node">
 <title>chromium</title>
-<polygon fill="#d4d4d4" stroke="#acacac" stroke-width="0" points="608,-2030 270,-2030 270,-1850 608,-1850 608,-2030"/>
-<text text-anchor="start" x="392.5" y="-1963" font-family="Arial" font-size="20.00" fill="#383838">Chromium</text>
-<text text-anchor="start" x="336.5" y="-1942.6" font-family="Arial" font-size="13.00" fill="#494949">Playwright driver, via playwright&#45;rs</text>
-<text text-anchor="start" x="290" y="-1923" font-family="Arial" font-size="15.00" fill="#494949">The browser the site&#39;s end&#45;to&#45;end tests drive</text>
-<text text-anchor="start" x="339.5" y="-1906" font-family="Arial" font-size="15.00" fill="#494949">against the built landing page.</text>
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="608,-2030 270,-2030 270,-1850 608,-1850 608,-2030"/>
+<text text-anchor="start" x="392.5" y="-1963" font-family="Arial" font-size="20.00" fill="#48382f">Chromium</text>
+<text text-anchor="start" x="336.5" y="-1942.6" font-family="Arial" font-size="13.00" fill="#59493f">Playwright driver, via playwright&#45;rs</text>
+<text text-anchor="start" x="290" y="-1923" font-family="Arial" font-size="15.00" fill="#59493f">The browser the site&#39;s end&#45;to&#45;end tests drive</text>
+<text text-anchor="start" x="339.5" y="-1906" font-family="Arial" font-size="15.00" fill="#59493f">against the built landing page.</text>
 </g>
 <!-- cargo -->
 <g id="node9" class="node">
 <title>cargo</title>
-<polygon fill="#d4d4d4" stroke="#acacac" stroke-width="0" points="607,-180 271,-180 271,0 607,0 607,-180"/>
-<text text-anchor="start" x="369.5" y="-121" font-family="Arial" font-size="20.00" fill="#383838">cargo metadata</text>
-<text text-anchor="start" x="385.5" y="-100.6" font-family="Arial" font-size="13.00" fill="#494949">cargo subprocess</text>
-<text text-anchor="start" x="291" y="-81" font-family="Arial" font-size="15.00" fill="#494949">Lists the workspace&#39;s packages and targets;</text>
-<text text-anchor="start" x="319" y="-64" font-family="Arial" font-size="15.00" fill="#494949">`&#45;&#45;no&#45;deps &#45;&#45;offline`, so no lockfile is</text>
-<text text-anchor="start" x="410" y="-47" font-family="Arial" font-size="15.00" fill="#494949">touched.</text>
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="607,-180 271,-180 271,0 607,0 607,-180"/>
+<text text-anchor="start" x="369.5" y="-121" font-family="Arial" font-size="20.00" fill="#48382f">cargo metadata</text>
+<text text-anchor="start" x="385.5" y="-100.6" font-family="Arial" font-size="13.00" fill="#59493f">cargo subprocess</text>
+<text text-anchor="start" x="291" y="-81" font-family="Arial" font-size="15.00" fill="#59493f">Lists the workspace&#39;s packages and targets;</text>
+<text text-anchor="start" x="319" y="-64" font-family="Arial" font-size="15.00" fill="#59493f">`&#45;&#45;no&#45;deps &#45;&#45;offline`, so no lockfile is</text>
+<text text-anchor="start" x="410" y="-47" font-family="Arial" font-size="15.00" fill="#59493f">touched.</text>
 </g>
 <!-- asbuilt&#45;&gt;asbuilt_rust -->
 <g id="edge1" class="edge">

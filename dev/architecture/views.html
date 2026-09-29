@@ -1,20 +1,850 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme-default="system">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="generator" content="asbuilt docs">
 <title>Curated views · asbuilt</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="theme.css">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="../architecture.css">
 </head>
 <body>
-<header><a class="site" href="index.html">asbuilt</a><nav><a href="containers/asbuilt.html">asbuilt</a> <a href="containers/asbuilt_core.html">asbuilt-core</a> <a href="containers/asbuilt_rust.html">asbuilt-rust</a> <a href="containers/asbuilt_site.html">asbuilt-site</a> <a href="containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a> </nav></header>
+<header><a class="site" href="index.html">asbuilt</a><nav><a href="containers/asbuilt.html">asbuilt</a> <a href="containers/asbuilt_core.html">asbuilt-core</a> <a href="containers/asbuilt_rust.html">asbuilt-rust</a> <a href="containers/asbuilt_site.html">asbuilt-site</a> <a href="containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a> </nav><label class="scheme" hidden>Theme <select id="scheme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></header>
 <main>
 <nav class="crumbs"><a href="index.html">asbuilt</a> / Curated views</nav>
 <h1>Curated views</h1>
-<figure><figcaption>context</figcaption><img src="views/context.svg" alt="context"></figure>
-<figure><figcaption>core</figcaption><img src="views/core.svg" alt="core"></figure>
-<figure><figcaption>survey</figcaption><img src="views/survey.svg" alt="survey"></figure>
+<figure class="view"><figcaption>context</figcaption><svg viewBox="0.00 0.00 1166.60 2460.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="c4" data-view="context" role="img" aria-label="context">
+<g id="context-graph0" class="graph" transform="scale(1 1) rotate(0) translate(15.05 2445.05)">
+
+
+<g id="context-node1" class="node c4-k-container">
+
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="599,-1450 279,-1450 279,-1270 599,-1270 599,-1450"/>
+<text text-anchor="start" x="410.5" y="-1374" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt</text>
+<text text-anchor="start" x="404" y="-1353.6" font-family="Arial" font-size="13.00" fill="#ffffe5" class="c4-muted">library crate</text>
+<text text-anchor="start" x="315" y="-1334" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">The library half of the `asbuilt` binary.</text>
+</g>
+
+<g id="context-node2" class="node c4-k-container">
+
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="1136.5,-1050 816.5,-1050 816.5,-870 1136.5,-870 1136.5,-1050"/>
+<text text-anchor="start" x="928" y="-974" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;rust</text>
+<text text-anchor="start" x="941.5" y="-953.6" font-family="Arial" font-size="13.00" fill="#ffffe5" class="c4-muted">library crate</text>
+<text text-anchor="start" x="891.5" y="-934" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">Rust front&#45;end for asbuilt.</text>
+</g>
+
+<g id="context-node3" class="node c4-k-process">
+
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="599,-470 279,-470 279,-290 599,-290 599,-470"/>
+<text text-anchor="start" x="389.5" y="-411" font-family="Arial" font-size="20.00" fill="#48382f">LikeC4 CLI</text>
+<text text-anchor="start" x="345" y="-390.6" font-family="Arial" font-size="13.00" fill="#59493f" class="c4-muted">Node.js via npx, pinned version</text>
+<text text-anchor="start" x="299" y="-371" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">Validates, exports and lays out the model.</text>
+<text text-anchor="start" x="300" y="-354" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">Only `validate`, `export json` and `render`</text>
+<text text-anchor="start" x="411.5" y="-337" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">reach it.</text>
+</g>
+
+<g id="context-node4" class="node c4-k-process">
+
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="608.5,-760 269.5,-760 269.5,-580 608.5,-580 608.5,-760"/>
+<text text-anchor="start" x="382.5" y="-693" font-family="Arial" font-size="20.00" fill="#48382f">Graphviz dot</text>
+<text text-anchor="start" x="393.5" y="-672.6" font-family="Arial" font-size="13.00" fill="#59493f" class="c4-muted">dot subprocess</text>
+<text text-anchor="start" x="290" y="-653" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">Renders the Graphviz files LikeC4 generates</text>
+<text text-anchor="start" x="412.5" y="-636" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">to SVG.</text>
+</g>
+
+<g id="context-node5" class="node c4-k-container">
+
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="599,-1050 279,-1050 279,-870 599,-870 599,-1050"/>
+<text text-anchor="start" x="387.5" y="-974" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;core</text>
+<text text-anchor="start" x="404" y="-953.6" font-family="Arial" font-size="13.00" fill="#ffffe5" class="c4-muted">library crate</text>
+<text text-anchor="start" x="312" y="-934" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">The language&#45;agnostic core of asbuilt.</text>
+</g>
+
+<g id="context-node6" class="node c4-k-container">
+
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="599,-1740 279,-1740 279,-1560 599,-1560 599,-1740"/>
+<text text-anchor="start" x="391" y="-1654" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;site</text>
+<text text-anchor="start" x="420.5" y="-1633.6" font-family="Arial" font-size="13.00" fill="#ffffe5" class="c4-muted">binary</text>
+</g>
+
+<g id="context-node7" class="node c4-k-container">
+
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="599,-2430 279,-2430 279,-2250 599,-2250 599,-2430"/>
+<text text-anchor="start" x="371" y="-2344" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;site&#45;e2e</text>
+<text text-anchor="start" x="411" y="-2323.6" font-family="Arial" font-size="13.00" fill="#ffffe5" class="c4-muted">test crate</text>
+</g>
+
+<g id="context-node8" class="node c4-k-process">
+
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="608,-2030 270,-2030 270,-1850 608,-1850 608,-2030"/>
+<text text-anchor="start" x="392.5" y="-1963" font-family="Arial" font-size="20.00" fill="#48382f">Chromium</text>
+<text text-anchor="start" x="336.5" y="-1942.6" font-family="Arial" font-size="13.00" fill="#59493f" class="c4-muted">Playwright driver, via playwright&#45;rs</text>
+<text text-anchor="start" x="290" y="-1923" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">The browser the site&#39;s end&#45;to&#45;end tests drive</text>
+<text text-anchor="start" x="339.5" y="-1906" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">against the built landing page.</text>
+</g>
+
+<g id="context-node9" class="node c4-k-process">
+
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="607,-180 271,-180 271,0 607,0 607,-180"/>
+<text text-anchor="start" x="369.5" y="-121" font-family="Arial" font-size="20.00" fill="#48382f">cargo metadata</text>
+<text text-anchor="start" x="385.5" y="-100.6" font-family="Arial" font-size="13.00" fill="#59493f" class="c4-muted">cargo subprocess</text>
+<text text-anchor="start" x="291" y="-81" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">Lists the workspace&#39;s packages and targets;</text>
+<text text-anchor="start" x="319" y="-64" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">`&#45;&#45;no&#45;deps &#45;&#45;offline`, so no lockfile is</text>
+<text text-anchor="start" x="410" y="-47" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">touched.</text>
+</g>
+
+<g id="context-edge1" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M560.51,-1269.98C646.35,-1205.86 761.49,-1119.86 848.72,-1054.7"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="850.51,-1056.64 854.95,-1050.05 847.37,-1052.43 850.51,-1056.64"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="668.5,-1183 668.5,-1204 756.5,-1204 756.5,-1183 668.5,-1183" class="c4-label-bg"/>
+<text text-anchor="start" x="671.5" y="-1189.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustFrontend</text>
+</g>
+
+<g id="context-edge2" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M322.93,-1269.81C274.2,-1224.6 222.9,-1165.43 197,-1099.5 149.95,-979.73 208.18,-638.13 269.5,-525 279.11,-507.26 291.84,-490.74 306,-475.67"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="307.97,-477.41 311.28,-470.18 304.19,-473.76 307.97,-477.41"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="153,-1078.5 153,-1099.5 186,-1099.5 186,-1078.5 153,-1078.5" class="c4-label-bg"/>
+<text text-anchor="start" x="156.5" y="-1084.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">runs</text>
+</g>
+
+<g id="context-edge3" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M343.18,-1269.83C281.6,-1204.97 207.08,-1111.75 173.5,-1012.5 141.37,-917.52 214.65,-828.6 292.3,-765.18"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="294.19,-767.03 298.38,-760.28 290.89,-762.94 294.19,-767.03"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="129.5,-991.5 129.5,-1012.5 209.5,-1012.5 209.5,-991.5 129.5,-991.5" class="c4-label-bg"/>
+<text text-anchor="start" x="132.5" y="-997.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">renders with</text>
+</g>
+
+<g id="context-edge4" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M439,-1269.72C439,-1206.72 439,-1122.69 439,-1058.05"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="441.63,-1057.77 439,-1050.27 436.38,-1057.77 441.63,-1057.77"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="412,-1149.5 412,-1170.5 439,-1170.5 439,-1149.5 412,-1149.5" class="c4-label-bg"/>
+<text text-anchor="start" x="415.5" y="-1156.8" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+
+<g id="context-edge6" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M816.43,-960C750.4,-960 673.74,-960 606.9,-960"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="606.72,-957.38 599.22,-960 606.72,-962.63 606.72,-957.38"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="699,-960 699,-981 726,-981 726,-960 699,-960" class="c4-label-bg"/>
+<text text-anchor="start" x="702.5" y="-967.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+
+<g id="context-edge7" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M943.16,-869.88C888.77,-726.04 768.99,-439.92 608.5,-235 595.03,-217.8 579.28,-201.12 562.92,-185.57"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="564.61,-183.56 557.35,-180.34 561.02,-187.39 564.61,-183.56"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="696,-458 696,-479 729,-479 729,-458 696,-458" class="c4-label-bg"/>
+<text text-anchor="start" x="699.5" y="-464.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">runs</text>
+</g>
+
+<g id="context-edge5" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M439,-2249.72C439,-2186.72 439,-2102.69 439,-2038.05"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="441.63,-2037.77 439,-2030.27 436.38,-2037.77 441.63,-2037.77"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="404,-2129.5 404,-2150.5 447,-2150.5 447,-2129.5 404,-2129.5" class="c4-label-bg"/>
+<text text-anchor="start" x="407.5" y="-2135.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">drives</text>
+</g>
+</g>
+</svg></figure>
+<figure class="view"><figcaption>core</figcaption><svg viewBox="0.00 0.00 4784.92 1640.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="c4" data-view="core" role="img" aria-label="core">
+<g id="core-graph0" class="graph" transform="scale(1 1) rotate(0) translate(15.05 1625.05)">
+
+<g id="core-clust1" class="cluster c4-k-container">
+
+<polygon fill="#722f24" stroke="#57130f" points="2592.83,-1338 2592.83,-1602 3010.83,-1602 3010.83,-1338 2592.83,-1338"/>
+<text text-anchor="start" x="2600.83" y="-1590.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT</text>
+</g>
+<g id="core-clust2" class="cluster c4-k-container">
+
+<polygon fill="#722f24" stroke="#57130f" points="62.83,-8 62.83,-960 3730.83,-960 3730.83,-8 62.83,-8"/>
+<text text-anchor="start" x="70.83" y="-948.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT&#45;CORE</text>
+</g>
+
+<g id="core-node1" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2978.33,-1550 2625.33,-1550 2625.33,-1370 2978.33,-1370 2978.33,-1550"/>
+<text text-anchor="start" x="2753.33" y="-1499" font-family="Arial" font-size="20.00" fill="#5b5b5b">commands</text>
+<text text-anchor="start" x="2645.83" y="-1477" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The subcommands, as functions that return an</text>
+<text text-anchor="start" x="2724.33" y="-1460" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">exit code, so the binary</text>
+<text text-anchor="start" x="2655.83" y="-1443" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">is a thin `main` and the tests can drive each</text>
+<text text-anchor="start" x="2740.83" y="-1426" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">path. `survey` and</text>
+<text text-anchor="start" x="2664.83" y="-1409" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`check` need no Node; `validate`, `export</text>
+</g>
+
+<g id="core-node2" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="3437.83,-900 3101.83,-900 3101.83,-720 3437.83,-720 3437.83,-900"/>
+<text text-anchor="start" x="3232.83" y="-841" font-family="Arial" font-size="20.00" fill="#5b5b5b">frontend</text>
+<text text-anchor="start" x="3128.33" y="-819" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The front&#45;end contract and the survey that</text>
+<text text-anchor="start" x="3201.83" y="-802" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">runs every front&#45;end</text>
+<text text-anchor="start" x="3121.83" y="-785" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">that recognizes a root, merges their models,</text>
+<text text-anchor="start" x="3194.33" y="-768" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">and applies the config.</text>
+</g>
+
+<g id="core-node3" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1446.33,-900 1097.33,-900 1097.33,-720 1446.33,-720 1446.33,-900"/>
+<text text-anchor="start" x="1250.83" y="-849" font-family="Arial" font-size="20.00" fill="#5b5b5b">docs</text>
+<text text-anchor="start" x="1117.83" y="-827" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The documentation generator: a [`Model`] and</text>
+<text text-anchor="start" x="1186.83" y="-810" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">the SVGs `asbuilt render`</text>
+<text text-anchor="start" x="1124.33" y="-793" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">produced, to a static HTML tree that mounts</text>
+<text text-anchor="start" x="1189.33" y="-776" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">anywhere. A view LikeC4</text>
+<text text-anchor="start" x="1182.33" y="-759" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">drew is inlined into its page</text>
+</g>
+
+<g id="core-node4" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1697.83,-579 1377.83,-579 1377.83,-399 1697.83,-399 1697.83,-579"/>
+<text text-anchor="start" x="1516.83" y="-484" font-family="Arial" font-size="20.00" fill="#5b5b5b">tests</text>
+</g>
+
+<g id="core-node5" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="444.33,-900 103.33,-900 103.33,-720 444.33,-720 444.33,-900"/>
+<text text-anchor="start" x="248.33" y="-849" font-family="Arial" font-size="20.00" fill="#5b5b5b">check</text>
+<text text-anchor="start" x="123.83" y="-827" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The drift check: the committed model against</text>
+<text text-anchor="start" x="207.83" y="-810" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">a fresh survey, as a</text>
+<text text-anchor="start" x="138.83" y="-793" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">unified diff when they differ. Line endings</text>
+<text text-anchor="start" x="199.83" y="-776" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">are normalized first so</text>
+<text text-anchor="start" x="144.33" y="-759" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">a consumer with `autocrlf` gets a clean</text>
+</g>
+
+<g id="core-node6" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="3160.83,-579 2840.83,-579 2840.83,-399 3160.83,-399 3160.83,-579"/>
+<text text-anchor="start" x="2959.83" y="-528" font-family="Arial" font-size="20.00" fill="#5b5b5b">externals</text>
+<text text-anchor="start" x="2871.33" y="-506" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Externals from `asbuilt.toml`: elements</text>
+<text text-anchor="start" x="2904.33" y="-489" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">outside the code (a spawned</text>
+<text text-anchor="start" x="2866.83" y="-472" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">process, a browser) and the edges from</text>
+<text text-anchor="start" x="2909.83" y="-455" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">surveyed modules to them.</text>
+<text text-anchor="start" x="2860.83" y="-438" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Nothing static in the code states these, so</text>
+</g>
+
+<g id="core-node7" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1267.33,-579 946.33,-579 946.33,-399 1267.33,-399 1267.33,-579"/>
+<text text-anchor="start" x="1088.33" y="-503" font-family="Arial" font-size="20.00" fill="#5b5b5b">emit</text>
+<text text-anchor="start" x="966.83" y="-481" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The LikeC4 emitter: a [`Model`] to the text</text>
+<text text-anchor="start" x="1054.33" y="-464" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">of one `.c4` file.</text>
+</g>
+
+<g id="core-node8" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="877.33,-900 554.33,-900 554.33,-720 877.33,-720 877.33,-900"/>
+<text text-anchor="start" x="700.83" y="-824" font-family="Arial" font-size="20.00" fill="#5b5b5b">svg</text>
+<text text-anchor="start" x="574.83" y="-802" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">A rendered view inlined into a page, so the</text>
+<text text-anchor="start" x="642.83" y="-785" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">page&#39;s colors reach it.</text>
+</g>
+
+<g id="core-node9" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="836.33,-579 495.33,-579 495.33,-399 836.33,-399 836.33,-579"/>
+<text text-anchor="start" x="638.33" y="-528" font-family="Arial" font-size="20.00" fill="#5b5b5b">theme</text>
+<text text-anchor="start" x="515.83" y="-506" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Diagram colors for the documentation pages.</text>
+<text text-anchor="start" x="585.33" y="-489" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Per element kind, a light</text>
+<text text-anchor="start" x="517.33" y="-472" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">and a dark fill come from `[theme]` (LikeC4&#39;s</text>
+<text text-anchor="start" x="593.83" y="-455" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">default blue for a kind</text>
+<text text-anchor="start" x="528.33" y="-438" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">with none), and each fill&#39;s text, secondary</text>
+</g>
+
+<g id="core-node10" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2983.83,-228 2663.83,-228 2663.83,-48 2983.83,-48 2983.83,-228"/>
+<text text-anchor="start" x="2796.83" y="-160" font-family="Arial" font-size="20.00" fill="#5b5b5b">model</text>
+<text text-anchor="start" x="2693.83" y="-138" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The architecture model every front&#45;end</text>
+<text text-anchor="start" x="2740.33" y="-121" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">produces and the emitter</text>
+<text text-anchor="start" x="2787.83" y="-104" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">consumes.</text>
+</g>
+
+<g id="core-node11" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2078.33,-228 1757.33,-228 1757.33,-48 2078.33,-48 2078.33,-228"/>
+<text text-anchor="start" x="1891.33" y="-177" font-family="Arial" font-size="20.00" fill="#5b5b5b">config</text>
+<text text-anchor="start" x="1804.83" y="-155" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`asbuilt.toml`: the output path, the</text>
+<text text-anchor="start" x="1820.33" y="-138" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">externals nothing static in the</text>
+<text text-anchor="start" x="1777.83" y="-121" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">code can state, and every front&#45;end&#39;s own</text>
+<text text-anchor="start" x="1845.33" y="-104" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">table kept raw for it to</text>
+<text text-anchor="start" x="1896.83" y="-87" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">parse.</text>
+</g>
+
+<g id="core-node12" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2816.83,-900 2496.83,-900 2496.83,-720 2816.83,-720 2816.83,-900"/>
+<text text-anchor="start" x="2635.83" y="-832" font-family="Arial" font-size="20.00" fill="#5b5b5b">error</text>
+<text text-anchor="start" x="2517.83" y="-810" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Errors that name the offending input, so a</text>
+<text text-anchor="start" x="2573.33" y="-793" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">message reads without a</text>
+<text text-anchor="start" x="2637.33" y="-776" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">rerun.</text>
+</g>
+
+<g id="core-node13" class="node c4-k-container">
+
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="3740.83,-1229 3420.83,-1229 3420.83,-1049 3740.83,-1049 3740.83,-1229"/>
+<text text-anchor="start" x="3532.33" y="-1153" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;rust</text>
+<text text-anchor="start" x="3545.83" y="-1132.6" font-family="Arial" font-size="13.00" fill="#ffffe5" class="c4-muted">library crate</text>
+<text text-anchor="start" x="3495.83" y="-1113" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">Rust front&#45;end for asbuilt.</text>
+</g>
+
+<g id="core-edge2" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2831.37,-1369.76C2869.24,-1265.05 2942.81,-1090.21 3047.83,-968 3067.47,-945.14 3091.12,-923.92 3115.56,-904.94"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3117.43,-906.81 3121.78,-900.17 3114.24,-902.65 3117.43,-906.81"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2982.83,-1128.5 2982.83,-1149.5 3028.83,-1149.5 3028.83,-1128.5 2982.83,-1128.5" class="c4-label-bg"/>
+<text text-anchor="start" x="2985.83" y="-1134.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">survey</text>
+</g>
+
+<g id="core-edge3" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2625.2,-1384.19C2332.39,-1260.18 1749.44,-1013.28 1453.4,-887.9"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1454.39,-885.47 1446.46,-884.96 1452.34,-890.3 1454.39,-885.47"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2237.83,-1128.5 2237.83,-1149.5 2521.83,-1149.5 2521.83,-1128.5 2237.83,-1128.5" class="c4-label-bg"/>
+<text text-anchor="start" x="2240.83" y="-1134.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">DocsOptions, GENERATOR_META, generate</text>
+</g>
+
+<g id="core-edge4" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2625.1,-1451.75C2312.09,-1435.27 1642.16,-1383.53 1099.83,-1229 818.38,-1148.81 755.24,-1101.04 498.83,-960 468.26,-943.19 436.44,-923.55 406.69,-904.16"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="408.08,-901.93 400.37,-900.02 405.21,-906.33 408.08,-901.93"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1099.83,-1128.5 1099.83,-1149.5 1223.83,-1149.5 1223.83,-1128.5 1099.83,-1128.5" class="c4-label-bg"/>
+<text text-anchor="start" x="1102.83" y="-1134.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Outcome, compare</text>
+</g>
+
+<g id="core-edge5" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2624.98,-1458.42C2061.49,-1452.12 328.67,-1397.01 47.83,-960 -9.84,-870.27 -21.1,-801.4 47.83,-720 170.71,-574.88 709.02,-631.37 891.83,-579 907.32,-574.56 923.2,-569.35 938.98,-563.7"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="940.06,-566.1 946.22,-561.08 938.28,-561.17 940.06,-566.1"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="64.83,-968 64.83,-989 97.83,-989 97.83,-968 64.83,-968" class="c4-label-bg"/>
+<text text-anchor="start" x="68.33" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">emit</text>
+</g>
+
+<g id="core-edge6" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2624.91,-1430.18C2410.36,-1393.16 2038.95,-1322.37 1728.83,-1229 1415.24,-1134.59 1344.39,-1087.72 1042.83,-960 991.12,-938.1 935.34,-913.18 884.75,-890.07"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="885.56,-887.55 877.65,-886.82 883.38,-892.33 885.56,-887.55"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1728.83,-1128.5 1728.83,-1149.5 1807.83,-1149.5 1807.83,-1128.5 1728.83,-1128.5" class="c4-label-bg"/>
+<text text-anchor="start" x="1732.33" y="-1134.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">ViewSource</text>
+</g>
+
+<g id="core-edge7" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2978.64,-1453.2C3344.17,-1439.55 4171.17,-1399.52 4437.83,-1310 4573.33,-1264.51 4710.83,-1282.94 4710.83,-1140 4710.83,-1140 4710.83,-1140 4710.83,-488 4710.83,-313.97 3453.77,-191.53 2991.65,-152.4"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2991.59,-149.76 2983.9,-151.74 2991.15,-154.99 2991.59,-149.76"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4710.83,-799.5 4710.83,-820.5 4754.83,-820.5 4754.83,-799.5 4710.83,-799.5" class="c4-label-bg"/>
+<text text-anchor="start" x="4713.83" y="-805.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Model</text>
+</g>
+
+<g id="core-edge8" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2978.37,-1436.79C3441.65,-1370.94 4633.66,-1148.72 4292.83,-639 4065.87,-299.58 3841.21,-381.83 3443.83,-288 3081.72,-202.5 2979.04,-265.11 2608.83,-228 2429.84,-210.06 2225.62,-182.93 2085.89,-163.34"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.24,-160.74 2078.45,-162.29 2085.51,-165.94 2086.24,-160.74"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4352.83,-799.5 4352.83,-820.5 4488.83,-820.5 4488.83,-799.5 4352.83,-799.5" class="c4-label-bg"/>
+<text text-anchor="start" x="4355.83" y="-805.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">ColorScheme, Config</text>
+</g>
+
+<g id="core-edge9" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2781.89,-1369.92C2754.76,-1248.66 2706.38,-1032.47 2678.42,-907.49"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2680.97,-906.87 2676.77,-900.13 2675.85,-908.02 2680.97,-906.87"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2747.83,-1128.5 2747.83,-1149.5 2784.83,-1149.5 2784.83,-1128.5 2747.83,-1128.5" class="c4-label-bg"/>
+<text text-anchor="start" x="2751.33" y="-1134.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error</text>
+</g>
+
+<g id="core-edge1" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2978.59,-1386.61C3109,-1333.21 3285.31,-1261.01 3413.44,-1208.54"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3414.71,-1210.86 3420.66,-1205.59 3412.72,-1206 3414.71,-1210.86"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3213.83,-1289 3213.83,-1310 3301.83,-1310 3301.83,-1289 3213.83,-1289" class="c4-label-bg"/>
+<text text-anchor="start" x="3216.83" y="-1295.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustFrontend</text>
+</g>
+
+<g id="core-edge15" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3194.54,-719.72C3159.21,-677.82 3117.07,-627.85 3081.13,-585.23"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3082.94,-583.3 3076.1,-579.26 3078.93,-586.69 3082.94,-583.3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3142.83,-639 3142.83,-660 3242.83,-660 3242.83,-639 3142.83,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="3145.83" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">apply, externals</text>
+</g>
+
+<g id="core-edge16" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3359.53,-719.85C3376.78,-700.82 3394.05,-680.31 3408.83,-660 3478.07,-564.81 3519.29,-496.83 3453.83,-399 3351.51,-246.08 3141.04,-183.01 2991.57,-157.05"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2991.88,-154.44 2984.05,-155.76 2991,-159.61 2991.88,-154.44"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3485.83,-478.5 3485.83,-499.5 3529.83,-499.5 3529.83,-478.5 3485.83,-478.5" class="c4-label-bg"/>
+<text text-anchor="start" x="3488.83" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Model</text>
+</g>
+
+<g id="core-edge17" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3286.93,-719.68C3299.24,-625.66 3301.04,-480.25 3215.83,-399 3104.14,-292.51 3025.15,-369.26 2873.83,-339 2772.43,-318.73 2747.93,-309.69 2646.83,-288 2454.77,-246.8 2233.67,-201.98 2085.79,-172.37"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.23,-169.78 2078.36,-170.88 2085.2,-174.93 2086.23,-169.78"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3289.83,-478.5 3289.83,-499.5 3335.83,-499.5 3335.83,-478.5 3289.83,-478.5" class="c4-label-bg"/>
+<text text-anchor="start" x="3292.83" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
+</g>
+
+<g id="core-edge18" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3101.67,-810C3015.53,-810 2910.95,-810 2824.83,-810"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2824.58,-807.38 2817.08,-810 2824.58,-812.63 2824.58,-807.38"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2918.33,-813 2918.33,-834 3000.33,-834 3000.33,-813 2918.33,-813" class="c4-label-bg"/>
+<text text-anchor="start" x="2921.33" y="-819.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error, Result</text>
+</g>
+
+<g id="core-edge19" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1225.65,-719.72C1204.11,-678.08 1178.44,-628.46 1156.49,-586.01"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1158.77,-584.72 1153,-579.26 1154.11,-587.13 1158.77,-584.72"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1193.83,-639 1193.83,-660 1404.83,-660 1404.83,-639 1193.83,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="1197.33" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">children_of, link_encode, view_ids</text>
+</g>
+
+<g id="core-edge20" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1097.22,-810C1029.53,-810 952.29,-810 885.11,-810"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="884.89,-807.38 877.39,-810 884.89,-812.63 884.89,-807.38"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="914.33,-813 914.33,-834 1060.33,-834 1060.33,-813 914.33,-813" class="c4-label-bg"/>
+<text text-anchor="start" x="917.33" y="-819.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">ViewSource, inline, svg</text>
+</g>
+
+<g id="core-edge21" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1102.62,-719.93C1021.38,-677.17 924.09,-625.95 841.98,-582.73"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="842.95,-580.27 835.09,-579.1 840.5,-584.92 842.95,-580.27"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="986.83,-639 986.83,-660 1099.83,-660 1099.83,-639 986.83,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="990.33" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">stylesheet, theme</text>
+</g>
+
+<g id="core-edge22" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1446.35,-775.82C1618.51,-739.67 1886.93,-674 2105.83,-579 2221.66,-528.73 2508.09,-345.97 2682.14,-232.4"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2683.7,-234.52 2688.54,-228.22 2680.83,-230.12 2683.7,-234.52"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2410.83,-471 2410.83,-507 2619.83,-507 2619.83,-471 2410.83,-471" class="c4-label-bg"/>
+<text text-anchor="start" x="2414.33" y="-492.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, ElementKind, Id, Model,</text>
+<text text-anchor="start" x="2414.33" y="-477.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Relation, dotted, sanitize_id</text>
+</g>
+
+<g id="core-edge23" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1097.15,-761.44C1044.47,-747.55 986.41,-732.71 932.83,-720 638.85,-650.29 458.02,-813.75 267.83,-579 217.47,-516.84 215.85,-459.81 267.83,-399 457.4,-177.21 1368.43,-143.45 1749.59,-139.15"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1749.63,-141.78 1757.1,-139.07 1749.57,-136.53 1749.63,-141.78"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="267.83,-478.5 267.83,-499.5 439.83,-499.5 439.83,-478.5 267.83,-478.5" class="c4-label-bg"/>
+<text text-anchor="start" x="270.83" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">ColorScheme, ThemeColor</text>
+</g>
+
+<g id="core-edge24" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1635.19,-398.58C1690.26,-348.01 1759.06,-284.81 1815,-233.44"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1816.97,-235.2 1820.71,-228.19 1813.41,-231.33 1816.97,-235.2"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1749.83,-303 1749.83,-324 1795.83,-324 1795.83,-303 1749.83,-303" class="c4-label-bg"/>
+<text text-anchor="start" x="1752.83" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
+</g>
+
+<g id="core-edge25" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1697.91,-550.92C1725.42,-560.73 1753.84,-570.46 1780.83,-579 2024.61,-656.17 2312.16,-728.11 2489.5,-770.32"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2488.91,-772.88 2496.81,-772.06 2490.12,-767.77 2488.91,-772.88"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2042.83,-639 2042.83,-660 2079.83,-660 2079.83,-639 2042.83,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="2046.33" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error</text>
+</g>
+
+<g id="core-edge26" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2955.47,-398.58C2930.09,-348.52 2898.42,-286.09 2872.51,-235"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2874.79,-233.69 2869.06,-228.19 2870.11,-236.07 2874.79,-233.69"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2922.83,-288 2922.83,-339 3131.83,-339 3131.83,-288 2922.83,-288" class="c4-label-bg"/>
+<text text-anchor="start" x="2926.33" y="-324.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, ElementKind, Id, Model,</text>
+<text text-anchor="start" x="2926.33" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Relation, RelationKind, dotted,</text>
+<text text-anchor="start" x="2926.33" y="-294.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">sanitize_id, sanitize_segment</text>
+</g>
+
+<g id="core-edge27" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2840.79,-428.07C2813.2,-418.12 2784.75,-408.09 2757.83,-399 2526.3,-320.83 2255.88,-238.76 2085.74,-188.23"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.4,-185.69 2078.47,-186.07 2084.91,-190.72 2086.4,-185.69"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2573.83,-303 2573.83,-324 2619.83,-324 2619.83,-303 2573.83,-303" class="c4-label-bg"/>
+<text text-anchor="start" x="2576.83" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
+</g>
+
+<g id="core-edge28" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2904.57,-579.26C2859.11,-621.41 2804.84,-671.74 2758.69,-714.54"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2756.82,-712.69 2753.11,-719.72 2760.39,-716.54 2756.82,-712.69"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2838.83,-639 2838.83,-660 2920.83,-660 2920.83,-639 2838.83,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="2841.83" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error, Result</text>
+</g>
+
+<g id="core-edge29" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1267.37,-416.31C1285.83,-409.73 1304.58,-403.76 1322.83,-399 1539.4,-342.51 1601.81,-374.29 1822.83,-339 2117.63,-291.93 2457.9,-220.21 2656.14,-176.65"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2656.96,-179.16 2663.72,-174.99 2655.83,-174.04 2656.96,-179.16"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2098.83,-295.5 2098.83,-331.5 2306.83,-331.5 2306.83,-295.5 2098.83,-295.5" class="c4-label-bg"/>
+<text text-anchor="start" x="2101.83" y="-317.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, Id, Model, RelationKind,</text>
+<text text-anchor="start" x="2101.83" y="-302.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">sanitize_id, sanitize_segment</text>
+</g>
+
+<g id="core-edge30" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M877.43,-792C905.69,-789.5 934.84,-787.33 962.33,-786 1003.59,-784 1047.88,-785.34 1089.7,-788.22"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1089.54,-790.84 1097.21,-788.75 1089.91,-785.6 1089.54,-790.84"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="962.33,-786 962.33,-807 1012.33,-807 1012.33,-786 962.33,-786" class="c4-label-bg"/>
+<text text-anchor="start" x="965.33" y="-792.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">escape</text>
+</g>
+
+<g id="core-edge31" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M836.52,-418.14C855.07,-411.34 873.76,-404.82 891.83,-399 1189.42,-303.12 1544.66,-219.84 1749.46,-174.76"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1750.22,-177.28 1756.98,-173.11 1749.09,-172.16 1750.22,-177.28"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1254.83,-303 1254.83,-324 1336.83,-324 1336.83,-303 1254.83,-303" class="c4-label-bg"/>
+<text text-anchor="start" x="1257.83" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">ThemeColor</text>
+</g>
+
+<g id="core-edge32" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2774.13,-228.04C2749.02,-277.04 2720.43,-339.76 2703.83,-399 2674.5,-503.64 2663.42,-628.2 2659.27,-712.35"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2656.65,-712.25 2658.91,-719.86 2661.89,-712.5 2656.65,-712.25"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2703.83,-478.5 2703.83,-499.5 2785.83,-499.5 2785.83,-478.5 2703.83,-478.5" class="c4-label-bg"/>
+<text text-anchor="start" x="2706.83" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error, Result</text>
+</g>
+
+<g id="core-edge33" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1908.02,-228.35C1902.44,-327.68 1910.23,-486.29 2000.83,-579 2036.2,-615.2 2306.92,-702.72 2489.34,-758.76"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2488.67,-761.3 2496.61,-760.99 2490.21,-756.28 2488.67,-761.3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2000.83,-478.5 2000.83,-499.5 2082.83,-499.5 2082.83,-478.5 2000.83,-478.5" class="c4-label-bg"/>
+<text text-anchor="start" x="2003.83" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error, Result</text>
+</g>
+
+<g id="core-edge10" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3495.84,-1048.65C3453.68,-1004.31 3402.73,-950.74 3359.89,-905.7"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3361.78,-903.87 3354.71,-900.25 3357.97,-907.49 3361.78,-903.87"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3433.83,-968 3433.83,-989 3494.83,-989 3494.83,-968 3433.83,-968" class="c4-label-bg"/>
+<text text-anchor="start" x="3437.33" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Frontend</text>
+</g>
+
+<g id="core-edge11" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3585.8,-1048.73C3586.08,-955.78 3572.07,-811.28 3492.83,-720 3423.7,-640.37 3373.38,-658.87 3269.83,-639 2844.71,-557.41 1746.11,-669.59 1322.83,-579 1307.01,-575.61 1290.87,-571.12 1274.9,-565.95"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1275.53,-563.39 1267.58,-563.53 1273.88,-568.38 1275.53,-563.39"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3580.83,-799.5 3580.83,-820.5 3613.83,-820.5 3613.83,-799.5 3580.83,-799.5" class="c4-label-bg"/>
+<text text-anchor="start" x="3584.33" y="-805.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">emit</text>
+</g>
+
+<g id="core-edge12" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3740.92,-1113.04C3814.53,-1092.68 3895.24,-1055.79 3939.83,-989 4112.83,-729.89 4145.04,-522.43 3939.83,-288 3878.39,-217.82 3288.18,-169.46 2991.85,-149.4"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2991.69,-146.76 2984.03,-148.87 2991.34,-151.99 2991.69,-146.76"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4080.83,-639 4080.83,-660 4285.83,-660 4285.83,-639 4080.83,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="4084.33" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, ElementKind, Id, Model</text>
+</g>
+
+<g id="core-edge13" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3641.56,-1048.64C3651.58,-1029.71 3660.44,-1009.29 3665.83,-989 3734.18,-731.25 3743.86,-589.06 3556.83,-399 3406.68,-246.42 2821.39,-253.28 2608.83,-228 2430.21,-206.76 2225.93,-180.16 2086.08,-161.6"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.41,-159 2078.63,-160.61 2085.72,-164.2 2086.41,-159"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3704.83,-639 3704.83,-660 3750.83,-660 3750.83,-639 3704.83,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="3707.83" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
+</g>
+
+<g id="core-edge14" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3420.73,-1086.63C3314.33,-1052.01 3171.74,-1004.66 3046.83,-960 2973.42,-933.76 2892.85,-903.26 2824.1,-876.72"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2825,-874.26 2817.06,-874 2823.11,-879.16 2825,-874.26"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3118.83,-968 3118.83,-989 3200.83,-989 3200.83,-968 3118.83,-968" class="c4-label-bg"/>
+<text text-anchor="start" x="3121.83" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error, Result</text>
+</g>
+</g>
+</svg></figure>
+<figure class="view"><figcaption>survey</figcaption><svg viewBox="0.00 0.00 3086.10 2208.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="c4" data-view="survey" role="img" aria-label="survey">
+<g id="survey-graph0" class="graph" transform="scale(1 1) rotate(0) translate(15.05 2193.05)">
+
+<g id="survey-clust1" class="cluster c4-k-container">
+
+<polygon fill="#722f24" stroke="#57130f" points="8,-607 8,-2170 2604,-2170 2604,-607 8,-607"/>
+<text text-anchor="start" x="16" y="-2158.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT&#45;RUST</text>
+</g>
+<g id="survey-clust2" class="cluster c4-k-container">
+
+<polygon fill="#722f24" stroke="#57130f" points="2191,-8 2191,-599 2607,-599 2607,-8 2191,-8"/>
+<text text-anchor="start" x="2199" y="-587.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT&#45;CORE</text>
+</g>
+
+<g id="survey-node1" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="396.5,-1530 56.5,-1530 56.5,-1350 396.5,-1350 396.5,-1530"/>
+<text text-anchor="start" x="181" y="-1479" font-family="Arial" font-size="20.00" fill="#5b5b5b">aggregate</text>
+<text text-anchor="start" x="76.5" y="-1457" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">From resolved references to model relations:</text>
+<text text-anchor="start" x="153" y="-1440" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">element ids per target</text>
+<text text-anchor="start" x="88.5" y="-1423" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">role, one relation per (source, target) pair</text>
+<text text-anchor="start" x="167" y="-1406" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">with the strongest</text>
+<text text-anchor="start" x="77.5" y="-1389" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">kind and the sorted item names, and nothing</text>
+</g>
+
+<g id="survey-node2" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1730.5,-827 1410.5,-827 1410.5,-647 1730.5,-647 1730.5,-827"/>
+<text text-anchor="start" x="1549.5" y="-732" font-family="Arial" font-size="20.00" fill="#5b5b5b">tests</text>
+</g>
+
+<g id="survey-node3" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1064,-1662 738,-1662 738,-1482 1064,-1482 1064,-1662"/>
+<text text-anchor="start" x="868.5" y="-1611" font-family="Arial" font-size="20.00" fill="#5b5b5b">resolve</text>
+<text text-anchor="start" x="761.5" y="-1589" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Path resolution over an in&#45;memory tree of</text>
+<text text-anchor="start" x="809" y="-1572" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">targets and modules: which</text>
+<text text-anchor="start" x="758" y="-1555" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">module, and which item in it, a path written</text>
+<text text-anchor="start" x="826" y="-1538" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">in some module refers</text>
+<text text-anchor="start" x="761.5" y="-1521" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">to. Pure functions; the tests build trees by</text>
+</g>
+
+<g id="survey-node4" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2559,-1028 2239,-1028 2239,-848 2559,-848 2559,-1028"/>
+<text text-anchor="start" x="2361.5" y="-977" font-family="Arial" font-size="20.00" fill="#5b5b5b">discover</text>
+<text text-anchor="start" x="2276" y="-955" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Crates and their targets, from `cargo</text>
+<text text-anchor="start" x="2303" y="-938" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">metadata &#45;&#45;no&#45;deps &#45;&#45;offline`</text>
+<text text-anchor="start" x="2266" y="-921" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">on the root manifest and on each `[rust]</text>
+<text text-anchor="start" x="2322" y="-904" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">extra_manifests` entry.</text>
+<text text-anchor="start" x="2277" y="-887" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`&#45;&#45;no&#45;deps` reads manifests only: no</text>
+</g>
+
+<g id="survey-node5" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1742,-1329 1399,-1329 1399,-1149 1742,-1149 1742,-1329"/>
+<text text-anchor="start" x="1554" y="-1278" font-family="Arial" font-size="20.00" fill="#5b5b5b">visit</text>
+<text text-anchor="start" x="1419.5" y="-1256" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">What one parsed file references, per module:</text>
+<text text-anchor="start" x="1510" y="-1239" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">every `use`, every</text>
+<text text-anchor="start" x="1427" y="-1222" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">path in a type, expression or pattern, every</text>
+<text text-anchor="start" x="1507.5" y="-1205" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`impl Trait for`, and</text>
+<text text-anchor="start" x="1426.5" y="-1188" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">the names the module defines. Pure over a</text>
+</g>
+
+<g id="survey-node6" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="386.5,-847 66.5,-847 66.5,-667 386.5,-667 386.5,-847"/>
+<text text-anchor="start" x="200" y="-762" font-family="Arial" font-size="20.00" fill="#5b5b5b">config</text>
+<text text-anchor="start" x="114.5" y="-740" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The `[rust]` table of `asbuilt.toml`.</text>
+</g>
+
+<g id="survey-node7" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2564,-1771 2234,-1771 2234,-1591 2564,-1591 2564,-1771"/>
+<text text-anchor="start" x="2379" y="-1720" font-family="Arial" font-size="20.00" fill="#5b5b5b">walk</text>
+<text text-anchor="start" x="2254" y="-1698" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The module tree of one target, from its root</text>
+<text text-anchor="start" x="2326.5" y="-1681" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">file down every `mod`</text>
+<text text-anchor="start" x="2265" y="-1664" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">declaration. Follows `mod x;` to `x.rs` or</text>
+<text text-anchor="start" x="2337" y="-1647" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`x/mod.rs`, honors</text>
+<text text-anchor="start" x="2271" y="-1630" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`#[path]`, enters inline `mod x { }`, and</text>
+</g>
+
+<g id="survey-node8" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="397.5,-1820 55.5,-1820 55.5,-1640 397.5,-1640 397.5,-1820"/>
+<text text-anchor="start" x="205" y="-1752" font-family="Arial" font-size="20.00" fill="#5b5b5b">error</text>
+<text text-anchor="start" x="75.5" y="-1730" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">What the Rust front&#45;end can get wrong, each</text>
+<text text-anchor="start" x="163" y="-1713" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">naming the path or</text>
+<text text-anchor="start" x="170.5" y="-1696" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">module involved.</text>
+</g>
+
+<g id="survey-node9" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="405,-2110 48,-2110 48,-1930 405,-1930 405,-2110"/>
+<text text-anchor="start" x="196.5" y="-2051" font-family="Arial" font-size="20.00" fill="#5b5b5b">source</text>
+<text text-anchor="start" x="68.5" y="-2029" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Where source text comes from. The walk reads</text>
+<text text-anchor="start" x="162" y="-2012" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">through this trait so</text>
+<text text-anchor="start" x="70" y="-1995" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">its tests run over an in&#45;memory map and never</text>
+<text text-anchor="start" x="184.5" y="-1978" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">touch a disk.</text>
+</g>
+
+<g id="survey-node10" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2567,-539 2231,-539 2231,-359 2567,-359 2567,-539"/>
+<text text-anchor="start" x="2362" y="-480" font-family="Arial" font-size="20.00" fill="#5b5b5b">frontend</text>
+<text text-anchor="start" x="2257.5" y="-458" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The front&#45;end contract and the survey that</text>
+<text text-anchor="start" x="2331" y="-441" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">runs every front&#45;end</text>
+<text text-anchor="start" x="2251" y="-424" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">that recognizes a root, merges their models,</text>
+<text text-anchor="start" x="2323.5" y="-407" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">and applies the config.</text>
+</g>
+
+<g id="survey-node11" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2559,-228 2239,-228 2239,-48 2559,-48 2559,-228"/>
+<text text-anchor="start" x="2372" y="-160" font-family="Arial" font-size="20.00" fill="#5b5b5b">model</text>
+<text text-anchor="start" x="2269" y="-138" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The architecture model every front&#45;end</text>
+<text text-anchor="start" x="2315.5" y="-121" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">produces and the emitter</text>
+<text text-anchor="start" x="2363" y="-104" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">consumes.</text>
+</g>
+
+<g id="survey-node12" class="node c4-k-process">
+
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="3056,-1028 2720,-1028 2720,-848 3056,-848 3056,-1028"/>
+<text text-anchor="start" x="2818.5" y="-969" font-family="Arial" font-size="20.00" fill="#48382f">cargo metadata</text>
+<text text-anchor="start" x="2834.5" y="-948.6" font-family="Arial" font-size="13.00" fill="#59493f" class="c4-muted">cargo subprocess</text>
+<text text-anchor="start" x="2740" y="-929" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">Lists the workspace&#39;s packages and targets;</text>
+<text text-anchor="start" x="2768" y="-912" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">`&#45;&#45;no&#45;deps &#45;&#45;offline`, so no lockfile is</text>
+<text text-anchor="start" x="2859" y="-895" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">touched.</text>
+</g>
+
+<g id="survey-edge1" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M396.77,-1473.22C498.78,-1493.25 628.28,-1518.67 730.36,-1538.7"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="730.11,-1541.33 737.97,-1540.2 731.12,-1536.18 730.11,-1541.33"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="465,-1525 465,-1561 678,-1561 678,-1525 465,-1525" class="c4-label-bg"/>
+<text text-anchor="start" x="468.5" y="-1546.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Location, ResolveTree, TargetKey,</text>
+<text text-anchor="start" x="468.5" y="-1531.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">TargetRole, resolve</text>
+</g>
+
+<g id="survey-edge2" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M369.02,-1349.98C468.06,-1292.51 605.8,-1223.3 738,-1193 958.96,-1142.35 1221.17,-1171 1391.22,-1200.81"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1390.9,-1203.42 1398.74,-1202.14 1391.81,-1198.25 1390.9,-1203.42"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="858.5,-1193 858.5,-1214 943.5,-1214 943.5,-1193 858.5,-1193" class="c4-label-bg"/>
+<text text-anchor="start" x="862" y="-1199.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">ModuleFacts</text>
+</g>
+
+<g id="survey-edge3" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M347.42,-1530.07C446.26,-1597.88 593.25,-1684.52 738,-1717 879.37,-1748.72 927.03,-1764.26 1064,-1717 1096.02,-1705.95 1091.98,-1681.05 1124,-1670 1214.33,-1638.83 1243.45,-1669.5 1339,-1670 1651.84,-1671.62 2016.63,-1675.95 2226.13,-1678.67"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2226.29,-1681.29 2233.82,-1678.77 2226.36,-1676.04 2226.29,-1681.29"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1192,-1670 1192,-1691 1271,-1691 1271,-1670 1192,-1670" class="c4-label-bg"/>
+<text text-anchor="start" x="1195.5" y="-1676.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">ModulePath</text>
+</g>
+
+<g id="survey-edge4" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M270.58,-1349.77C346.13,-1199.99 515.81,-898.59 738,-717 1195.4,-343.18 1909.97,-203.65 2231.45,-157.82"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2231.91,-160.41 2238.97,-156.76 2231.17,-155.21 2231.91,-160.41"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1124,-474 1124,-495 1339,-495 1339,-474 1124,-474" class="c4-label-bg"/>
+<text text-anchor="start" x="1127.5" y="-480.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Id, Relation, RelationKind, is_lineal</text>
+</g>
+
+<g id="survey-edge5" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1730.65,-763.38C1852.26,-784.98 2023.51,-818.52 2171,-859 2190.8,-864.43 2211.37,-870.7 2231.69,-877.27"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2230.92,-879.78 2238.86,-879.61 2232.54,-874.79 2230.92,-879.78"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1802,-859 1802,-910 2171,-910 2171,-859 1802,-859" class="c4-label-bg"/>
+<text text-anchor="start" x="1805.5" y="-895.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">TECHNOLOGY_BINARY, TECHNOLOGY_LIBRARY,</text>
+<text text-anchor="start" x="1805.5" y="-880.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">TECHNOLOGY_PROC_MACRO, TECHNOLOGY_TESTS,</text>
+<text text-anchor="start" x="1805.5" y="-865.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">TargetKind, discover</text>
+</g>
+
+<g id="survey-edge6" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1410.49,-739.37C1154.87,-743.18 654.88,-750.63 394.35,-754.51"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="394.17,-751.89 386.71,-754.63 394.25,-757.14 394.17,-751.89"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="864.5,-749 864.5,-770 937.5,-770 937.5,-749 864.5,-749" class="c4-label-bg"/>
+<text text-anchor="start" x="868" y="-755.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustConfig</text>
+</g>
+
+<g id="survey-edge7" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1498.87,-827.1C1408.5,-937.15 1242.19,-1122.7 1064,-1237 824.5,-1390.63 675.65,-1271.72 465,-1463 420.27,-1503.62 442.59,-1537.69 405,-1585 391.21,-1602.35 375.02,-1619.02 358.12,-1634.48"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="356.18,-1632.7 352.37,-1639.67 359.69,-1636.59 356.18,-1632.7"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="842,-1337 842,-1358 960,-1358 960,-1337 842,-1337" class="c4-label-bg"/>
+<text text-anchor="start" x="845" y="-1343.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustFrontendError</text>
+</g>
+
+<g id="survey-edge8" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1730.58,-698.81C1852.9,-667.48 2025.1,-619.09 2171,-562 2188.37,-555.2 2206.21,-547.56 2223.89,-539.54"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2225.19,-541.83 2230.92,-536.32 2223.01,-537.05 2225.19,-541.83"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1963.5,-679 1963.5,-700 2009.5,-700 2009.5,-679 1963.5,-679" class="c4-label-bg"/>
+<text text-anchor="start" x="1966.5" y="-685.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">survey</text>
+</g>
+
+<g id="survey-edge9" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1606.76,-646.88C1643.5,-564.55 1708.8,-445.38 1802,-376 1938.78,-274.19 2014.19,-337.97 2171,-271 2197.22,-259.8 2224.15,-246.16 2249.89,-231.93"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2251.48,-234.04 2256.75,-228.1 2248.93,-229.46 2251.48,-234.04"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1865,-376 1865,-397 2108,-397 2108,-376 1865,-376" class="c4-label-bg"/>
+<text text-anchor="start" x="1868.5" y="-382.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, Model, Relation, RelationKind</text>
+</g>
+
+<g id="survey-edge10" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1064.01,-1491.18C1163.12,-1441.73 1290,-1378.43 1391.85,-1327.62"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1393.29,-1329.84 1398.83,-1324.14 1390.95,-1325.14 1393.29,-1329.84"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1176,-1454 1176,-1475 1287,-1475 1287,-1454 1176,-1454" class="c4-label-bg"/>
+<text text-anchor="start" x="1179.5" y="-1460.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Anchor, RawPath</text>
+</g>
+
+<g id="survey-edge11" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1064.07,-1557.33C1084.24,-1555.96 1104.59,-1554.79 1124,-1554 1219.48,-1550.14 1243.61,-1548.34 1339,-1554 1653.28,-1572.63 2017.23,-1622.54 2226.24,-1653.95"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2226.11,-1656.59 2233.92,-1655.11 2226.89,-1651.4 2226.11,-1656.59"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1531,-1588 1531,-1609 1610,-1609 1610,-1588 1531,-1588" class="c4-label-bg"/>
+<text text-anchor="start" x="1534.5" y="-1594.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">ModulePath</text>
+</g>
+
+<g id="survey-edge12" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2238.79,-941.11C2118.66,-942.38 1949.83,-941.86 1802,-933 1286.79,-902.13 680.91,-821.95 394.11,-781.34"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="394.35,-778.72 386.55,-780.27 393.61,-783.92 394.35,-778.72"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1195,-895 1195,-916 1268,-916 1268,-895 1195,-895" class="c4-label-bg"/>
+<text text-anchor="start" x="1198.5" y="-901.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustConfig</text>
+</g>
+
+<g id="survey-edge14" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2391.18,-1028.18C2375.95,-1162.67 2327.06,-1414.28 2171,-1548 1926.57,-1757.43 1059.75,-1768.13 738,-1759 627.3,-1755.86 503.27,-1748.89 405.18,-1742.57"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="405.22,-1739.95 397.56,-1742.08 404.88,-1745.19 405.22,-1739.95"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1172.5,-1757 1172.5,-1778 1290.5,-1778 1290.5,-1757 1172.5,-1757" class="c4-label-bg"/>
+<text text-anchor="start" x="1175.5" y="-1763.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustFrontendError</text>
+</g>
+
+<g id="survey-edge13" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2559.13,-938C2608.09,-938 2662.24,-938 2712.19,-938"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2712.35,-940.63 2719.85,-938 2712.35,-935.38 2712.35,-940.63"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2627,-938 2627,-959 2660,-959 2660,-938 2627,-938" class="c4-label-bg"/>
+<text text-anchor="start" x="2630.5" y="-944.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">runs</text>
+</g>
+
+<g id="survey-edge15" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1742.07,-1299.46C1865.34,-1346.41 2033.63,-1417.31 2171,-1500 2212.3,-1524.86 2254.42,-1556.41 2290.99,-1586.17"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2289.34,-1588.22 2296.81,-1590.93 2292.66,-1584.15 2289.34,-1588.22"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1911,-1500 1911,-1521 2062,-1521 2062,-1500 1911,-1500" class="c4-label-bg"/>
+<text text-anchor="start" x="1914.5" y="-1506.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">ModulePath, is_cfg_test</text>
+</g>
+
+<g id="survey-edge16" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1623.36,-1148.69C1661.67,-1078.19 1712.14,-976.65 1742,-882 1790.67,-727.73 1693.87,-643.32 1802,-523 1915.81,-396.36 2056.86,-546.35 2171,-420 2206.07,-381.18 2164.43,-349.06 2191,-304 2206.42,-277.85 2227.63,-254.15 2250.61,-233.39"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2252.62,-235.12 2256.49,-228.18 2249.14,-231.19 2252.62,-235.12"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1945,-523 1945,-544 2028,-544 2028,-523 1945,-523" class="c4-label-bg"/>
+<text text-anchor="start" x="1948.5" y="-529.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">RelationKind</text>
+</g>
+
+<g id="survey-edge17" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2233.9,-1724.32C2101.82,-1757.91 1911.01,-1803.54 1742,-1833 1461.89,-1881.82 734.15,-2004.67 465,-1913 450.11,-1907.93 396.36,-1866.87 343.75,-1824.93"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="345.18,-1822.7 337.68,-1820.08 341.9,-1826.81 345.18,-1822.7"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1172.5,-1922 1172.5,-1943 1290.5,-1943 1290.5,-1922 1172.5,-1922" class="c4-label-bg"/>
+<text text-anchor="start" x="1175.5" y="-1928.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustFrontendError</text>
+</g>
+
+<g id="survey-edge18" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2254.18,-1771.16C2227.26,-1785.4 2198.81,-1798.77 2171,-1809 1557.19,-2034.65 766.32,-2040.15 412.69,-2029.07"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="412.77,-2026.45 405.19,-2028.83 412.6,-2031.7 412.77,-2026.45"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1196,-2012 1196,-2033 1267,-2033 1267,-2012 1196,-2012" class="c4-label-bg"/>
+<text text-anchor="start" x="1199.5" y="-2018.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">FileSource</text>
+</g>
+
+<g id="survey-edge19" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2399,-358.94C2399,-320.47 2399,-275.47 2399,-236.16"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2401.63,-235.87 2399,-228.37 2396.38,-235.87 2401.63,-235.87"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2363.5,-283 2363.5,-304 2407.5,-304 2407.5,-283 2363.5,-283" class="c4-label-bg"/>
+<text text-anchor="start" x="2366.5" y="-289.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Model</text>
+</g>
+</g>
+</svg></figure>
 </main>
 </body>
 </html>

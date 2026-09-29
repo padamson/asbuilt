@@ -10,42 +10,42 @@
 <title>%3</title>
 <g id="clust1" class="cluster">
 <title>cluster_asbuilt_site</title>
-<polygon fill="#b5582a" stroke="#7a4d37" points="8,-8 8,-609 1291,-609 1291,-8 8,-8"/>
-<text text-anchor="start" x="16" y="-597.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#310000" fill-opacity="0.701961">ASBUILT&#45;SITE</text>
+<polygon fill="#722f24" stroke="#57130f" points="8,-8 8,-609 1291,-609 1291,-8 8,-8"/>
+<text text-anchor="start" x="16" y="-597.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT&#45;SITE</text>
 </g>
 <!-- app -->
 <g id="node1" class="node">
 <title>app</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="1251,-549 931,-549 931,-369 1251,-369 1251,-549"/>
-<text text-anchor="start" x="1074" y="-454" font-family="Arial" font-size="20.00" fill="#eff6ff">app</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1251,-549 931,-549 931,-369 1251,-369 1251,-549"/>
+<text text-anchor="start" x="1074" y="-454" font-family="Arial" font-size="20.00" fill="#5b5b5b">app</text>
 </g>
 <!-- components -->
 <g id="node2" class="node">
 <title>components</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="813,-228 493,-228 493,-48 813,-48 813,-228"/>
-<text text-anchor="start" x="598.5" y="-133" font-family="Arial" font-size="20.00" fill="#eff6ff">components</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="813,-228 493,-228 493,-48 813,-48 813,-228"/>
+<text text-anchor="start" x="598.5" y="-133" font-family="Arial" font-size="20.00" fill="#5b5b5b">components</text>
 </g>
 <!-- snippets -->
 <g id="node3" class="node">
 <title>snippets</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="821,-549 485,-549 485,-369 821,-369 821,-549"/>
-<text text-anchor="start" x="615.5" y="-498" font-family="Arial" font-size="20.00" fill="#eff6ff">snippets</text>
-<text text-anchor="start" x="505" y="-476" font-family="Arial" font-size="15.00" fill="#bfdbfe">Syntax&#45;highlighted code snippets, generated</text>
-<text text-anchor="start" x="553" y="-459" font-family="Arial" font-size="15.00" fill="#bfdbfe">at build time by `build.rs` from</text>
-<text text-anchor="start" x="509.5" y="-442" font-family="Arial" font-size="15.00" fill="#bfdbfe">the files in `snippets/`. Each constant holds</text>
-<text text-anchor="start" x="576" y="-425" font-family="Arial" font-size="15.00" fill="#bfdbfe">highlighted inner HTML</text>
-<text text-anchor="start" x="506.5" y="-408" font-family="Arial" font-size="15.00" fill="#bfdbfe">(token spans with inline colors) rendered via</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="821,-549 485,-549 485,-369 821,-369 821,-549"/>
+<text text-anchor="start" x="615.5" y="-498" font-family="Arial" font-size="20.00" fill="#5b5b5b">snippets</text>
+<text text-anchor="start" x="505" y="-476" font-family="Arial" font-size="15.00" fill="#6d6d6d">Syntax&#45;highlighted code snippets, generated</text>
+<text text-anchor="start" x="553" y="-459" font-family="Arial" font-size="15.00" fill="#6d6d6d">at build time by `build.rs` from</text>
+<text text-anchor="start" x="509.5" y="-442" font-family="Arial" font-size="15.00" fill="#6d6d6d">the files in `snippets/`. Each constant holds</text>
+<text text-anchor="start" x="576" y="-425" font-family="Arial" font-size="15.00" fill="#6d6d6d">highlighted inner HTML</text>
+<text text-anchor="start" x="506.5" y="-408" font-family="Arial" font-size="15.00" fill="#6d6d6d">(token spans with inline colors) rendered via</text>
 </g>
 <!-- version -->
 <g id="node4" class="node">
 <title>version</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="374.5,-549 47.5,-549 47.5,-369 374.5,-369 374.5,-549"/>
-<text text-anchor="start" x="179" y="-498" font-family="Arial" font-size="20.00" fill="#eff6ff">version</text>
-<text text-anchor="start" x="81.5" y="-476" font-family="Arial" font-size="15.00" fill="#bfdbfe">The build&#39;s version identity and the one</text>
-<text text-anchor="start" x="124" y="-459" font-family="Arial" font-size="15.00" fill="#bfdbfe">place the site&#39;s path prefix</text>
-<text text-anchor="start" x="123.5" y="-442" font-family="Arial" font-size="15.00" fill="#bfdbfe">is spelled. `build.rs` injects</text>
-<text text-anchor="start" x="68" y="-425" font-family="Arial" font-size="15.00" fill="#bfdbfe">`SITE_VERSION`; the deploy serves every</text>
-<text text-anchor="start" x="79" y="-408" font-family="Arial" font-size="15.00" fill="#bfdbfe">snapshot under `/asbuilt/&lt;dev|vX.Y.Z&gt;/`</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="374.5,-549 47.5,-549 47.5,-369 374.5,-369 374.5,-549"/>
+<text text-anchor="start" x="179" y="-498" font-family="Arial" font-size="20.00" fill="#5b5b5b">version</text>
+<text text-anchor="start" x="81.5" y="-476" font-family="Arial" font-size="15.00" fill="#6d6d6d">The build&#39;s version identity and the one</text>
+<text text-anchor="start" x="124" y="-459" font-family="Arial" font-size="15.00" fill="#6d6d6d">place the site&#39;s path prefix</text>
+<text text-anchor="start" x="123.5" y="-442" font-family="Arial" font-size="15.00" fill="#6d6d6d">is spelled. `build.rs` injects</text>
+<text text-anchor="start" x="68" y="-425" font-family="Arial" font-size="15.00" fill="#6d6d6d">`SITE_VERSION`; the deploy serves every</text>
+<text text-anchor="start" x="79" y="-408" font-family="Arial" font-size="15.00" fill="#6d6d6d">snapshot under `/asbuilt/&lt;dev|vX.Y.Z&gt;/`</text>
 </g>
 <!-- app&#45;&gt;components -->
 <g id="edge1" class="edge">

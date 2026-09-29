@@ -10,114 +10,114 @@
 <title>%3</title>
 <g id="clust1" class="cluster">
 <title>cluster_components</title>
-<polygon fill="#194b9e" stroke="#1b3d88" points="8,-296 8,-596 5898,-596 5898,-296 8,-296"/>
-<text text-anchor="start" x="16" y="-584.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#bfdbfe" fill-opacity="0.701961">COMPONENTS</text>
+<polygon fill="#999999" stroke="#808080" points="8,-296 8,-596 5898,-596 5898,-296 8,-296"/>
+<text text-anchor="start" x="16" y="-584.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#6d6d6d" fill-opacity="0.701961">COMPONENTS</text>
 </g>
 <!-- dogfood_banner -->
 <g id="node1" class="node">
 <title>dogfood_banner</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="798,-516 478,-516 478,-336 798,-336 798,-516"/>
-<text text-anchor="start" x="564" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">dogfood_banner</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="798,-516 478,-516 478,-336 798,-336 798,-516"/>
+<text text-anchor="start" x="564" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">dogfood_banner</text>
 </g>
 <!-- example -->
 <g id="node2" class="node">
 <title>example</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="1228,-516 908,-516 908,-336 1228,-336 1228,-516"/>
-<text text-anchor="start" x="1030" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">example</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1228,-516 908,-516 908,-336 1228,-336 1228,-516"/>
+<text text-anchor="start" x="1030" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">example</text>
 </g>
 <!-- features -->
 <g id="node3" class="node">
 <title>features</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="1658,-516 1338,-516 1338,-336 1658,-336 1658,-516"/>
-<text text-anchor="start" x="1461.5" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">features</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1658,-516 1338,-516 1338,-336 1658,-336 1658,-516"/>
+<text text-anchor="start" x="1461.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">features</text>
 </g>
 <!-- footer -->
 <g id="node4" class="node">
 <title>footer</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="4458,-516 4138,-516 4138,-336 4458,-336 4458,-516"/>
-<text text-anchor="start" x="4272" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">footer</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4458,-516 4138,-516 4138,-336 4458,-336 4458,-516"/>
+<text text-anchor="start" x="4272" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">footer</text>
 </g>
 <!-- hero -->
 <g id="node5" class="node">
 <title>hero</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="4888,-516 4568,-516 4568,-336 4888,-336 4888,-516"/>
-<text text-anchor="start" x="4707.5" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">hero</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4888,-516 4568,-516 4568,-336 4888,-336 4888,-516"/>
+<text text-anchor="start" x="4707.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">hero</text>
 </g>
 <!-- how_it_works -->
 <g id="node6" class="node">
 <title>how_it_works</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="2088,-516 1768,-516 1768,-336 2088,-336 2088,-516"/>
-<text text-anchor="start" x="1867.5" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">how_it_works</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2088,-516 1768,-516 1768,-336 2088,-336 2088,-516"/>
+<text text-anchor="start" x="1867.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">how_it_works</text>
 </g>
 <!-- install -->
 <g id="node7" class="node">
 <title>install</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="3058,-516 2738,-516 2738,-336 3058,-336 3058,-516"/>
-<text text-anchor="start" x="2872" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">install</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="3058,-516 2738,-516 2738,-336 3058,-336 3058,-516"/>
+<text text-anchor="start" x="2872" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">install</text>
 </g>
 <!-- version_switcher -->
 <g id="node8" class="node">
 <title>version_switcher</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="5858,-516 5538,-516 5538,-336 5858,-336 5858,-516"/>
-<text text-anchor="start" x="5623.5" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">version_switcher</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="5858,-516 5538,-516 5538,-336 5858,-336 5858,-516"/>
+<text text-anchor="start" x="5623.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">version_switcher</text>
 </g>
 <!-- feature_card -->
 <g id="node9" class="node">
 <title>feature_card</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="4028,-516 3708,-516 3708,-336 4028,-336 4028,-516"/>
-<text text-anchor="start" x="3811.5" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">feature_card</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4028,-516 3708,-516 3708,-336 4028,-336 4028,-516"/>
+<text text-anchor="start" x="3811.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">feature_card</text>
 </g>
 <!-- icons_ -->
 <g id="node10" class="node">
 <title>icons_</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="5428,-516 5108,-516 5108,-336 5428,-336 5428,-516"/>
-<text text-anchor="start" x="5244.5" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">icons</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="5428,-516 5108,-516 5108,-336 5428,-336 5428,-516"/>
+<text text-anchor="start" x="5244.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">icons</text>
 </g>
 <!-- code_tabs -->
 <g id="node11" class="node">
 <title>code_tabs</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="2628,-516 2308,-516 2308,-336 2628,-336 2628,-516"/>
-<text text-anchor="start" x="2421.5" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">code_tabs</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2628,-516 2308,-516 2308,-336 2628,-336 2628,-516"/>
+<text text-anchor="start" x="2421.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">code_tabs</text>
 </g>
 <!-- code_block -->
 <g id="node12" class="node">
 <title>code_block</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="3598,-516 3278,-516 3278,-336 3598,-336 3598,-516"/>
-<text text-anchor="start" x="3387" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">code_block</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="3598,-516 3278,-516 3278,-336 3598,-336 3598,-516"/>
+<text text-anchor="start" x="3387" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">code_block</text>
 </g>
 <!-- unreleased_badge -->
 <g id="node13" class="node">
 <title>unreleased_badge</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="368,-516 48,-516 48,-336 368,-336 368,-516"/>
-<text text-anchor="start" x="124" y="-421" font-family="Arial" font-size="20.00" fill="#eff6ff">unreleased_badge</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="368,-516 48,-516 48,-336 368,-336 368,-516"/>
+<text text-anchor="start" x="124" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">unreleased_badge</text>
 </g>
 <!-- app -->
 <g id="node14" class="node">
 <title>app</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="2898,-865 2578,-865 2578,-685 2898,-685 2898,-865"/>
-<text text-anchor="start" x="2721" y="-770" font-family="Arial" font-size="20.00" fill="#eff6ff">app</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2898,-865 2578,-865 2578,-685 2898,-685 2898,-865"/>
+<text text-anchor="start" x="2721" y="-770" font-family="Arial" font-size="20.00" fill="#5b5b5b">app</text>
 </g>
 <!-- snippets -->
 <g id="node15" class="node">
 <title>snippets</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="1817,-180 1481,-180 1481,0 1817,0 1817,-180"/>
-<text text-anchor="start" x="1611.5" y="-129" font-family="Arial" font-size="20.00" fill="#eff6ff">snippets</text>
-<text text-anchor="start" x="1501" y="-107" font-family="Arial" font-size="15.00" fill="#bfdbfe">Syntax&#45;highlighted code snippets, generated</text>
-<text text-anchor="start" x="1549" y="-90" font-family="Arial" font-size="15.00" fill="#bfdbfe">at build time by `build.rs` from</text>
-<text text-anchor="start" x="1505.5" y="-73" font-family="Arial" font-size="15.00" fill="#bfdbfe">the files in `snippets/`. Each constant holds</text>
-<text text-anchor="start" x="1572" y="-56" font-family="Arial" font-size="15.00" fill="#bfdbfe">highlighted inner HTML</text>
-<text text-anchor="start" x="1502.5" y="-39" font-family="Arial" font-size="15.00" fill="#bfdbfe">(token spans with inline colors) rendered via</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1817,-180 1481,-180 1481,0 1817,0 1817,-180"/>
+<text text-anchor="start" x="1611.5" y="-129" font-family="Arial" font-size="20.00" fill="#5b5b5b">snippets</text>
+<text text-anchor="start" x="1501" y="-107" font-family="Arial" font-size="15.00" fill="#6d6d6d">Syntax&#45;highlighted code snippets, generated</text>
+<text text-anchor="start" x="1549" y="-90" font-family="Arial" font-size="15.00" fill="#6d6d6d">at build time by `build.rs` from</text>
+<text text-anchor="start" x="1505.5" y="-73" font-family="Arial" font-size="15.00" fill="#6d6d6d">the files in `snippets/`. Each constant holds</text>
+<text text-anchor="start" x="1572" y="-56" font-family="Arial" font-size="15.00" fill="#6d6d6d">highlighted inner HTML</text>
+<text text-anchor="start" x="1502.5" y="-39" font-family="Arial" font-size="15.00" fill="#6d6d6d">(token spans with inline colors) rendered via</text>
 </g>
 <!-- version -->
 <g id="node16" class="node">
 <title>version</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="4461.5,-180 4134.5,-180 4134.5,0 4461.5,0 4461.5,-180"/>
-<text text-anchor="start" x="4266" y="-129" font-family="Arial" font-size="20.00" fill="#eff6ff">version</text>
-<text text-anchor="start" x="4168.5" y="-107" font-family="Arial" font-size="15.00" fill="#bfdbfe">The build&#39;s version identity and the one</text>
-<text text-anchor="start" x="4211" y="-90" font-family="Arial" font-size="15.00" fill="#bfdbfe">place the site&#39;s path prefix</text>
-<text text-anchor="start" x="4210.5" y="-73" font-family="Arial" font-size="15.00" fill="#bfdbfe">is spelled. `build.rs` injects</text>
-<text text-anchor="start" x="4155" y="-56" font-family="Arial" font-size="15.00" fill="#bfdbfe">`SITE_VERSION`; the deploy serves every</text>
-<text text-anchor="start" x="4166" y="-39" font-family="Arial" font-size="15.00" fill="#bfdbfe">snapshot under `/asbuilt/&lt;dev|vX.Y.Z&gt;/`</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4461.5,-180 4134.5,-180 4134.5,0 4461.5,0 4461.5,-180"/>
+<text text-anchor="start" x="4266" y="-129" font-family="Arial" font-size="20.00" fill="#5b5b5b">version</text>
+<text text-anchor="start" x="4168.5" y="-107" font-family="Arial" font-size="15.00" fill="#6d6d6d">The build&#39;s version identity and the one</text>
+<text text-anchor="start" x="4211" y="-90" font-family="Arial" font-size="15.00" fill="#6d6d6d">place the site&#39;s path prefix</text>
+<text text-anchor="start" x="4210.5" y="-73" font-family="Arial" font-size="15.00" fill="#6d6d6d">is spelled. `build.rs` injects</text>
+<text text-anchor="start" x="4155" y="-56" font-family="Arial" font-size="15.00" fill="#6d6d6d">`SITE_VERSION`; the deploy serves every</text>
+<text text-anchor="start" x="4166" y="-39" font-family="Arial" font-size="15.00" fill="#6d6d6d">snapshot under `/asbuilt/&lt;dev|vX.Y.Z&gt;/`</text>
 </g>
 <!-- example&#45;&gt;code_block -->
 <g id="edge9" class="edge">

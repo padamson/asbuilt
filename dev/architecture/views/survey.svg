@@ -10,129 +10,129 @@
 <title>%3</title>
 <g id="clust1" class="cluster">
 <title>cluster_asbuilt_rust</title>
-<polygon fill="#b5582a" stroke="#7a4d37" points="8,-607 8,-2170 2604,-2170 2604,-607 8,-607"/>
-<text text-anchor="start" x="16" y="-2158.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#310000" fill-opacity="0.701961">ASBUILT&#45;RUST</text>
+<polygon fill="#722f24" stroke="#57130f" points="8,-607 8,-2170 2604,-2170 2604,-607 8,-607"/>
+<text text-anchor="start" x="16" y="-2158.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT&#45;RUST</text>
 </g>
 <g id="clust2" class="cluster">
 <title>cluster_asbuilt_core</title>
-<polygon fill="#b5582a" stroke="#7a4d37" points="2191,-8 2191,-599 2607,-599 2607,-8 2191,-8"/>
-<text text-anchor="start" x="2199" y="-587.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#310000" fill-opacity="0.701961">ASBUILT&#45;CORE</text>
+<polygon fill="#722f24" stroke="#57130f" points="2191,-8 2191,-599 2607,-599 2607,-8 2191,-8"/>
+<text text-anchor="start" x="2199" y="-587.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT&#45;CORE</text>
 </g>
 <!-- aggregate -->
 <g id="node1" class="node">
 <title>aggregate</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="396.5,-1530 56.5,-1530 56.5,-1350 396.5,-1350 396.5,-1530"/>
-<text text-anchor="start" x="181" y="-1479" font-family="Arial" font-size="20.00" fill="#eff6ff">aggregate</text>
-<text text-anchor="start" x="76.5" y="-1457" font-family="Arial" font-size="15.00" fill="#bfdbfe">From resolved references to model relations:</text>
-<text text-anchor="start" x="153" y="-1440" font-family="Arial" font-size="15.00" fill="#bfdbfe">element ids per target</text>
-<text text-anchor="start" x="88.5" y="-1423" font-family="Arial" font-size="15.00" fill="#bfdbfe">role, one relation per (source, target) pair</text>
-<text text-anchor="start" x="167" y="-1406" font-family="Arial" font-size="15.00" fill="#bfdbfe">with the strongest</text>
-<text text-anchor="start" x="77.5" y="-1389" font-family="Arial" font-size="15.00" fill="#bfdbfe">kind and the sorted item names, and nothing</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="396.5,-1530 56.5,-1530 56.5,-1350 396.5,-1350 396.5,-1530"/>
+<text text-anchor="start" x="181" y="-1479" font-family="Arial" font-size="20.00" fill="#5b5b5b">aggregate</text>
+<text text-anchor="start" x="76.5" y="-1457" font-family="Arial" font-size="15.00" fill="#6d6d6d">From resolved references to model relations:</text>
+<text text-anchor="start" x="153" y="-1440" font-family="Arial" font-size="15.00" fill="#6d6d6d">element ids per target</text>
+<text text-anchor="start" x="88.5" y="-1423" font-family="Arial" font-size="15.00" fill="#6d6d6d">role, one relation per (source, target) pair</text>
+<text text-anchor="start" x="167" y="-1406" font-family="Arial" font-size="15.00" fill="#6d6d6d">with the strongest</text>
+<text text-anchor="start" x="77.5" y="-1389" font-family="Arial" font-size="15.00" fill="#6d6d6d">kind and the sorted item names, and nothing</text>
 </g>
 <!-- tests -->
 <g id="node2" class="node">
 <title>tests</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="1730.5,-827 1410.5,-827 1410.5,-647 1730.5,-647 1730.5,-827"/>
-<text text-anchor="start" x="1549.5" y="-732" font-family="Arial" font-size="20.00" fill="#eff6ff">tests</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1730.5,-827 1410.5,-827 1410.5,-647 1730.5,-647 1730.5,-827"/>
+<text text-anchor="start" x="1549.5" y="-732" font-family="Arial" font-size="20.00" fill="#5b5b5b">tests</text>
 </g>
 <!-- resolve -->
 <g id="node3" class="node">
 <title>resolve</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="1064,-1662 738,-1662 738,-1482 1064,-1482 1064,-1662"/>
-<text text-anchor="start" x="868.5" y="-1611" font-family="Arial" font-size="20.00" fill="#eff6ff">resolve</text>
-<text text-anchor="start" x="761.5" y="-1589" font-family="Arial" font-size="15.00" fill="#bfdbfe">Path resolution over an in&#45;memory tree of</text>
-<text text-anchor="start" x="809" y="-1572" font-family="Arial" font-size="15.00" fill="#bfdbfe">targets and modules: which</text>
-<text text-anchor="start" x="758" y="-1555" font-family="Arial" font-size="15.00" fill="#bfdbfe">module, and which item in it, a path written</text>
-<text text-anchor="start" x="826" y="-1538" font-family="Arial" font-size="15.00" fill="#bfdbfe">in some module refers</text>
-<text text-anchor="start" x="761.5" y="-1521" font-family="Arial" font-size="15.00" fill="#bfdbfe">to. Pure functions; the tests build trees by</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1064,-1662 738,-1662 738,-1482 1064,-1482 1064,-1662"/>
+<text text-anchor="start" x="868.5" y="-1611" font-family="Arial" font-size="20.00" fill="#5b5b5b">resolve</text>
+<text text-anchor="start" x="761.5" y="-1589" font-family="Arial" font-size="15.00" fill="#6d6d6d">Path resolution over an in&#45;memory tree of</text>
+<text text-anchor="start" x="809" y="-1572" font-family="Arial" font-size="15.00" fill="#6d6d6d">targets and modules: which</text>
+<text text-anchor="start" x="758" y="-1555" font-family="Arial" font-size="15.00" fill="#6d6d6d">module, and which item in it, a path written</text>
+<text text-anchor="start" x="826" y="-1538" font-family="Arial" font-size="15.00" fill="#6d6d6d">in some module refers</text>
+<text text-anchor="start" x="761.5" y="-1521" font-family="Arial" font-size="15.00" fill="#6d6d6d">to. Pure functions; the tests build trees by</text>
 </g>
 <!-- discover -->
 <g id="node4" class="node">
 <title>discover</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="2559,-1028 2239,-1028 2239,-848 2559,-848 2559,-1028"/>
-<text text-anchor="start" x="2361.5" y="-977" font-family="Arial" font-size="20.00" fill="#eff6ff">discover</text>
-<text text-anchor="start" x="2276" y="-955" font-family="Arial" font-size="15.00" fill="#bfdbfe">Crates and their targets, from `cargo</text>
-<text text-anchor="start" x="2303" y="-938" font-family="Arial" font-size="15.00" fill="#bfdbfe">metadata &#45;&#45;no&#45;deps &#45;&#45;offline`</text>
-<text text-anchor="start" x="2266" y="-921" font-family="Arial" font-size="15.00" fill="#bfdbfe">on the root manifest and on each `[rust]</text>
-<text text-anchor="start" x="2322" y="-904" font-family="Arial" font-size="15.00" fill="#bfdbfe">extra_manifests` entry.</text>
-<text text-anchor="start" x="2277" y="-887" font-family="Arial" font-size="15.00" fill="#bfdbfe">`&#45;&#45;no&#45;deps` reads manifests only: no</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2559,-1028 2239,-1028 2239,-848 2559,-848 2559,-1028"/>
+<text text-anchor="start" x="2361.5" y="-977" font-family="Arial" font-size="20.00" fill="#5b5b5b">discover</text>
+<text text-anchor="start" x="2276" y="-955" font-family="Arial" font-size="15.00" fill="#6d6d6d">Crates and their targets, from `cargo</text>
+<text text-anchor="start" x="2303" y="-938" font-family="Arial" font-size="15.00" fill="#6d6d6d">metadata &#45;&#45;no&#45;deps &#45;&#45;offline`</text>
+<text text-anchor="start" x="2266" y="-921" font-family="Arial" font-size="15.00" fill="#6d6d6d">on the root manifest and on each `[rust]</text>
+<text text-anchor="start" x="2322" y="-904" font-family="Arial" font-size="15.00" fill="#6d6d6d">extra_manifests` entry.</text>
+<text text-anchor="start" x="2277" y="-887" font-family="Arial" font-size="15.00" fill="#6d6d6d">`&#45;&#45;no&#45;deps` reads manifests only: no</text>
 </g>
 <!-- visit -->
 <g id="node5" class="node">
 <title>visit</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="1742,-1329 1399,-1329 1399,-1149 1742,-1149 1742,-1329"/>
-<text text-anchor="start" x="1554" y="-1278" font-family="Arial" font-size="20.00" fill="#eff6ff">visit</text>
-<text text-anchor="start" x="1419.5" y="-1256" font-family="Arial" font-size="15.00" fill="#bfdbfe">What one parsed file references, per module:</text>
-<text text-anchor="start" x="1510" y="-1239" font-family="Arial" font-size="15.00" fill="#bfdbfe">every `use`, every</text>
-<text text-anchor="start" x="1427" y="-1222" font-family="Arial" font-size="15.00" fill="#bfdbfe">path in a type, expression or pattern, every</text>
-<text text-anchor="start" x="1507.5" y="-1205" font-family="Arial" font-size="15.00" fill="#bfdbfe">`impl Trait for`, and</text>
-<text text-anchor="start" x="1426.5" y="-1188" font-family="Arial" font-size="15.00" fill="#bfdbfe">the names the module defines. Pure over a</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1742,-1329 1399,-1329 1399,-1149 1742,-1149 1742,-1329"/>
+<text text-anchor="start" x="1554" y="-1278" font-family="Arial" font-size="20.00" fill="#5b5b5b">visit</text>
+<text text-anchor="start" x="1419.5" y="-1256" font-family="Arial" font-size="15.00" fill="#6d6d6d">What one parsed file references, per module:</text>
+<text text-anchor="start" x="1510" y="-1239" font-family="Arial" font-size="15.00" fill="#6d6d6d">every `use`, every</text>
+<text text-anchor="start" x="1427" y="-1222" font-family="Arial" font-size="15.00" fill="#6d6d6d">path in a type, expression or pattern, every</text>
+<text text-anchor="start" x="1507.5" y="-1205" font-family="Arial" font-size="15.00" fill="#6d6d6d">`impl Trait for`, and</text>
+<text text-anchor="start" x="1426.5" y="-1188" font-family="Arial" font-size="15.00" fill="#6d6d6d">the names the module defines. Pure over a</text>
 </g>
 <!-- config -->
 <g id="node6" class="node">
 <title>config</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="386.5,-847 66.5,-847 66.5,-667 386.5,-667 386.5,-847"/>
-<text text-anchor="start" x="200" y="-762" font-family="Arial" font-size="20.00" fill="#eff6ff">config</text>
-<text text-anchor="start" x="114.5" y="-740" font-family="Arial" font-size="15.00" fill="#bfdbfe">The `[rust]` table of `asbuilt.toml`.</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="386.5,-847 66.5,-847 66.5,-667 386.5,-667 386.5,-847"/>
+<text text-anchor="start" x="200" y="-762" font-family="Arial" font-size="20.00" fill="#5b5b5b">config</text>
+<text text-anchor="start" x="114.5" y="-740" font-family="Arial" font-size="15.00" fill="#6d6d6d">The `[rust]` table of `asbuilt.toml`.</text>
 </g>
 <!-- walk -->
 <g id="node7" class="node">
 <title>walk</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="2564,-1771 2234,-1771 2234,-1591 2564,-1591 2564,-1771"/>
-<text text-anchor="start" x="2379" y="-1720" font-family="Arial" font-size="20.00" fill="#eff6ff">walk</text>
-<text text-anchor="start" x="2254" y="-1698" font-family="Arial" font-size="15.00" fill="#bfdbfe">The module tree of one target, from its root</text>
-<text text-anchor="start" x="2326.5" y="-1681" font-family="Arial" font-size="15.00" fill="#bfdbfe">file down every `mod`</text>
-<text text-anchor="start" x="2265" y="-1664" font-family="Arial" font-size="15.00" fill="#bfdbfe">declaration. Follows `mod x;` to `x.rs` or</text>
-<text text-anchor="start" x="2337" y="-1647" font-family="Arial" font-size="15.00" fill="#bfdbfe">`x/mod.rs`, honors</text>
-<text text-anchor="start" x="2271" y="-1630" font-family="Arial" font-size="15.00" fill="#bfdbfe">`#[path]`, enters inline `mod x { }`, and</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2564,-1771 2234,-1771 2234,-1591 2564,-1591 2564,-1771"/>
+<text text-anchor="start" x="2379" y="-1720" font-family="Arial" font-size="20.00" fill="#5b5b5b">walk</text>
+<text text-anchor="start" x="2254" y="-1698" font-family="Arial" font-size="15.00" fill="#6d6d6d">The module tree of one target, from its root</text>
+<text text-anchor="start" x="2326.5" y="-1681" font-family="Arial" font-size="15.00" fill="#6d6d6d">file down every `mod`</text>
+<text text-anchor="start" x="2265" y="-1664" font-family="Arial" font-size="15.00" fill="#6d6d6d">declaration. Follows `mod x;` to `x.rs` or</text>
+<text text-anchor="start" x="2337" y="-1647" font-family="Arial" font-size="15.00" fill="#6d6d6d">`x/mod.rs`, honors</text>
+<text text-anchor="start" x="2271" y="-1630" font-family="Arial" font-size="15.00" fill="#6d6d6d">`#[path]`, enters inline `mod x { }`, and</text>
 </g>
 <!-- error -->
 <g id="node8" class="node">
 <title>error</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="397.5,-1820 55.5,-1820 55.5,-1640 397.5,-1640 397.5,-1820"/>
-<text text-anchor="start" x="205" y="-1752" font-family="Arial" font-size="20.00" fill="#eff6ff">error</text>
-<text text-anchor="start" x="75.5" y="-1730" font-family="Arial" font-size="15.00" fill="#bfdbfe">What the Rust front&#45;end can get wrong, each</text>
-<text text-anchor="start" x="163" y="-1713" font-family="Arial" font-size="15.00" fill="#bfdbfe">naming the path or</text>
-<text text-anchor="start" x="170.5" y="-1696" font-family="Arial" font-size="15.00" fill="#bfdbfe">module involved.</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="397.5,-1820 55.5,-1820 55.5,-1640 397.5,-1640 397.5,-1820"/>
+<text text-anchor="start" x="205" y="-1752" font-family="Arial" font-size="20.00" fill="#5b5b5b">error</text>
+<text text-anchor="start" x="75.5" y="-1730" font-family="Arial" font-size="15.00" fill="#6d6d6d">What the Rust front&#45;end can get wrong, each</text>
+<text text-anchor="start" x="163" y="-1713" font-family="Arial" font-size="15.00" fill="#6d6d6d">naming the path or</text>
+<text text-anchor="start" x="170.5" y="-1696" font-family="Arial" font-size="15.00" fill="#6d6d6d">module involved.</text>
 </g>
 <!-- source -->
 <g id="node9" class="node">
 <title>source</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="405,-2110 48,-2110 48,-1930 405,-1930 405,-2110"/>
-<text text-anchor="start" x="196.5" y="-2051" font-family="Arial" font-size="20.00" fill="#eff6ff">source</text>
-<text text-anchor="start" x="68.5" y="-2029" font-family="Arial" font-size="15.00" fill="#bfdbfe">Where source text comes from. The walk reads</text>
-<text text-anchor="start" x="162" y="-2012" font-family="Arial" font-size="15.00" fill="#bfdbfe">through this trait so</text>
-<text text-anchor="start" x="70" y="-1995" font-family="Arial" font-size="15.00" fill="#bfdbfe">its tests run over an in&#45;memory map and never</text>
-<text text-anchor="start" x="184.5" y="-1978" font-family="Arial" font-size="15.00" fill="#bfdbfe">touch a disk.</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="405,-2110 48,-2110 48,-1930 405,-1930 405,-2110"/>
+<text text-anchor="start" x="196.5" y="-2051" font-family="Arial" font-size="20.00" fill="#5b5b5b">source</text>
+<text text-anchor="start" x="68.5" y="-2029" font-family="Arial" font-size="15.00" fill="#6d6d6d">Where source text comes from. The walk reads</text>
+<text text-anchor="start" x="162" y="-2012" font-family="Arial" font-size="15.00" fill="#6d6d6d">through this trait so</text>
+<text text-anchor="start" x="70" y="-1995" font-family="Arial" font-size="15.00" fill="#6d6d6d">its tests run over an in&#45;memory map and never</text>
+<text text-anchor="start" x="184.5" y="-1978" font-family="Arial" font-size="15.00" fill="#6d6d6d">touch a disk.</text>
 </g>
 <!-- frontend -->
 <g id="node10" class="node">
 <title>frontend</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="2567,-539 2231,-539 2231,-359 2567,-359 2567,-539"/>
-<text text-anchor="start" x="2362" y="-480" font-family="Arial" font-size="20.00" fill="#eff6ff">frontend</text>
-<text text-anchor="start" x="2257.5" y="-458" font-family="Arial" font-size="15.00" fill="#bfdbfe">The front&#45;end contract and the survey that</text>
-<text text-anchor="start" x="2331" y="-441" font-family="Arial" font-size="15.00" fill="#bfdbfe">runs every front&#45;end</text>
-<text text-anchor="start" x="2251" y="-424" font-family="Arial" font-size="15.00" fill="#bfdbfe">that recognizes a root, merges their models,</text>
-<text text-anchor="start" x="2323.5" y="-407" font-family="Arial" font-size="15.00" fill="#bfdbfe">and applies the config.</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2567,-539 2231,-539 2231,-359 2567,-359 2567,-539"/>
+<text text-anchor="start" x="2362" y="-480" font-family="Arial" font-size="20.00" fill="#5b5b5b">frontend</text>
+<text text-anchor="start" x="2257.5" y="-458" font-family="Arial" font-size="15.00" fill="#6d6d6d">The front&#45;end contract and the survey that</text>
+<text text-anchor="start" x="2331" y="-441" font-family="Arial" font-size="15.00" fill="#6d6d6d">runs every front&#45;end</text>
+<text text-anchor="start" x="2251" y="-424" font-family="Arial" font-size="15.00" fill="#6d6d6d">that recognizes a root, merges their models,</text>
+<text text-anchor="start" x="2323.5" y="-407" font-family="Arial" font-size="15.00" fill="#6d6d6d">and applies the config.</text>
 </g>
 <!-- model -->
 <g id="node11" class="node">
 <title>model</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="2559,-228 2239,-228 2239,-48 2559,-48 2559,-228"/>
-<text text-anchor="start" x="2372" y="-160" font-family="Arial" font-size="20.00" fill="#eff6ff">model</text>
-<text text-anchor="start" x="2269" y="-138" font-family="Arial" font-size="15.00" fill="#bfdbfe">The architecture model every front&#45;end</text>
-<text text-anchor="start" x="2315.5" y="-121" font-family="Arial" font-size="15.00" fill="#bfdbfe">produces and the emitter</text>
-<text text-anchor="start" x="2363" y="-104" font-family="Arial" font-size="15.00" fill="#bfdbfe">consumes.</text>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2559,-228 2239,-228 2239,-48 2559,-48 2559,-228"/>
+<text text-anchor="start" x="2372" y="-160" font-family="Arial" font-size="20.00" fill="#5b5b5b">model</text>
+<text text-anchor="start" x="2269" y="-138" font-family="Arial" font-size="15.00" fill="#6d6d6d">The architecture model every front&#45;end</text>
+<text text-anchor="start" x="2315.5" y="-121" font-family="Arial" font-size="15.00" fill="#6d6d6d">produces and the emitter</text>
+<text text-anchor="start" x="2363" y="-104" font-family="Arial" font-size="15.00" fill="#6d6d6d">consumes.</text>
 </g>
 <!-- cargo -->
 <g id="node12" class="node">
 <title>cargo</title>
-<polygon fill="#d4d4d4" stroke="#acacac" stroke-width="0" points="3056,-1028 2720,-1028 2720,-848 3056,-848 3056,-1028"/>
-<text text-anchor="start" x="2818.5" y="-969" font-family="Arial" font-size="20.00" fill="#383838">cargo metadata</text>
-<text text-anchor="start" x="2834.5" y="-948.6" font-family="Arial" font-size="13.00" fill="#494949">cargo subprocess</text>
-<text text-anchor="start" x="2740" y="-929" font-family="Arial" font-size="15.00" fill="#494949">Lists the workspace&#39;s packages and targets;</text>
-<text text-anchor="start" x="2768" y="-912" font-family="Arial" font-size="15.00" fill="#494949">`&#45;&#45;no&#45;deps &#45;&#45;offline`, so no lockfile is</text>
-<text text-anchor="start" x="2859" y="-895" font-family="Arial" font-size="15.00" fill="#494949">touched.</text>
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="3056,-1028 2720,-1028 2720,-848 3056,-848 3056,-1028"/>
+<text text-anchor="start" x="2818.5" y="-969" font-family="Arial" font-size="20.00" fill="#48382f">cargo metadata</text>
+<text text-anchor="start" x="2834.5" y="-948.6" font-family="Arial" font-size="13.00" fill="#59493f">cargo subprocess</text>
+<text text-anchor="start" x="2740" y="-929" font-family="Arial" font-size="15.00" fill="#59493f">Lists the workspace&#39;s packages and targets;</text>
+<text text-anchor="start" x="2768" y="-912" font-family="Arial" font-size="15.00" fill="#59493f">`&#45;&#45;no&#45;deps &#45;&#45;offline`, so no lockfile is</text>
+<text text-anchor="start" x="2859" y="-895" font-family="Arial" font-size="15.00" fill="#59493f">touched.</text>
 </g>
 <!-- aggregate&#45;&gt;resolve -->
 <g id="edge1" class="edge">
