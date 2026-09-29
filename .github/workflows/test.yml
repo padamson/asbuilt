@@ -131,13 +131,16 @@ jobs:
       - name: Tool versions
         run: node --version && npx --version && dot -V
 
-      - name: Run the tests that need LikeC4
-        run: cargo nextest run --workspace --profile ci --run-ignored only -E 'test(/^likec4_/)'
-
       # The committed model and the curated views beside it, through the
-      # real parser.
+      # real parser. First, because it also installs the pinned LikeC4
+      # into the npx cache once: the tests below start npx in parallel,
+      # and on a cold cache they race to unpack the same package into the
+      # same directory (npm's `ENOENT` on a tar entry).
       - name: Validate this repo's own model
         run: cargo run -p asbuilt -- validate
+
+      - name: Run the tests that need LikeC4
+        run: cargo nextest run --workspace --profile ci --run-ignored only -E 'test(/^likec4_/)'
 
   # The site crates are excluded from the workspace, so nothing above
   # compiles them; this catches an API change that breaks them before the
