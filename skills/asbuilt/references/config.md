@@ -16,7 +16,7 @@ title = "playwright-rust"
 # Turns every element's path into a link. Absent: paths are plain text.
 source_url = "https://github.com/padamson/playwright-rust/blob/main/"
 # A link back to the site that hosts the tree, first in every page's
-# crumbs and header. Relative values resolve from each page's depth, so
+# header trail (home / tree title). Relative values resolve from each page's depth, so
 # "../" is the directory above the tree under any mount point.
 home_url = "../"
 # The text of that link; the URL itself when absent.

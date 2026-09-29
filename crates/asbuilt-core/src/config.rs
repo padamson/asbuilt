@@ -165,8 +165,8 @@ pub struct DocsConfig {
     /// when absent.
     #[serde(default)]
     pub source_url: Option<String>,
-    /// A link back to the site that hosts the tree, as the first crumb
-    /// and a header link on every page; relative values (`../`) resolve
+    /// A link back to the site that hosts the tree, first in every
+    /// page's header trail; relative values (`../`) resolve
     /// from each page's depth. No link when absent.
     #[serde(default)]
     pub home_url: Option<String>,

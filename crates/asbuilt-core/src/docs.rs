@@ -32,7 +32,7 @@ pub struct DocsOptions {
     /// text when absent.
     pub source_url: Option<String>,
     /// Where the tree is mounted: a link back to the site that hosts it,
-    /// as the first crumb and a header link on every page. Relative
+    /// first in every page's header trail. Relative
     /// values (`../`) are resolved from each page's own depth, so they
     /// hold under a versioned snapshot; absolute URLs are used verbatim.
     pub home_url: Option<String>,
@@ -142,6 +142,14 @@ impl Place {
     }
 }
 
+/// Which page a layout is for, so the header can mark it current.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Here<'a> {
+    Index,
+    Container(&'a [String]),
+    Other,
+}
+
 /// The relative prefix from a page at `depth` back to the tree root.
 fn up(depth: usize) -> String {
     "../".repeat(depth)
@@ -187,48 +195,46 @@ impl Ctx<'_> {
         ))
     }
 
-    /// The crumbs of a page: home (when there is one), the tree's index
-    /// unless this is the index, then `trail` as plain text. Empty when
-    /// there is nothing to climb to.
-    fn crumbs(&self, depth: usize, trail: &[&str]) -> String {
-        let mut items: Vec<String> = self.home_link(depth).into_iter().collect();
-        let current = match trail.split_last() {
-            None => escape(&self.options.title),
-            Some((last, between)) => {
-                items.push(format!(
-                    "<a href=\"{}index.html\">{}</a>",
-                    up(depth),
-                    escape(&self.options.title)
-                ));
-                items.extend(between.iter().map(|t| escape(t)));
-                escape(last)
-            }
-        };
-        items.push(format!("<span aria-current=\"page\">{current}</span>"));
-        if items.len() < 2 {
-            return String::new();
-        }
-        format!(
-            "<nav class=\"crumbs\" aria-label=\"Breadcrumb\">{}</nav>\n",
-            items.join(" / ")
-        )
-    }
-
-    fn layout(&self, depth: usize, page_title: &str, body: &str) -> String {
+    /// A page: the header's trail (the home link, when there is one, and
+    /// the tree's index) with the scheme control, the row of containers
+    /// with the current one unlinked, then `body`. Every page's own
+    /// heading names it, so nothing below the header repeats the trail.
+    fn layout(&self, depth: usize, here: Here<'_>, page_title: &str, body: &str) -> String {
         let prefix = up(depth);
-        let mut nav = String::new();
+        let mut containers = String::new();
         for element in children_of(self.model, &[]) {
             if is_external(element) {
                 continue;
             }
-            let _ = write!(
-                nav,
-                r#"<a href="{prefix}{}">{}</a> "#,
-                container_page(&element.id),
-                escape(&element.title)
-            );
+            if here == Here::Container(&element.id) {
+                let _ = write!(
+                    containers,
+                    "<span aria-current=\"page\">{}</span>",
+                    escape(&element.title)
+                );
+            } else {
+                let _ = write!(
+                    containers,
+                    r#"<a href="{prefix}{}">{}</a>"#,
+                    container_page(&element.id),
+                    escape(&element.title)
+                );
+            }
         }
-        let home = self.home_link(depth).unwrap_or_default();
+        let containers = if containers.is_empty() {
+            String::new()
+        } else {
+            format!("<nav class=\"containers\" aria-label=\"Containers\">{containers}</nav>")
+        };
+        let home = self
+            .home_link(depth)
+            .map(|link| format!("{link}<span class=\"sep\" aria-hidden=\"true\">/</span>"))
+            .unwrap_or_default();
+        let index_current = if here == Here::Index {
+            " aria-current=\"page\""
+        } else {
+            ""
+        };
         let host_css = self
             .options
             .stylesheet
@@ -256,7 +262,7 @@ impl Ctx<'_> {
         };
         let control = if toggle { SCHEME_CONTROL } else { "" };
         format!(
-            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{page} · {site}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header>{home}<a class=\"site\" href=\"{prefix}index.html\">{site}</a><nav aria-label=\"Crates\">{nav}</nav>{control}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
+            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{page} · {site}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\">{home}<a class=\"site\" href=\"{prefix}index.html\"{index_current}>{site}</a></nav>{control}</div>{containers}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
             page = escape(page_title),
             site = escape(&self.options.title),
         )
@@ -416,7 +422,7 @@ impl Ctx<'_> {
     }
 
     fn index_page(&mut self) -> String {
-        let mut body = self.crumbs(0, &[]);
+        let mut body = String::new();
         let _ = writeln!(body, "<h1>{}</h1>", escape(&self.options.title));
         body.push_str(&self.view_figure(0, "index", "Overview"));
         let top = children_of(self.model, &[]);
@@ -487,11 +493,11 @@ impl Ctx<'_> {
             body.push_str("</tbody></table>\n");
         }
         let title = self.options.title.clone();
-        self.layout(0, &title, &body)
+        self.layout(0, Here::Index, &title, &body)
     }
 
     fn container_page_html(&mut self, element: &Element) -> String {
-        let mut body = self.crumbs(1, &[&element.title]);
+        let mut body = String::new();
         let _ = writeln!(body, "<h1>{}</h1>", escape(&element.title));
         body.push_str(&self.meta_html(element));
         if let Some(view) = self.views.get(&element.id).cloned() {
@@ -526,7 +532,7 @@ impl Ctx<'_> {
             body.push_str(&self.relation_tables(&descendant.id, 1));
             body.push_str("</section>\n");
         }
-        self.layout(1, &element.title, &body)
+        self.layout(1, Here::Container(&element.id), &element.title, &body)
     }
 
     /// Curated views: stems that are neither `index` nor generated.
@@ -541,8 +547,7 @@ impl Ctx<'_> {
         if curated.is_empty() {
             return None;
         }
-        let mut body = self.crumbs(0, &["Curated views"]);
-        body.push_str("<h1>Curated views</h1>\n");
+        let mut body = String::from("<h1>Curated views</h1>\n");
         for view in curated {
             let markup = self.view_markup(0, view, view).unwrap_or_default();
             let _ = writeln!(
@@ -551,7 +556,7 @@ impl Ctx<'_> {
                 escape(view)
             );
         }
-        Some(self.layout(0, "Curated views", &body))
+        Some(self.layout(0, Here::Other, "Curated views", &body))
     }
 }
 
@@ -862,7 +867,7 @@ mod tests {
             "{app}"
         );
         assert!(
-            app.contains(&format!("</nav>{SCHEME_CONTROL}</header>")),
+            app.contains(&format!("</nav>{SCHEME_CONTROL}</div>")),
             "{app}"
         );
         assert!(
@@ -1213,10 +1218,6 @@ mod tests {
             app.contains("<a class=\"site\" href=\"../index.html\">Sample</a>"),
             "{app}"
         );
-        assert!(
-            app.contains("<nav class=\"crumbs\" aria-label=\"Breadcrumb\"><a href=\"../index.html\">Sample</a> / <span aria-current=\"page\">app</span></nav>"),
-            "{app}"
-        );
         assert!(app.contains("<title>app · Sample</title>"), "{app}");
         let index = page(&site, "index.html");
         assert!(
@@ -1224,8 +1225,47 @@ mod tests {
             "{index}"
         );
         assert!(
-            index.contains("<a class=\"site\" href=\"index.html\">Sample</a>"),
+            index
+                .contains("<a class=\"site\" href=\"index.html\" aria-current=\"page\">Sample</a>"),
             "{index}"
+        );
+    }
+
+    #[test]
+    fn a_container_page_s_header_is_the_trail_then_the_containers_with_this_one_current() {
+        let site = generate(&sample(), &options());
+        assert!(
+            page(&site, "containers/app.html").contains("<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"site\" href=\"../index.html\">Sample</a></nav></div><nav class=\"containers\" aria-label=\"Containers\"><span aria-current=\"page\">app</span><a href=\"../containers/lib.html\">lib</a></nav></header>"),
+            "{}",
+            page(&site, "containers/app.html")
+        );
+    }
+
+    #[test]
+    fn no_page_repeats_the_trail_below_the_header() {
+        let mut opts = options();
+        opts.home_url = Some("../".into());
+        let site = generate(&sample(), &opts);
+        for (path, contents) in &site.pages {
+            assert!(!contents.contains("crumbs"), "{path}: {contents}");
+            assert_eq!(
+                contents.matches("aria-label=\"Breadcrumb\"").count(),
+                usize::from(path.ends_with(".html")),
+                "{path}"
+            );
+        }
+    }
+
+    #[test]
+    fn a_model_without_containers_has_no_containers_row() {
+        let mut model = sample();
+        model.elements.retain(is_external);
+        model.relations.clear();
+        let site = generate(&model, &options());
+        assert!(
+            !page(&site, "index.html").contains("class=\"containers\""),
+            "{}",
+            page(&site, "index.html")
         );
     }
 
@@ -1248,29 +1288,19 @@ mod tests {
     }
 
     #[test]
-    fn a_home_url_is_the_first_crumb_and_a_header_link_resolved_from_each_depth() {
+    fn a_home_url_opens_the_trail_resolved_from_each_depth() {
         let mut opts = options();
         opts.home_url = Some("../".into());
         opts.home_title = Some("Home".into());
         let site = generate(&sample(), &opts);
         let index = page(&site, "index.html");
         assert!(
-            index.contains("<header><a class=\"home\" href=\"../\">Home</a><a class=\"site\""),
-            "{index}"
-        );
-        assert!(
-            index.contains(
-                "<nav class=\"crumbs\" aria-label=\"Breadcrumb\"><a class=\"home\" href=\"../\">Home</a> / <span aria-current=\"page\">Sample</span></nav>"
-            ),
+            index.contains("<nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"home\" href=\"../\">Home</a><span class=\"sep\" aria-hidden=\"true\">/</span><a class=\"site\" href=\"index.html\" aria-current=\"page\">Sample</a></nav>"),
             "{index}"
         );
         let app = page(&site, "containers/app.html");
         assert!(
-            app.contains("<header><a class=\"home\" href=\"../../\">Home</a><a class=\"site\""),
-            "{app}"
-        );
-        assert!(
-            app.contains("<nav class=\"crumbs\" aria-label=\"Breadcrumb\"><a class=\"home\" href=\"../../\">Home</a> / <a href=\"../index.html\">Sample</a> / <span aria-current=\"page\">app</span></nav>"),
+            app.contains("<nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"home\" href=\"../../\">Home</a><span class=\"sep\" aria-hidden=\"true\">/</span><a class=\"site\" href=\"../index.html\">Sample</a></nav>"),
             "{app}"
         );
     }
@@ -1290,13 +1320,13 @@ mod tests {
     }
 
     #[test]
-    fn without_a_home_url_there_is_no_home_link_and_the_index_has_no_crumbs() {
+    fn without_a_home_url_the_trail_is_the_tree_s_title_alone() {
         let site = generate(&sample(), &options());
         let index = page(&site, "index.html");
         assert!(!index.contains("class=\"home\""), "{index}");
-        assert!(!index.contains("class=\"crumbs\""), "{index}");
+        assert!(!index.contains("class=\"sep\""), "{index}");
         assert!(
-            index.contains("<header><a class=\"site\" href=\"index.html\">Sample</a>"),
+            index.contains("<nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"site\" href=\"index.html\" aria-current=\"page\">Sample</a></nav>"),
             "{index}"
         );
     }
@@ -1360,23 +1390,24 @@ mod tests {
     }
 
     #[test]
-    fn the_views_page_crumbs_end_at_the_curated_views() {
+    fn the_views_page_trail_links_the_index_without_marking_it_current() {
         let mut opts = options();
         opts.views.insert("context".into(), plain_view());
         let site = generate(&sample(), &opts);
         assert!(
-            page(&site, "views.html").contains("<nav class=\"crumbs\" aria-label=\"Breadcrumb\"><a href=\"index.html\">Sample</a> / <span aria-current=\"page\">Curated views</span></nav>"),
+            page(&site, "views.html")
+                .contains("<a class=\"site\" href=\"index.html\">Sample</a></nav>"),
             "{}",
             page(&site, "views.html")
         );
     }
 
     #[test]
-    fn the_header_s_crate_list_is_a_labeled_navigation_region() {
+    fn the_header_s_container_row_is_a_labeled_navigation_region() {
         let site = generate(&sample(), &options());
         assert!(
             page(&site, "index.html")
-                .contains("<nav aria-label=\"Crates\"><a href=\"containers/app.html\">"),
+                .contains("<nav class=\"containers\" aria-label=\"Containers\"><a href=\"containers/app.html\">app</a><a href=\"containers/lib.html\">lib</a></nav>"),
             "{}",
             page(&site, "index.html")
         );
