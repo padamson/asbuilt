@@ -16,9 +16,13 @@ pub mod error;
 pub mod externals;
 pub mod frontend;
 pub mod model;
+pub mod svg;
+pub mod theme;
 
 pub use check::{Outcome, compare};
-pub use config::{Config, DocsConfig, External, ExternalRelation, OutputConfig, ThemeColor};
+pub use config::{
+    ColorScheme, Config, DocsConfig, External, ExternalRelation, OutputConfig, ThemeColor,
+};
 pub use docs::{DocsOptions, Site};
 pub use emit::{EmitOptions, emit, view_ids};
 pub use error::{Error, Result};

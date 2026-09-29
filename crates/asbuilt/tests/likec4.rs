@@ -354,8 +354,16 @@ fn likec4_docs_renders_every_view_and_embeds_them() {
             "{view}.svg"
         );
     }
+    // A real render is inlined, its nodes classed by element kind, so
+    // theme.css colors it for the page's scheme.
     let index = std::fs::read_to_string(ws.root().join("out/index.html")).unwrap();
-    assert!(index.contains("<img src=\"views/index.svg\""), "{index}");
+    assert!(
+        index.contains("class=\"c4\" data-view=\"index\""),
+        "{index}"
+    );
+    assert!(index.contains("class=\"node c4-k-container\""), "{index}");
+    assert!(index.contains("class=\"node c4-k-process\""), "{index}");
     let app = std::fs::read_to_string(ws.root().join("out/containers/app.html")).unwrap();
-    assert!(app.contains("<img src=\"../views/view_app.svg\""), "{app}");
+    assert!(app.contains("class=\"c4\" data-view=\"view_app\""), "{app}");
+    assert!(app.contains("class=\"cluster c4-k-container\""), "{app}");
 }

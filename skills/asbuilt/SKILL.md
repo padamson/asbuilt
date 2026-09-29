@@ -3,7 +3,7 @@ name: asbuilt
 description: Use when a repo has an `asbuilt.toml` or a `docs/architecture/model.c4`, when `asbuilt check` fails in a pre-commit hook or CI, or when asked to draw, update or explain a code base's architecture with LikeC4. Covers survey, check, externals and theme config, curated views, the documentation tree, and what the model does and does not record.
 license: MIT OR Apache-2.0
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # asbuilt
@@ -81,7 +81,9 @@ docs site or Pages, with `[docs] home_url` for a link back to the host
 and `[docs] stylesheet` for its palette. `docs` replaces only the files
 an earlier run wrote and refuses, before rendering, to overwrite tree
 files it did not write unless `--force`. `[theme]` colors each element
-kind in the rendered diagrams. Rendered SVGs and the docs tree are
+kind in the rendered diagrams, and the docs pages inline the views and
+switch them between the light and dark colors with the page, which a
+visitor can pin to System, Light or Dark. Rendered SVGs and the docs tree are
 build output: commit `model.c4` and curated `.c4` files, and ignore
 `views/` and the tree. Details, exit codes and the `asbuilt.toml` keys:
 

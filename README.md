@@ -111,7 +111,10 @@ name the documentation tree and turn its paths into links;
 `home_url`, `home_title` and `stylesheet` fit it into a host site.
 `docs` replaces only the files an earlier run wrote, and refuses to
 overwrite tree files it did not write unless `--force`. `[theme]`
-colors each element kind in the rendered diagrams. Curated views go in
+colors each element kind in the rendered diagrams, with a light and a
+dark color the docs pages switch between; a visitor can pick System,
+Light or Dark in the header, and `[docs] color_scheme` and
+`scheme_toggle` set the default or leave the control out. Curated views go in
 a sibling `.c4` file that references generated ids; `asbuilt validate`
 catches a stale one. Rendered SVGs and the docs tree are build output:
 commit `model.c4` and the curated views, and ignore the rest.

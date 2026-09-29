@@ -11,7 +11,7 @@ config from somewhere other than `<root>/asbuilt.toml`.
 | `asbuilt validate [root]` | `likec4 validate` over the model directory, which also checks curated `.c4` files beside the model | Node |
 | `asbuilt export json [root] [-o PATH]` | `likec4 export json`, normalized (the machine-specific `links[].relative` removed), to `<model dir>/model.json` by default | Node |
 | `asbuilt render [root] [-o DIR]` | `likec4 gen dot` then `dot -Tsvg`, one SVG per view with its `.dot` beside it, into `<model dir>/views` by default; see "What `render` replaces" | Node, Graphviz |
-| `asbuilt docs [root] [-o DIR] [--no-render] [--force] [--title TEXT] [--source-url URL] [--home-url URL] [--home-title TEXT] [--stylesheet URL]` | a static HTML tree (index, one page per crate with modules and relations, SVGs embedded) into `<model dir>/site` by default; renders first unless `--no-render`; exits 1 on a stale model; see "What `docs` writes" | Node, Graphviz (neither with `--no-render`) |
+| `asbuilt docs [root] [-o DIR] [--no-render] [--force] [--title TEXT] [--source-url URL] [--home-url URL] [--home-title TEXT] [--stylesheet URL] [--color-scheme SCHEME] [--no-scheme-toggle]` | a static HTML tree (index, one page per crate with modules and relations, the views inlined) into `<model dir>/site` by default; renders first unless `--no-render`; exits 1 on a stale model; see "What `docs` writes" | Node, Graphviz (neither with `--no-render`) |
 | `asbuilt --version` | the version, with the build commit when not a tagged release | |
 
 ## What `render` replaces
@@ -29,10 +29,35 @@ directory, are never touched.
 
 The tree uses these names, and `docs` treats them as its own:
 `index.html`, `views.html` (only when there are curated views),
-`style.css`, `theme.css`, `containers/<id>.html`, and `views/<view>.svg`
-copied from the render. Every page carries
+`style.css` (the page), `theme.css` (the diagrams), `theme.js` (the
+scheme control, unless `--no-scheme-toggle`), `containers/<id>.html`,
+and `views/<view>.svg` copied from the render. Every page carries
 `<meta name="generator" content="asbuilt docs">`, and every link is
-relative, so the tree serves from any directory.
+relative, so the tree serves from any directory. This layout, the
+classes and the variables below are stable within 0.x; a change to any
+of them is called out in the changelog.
+
+A view LikeC4 drew (its `.dot` carries `likec4_viewId`) is inlined as
+`<svg class="c4" data-view="<view>">`, each node and group box classed
+`c4-k-<kind>` by element kind, a node's secondary text `c4-muted`, an
+edge label's backing `c4-label-bg`. Any other SVG is an `<img>`.
+`theme.css` colors the inlined views from `[theme]`: per kind,
+`--c4-<kind>-fill`, `-stroke`, `-text` and `-muted`, for light and for
+dark; group boxes are a tint of their kind's color over `--bg`, and
+edges and labels follow `--fg`, `--bg` and `--muted` (`--c4-edge`,
+`--c4-edge-text`, `--c4-label-bg`). A host stylesheet can restate any of
+these.
+
+The pages follow the system's light or dark setting. With the scheme
+control (the default), a visitor can pick System, Light or Dark in the
+header; the choice is kept in `localStorage` under
+`asbuilt-docs-scheme` for the whole site, and applied before the first
+paint. The control ships hidden and the script reveals it, so without
+JavaScript a page follows the system setting and shows no dead control.
+`--color-scheme light` or `dark` (or `[docs] color_scheme`) sets the
+scheme before a visitor chooses, written on the root as `data-theme`,
+so it holds without the script too; `--no-scheme-toggle` (or `[docs]
+scheme_toggle = false`) leaves the control and the script out.
 
 Before writing, `docs` removes the files under those names that an
 earlier run wrote, so a renamed crate's page or a dropped view cannot

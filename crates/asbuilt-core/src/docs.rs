@@ -1,5 +1,9 @@
 //! The documentation generator: a [`Model`] and the SVGs `asbuilt render`
-//! produced, to a static HTML tree that mounts anywhere.
+//! produced, to a static HTML tree that mounts anywhere. A view LikeC4
+//! drew is inlined into its page ([`crate::svg`]) and colored by
+//! `theme.css` ([`crate::theme`]) for the system's light or dark scheme or
+//! a visitor's choice; `theme.js`, the tree's one script, carries that
+//! choice and is left out when `scheme_toggle` is off.
 //!
 //! Pure: no filesystem, no process. LikeC4 and Graphviz supply the
 //! pictures; this module supplies what only the model knows (each crate
@@ -13,8 +17,11 @@ use std::fmt::Write;
 
 use pulldown_cmark::{Event, Options, Parser, html};
 
+use crate::config::{ColorScheme, ThemeColor};
 use crate::emit::{children_of, link_encode, view_ids};
 use crate::model::{Element, ElementKind, Id, Model, Relation, dotted, sanitize_id};
+use crate::svg::{self, ViewSource};
+use crate::theme;
 
 /// What the pages need beyond the model.
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
@@ -35,9 +42,18 @@ pub struct DocsOptions {
     /// own, so a host site can restate the page tokens in its palette.
     /// Resolved like `home_url`.
     pub stylesheet: Option<String>,
-    /// File stems of the SVGs that exist under `views/` (`index`,
-    /// `view_app`, `context`).
-    pub views: BTreeSet<String>,
+    /// The rendered views under `views/`, by file stem (`index`,
+    /// `view_app`, `context`): the SVG and the `.dot` beside it. A view
+    /// with a LikeC4 `.dot` is inlined into its page; any other SVG is an
+    /// image.
+    pub views: BTreeMap<String, ViewSource>,
+    /// A color per element kind from `[theme]`, the source of `theme.css`.
+    pub theme: BTreeMap<String, ThemeColor>,
+    /// The scheme the pages show before a visitor chooses one.
+    pub color_scheme: ColorScheme,
+    /// Whether every page carries a System / Light / Dark control, and
+    /// with it `theme.js`, the tree's one script.
+    pub scheme_toggle: bool,
 }
 
 /// The `<meta name="generator">` every page carries. `asbuilt docs` looks
@@ -56,6 +72,13 @@ pub struct Site {
 
 /// The stylesheet every page links.
 pub const STYLESHEET: &str = include_str!("docs.css");
+
+/// The script behind the scheme control, linked in every page's head.
+pub const SCHEME_SCRIPT: &str = include_str!("theme.js");
+
+/// The visitor's scheme control. It ships hidden, and `theme.js` reveals
+/// it, so a page without the script shows no dead control.
+const SCHEME_CONTROL: &str = "<label class=\"scheme\" hidden>Theme <select id=\"scheme\"><option value=\"system\">System</option><option value=\"light\">Light</option><option value=\"dark\">Dark</option></select></label>";
 
 /// HTML-escape the five characters that matter in text and attributes.
 ///
@@ -146,6 +169,9 @@ struct Ctx<'a> {
     views: BTreeMap<Id, String>,
     /// Where every element is documented.
     places: BTreeMap<Id, Place>,
+    /// The element kind of each LikeC4 id, for the classes an inlined
+    /// view's nodes carry.
+    kinds: BTreeMap<String, String>,
     missing: BTreeSet<String>,
 }
 
@@ -208,28 +234,56 @@ impl Ctx<'_> {
                 )
             })
             .unwrap_or_default();
+        let scheme = self.options.color_scheme;
+        let toggle = self.options.scheme_toggle;
+        let mut root_attrs = String::new();
+        if scheme != ColorScheme::System {
+            let _ = write!(root_attrs, " data-theme=\"{}\"", scheme.as_str());
+        }
+        if toggle {
+            let _ = write!(root_attrs, " data-theme-default=\"{}\"", scheme.as_str());
+        }
+        let script = if toggle {
+            format!("<script src=\"{prefix}theme.js\"></script>\n")
+        } else {
+            String::new()
+        };
+        let control = if toggle { SCHEME_CONTROL } else { "" };
         format!(
-            "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{page} · {site}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n{host_css}</head>\n<body>\n<header>{home}<a class=\"site\" href=\"{prefix}index.html\">{site}</a><nav>{nav}</nav></header>\n<main>\n{body}</main>\n</body>\n</html>\n",
+            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{page} · {site}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header>{home}<a class=\"site\" href=\"{prefix}index.html\">{site}</a><nav>{nav}</nav>{control}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
             page = escape(page_title),
             site = escape(&self.options.title),
         )
     }
 
+    /// A view as the page shows it: inlined when LikeC4 drew it, so the
+    /// page's colors reach it, else an image; `None` when there is no SVG
+    /// for it.
+    fn view_markup(&self, depth: usize, view: &str, alt: &str) -> Option<String> {
+        let source = self.options.views.get(view)?;
+        Some(match svg::inline(source, view, alt, &self.kinds) {
+            Some(inline) => inline.trim_end().to_string(),
+            None => format!(
+                "<img src=\"{}views/{}.svg\" alt=\"{}\">",
+                up(depth),
+                escape(view),
+                escape(alt)
+            ),
+        })
+    }
+
     /// The `<figure>` for a view, or the placeholder when its SVG is
     /// missing (recorded for the report).
     fn view_figure(&mut self, depth: usize, view: &str, alt: &str) -> String {
-        if self.options.views.contains(view) {
-            format!(
-                "<figure><img src=\"{}views/{view}.svg\" alt=\"{}\"></figure>\n",
-                up(depth),
-                escape(alt)
-            )
-        } else {
-            self.missing.insert(view.to_string());
-            format!(
-                "<p class=\"missing\">No diagram for <code>{}</code>: run <code>asbuilt render</code>.</p>\n",
-                escape(view)
-            )
+        match self.view_markup(depth, view, alt) {
+            Some(markup) => format!("<figure class=\"view\">{markup}</figure>\n"),
+            None => {
+                self.missing.insert(view.to_string());
+                format!(
+                    "<p class=\"missing\">No diagram for <code>{}</code>: run <code>asbuilt render</code>.</p>\n",
+                    escape(view)
+                )
+            }
         }
     }
 
@@ -472,10 +526,10 @@ impl Ctx<'_> {
     /// Curated views: stems that are neither `index` nor generated.
     fn views_page(&mut self) -> Option<String> {
         let generated: BTreeSet<&String> = self.views.values().collect();
-        let curated: Vec<&String> = self
-            .options
+        let options = self.options;
+        let curated: Vec<&String> = options
             .views
-            .iter()
+            .keys()
             .filter(|v| v.as_str() != "index" && !generated.contains(v))
             .collect();
         if curated.is_empty() {
@@ -484,9 +538,10 @@ impl Ctx<'_> {
         let mut body = self.crumbs(0, &["Curated views"]);
         body.push_str("<h1>Curated views</h1>\n");
         for view in curated {
+            let markup = self.view_markup(0, view, view).unwrap_or_default();
             let _ = writeln!(
                 body,
-                "<figure><figcaption>{0}</figcaption><img src=\"views/{0}.svg\" alt=\"{0}\"></figure>",
+                "<figure class=\"view\"><figcaption>{}</figcaption>{markup}</figure>",
                 escape(view)
             );
         }
@@ -536,11 +591,18 @@ pub fn generate(model: &Model, options: &DocsOptions) -> Site {
         }
     }
 
+    let kinds: BTreeMap<String, String> = model
+        .elements
+        .iter()
+        .map(|e| (sanitize_id(&e.id), e.kind.keyword().to_string()))
+        .collect();
+    let kind_names: BTreeSet<String> = kinds.values().cloned().collect();
     let mut ctx = Ctx {
         model: &model,
         options,
         views,
         places,
+        kinds,
         missing: BTreeSet::new(),
     };
     let mut pages = BTreeMap::new();
@@ -560,6 +622,13 @@ pub fn generate(model: &Model, options: &DocsOptions) -> Site {
         pages.insert("views.html".to_string(), views_page);
     }
     pages.insert("style.css".to_string(), STYLESHEET.to_string());
+    pages.insert(
+        "theme.css".to_string(),
+        theme::stylesheet(&kind_names, &options.theme),
+    );
+    if options.scheme_toggle {
+        pages.insert("theme.js".to_string(), SCHEME_SCRIPT.to_string());
+    }
     Site {
         pages,
         missing_views: ctx.missing.into_iter().collect(),
@@ -650,11 +719,28 @@ mod tests {
         }
     }
 
-    fn all_views() -> BTreeSet<String> {
+    /// Views drawn by something other than LikeC4 (no `.dot`), so each
+    /// is an image; `likec4_view` makes one LikeC4 drew.
+    fn all_views() -> BTreeMap<String, ViewSource> {
         ["index", "view_app", "view_app_view_", "view_lib"]
             .iter()
-            .map(|s| s.to_string())
+            .map(|s| (s.to_string(), plain_view()))
             .collect()
+    }
+
+    fn plain_view() -> ViewSource {
+        ViewSource {
+            svg: "<svg xmlns=\"http://www.w3.org/2000/svg\"/>".into(),
+            dot: None,
+        }
+    }
+
+    /// The `index` view as LikeC4 and Graphviz write it: one node, `app`.
+    fn likec4_view() -> ViewSource {
+        ViewSource {
+            svg: "<svg width=\"10pt\" height=\"10pt\" viewBox=\"0 0 10 10\" xmlns=\"http://www.w3.org/2000/svg\">\n<g id=\"node1\" class=\"node\">\n<title>app</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n</svg>\n".into(),
+            dot: Some("digraph {\n    graph [likec4_viewId=index];\n    app [likec4_id=app];\n}\n".into()),
+        }
     }
 
     fn options() -> DocsOptions {
@@ -681,10 +767,141 @@ mod tests {
                 "containers/app.html",
                 "containers/lib.html",
                 "index.html",
-                "style.css"
+                "style.css",
+                "theme.css"
             ]
         );
         assert_eq!(page(&site, "style.css"), STYLESHEET);
+    }
+
+    #[test]
+    fn the_scheme_toggle_adds_the_script_to_the_page_set() {
+        let mut opts = options();
+        opts.scheme_toggle = true;
+        let site = generate(&sample(), &opts);
+        assert_eq!(page(&site, "theme.js"), SCHEME_SCRIPT);
+    }
+
+    #[test]
+    fn theme_css_colors_every_kind_the_model_has() {
+        let mut opts = options();
+        opts.theme = BTreeMap::from([(
+            "container".to_string(),
+            ThemeColor {
+                light: "#ce422b".into(),
+                dark: None,
+            },
+        )]);
+        let site = generate(&sample(), &opts);
+        let kinds: BTreeSet<String> = ["component", "container", "process"]
+            .iter()
+            .map(|s| s.to_string())
+            .collect();
+        assert_eq!(
+            page(&site, "theme.css"),
+            theme::stylesheet(&kinds, &opts.theme)
+        );
+    }
+
+    #[test]
+    fn a_view_likec4_drew_is_inlined_with_its_nodes_classed_by_kind() {
+        let mut opts = options();
+        opts.views.insert("index".into(), likec4_view());
+        let site = generate(&sample(), &opts);
+        let index = page(&site, "index.html");
+        assert!(
+            index.contains("<figure class=\"view\"><svg viewBox=\"0 0 10 10\" xmlns=\"http://www.w3.org/2000/svg\" class=\"c4\" data-view=\"index\" role=\"img\" aria-label=\"Overview\">"),
+            "{index}"
+        );
+        assert!(
+            index.contains("<g id=\"index-node1\" class=\"node c4-k-container\">"),
+            "{index}"
+        );
+        assert!(!index.contains("<img src=\"views/index.svg\""), "{index}");
+    }
+
+    #[test]
+    fn a_curated_view_likec4_drew_is_inlined_under_its_caption() {
+        let mut opts = options();
+        opts.views.insert("context".into(), likec4_view());
+        let site = generate(&sample(), &opts);
+        assert!(
+            page(&site, "views.html")
+                .contains("<figure class=\"view\"><figcaption>context</figcaption><svg "),
+            "{}",
+            page(&site, "views.html")
+        );
+    }
+
+    #[test]
+    fn every_page_links_the_theme_stylesheet_between_its_own_and_the_host_s() {
+        let mut opts = options();
+        opts.stylesheet = Some("site.css".into());
+        let site = generate(&sample(), &opts);
+        assert!(
+            page(&site, "containers/app.html").contains("<link rel=\"stylesheet\" href=\"../style.css\">\n<link rel=\"stylesheet\" href=\"../theme.css\">\n<link rel=\"stylesheet\" href=\"../site.css\">\n</head>"),
+            "{}",
+            page(&site, "containers/app.html")
+        );
+    }
+
+    #[test]
+    fn the_scheme_toggle_links_the_script_and_puts_a_hidden_control_in_the_header() {
+        let mut opts = options();
+        opts.scheme_toggle = true;
+        let site = generate(&sample(), &opts);
+        let app = page(&site, "containers/app.html");
+        assert!(
+            app.contains("<link rel=\"stylesheet\" href=\"../theme.css\">\n<script src=\"../theme.js\"></script>\n</head>"),
+            "{app}"
+        );
+        assert!(
+            app.contains(&format!("</nav>{SCHEME_CONTROL}</header>")),
+            "{app}"
+        );
+        assert!(
+            app.contains("<html lang=\"en\" data-theme-default=\"system\">"),
+            "{app}"
+        );
+    }
+
+    #[test]
+    fn without_the_scheme_toggle_there_is_no_script_and_no_control() {
+        let site = generate(&sample(), &options());
+        for (path, contents) in &site.pages {
+            assert!(!contents.contains("theme.js"), "{path}: {contents}");
+            assert!(!contents.contains("class=\"scheme\""), "{path}: {contents}");
+        }
+    }
+
+    #[test]
+    fn a_fixed_color_scheme_is_written_on_the_root() {
+        let mut opts = options();
+        opts.color_scheme = ColorScheme::Dark;
+        let site = generate(&sample(), &opts);
+        assert!(
+            page(&site, "index.html").contains("<html lang=\"en\" data-theme=\"dark\">"),
+            "{}",
+            page(&site, "index.html")
+        );
+        opts.scheme_toggle = true;
+        let site = generate(&sample(), &opts);
+        assert!(
+            page(&site, "index.html")
+                .contains("<html lang=\"en\" data-theme=\"dark\" data-theme-default=\"dark\">"),
+            "{}",
+            page(&site, "index.html")
+        );
+    }
+
+    #[test]
+    fn the_system_scheme_writes_no_scheme_on_the_root() {
+        let site = generate(&sample(), &options());
+        assert!(
+            page(&site, "index.html").contains("<html lang=\"en\">"),
+            "{}",
+            page(&site, "index.html")
+        );
     }
 
     #[test]
@@ -772,14 +989,14 @@ mod tests {
         model.elements.retain(is_external);
         model.relations.clear();
         let mut opts = options();
-        opts.views = BTreeSet::from(["index".to_string()]);
+        opts.views = BTreeMap::from([("index".to_string(), plain_view())]);
         let site = generate(&model, &opts);
         let index = page(&site, "index.html");
         assert!(!index.contains("<h2>Containers</h2>"), "{index}");
         assert!(index.contains("<h2>Externals</h2>"), "{index}");
         assert_eq!(
             site.pages.keys().collect::<Vec<_>>(),
-            ["index.html", "style.css"]
+            ["index.html", "style.css", "theme.css"]
         );
     }
 
@@ -882,7 +1099,7 @@ mod tests {
     #[test]
     fn a_curated_svg_gets_a_section_on_the_views_page_and_none_means_no_page() {
         let mut opts = options();
-        opts.views.insert("context".into());
+        opts.views.insert("context".into(), plain_view());
         let site = generate(&sample(), &opts);
         let views = page(&site, "views.html");
         assert!(
@@ -1085,12 +1302,12 @@ mod tests {
         let site = generate(&sample(), &opts);
         let index = page(&site, "index.html");
         assert!(
-            index.contains("<link rel=\"stylesheet\" href=\"style.css\">\n<link rel=\"stylesheet\" href=\"site.css\">\n</head>"),
+            index.contains("<link rel=\"stylesheet\" href=\"theme.css\">\n<link rel=\"stylesheet\" href=\"site.css\">\n</head>"),
             "{index}"
         );
         let app = page(&site, "containers/app.html");
         assert!(
-            app.contains("<link rel=\"stylesheet\" href=\"../style.css\">\n<link rel=\"stylesheet\" href=\"../site.css\">\n</head>"),
+            app.contains("<link rel=\"stylesheet\" href=\"../theme.css\">\n<link rel=\"stylesheet\" href=\"../site.css\">\n</head>"),
             "{app}"
         );
         let mut opts = options();
@@ -1127,6 +1344,7 @@ mod tests {
             options: &opts,
             views: BTreeMap::new(),
             places: BTreeMap::new(),
+            kinds: BTreeMap::new(),
             missing: BTreeSet::new(),
         };
         assert_eq!(

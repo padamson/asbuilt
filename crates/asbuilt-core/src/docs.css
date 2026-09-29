@@ -1,15 +1,21 @@
-/* Page tokens: light on :root, dark under the media query. A host site
-   restates them in its own palette through `[docs] stylesheet`, which is
-   linked after this file. Diagram colors are theme.css's job. */
-:root { color-scheme: light dark; --bg: #fff; --fg: #1a1a1a; --muted: #6b6b6b; --accent: #2563eb; --rule: #8884; --code: #8882; --figure-bg: transparent; }
+/* Page tokens: light on :root; dark under the system's dark scheme unless
+   a visitor chose light, and whenever a visitor chose dark (data-theme on
+   the root). A host site restates them in its own palette through
+   `[docs] stylesheet`, which is linked after this file. Diagram colors
+   are theme.css's job, and follow these tokens. */
+:root { color-scheme: light; --bg: #fff; --fg: #1a1a1a; --muted: #6b6b6b; --accent: #2563eb; --rule: #8884; --code: #8882; --figure-bg: transparent; }
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #16171a; --fg: #e6e6e6; --muted: #9a9a9a; --accent: #7aa2f7; }
+  :root:not([data-theme="light"]) { color-scheme: dark; --bg: #16171a; --fg: #e6e6e6; --muted: #9a9a9a; --accent: #7aa2f7; }
 }
+:root[data-theme="dark"] { color-scheme: dark; --bg: #16171a; --fg: #e6e6e6; --muted: #9a9a9a; --accent: #7aa2f7; }
 body { font: 16px/1.5 system-ui, sans-serif; margin: 0; max-width: 64rem; padding: 0 1rem 3rem; margin-inline: auto; background: var(--bg); color: var(--fg); }
 a { color: var(--accent); }
 header { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; align-items: baseline; padding: 0.75rem 0; border-bottom: 1px solid var(--rule); }
 header .home { color: var(--muted); }
 header .site { font-weight: 700; color: inherit; }
+header .scheme { margin-left: auto; display: inline-flex; gap: 0.4em; align-items: center; color: var(--muted); font-size: 0.85em; }
+header .scheme[hidden] { display: none; }
+header .scheme select { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--rule); border-radius: 4px; padding: 0.1em 0.3em; }
 header nav a { color: var(--muted); }
 nav.crumbs { color: var(--muted); margin: 1rem 0 0; }
 h1 { margin: 0.5rem 0 0.25rem; }

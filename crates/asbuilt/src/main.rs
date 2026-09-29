@@ -78,6 +78,12 @@ enum Command {
         /// Replace pages, stylesheets or SVGs in the output directory that no earlier run wrote.
         #[arg(long)]
         force: bool,
+        /// The scheme pages show before a visitor chooses: system, light or dark; `[docs] color_scheme` by default.
+        #[arg(long, value_name = "SCHEME")]
+        color_scheme: Option<asbuilt_core::ColorScheme>,
+        /// Leave out the visitor's System / Light / Dark control and its script.
+        #[arg(long)]
+        no_scheme_toggle: bool,
     },
     /// Render every view to an SVG (needs Node and Graphviz `dot`).
     Render {
@@ -139,6 +145,8 @@ fn main() {
             home_title,
             stylesheet,
             force,
+            color_scheme,
+            no_scheme_toggle,
         } => commands::docs(
             root.as_deref().unwrap_or(".".as_ref()),
             &commands::DocsArgs {
@@ -151,6 +159,8 @@ fn main() {
                 home_url: home_url.as_deref(),
                 home_title: home_title.as_deref(),
                 stylesheet: stylesheet.as_deref(),
+                color_scheme: *color_scheme,
+                no_scheme_toggle: *no_scheme_toggle,
             },
             &mut std::io::stderr().lock(),
         ),

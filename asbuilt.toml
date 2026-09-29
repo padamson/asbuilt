@@ -7,13 +7,18 @@ path = "docs/architecture/model.c4"
 [docs]
 title = "asbuilt"
 source_url = "https://github.com/padamson/asbuilt/blob/main/"
+# The landing site's page colors, served from the site root beside the
+# tree (crates/site/architecture.css, copied there by Trunk).
+stylesheet = "../architecture.css"
 
-# The site's palette, emitted as LikeC4 element styles: crates in the
-# rust accent, everything the tool shells out to in a neutral grey. A
-# kind without an entry keeps LikeC4's default blue.
+# The landing site's ink-and-rust palette on every element kind: white
+# module cards, rust crates and tan external tools on a light page; warm
+# brown cards and a deeper rust on the site's ink in the dark. The docs
+# pages switch between the two; the rendered SVG files use the light set.
 [theme]
-container = { light = "#f0a884", dark = "#b5673f" }
-process = { light = "#d4d4d4", dark = "#5a5a5a" }
+component = { light = "#ffffff", dark = "#3d2c22" }
+container = { light = "#ce422b", dark = "#8f2d19" }
+process = { light = "#e9d4c8", dark = "#2f2620" }
 
 [rust]
 # The landing site crates are excluded from the workspace (wasm32, big

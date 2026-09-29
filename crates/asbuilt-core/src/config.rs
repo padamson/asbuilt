@@ -178,6 +178,51 @@ pub struct DocsConfig {
     /// like `home_url`.
     #[serde(default)]
     pub stylesheet: Option<String>,
+    /// The scheme the pages show before a visitor chooses one; the
+    /// system's setting when absent.
+    #[serde(default)]
+    pub color_scheme: Option<ColorScheme>,
+    /// Whether every page carries a System / Light / Dark control, and
+    /// with it the tree's one script. On when absent.
+    #[serde(default)]
+    pub scheme_toggle: Option<bool>,
+}
+
+/// The color scheme the documentation pages show before a visitor
+/// chooses one: the system's setting, or light or dark regardless of it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ColorScheme {
+    #[default]
+    System,
+    Light,
+    Dark,
+}
+
+impl ColorScheme {
+    /// The name as `asbuilt.toml` and the `--color-scheme` flag spell it.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            ColorScheme::System => "system",
+            ColorScheme::Light => "light",
+            ColorScheme::Dark => "dark",
+        }
+    }
+}
+
+impl FromStr for ColorScheme {
+    type Err = String;
+
+    fn from_str(text: &str) -> std::result::Result<Self, String> {
+        match text {
+            "system" => Ok(ColorScheme::System),
+            "light" => Ok(ColorScheme::Light),
+            "dark" => Ok(ColorScheme::Dark),
+            other => Err(format!(
+                "color scheme \"{other}\" is not system, light or dark"
+            )),
+        }
+    }
 }
 
 /// Something outside the code that a module talks to: a spawned
@@ -457,6 +502,38 @@ technology = "stdio"
         );
         let err = theme_error("{ light = 3 }");
         assert!(err.contains("light is a integer"), "{err}");
+    }
+
+    #[test]
+    fn the_docs_color_scheme_and_toggle_parse_and_default_to_nothing() {
+        let config: Config = "[docs]\ncolor_scheme = \"dark\"\nscheme_toggle = false\n"
+            .parse()
+            .unwrap();
+        assert_eq!(config.docs.color_scheme, Some(ColorScheme::Dark));
+        assert_eq!(config.docs.scheme_toggle, Some(false));
+        let empty: Config = "[docs]\n".parse().unwrap();
+        assert_eq!(empty.docs.color_scheme, None);
+        assert_eq!(empty.docs.scheme_toggle, None);
+    }
+
+    #[test]
+    fn a_color_scheme_that_is_not_one_of_the_three_is_rejected_naming_them() {
+        let err = "[docs]\ncolor_scheme = \"sepia\"\n"
+            .parse::<Config>()
+            .unwrap_err()
+            .to_string();
+        assert!(err.contains("sepia") && err.contains("dark"), "{err}");
+    }
+
+    #[test]
+    fn a_color_scheme_reads_from_its_name_and_prints_back_the_same() {
+        for scheme in [ColorScheme::System, ColorScheme::Light, ColorScheme::Dark] {
+            assert_eq!(scheme.as_str().parse::<ColorScheme>(), Ok(scheme));
+        }
+        assert_eq!(
+            "sepia".parse::<ColorScheme>(),
+            Err("color scheme \"sepia\" is not system, light or dark".to_string())
+        );
     }
 
     #[test]

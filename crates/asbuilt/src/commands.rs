@@ -6,10 +6,11 @@
 use std::io::{self, Write};
 use std::path::{Component, Path, PathBuf};
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use asbuilt_core::docs::{DocsOptions, GENERATOR_META, generate};
-use asbuilt_core::{Config, EmitOptions, Model, Outcome, compare, emit};
+use asbuilt_core::svg::ViewSource;
+use asbuilt_core::{ColorScheme, Config, EmitOptions, Model, Outcome, compare, emit};
 use asbuilt_rust::RustFrontend;
 
 use crate::likec4::{self, LikeC4Error};
@@ -391,6 +392,22 @@ pub fn svg_stems(dir: &Path) -> BTreeSet<String> {
         .collect()
 }
 
+/// Each rendered view under `dir` by file stem: the SVG, and the `.dot`
+/// beside it when there is one.
+fn view_sources(dir: &Path) -> Result<BTreeMap<String, ViewSource>, CliError> {
+    let mut views = BTreeMap::new();
+    for stem in svg_stems(dir) {
+        let svg_path = dir.join(format!("{stem}.svg"));
+        let svg = std::fs::read_to_string(&svg_path).map_err(|source| CliError::Read {
+            path: svg_path.clone(),
+            source,
+        })?;
+        let dot = std::fs::read_to_string(dir.join(format!("{stem}.dot"))).ok();
+        views.insert(stem, ViewSource { svg, dot });
+    }
+    Ok(views)
+}
+
 /// `rel`, a `/`-separated page path, under `dir` with the platform's
 /// own separators.
 fn page_path(dir: &Path, rel: &str) -> PathBuf {
@@ -402,7 +419,13 @@ fn page_path(dir: &Path, rel: &str) -> PathBuf {
 }
 
 /// The pages and stylesheets `asbuilt docs` writes at the root of its tree.
-const DOCS_ROOT_FILES: [&str; 4] = ["index.html", "views.html", "style.css", "theme.css"];
+const DOCS_ROOT_FILES: [&str; 5] = [
+    "index.html",
+    "views.html",
+    "style.css",
+    "theme.css",
+    "theme.js",
+];
 
 /// The files in `out` that `asbuilt docs` writes, by name: the root pages
 /// and stylesheets, the container pages, and the copied SVGs, unless
@@ -466,6 +489,10 @@ pub struct DocsArgs<'a> {
     pub home_url: Option<&'a str>,
     pub home_title: Option<&'a str>,
     pub stylesheet: Option<&'a str>,
+    /// The scheme the pages show before a visitor chooses one.
+    pub color_scheme: Option<ColorScheme>,
+    /// Leave out the visitor's scheme control and the script behind it.
+    pub no_scheme_toggle: bool,
 }
 
 /// Write the documentation tree: survey, refuse to write when the
@@ -485,6 +512,8 @@ pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32
         home_url,
         home_title,
         stylesheet,
+        color_scheme,
+        no_scheme_toggle,
     } = *args;
     let config = load_config(root, config_path)?;
     let target = output_target(root, &config, None)?;
@@ -529,7 +558,12 @@ pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32
         home_url: flag_or_config(home_url, &config.docs.home_url),
         home_title: flag_or_config(home_title, &config.docs.home_title),
         stylesheet: flag_or_config(stylesheet, &config.docs.stylesheet),
-        views: svg_stems(&svg_dir),
+        views: view_sources(&svg_dir)?,
+        theme: config.theme.clone(),
+        color_scheme: color_scheme
+            .or(config.docs.color_scheme)
+            .unwrap_or_default(),
+        scheme_toggle: !no_scheme_toggle && config.docs.scheme_toggle.unwrap_or(true),
     };
     let site = generate(&model, &options);
 
@@ -549,7 +583,7 @@ pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32
             path: out_views.clone(),
             source,
         })?;
-        for stem in &options.views {
+        for stem in options.views.keys() {
             let name = format!("{stem}.svg");
             std::fs::copy(svg_dir.join(&name), out_views.join(&name)).map_err(|source| {
                 CliError::Write {

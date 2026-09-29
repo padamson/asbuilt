@@ -411,6 +411,8 @@ fn docs_no_render_writes_the_tree_with_placeholders_and_names_the_missing_views(
     for file in [
         "index.html",
         "style.css",
+        "theme.css",
+        "theme.js",
         "containers/app.html",
         "containers/e2e.html",
     ] {
@@ -424,7 +426,7 @@ fn docs_no_render_writes_the_tree_with_placeholders_and_names_the_missing_views(
             "{stderr}"
         );
     }
-    assert!(stderr.contains("wrote 4 pages to"), "{stderr}");
+    assert!(stderr.contains("wrote 6 pages to"), "{stderr}");
     let index = std::fs::read_to_string(root.join("index.html")).unwrap();
     assert!(
         index.contains("No diagram for <code>index</code>"),
@@ -586,6 +588,87 @@ fn docs_run_twice_removes_what_the_first_run_wrote_and_nothing_else() {
     );
     assert!(root.join(".gitkeep").is_file());
     assert!(root.join("containers/app.html").is_file());
+}
+
+#[test]
+fn docs_without_the_scheme_toggle_writes_no_script_and_removes_an_earlier_one() {
+    let ws = scratch_copy();
+    assert_eq!(docs_run(&ws, &["-o", "out"]).status.code(), Some(0));
+    assert!(ws.root().join("out/theme.js").is_file());
+
+    let out = docs_run(&ws, &["-o", "out", "--no-scheme-toggle"]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    assert!(!ws.root().join("out/theme.js").exists());
+    let index = std::fs::read_to_string(ws.root().join("out/index.html")).unwrap();
+    assert!(!index.contains("theme.js"), "{index}");
+    assert!(!index.contains("class=\"scheme\""), "{index}");
+}
+
+#[test]
+fn docs_color_scheme_comes_from_the_flag_over_the_config() {
+    let ws = scratch_copy();
+    let config = ws.root().join("asbuilt.toml");
+    let mut toml = std::fs::read_to_string(&config).unwrap();
+    toml.push_str("\n[docs]\ncolor_scheme = \"light\"\nscheme_toggle = false\n");
+    std::fs::write(&config, toml).unwrap();
+
+    let configured = docs_run(&ws, &["-o", "configured"]);
+    assert_eq!(
+        configured.status.code(),
+        Some(0),
+        "{}",
+        text(&configured.stderr)
+    );
+    let index = std::fs::read_to_string(ws.root().join("configured/index.html")).unwrap();
+    assert!(
+        index.contains("<html lang=\"en\" data-theme=\"light\">"),
+        "{index}"
+    );
+    assert!(!ws.root().join("configured/theme.js").exists());
+
+    let flagged = docs_run(&ws, &["-o", "flagged", "--color-scheme", "dark"]);
+    assert_eq!(flagged.status.code(), Some(0), "{}", text(&flagged.stderr));
+    let index = std::fs::read_to_string(ws.root().join("flagged/index.html")).unwrap();
+    assert!(
+        index.contains("<html lang=\"en\" data-theme=\"dark\">"),
+        "{index}"
+    );
+}
+
+#[test]
+fn docs_rejects_a_color_scheme_it_does_not_know_naming_the_three() {
+    let ws = scratch_copy();
+    let out = docs_run(&ws, &["-o", "out", "--color-scheme", "sepia"]);
+    assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
+    let stderr = text(&out.stderr);
+    assert!(
+        stderr.contains("sepia") && stderr.contains("system, light or dark"),
+        "{stderr}"
+    );
+}
+
+#[test]
+fn docs_inlines_a_view_whose_dot_likec4_wrote() {
+    let ws = scratch_copy();
+    ws.write(
+        "docs/architecture/views/index.svg",
+        "<svg viewBox=\"0 0 1 1\" xmlns=\"http://www.w3.org/2000/svg\"><g id=\"node1\" class=\"node\"><title>app</title></g></svg>",
+    );
+    ws.write(
+        "docs/architecture/views/index.dot",
+        "digraph {\n    graph [likec4_viewId=index];\n    app [likec4_id=app];\n}\n",
+    );
+
+    let out = docs_run(&ws, &["-o", "out"]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    let index = std::fs::read_to_string(ws.root().join("out/index.html")).unwrap();
+    assert!(index.contains("data-view=\"index\""), "{index}");
+    assert!(
+        index.contains("<g id=\"index-node1\" class=\"node c4-k-container\">"),
+        "{index}"
+    );
 }
 
 #[test]

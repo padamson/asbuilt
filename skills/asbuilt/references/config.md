@@ -23,15 +23,23 @@ home_url = "../"
 home_title = "playwright-rust"
 # A stylesheet linked last on every page, resolved like home_url. It can
 # restate the page tokens (--bg, --fg, --muted, --accent, --rule, --code,
-# --figure-bg) in the host's palette.
+# --figure-bg) and the diagram variables (--c4-*) in the host's palette.
 stylesheet = "../architecture.css"
+# The scheme pages show before a visitor chooses: "system" (the default),
+# "light" or "dark".
+color_scheme = "system"
+# A System / Light / Dark control in every page's header, and theme.js
+# behind it. Set false for a tree with no script.
+scheme_toggle = true
 
 [theme]
-# A color per element kind as the diagrams draw it: `container`,
-# `component`, or an external's `kind`. A kind with no entry keeps
-# LikeC4's default. The table form is accepted; the diagrams use `light`.
-container = "#f0a884"
-process = { light = "#d4d4d4", dark = "#5a5a5a" }
+# A color per element kind: `container`, `component`, or an external's
+# `kind`. A kind with no entry keeps LikeC4's default blue. `light` is
+# what `render` draws the SVG files with; the docs pages switch to
+# `dark` under a dark scheme (the light color again when absent).
+component = { light = "#ffffff", dark = "#3d2c22" }
+container = { light = "#ce422b", dark = "#8f2d19" }
+process = "#e9d4c8"
 
 [rust]
 # Crates inside the repo but outside the workspace, each with its own
