@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="asbuilt docs">
 <title>asbuilt-rust · asbuilt</title>
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -13,7 +14,7 @@
 <h1>asbuilt-rust</h1>
 <p class="meta">library crate · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust"><code>crates/asbuilt-rust</code></a></p>
 <p>Rust front-end for asbuilt.</p>
-<figure><img src="../views/view_asbuilt_rust.svg" alt="asbuilt-rust" loading="lazy"></figure>
+<figure><img src="../views/view_asbuilt_rust.svg" alt="asbuilt-rust"></figure>
 <h2>Modules</h2>
 <div class="modules"><ul>
 <li><a href="#asbuilt_rust.aggregate">aggregate</a></li>
@@ -149,8 +150,12 @@ its tests run over an in-memory map and never touch a disk.</p>
 <p>What one parsed file references, per module: every <code>use</code>, every
 path in a type, expression or pattern, every <code>impl Trait for</code>, and
 the names the module defines. Pure over a <code>syn::File</code>; the tests
-parse strings. Macro token streams are not parsed, and method calls
-on values are not paths, so neither produces a reference.</p>
+parse strings. A macro invocation's body is parsed as Rust where it
+is Rust (comma-separated expressions, statements, or items), so
+<code>fuzz_target!</code>, <code>assert_eq!</code> and both forms of <code>vec!</code> yield their
+references; a body in another syntax (Leptos <code>view!</code>, <code>macro_rules!</code>
+arms) yields only the macro's own path. Method calls on values are
+not paths and produce no reference.</p>
 <h3>Uses</h3>
 <table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
 <tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>RelationKind</td><td></td></tr>

@@ -10,13 +10,13 @@
 <title>%3</title>
 <g id="clust1" class="cluster">
 <title>cluster_asbuilt_rust</title>
-<polygon fill="#194b9e" stroke="#1b3d88" points="8,-607 8,-2170 2604,-2170 2604,-607 8,-607"/>
-<text text-anchor="start" x="16" y="-2158.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#bfdbfe" fill-opacity="0.701961">ASBUILT&#45;RUST</text>
+<polygon fill="#b5582a" stroke="#7a4d37" points="8,-607 8,-2170 2604,-2170 2604,-607 8,-607"/>
+<text text-anchor="start" x="16" y="-2158.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#310000" fill-opacity="0.701961">ASBUILT&#45;RUST</text>
 </g>
 <g id="clust2" class="cluster">
 <title>cluster_asbuilt_core</title>
-<polygon fill="#194b9e" stroke="#1b3d88" points="2191,-8 2191,-599 2607,-599 2607,-8 2191,-8"/>
-<text text-anchor="start" x="2199" y="-587.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#bfdbfe" fill-opacity="0.701961">ASBUILT&#45;CORE</text>
+<polygon fill="#b5582a" stroke="#7a4d37" points="2191,-8 2191,-599 2607,-599 2607,-8 2191,-8"/>
+<text text-anchor="start" x="2199" y="-587.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#310000" fill-opacity="0.701961">ASBUILT&#45;CORE</text>
 </g>
 <!-- aggregate -->
 <g id="node1" class="node">
@@ -127,12 +127,12 @@
 <!-- cargo -->
 <g id="node12" class="node">
 <title>cargo</title>
-<polygon fill="#3b82f6" stroke="#2563eb" stroke-width="0" points="3056,-1028 2720,-1028 2720,-848 3056,-848 3056,-1028"/>
-<text text-anchor="start" x="2818.5" y="-969" font-family="Arial" font-size="20.00" fill="#eff6ff">cargo metadata</text>
-<text text-anchor="start" x="2834.5" y="-948.6" font-family="Arial" font-size="13.00" fill="#bfdbfe">cargo subprocess</text>
-<text text-anchor="start" x="2740" y="-929" font-family="Arial" font-size="15.00" fill="#bfdbfe">Lists the workspace&#39;s packages and targets;</text>
-<text text-anchor="start" x="2768" y="-912" font-family="Arial" font-size="15.00" fill="#bfdbfe">`&#45;&#45;no&#45;deps &#45;&#45;offline`, so no lockfile is</text>
-<text text-anchor="start" x="2859" y="-895" font-family="Arial" font-size="15.00" fill="#bfdbfe">touched.</text>
+<polygon fill="#d4d4d4" stroke="#acacac" stroke-width="0" points="3056,-1028 2720,-1028 2720,-848 3056,-848 3056,-1028"/>
+<text text-anchor="start" x="2818.5" y="-969" font-family="Arial" font-size="20.00" fill="#383838">cargo metadata</text>
+<text text-anchor="start" x="2834.5" y="-948.6" font-family="Arial" font-size="13.00" fill="#494949">cargo subprocess</text>
+<text text-anchor="start" x="2740" y="-929" font-family="Arial" font-size="15.00" fill="#494949">Lists the workspace&#39;s packages and targets;</text>
+<text text-anchor="start" x="2768" y="-912" font-family="Arial" font-size="15.00" fill="#494949">`&#45;&#45;no&#45;deps &#45;&#45;offline`, so no lockfile is</text>
+<text text-anchor="start" x="2859" y="-895" font-family="Arial" font-size="15.00" fill="#494949">touched.</text>
 </g>
 <!-- aggregate&#45;&gt;resolve -->
 <g id="edge1" class="edge">

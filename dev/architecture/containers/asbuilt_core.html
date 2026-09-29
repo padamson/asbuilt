@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="asbuilt docs">
 <title>asbuilt-core · asbuilt</title>
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -13,7 +14,7 @@
 <h1>asbuilt-core</h1>
 <p class="meta">library crate · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core"><code>crates/asbuilt-core</code></a></p>
 <p>The language-agnostic core of asbuilt.</p>
-<figure><img src="../views/view_asbuilt_core.svg" alt="asbuilt-core" loading="lazy"></figure>
+<figure><img src="../views/view_asbuilt_core.svg" alt="asbuilt-core"></figure>
 <h2>Modules</h2>
 <div class="modules"><ul>
 <li><a href="#asbuilt_core.check">check</a></li>
@@ -53,7 +54,7 @@ parse.</p>
 <tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>Config</td><td></td></tr>
 <tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.externals">asbuilt_core.externals</a></td><td>Config</td><td></td></tr>
 <tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>Config</td><td></td></tr>
-<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.tests">asbuilt_core.tests</a></td><td>Config</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.tests">asbuilt_core.tests</a></td><td>Config</td><td></td></tr>
 <tr><td>names</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>Config</td><td></td></tr>
 <tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.config">asbuilt_rust.config</a></td><td>Config</td><td></td></tr>
 <tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>Config</td><td></td></tr>
@@ -71,7 +72,7 @@ produced, to a static HTML tree that mounts anywhere.</p>
 </tbody></table>
 <h3>Used by</h3>
 <table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
-<tr><td>constructs</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>DocsOptions, generate</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>DocsOptions, GENERATOR_META, generate</td><td></td></tr>
 </tbody></table>
 </section>
 <section id="asbuilt_core.emit">
@@ -80,7 +81,7 @@ produced, to a static HTML tree that mounts anywhere.</p>
 <p>The LikeC4 emitter: a [<code>Model</code>] to the text of one <code>.c4</code> file.</p>
 <h3>Uses</h3>
 <table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
-<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, ElementKind, Id, Model, RelationKind, sanitize_id, sanitize_segment</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, Id, Model, RelationKind, sanitize_id, sanitize_segment</td><td></td></tr>
 </tbody></table>
 <h3>Used by</h3>
 <table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
@@ -158,7 +159,7 @@ consumes.</p>
 <tr><td>names</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>Model</td><td></td></tr>
 <tr><td>constructs</td><td><a href="../containers/asbuilt.html#asbuilt.tests">asbuilt.tests</a></td><td>Element, ElementKind, Id, Model, Relation, RelationKind</td><td></td></tr>
 <tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>Element, ElementKind, Id, Model, Relation, dotted, sanitize_id</td><td></td></tr>
-<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>Element, ElementKind, Id, Model, RelationKind, sanitize_id, sanitize_segment</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>Element, Id, Model, RelationKind, sanitize_id, sanitize_segment</td><td></td></tr>
 <tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.externals">asbuilt_core.externals</a></td><td>Element, ElementKind, Id, Model, Relation, RelationKind, dotted, sanitize_id, sanitize_segment</td><td></td></tr>
 <tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>Model</td><td></td></tr>
 <tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>Element, ElementKind, Id, Model</td><td></td></tr>
@@ -172,7 +173,7 @@ consumes.</p>
 <p class="meta"><span class="tag">tests</span> · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/tests"><code>crates/asbuilt-core/tests</code></a></p>
 <h3>Uses</h3>
 <table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
-<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
 <tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error</td><td></td></tr>
 </tbody></table>
 </section>

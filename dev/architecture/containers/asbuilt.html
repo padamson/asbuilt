@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="asbuilt docs">
 <title>asbuilt · asbuilt</title>
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -13,7 +14,7 @@
 <h1>asbuilt</h1>
 <p class="meta">library crate · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt"><code>crates/asbuilt</code></a></p>
 <p>The library half of the <code>asbuilt</code> binary.</p>
-<figure><img src="../views/view_asbuilt.svg" alt="asbuilt" loading="lazy"></figure>
+<figure><img src="../views/view_asbuilt.svg" alt="asbuilt"></figure>
 <h2>Modules</h2>
 <div class="modules"><ul>
 <li><a href="#asbuilt.asbuilt">asbuilt</a></li>
@@ -31,7 +32,7 @@ tree, and <code>validate</code>, <code>export json</code> and <code>render</code
 the pinned LikeC4.</p>
 <h3>Uses</h3>
 <table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
-<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>EXIT_ERROR, check, commands, docs, export_json, render, survey, validate</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>DocsArgs, EXIT_ERROR, check, commands, docs, export_json, render, survey, validate</td><td></td></tr>
 </tbody></table>
 </section>
 <section id="asbuilt.commands">
@@ -46,7 +47,7 @@ out to the pinned LikeC4 (and <code>render</code> to Graphviz).</p>
 <tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.likec4">asbuilt.likec4</a></td><td>LikeC4Error, export_json, likec4, render, validate</td><td></td></tr>
 <tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.check">asbuilt_core.check</a></td><td>Outcome, compare</td><td></td></tr>
 <tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
-<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>DocsOptions, generate</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>DocsOptions, GENERATOR_META, generate</td><td></td></tr>
 <tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>emit</td><td></td></tr>
 <tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error</td><td></td></tr>
 <tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>survey</td><td></td></tr>
@@ -55,7 +56,7 @@ out to the pinned LikeC4 (and <code>render</code> to Graphviz).</p>
 </tbody></table>
 <h3>Used by</h3>
 <table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
-<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.asbuilt">asbuilt.asbuilt</a></td><td>EXIT_ERROR, check, commands, docs, export_json, render, survey, validate</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt.html#asbuilt.asbuilt">asbuilt.asbuilt</a></td><td>DocsArgs, EXIT_ERROR, check, commands, docs, export_json, render, survey, validate</td><td></td></tr>
 </tbody></table>
 </section>
 <section id="asbuilt.likec4">
@@ -72,7 +73,7 @@ what it said.</p>
 <h3>Used by</h3>
 <table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
 <tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>LikeC4Error, export_json, likec4, render, validate</td><td></td></tr>
-<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.tests">asbuilt.tests</a></td><td>LikeC4Error, export_json, likec4, render, validate</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.tests">asbuilt.tests</a></td><td>LikeC4Error, RENDER_SCRATCH, export_json, likec4, render, validate</td><td></td></tr>
 </tbody></table>
 </section>
 <section id="asbuilt.tests">
@@ -80,7 +81,7 @@ what it said.</p>
 <p class="meta"><span class="tag">tests</span> · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt/tests"><code>crates/asbuilt/tests</code></a></p>
 <h3>Uses</h3>
 <table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
-<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.likec4">asbuilt.likec4</a></td><td>LikeC4Error, export_json, likec4, render, validate</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.likec4">asbuilt.likec4</a></td><td>LikeC4Error, RENDER_SCRATCH, export_json, likec4, render, validate</td><td></td></tr>
 <tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>emit</td><td></td></tr>
 <tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, ElementKind, Id, Model, Relation, RelationKind</td><td></td></tr>
 </tbody></table>

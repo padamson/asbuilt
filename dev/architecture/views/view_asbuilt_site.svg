@@ -10,8 +10,8 @@
 <title>%3</title>
 <g id="clust1" class="cluster">
 <title>cluster_asbuilt_site</title>
-<polygon fill="#194b9e" stroke="#1b3d88" points="8,-8 8,-609 1291,-609 1291,-8 8,-8"/>
-<text text-anchor="start" x="16" y="-597.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#bfdbfe" fill-opacity="0.701961">ASBUILT&#45;SITE</text>
+<polygon fill="#b5582a" stroke="#7a4d37" points="8,-8 8,-609 1291,-609 1291,-8 8,-8"/>
+<text text-anchor="start" x="16" y="-597.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#310000" fill-opacity="0.701961">ASBUILT&#45;SITE</text>
 </g>
 <!-- app -->
 <g id="node1" class="node">
