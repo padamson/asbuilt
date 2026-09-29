@@ -75,7 +75,7 @@ enum Command {
         /// A stylesheet linked last on every page; `[docs] stylesheet` by default.
         #[arg(long, value_name = "URL")]
         stylesheet: Option<String>,
-        /// Write into a non-empty directory that no previous run wrote.
+        /// Replace pages, stylesheets or SVGs in the output directory that no earlier run wrote.
         #[arg(long)]
         force: bool,
     },

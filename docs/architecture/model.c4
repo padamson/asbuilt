@@ -228,11 +228,11 @@ its tests run over an in-memory map and never touch a disk.'
 path in a type, expression or pattern, every `impl Trait for`, and
 the names the module defines. Pure over a `syn::File`; the tests
 parse strings. A macro invocation\'s body is parsed as Rust where it
-is Rust (an expression, a comma-separated list of them, or items), so
-`fuzz_target!`, `assert_eq!` and `vec!` yield their references; a
-body in another syntax (Leptos `view!`, `macro_rules!` arms) yields
-only the macro\'s own path. Method calls on values are not paths and
-produce no reference.'
+is Rust (comma-separated expressions, statements, or items), so
+`fuzz_target!`, `assert_eq!` and both forms of `vec!` yield their
+references; a body in another syntax (Leptos `view!`, `macro_rules!`
+arms) yields only the macro\'s own path. Method calls on values are
+not paths and produce no reference.'
       metadata {
         path 'crates/asbuilt-rust/src/visit.rs'
       }
@@ -413,20 +413,20 @@ version switcher needs to know that: every other asset path is relative.'
   asbuilt.commands -[names]-> asbuilt_rust 'RustFrontend'
   asbuilt.likec4 -[uses]-> graphviz 'renders with'
   asbuilt.likec4 -[uses]-> likec4 'runs'
-  asbuilt.tests -[calls]-> asbuilt.likec4 'LikeC4Error, export_json, likec4, render, validate'
+  asbuilt.tests -[calls]-> asbuilt.likec4 'LikeC4Error, RENDER_SCRATCH, export_json, likec4, render, validate'
   asbuilt.tests -[calls]-> asbuilt_core.emit 'emit'
   asbuilt.tests -[constructs]-> asbuilt_core.model 'Element, ElementKind, Id, Model, Relation, RelationKind'
   asbuilt_core.config -[constructs]-> asbuilt_core.error 'Error, Result'
   asbuilt_core.docs -[calls]-> asbuilt_core.emit 'children_of, link_encode, view_ids'
   asbuilt_core.docs -[calls]-> asbuilt_core.model 'Element, ElementKind, Id, Model, Relation, dotted, sanitize_id'
-  asbuilt_core.emit -[calls]-> asbuilt_core.model 'Element, ElementKind, Id, Model, RelationKind, sanitize_id, sanitize_segment'
+  asbuilt_core.emit -[calls]-> asbuilt_core.model 'Element, Id, Model, RelationKind, sanitize_id, sanitize_segment'
   asbuilt_core.externals -[names]-> asbuilt_core.config 'Config'
   asbuilt_core.externals -[constructs]-> asbuilt_core.error 'Error, Result'
   asbuilt_core.externals -[constructs]-> asbuilt_core.model 'Element, ElementKind, Id, Model, Relation, RelationKind, dotted, sanitize_id, sanitize_segment'
   asbuilt_core.frontend -[names]-> asbuilt_core.config 'Config'
   asbuilt_core.frontend -[constructs]-> asbuilt_core.error 'Error, Result'
   asbuilt_core.frontend -[calls]-> asbuilt_core.externals 'apply, externals'
-  asbuilt_core.frontend -[constructs]-> asbuilt_core.model 'ElementKind, Model'
+  asbuilt_core.frontend -[constructs]-> asbuilt_core.model 'Model'
   asbuilt_core.model -[constructs]-> asbuilt_core.error 'Error, Result'
   asbuilt_core.tests -[constructs]-> asbuilt_core.config 'Config'
   asbuilt_core.tests -[names]-> asbuilt_core.error 'Error'

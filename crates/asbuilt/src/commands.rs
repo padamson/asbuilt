@@ -44,7 +44,7 @@ pub enum CliError {
     NoModel { path: PathBuf },
 
     #[error(
-        "output directory {path} is not empty and was not written by `asbuilt docs`; empty it or pass --force"
+        "output directory {path} has an index.html, stylesheet, container page or copied SVG that `asbuilt docs` did not write; move it or pass --force to replace it"
     )]
     OutputNotOurs { path: PathBuf },
 
@@ -368,15 +368,25 @@ pub fn render(
     Ok(EXIT_OK)
 }
 
+/// The files directly under `dir` with extension `ext`, sorted; empty
+/// when `dir` does not exist.
+fn files_with_extension(dir: &Path, ext: &str) -> Vec<PathBuf> {
+    let Ok(entries) = std::fs::read_dir(dir) else {
+        return Vec::new();
+    };
+    let mut files: Vec<PathBuf> = entries
+        .filter_map(|entry| entry.ok().map(|e| e.path()))
+        .filter(|p| p.is_file() && p.extension().is_some_and(|e| e == ext))
+        .collect();
+    files.sort();
+    files
+}
+
 /// File stems of the `.svg` files directly under `dir`; empty when the
 /// directory does not exist.
 pub fn svg_stems(dir: &Path) -> BTreeSet<String> {
-    let Ok(entries) = std::fs::read_dir(dir) else {
-        return BTreeSet::new();
-    };
-    entries
-        .filter_map(|entry| entry.ok().map(|e| e.path()))
-        .filter(|p| p.extension().is_some_and(|e| e == "svg"))
+    files_with_extension(dir, "svg")
+        .iter()
         .filter_map(|p| p.file_stem().map(|s| s.to_string_lossy().into_owned()))
         .collect()
 }
@@ -391,62 +401,53 @@ fn page_path(dir: &Path, rel: &str) -> PathBuf {
     path
 }
 
-/// What a previous `docs` run owns in its output directory, and what is
-/// removed before the next one writes: the pages at the root, the
-/// container pages, the stylesheets, and the copied SVGs. Anything else
-/// (a `.gitkeep`, a host's files) is left alone. `keep_views` skips the
-/// SVGs when the output directory is the model directory itself, where
-/// they are `render`'s output rather than a copy.
-fn clear_owned(out: &Path, keep_views: bool) -> Result<(), CliError> {
-    let write_err = |path: PathBuf| move |source| CliError::Write { path, source };
-    let entries = std::fs::read_dir(out).map_err(write_err(out.to_path_buf()))?;
-    for entry in entries.flatten() {
-        let path = entry.path();
-        let name = entry.file_name().to_string_lossy().into_owned();
-        let owned_file = path.is_file()
-            && (name.ends_with(".html") || matches!(name.as_str(), "style.css" | "theme.css"));
-        if owned_file {
-            std::fs::remove_file(&path).map_err(write_err(path.clone()))?;
-        } else if path.is_dir() && name == "containers" {
-            std::fs::remove_dir_all(&path).map_err(write_err(path.clone()))?;
-        } else if path.is_dir() && name == "views" && !keep_views {
-            for svg in std::fs::read_dir(&path)
-                .map_err(write_err(path.clone()))?
-                .flatten()
-            {
-                let svg = svg.path();
-                if svg.extension().is_some_and(|e| e == "svg") {
-                    std::fs::remove_file(&svg).map_err(write_err(svg.clone()))?;
-                }
-            }
-        }
+/// The pages and stylesheets `asbuilt docs` writes at the root of its tree.
+const DOCS_ROOT_FILES: [&str; 4] = ["index.html", "views.html", "style.css", "theme.css"];
+
+/// The files in `out` that `asbuilt docs` writes, by name: the root pages
+/// and stylesheets, the container pages, and the copied SVGs, unless
+/// `views_are_renders` says the tree's `views/` is the render directory
+/// itself. Anything else in `out` belongs to someone else.
+fn docs_files_in(out: &Path, views_are_renders: bool) -> Vec<PathBuf> {
+    let mut files: Vec<PathBuf> = DOCS_ROOT_FILES
+        .iter()
+        .map(|name| out.join(name))
+        .filter(|path| path.is_file())
+        .collect();
+    files.extend(files_with_extension(&out.join("containers"), "html"));
+    if !views_are_renders {
+        files.extend(files_with_extension(&out.join("views"), "svg"));
     }
-    Ok(())
+    files
 }
 
-/// Make `out` safe to write into: absent or empty is fine; a tree a
-/// previous run wrote (its `index.html` carries the generator meta) is
-/// cleared of what that run owns; anything else is refused unless
-/// `force`, which clears the same owned set and nothing more.
-fn prepare_output(out: &Path, force: bool, keep_views: bool) -> Result<(), CliError> {
-    if !out.exists() {
-        return Ok(());
-    }
-    let mut entries = std::fs::read_dir(out).map_err(|source| CliError::Read {
-        path: out.to_path_buf(),
-        source,
-    })?;
-    if entries.next().is_none() {
+/// Refuse to write where the run would replace files an earlier `docs`
+/// run did not write. A directory holding none of the tree's files (absent,
+/// empty, a `.gitkeep`, the model itself) is fine, and so is a tree whose
+/// `index.html` carries the generator meta. `force` accepts anything.
+fn check_output(out: &Path, force: bool, views_are_renders: bool) -> Result<(), CliError> {
+    if force || docs_files_in(out, views_are_renders).is_empty() {
         return Ok(());
     }
     let ours = std::fs::read_to_string(out.join("index.html"))
         .is_ok_and(|index| index.contains(GENERATOR_META));
-    if !ours && !force {
-        return Err(CliError::OutputNotOurs {
+    if ours {
+        Ok(())
+    } else {
+        Err(CliError::OutputNotOurs {
             path: out.to_path_buf(),
-        });
+        })
     }
-    clear_owned(out, keep_views)
+}
+
+/// Remove the files an earlier run wrote (see [`docs_files_in`]), so a
+/// renamed crate's page or a dropped view cannot outlive the run that
+/// replaces it. Nothing else in `out` is touched.
+fn clear_docs_files(out: &Path, views_are_renders: bool) -> Result<(), CliError> {
+    for path in docs_files_in(out, views_are_renders) {
+        std::fs::remove_file(&path).map_err(|source| CliError::Write { path, source })?;
+    }
+    Ok(())
 }
 
 /// The inputs of `asbuilt docs` beyond the root.
@@ -457,7 +458,8 @@ pub struct DocsArgs<'a> {
     pub output: Option<&'a Path>,
     /// Reuse the SVGs under `<model dir>/views` instead of rendering.
     pub no_render: bool,
-    /// Write into a non-empty directory that no previous run wrote.
+    /// Replace pages, stylesheets or SVGs in the output directory that no
+    /// earlier run wrote.
     pub force: bool,
     pub title: Option<&'a str>,
     pub source_url: Option<&'a str>,
@@ -468,8 +470,9 @@ pub struct DocsArgs<'a> {
 
 /// Write the documentation tree: survey, refuse to write when the
 /// committed model is stale (the SVGs come from it, the pages from the
-/// survey), render the views unless told not to, generate, clear what a
-/// previous run left, write, copy the SVGs beside the pages, and report
+/// survey) or when the output directory holds tree files no earlier run
+/// wrote, render the views unless told not to, generate, remove what an
+/// earlier run wrote, write, copy the SVGs beside the pages, and report
 /// the views that have none.
 pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32, CliError> {
     let DocsArgs {
@@ -500,6 +503,16 @@ pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32
         .map(Path::to_path_buf)
         .unwrap_or_else(|| target.path.clone());
     let svg_dir = model_dir.join("views");
+    let out = under_model_dir(root, &model_dir, override_path, "site");
+    let out_views = out.join("views");
+    // Compared as resolved paths, not by canonicalizing what exists:
+    // before a first render neither directory is there yet.
+    let resolve = |path: &Path| normalize_lexically(&canonicalize_partial(path));
+    let views_are_renders = resolve(&svg_dir) == resolve(&out_views);
+    // Refuse before rendering, and clear only once the render and the
+    // pages are ready, so neither a refusal nor a failed render costs the
+    // previous tree.
+    check_output(&out, force, views_are_renders)?;
     if !no_render {
         likec4::render(&model_dir, &svg_dir)?;
     }
@@ -520,10 +533,7 @@ pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32
     };
     let site = generate(&model, &options);
 
-    let out = under_model_dir(root, &model_dir, override_path, "site");
-    let out_views = out.join("views");
-    let same_dir = svg_dir.canonicalize().ok() == out_views.canonicalize().ok();
-    prepare_output(&out, force, same_dir)?;
+    clear_docs_files(&out, views_are_renders)?;
     for (rel, contents) in &site.pages {
         let path = page_path(&out, rel);
         if let Some(parent) = path.parent() {
@@ -534,7 +544,7 @@ pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32
         }
         std::fs::write(&path, contents).map_err(|source| CliError::Write { path, source })?;
     }
-    if svg_dir.is_dir() && !same_dir {
+    if svg_dir.is_dir() && !views_are_renders {
         std::fs::create_dir_all(&out_views).map_err(|source| CliError::Write {
             path: out_views.clone(),
             source,

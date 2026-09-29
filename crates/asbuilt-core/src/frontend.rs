@@ -42,20 +42,13 @@ pub fn survey(root: &Path, config: &Config, frontends: &[&dyn Frontend]) -> Resu
 
 /// Every `[theme]` key names a kind the model has.
 fn check_theme_kinds(model: &Model, config: &Config) -> Result<()> {
-    let have: std::collections::BTreeSet<String> = model
-        .elements
-        .iter()
-        .map(|e| match &e.kind {
-            crate::model::ElementKind::Container => "container".to_string(),
-            crate::model::ElementKind::Component => "component".to_string(),
-            crate::model::ElementKind::External(name) => name.clone(),
-        })
-        .collect();
+    let have: std::collections::BTreeSet<&str> =
+        model.elements.iter().map(|e| e.kind.keyword()).collect();
     for kind in config.theme.keys() {
-        if !have.contains(kind) {
+        if !have.contains(kind.as_str()) {
             return Err(Error::UnknownThemeKind {
                 kind: kind.clone(),
-                have: have.iter().cloned().collect::<Vec<_>>().join(", "),
+                have: have.iter().copied().collect::<Vec<_>>().join(", "),
             });
         }
     }

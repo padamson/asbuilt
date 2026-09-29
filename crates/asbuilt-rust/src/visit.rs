@@ -2,11 +2,11 @@
 //! path in a type, expression or pattern, every `impl Trait for`, and
 //! the names the module defines. Pure over a `syn::File`; the tests
 //! parse strings. A macro invocation's body is parsed as Rust where it
-//! is Rust (an expression, a comma-separated list of them, or items), so
-//! `fuzz_target!`, `assert_eq!` and `vec!` yield their references; a
-//! body in another syntax (Leptos `view!`, `macro_rules!` arms) yields
-//! only the macro's own path. Method calls on values are not paths and
-//! produce no reference.
+//! is Rust (comma-separated expressions, statements, or items), so
+//! `fuzz_target!`, `assert_eq!` and both forms of `vec!` yield their
+//! references; a body in another syntax (Leptos `view!`, `macro_rules!`
+//! arms) yields only the macro's own path. Method calls on values are
+//! not paths and produce no reference.
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -347,20 +347,23 @@ impl<'ast> Visit<'ast> for Collector {
     }
 
     /// The macro's path is a reference; its body is walked when it
-    /// parses as an expression, as comma-separated expressions, or as
-    /// items, in that order. `Collector` stores nothing borrowed, so the
-    /// parsed body can be walked with its own shorter lifetime.
+    /// parses as comma-separated expressions (one expression included),
+    /// as statements (`vec![x; n]`, a `let` list, items), or as a file
+    /// (items under an inner attribute), in that order. `Collector` stores
+    /// nothing borrowed, so the parsed body can be walked with its own
+    /// shorter lifetime.
     fn visit_macro(&mut self, m: &'ast syn::Macro) {
         self.visit_path(&m.path);
         if m.path.is_ident("macro_rules") {
             return;
         }
-        if let Ok(expr) = m.parse_body::<Expr>() {
-            Visit::visit_expr(self, &expr);
-        } else if let Ok(exprs) = m.parse_body_with(Punctuated::<Expr, Token![,]>::parse_terminated)
-        {
+        if let Ok(exprs) = m.parse_body_with(Punctuated::<Expr, Token![,]>::parse_terminated) {
             for expr in &exprs {
                 Visit::visit_expr(self, expr);
+            }
+        } else if let Ok(stmts) = m.parse_body_with(syn::Block::parse_within) {
+            for stmt in &stmts {
+                Visit::visit_stmt(self, stmt);
             }
         } else if let Ok(file) = m.parse_body::<syn::File>() {
             for item in &file.items {
@@ -723,6 +726,24 @@ mod tests {
             r.contains(&("Crate:t::Trait".to_string(), RelationKind::Implements)),
             "{r:?}"
         );
+    }
+
+    #[test]
+    fn a_macro_body_that_is_a_repeat_expression_yields_its_references() {
+        let r = refs("fn f() { let v = vec![crate::a::B::default(); 3]; }");
+        assert!(r.iter().any(|(p, _)| p == "Crate:a::B::default"), "{r:?}");
+    }
+
+    #[test]
+    fn a_macro_body_that_is_statements_yields_their_references() {
+        let r = refs("fn f() { m! { let x = crate::a::B::new(); x.run(); } }");
+        assert!(r.iter().any(|(p, _)| p == "Crate:a::B::new"), "{r:?}");
+    }
+
+    #[test]
+    fn a_macro_body_of_items_under_an_inner_attribute_yields_their_references() {
+        let r = refs("m! { #![allow(dead_code)] struct S(crate::a::B); }");
+        assert!(r.iter().any(|(p, _)| p == "Crate:a::B"), "{r:?}");
     }
 
     #[test]

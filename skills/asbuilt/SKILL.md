@@ -1,9 +1,9 @@
 ---
 name: asbuilt
-description: Use when a repo has an `asbuilt.toml` or a `docs/architecture/model.c4`, when `asbuilt check` fails in a pre-commit hook or CI, or when asked to draw, update or explain a code base's architecture with LikeC4. Covers survey, check, externals config, curated views, and what the model does and does not record.
+description: Use when a repo has an `asbuilt.toml` or a `docs/architecture/model.c4`, when `asbuilt check` fails in a pre-commit hook or CI, or when asked to draw, update or explain a code base's architecture with LikeC4. Covers survey, check, externals and theme config, curated views, the documentation tree, and what the model does and does not record.
 license: MIT OR Apache-2.0
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # asbuilt
@@ -60,7 +60,11 @@ saying so.
 
 ## What it does not record
 
-Macro token streams are not parsed, method calls on values are not
+A macro's body counts only when it parses as Rust (comma-separated
+expressions, statements, or items), so `assert_eq!`, both forms of
+`vec!` and `fuzz_target!` contribute their references, while a body in
+another syntax (Leptos `view!`, a `quote!` with `#var` interpolations)
+records only the macro's own path. Method calls on values are not
 resolved (`conn.send()` records nothing), and `#[cfg(test)]` items are
 skipped. A module that reaches another only through those is missing
 its edge; the fix is in asbuilt, not in a hand-written overlay.
@@ -73,7 +77,13 @@ its edge; the fix is in asbuilt, not in a hand-written overlay.
 SVGs and needs neither). `asbuilt docs` writes a static HTML tree
 (index, one page per crate with its modules and relations, the
 diagrams embedded) that serves from any directory; mount it under a
-docs site or Pages. Details, exit codes and the `asbuilt.toml` keys:
+docs site or Pages, with `[docs] home_url` for a link back to the host
+and `[docs] stylesheet` for its palette. `docs` replaces only the files
+an earlier run wrote and refuses, before rendering, to overwrite tree
+files it did not write unless `--force`. `[theme]` colors each element
+kind in the rendered diagrams. Rendered SVGs and the docs tree are
+build output: commit `model.c4` and curated `.c4` files, and ignore
+`views/` and the tree. Details, exit codes and the `asbuilt.toml` keys:
 
 - [`references/cli.md`](references/cli.md): every subcommand and its exit codes.
 - [`references/config.md`](references/config.md): `asbuilt.toml`.

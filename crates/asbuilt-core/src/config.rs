@@ -83,31 +83,49 @@ impl Default for OutputConfig {
 
 /// A kind's color: one value for every scheme, or a light and a dark
 /// one. Written as `"#3b82f6"` or `{ light = "#3b82f6", dark = "#1e40af" }`.
+/// Parsed by hand rather than as an untagged enum, whose only error is
+/// "did not match any variant": a mistake here names the key or value.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-#[serde(try_from = "ThemeColorRaw")]
+#[serde(try_from = "toml::Value")]
 pub struct ThemeColor {
     pub light: String,
     pub dark: Option<String>,
 }
 
-#[derive(Deserialize)]
-#[serde(untagged)]
-enum ThemeColorRaw {
-    One(String),
-    Pair {
-        light: String,
-        #[serde(default)]
-        dark: Option<String>,
-    },
-}
-
-impl TryFrom<ThemeColorRaw> for ThemeColor {
+impl TryFrom<toml::Value> for ThemeColor {
     type Error = String;
 
-    fn try_from(raw: ThemeColorRaw) -> std::result::Result<Self, String> {
-        let (light, dark) = match raw {
-            ThemeColorRaw::One(light) => (light, None),
-            ThemeColorRaw::Pair { light, dark } => (light, dark),
+    fn try_from(value: toml::Value) -> std::result::Result<Self, String> {
+        let (light, dark) = match value {
+            toml::Value::String(light) => (light, None),
+            toml::Value::Table(table) => {
+                if let Some(key) = table
+                    .keys()
+                    .find(|k| !matches!(k.as_str(), "light" | "dark"))
+                {
+                    return Err(format!(
+                        "unknown key \"{key}\" in a theme color (expected light and optionally dark)"
+                    ));
+                }
+                let text = |key: &str| match table.get(key) {
+                    None => Ok(None),
+                    Some(toml::Value::String(s)) => Ok(Some(s.clone())),
+                    Some(other) => Err(format!(
+                        "theme color {key} is a {}, not a \"#rrggbb\" string",
+                        other.type_str()
+                    )),
+                };
+                let light = text("light")?.ok_or_else(|| {
+                    "a theme color table needs light (dark is optional)".to_string()
+                })?;
+                (light, text("dark")?)
+            }
+            other => {
+                return Err(format!(
+                    "a theme color is \"#rrggbb\" or {{ light = \"#rrggbb\", dark = \"#rrggbb\" }}, not a {}",
+                    other.type_str()
+                ));
+            }
         };
         for value in std::iter::once(&light).chain(dark.iter()) {
             if !is_hex_color(value) {
@@ -408,6 +426,37 @@ technology = "stdio"
         let result: std::result::Result<Config, _> =
             "[theme]\ncontainer = { light = \"#3b82f6\", dark = \"nope\" }\n".parse();
         assert!(result.is_err(), "{result:?}");
+    }
+
+    fn theme_error(color: &str) -> String {
+        format!("[theme]\ncontainer = {color}\n")
+            .parse::<Config>()
+            .err()
+            .map(|e| e.to_string())
+            .unwrap_or_default()
+    }
+
+    #[test]
+    fn an_unknown_key_in_a_theme_color_is_rejected_naming_it() {
+        let err = theme_error("{ light = \"#f0a884\", drak = \"#b5673f\" }");
+        assert!(err.contains("unknown key \"drak\""), "{err}");
+    }
+
+    #[test]
+    fn a_theme_color_table_without_light_is_rejected_saying_so() {
+        let err = theme_error("{ dark = \"#b5673f\" }");
+        assert!(err.contains("needs light"), "{err}");
+    }
+
+    #[test]
+    fn a_theme_color_of_another_type_is_rejected_naming_the_type() {
+        assert!(
+            theme_error("3").contains("not a integer"),
+            "{}",
+            theme_error("3")
+        );
+        let err = theme_error("{ light = 3 }");
+        assert!(err.contains("light is a integer"), "{err}");
     }
 
     #[test]

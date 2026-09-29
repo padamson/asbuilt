@@ -10,9 +10,43 @@ config from somewhere other than `<root>/asbuilt.toml`.
 | `asbuilt check [root]` | surveys in memory and compares with the committed model | cargo |
 | `asbuilt validate [root]` | `likec4 validate` over the model directory, which also checks curated `.c4` files beside the model | Node |
 | `asbuilt export json [root] [-o PATH]` | `likec4 export json`, normalized (the machine-specific `links[].relative` removed), to `<model dir>/model.json` by default | Node |
-| `asbuilt render [root] [-o DIR]` | `likec4 gen dot` then `dot -Tsvg`, one SVG per view, into `<model dir>/views` by default | Node, Graphviz |
-| `asbuilt docs [root] [-o DIR] [--no-render] [--title TEXT] [--source-url URL]` | a static HTML tree (index, one page per crate with modules and relations, SVGs embedded) into `<model dir>/site` by default; renders first unless `--no-render`; exits 1 on a stale model | Node, Graphviz (neither with `--no-render`) |
+| `asbuilt render [root] [-o DIR]` | `likec4 gen dot` then `dot -Tsvg`, one SVG per view with its `.dot` beside it, into `<model dir>/views` by default; see "What `render` replaces" | Node, Graphviz |
+| `asbuilt docs [root] [-o DIR] [--no-render] [--force] [--title TEXT] [--source-url URL] [--home-url URL] [--home-title TEXT] [--stylesheet URL]` | a static HTML tree (index, one page per crate with modules and relations, SVGs embedded) into `<model dir>/site` by default; renders first unless `--no-render`; exits 1 on a stale model; see "What `docs` writes" | Node, Graphviz (neither with `--no-render`) |
 | `asbuilt --version` | the version, with the build commit when not a tagged release | |
+
+## What `render` replaces
+
+`render` writes into a scratch directory inside the output directory and
+touches nothing else until every view has rendered. Then it removes the
+views an earlier render made that the model no longer has (a `.dot`
+LikeC4 wrote, recognizable by its `likec4_viewId` attribute, and the
+`.svg` beside it), moves the new files in, and removes the scratch
+directory. A failed render (no Node, no `dot`) leaves the previous SVGs
+in place, and files no render made, such as a logo in a shared asset
+directory, are never touched.
+
+## What `docs` writes
+
+The tree uses these names, and `docs` treats them as its own:
+`index.html`, `views.html` (only when there are curated views),
+`style.css`, `theme.css`, `containers/<id>.html`, and `views/<view>.svg`
+copied from the render. Every page carries
+`<meta name="generator" content="asbuilt docs">`, and every link is
+relative, so the tree serves from any directory.
+
+Before writing, `docs` removes the files under those names that an
+earlier run wrote, so a renamed crate's page or a dropped view cannot
+ship; anything else in the directory (a `.gitkeep`, a host's own pages)
+stays. When one of those names exists and no earlier run wrote it (the
+`index.html` is missing or lacks the generator meta), `docs` exits 2
+before rendering, and `--force` replaces them. The files are removed
+only once the render and the pages are ready, so a failed render keeps
+the previous tree. Writing into the model directory itself is allowed:
+its `views/` is the render's own and is left alone.
+
+`--home-url` and `--stylesheet` (or `[docs] home_url` and `stylesheet`)
+resolve from each page's depth when relative, so `../` names the
+directory above the tree from every page.
 
 ## Exit codes
 
@@ -22,8 +56,9 @@ config from somewhere other than `<root>/asbuilt.toml`.
   `validate` found the model directory invalid (LikeC4's diagnostics on
   stderr).
 - `2`: anything else: no model yet, no `Cargo.toml` at the root, a
-  config typo, an externals `from` naming nothing, a bin named like a
-  module, `npx` or `dot` missing. The message names the file or id.
+  config typo, an externals `from` or a `[theme]` key naming nothing, a
+  bin named like a module, `npx` or `dot` missing, `docs` refusing tree
+  files it did not write. The message names the file, id or directory.
 
 ## The pre-commit hook and CI step
 

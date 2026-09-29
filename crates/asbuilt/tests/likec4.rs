@@ -222,12 +222,18 @@ fn likec4_export_json_is_free_of_relative_links_and_keeps_the_elements() {
 
 #[test]
 #[ignore = "needs npx (Node), network and Graphviz dot; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
-fn likec4_render_writes_one_svg_per_view_and_drops_stale_renders() {
+fn likec4_render_writes_one_svg_per_view_and_replaces_only_its_own_files() {
     let ws = consumer_copy();
     let dir = ws.root().join("docs/architecture");
     let out = dir.join("views");
+    // A view an earlier render made that the model no longer has, and a
+    // file no render made.
     ws.write("docs/architecture/views/gone.svg", "<svg/>");
-    ws.write("docs/architecture/views/gone.dot", "digraph {}");
+    ws.write(
+        "docs/architecture/views/gone.dot",
+        "digraph { graph [likec4_viewId=gone]; }",
+    );
+    ws.write("docs/architecture/views/logo.svg", "<svg id=\"logo\"/>");
 
     let svgs = likec4::render(&dir, &out).unwrap();
 
@@ -239,6 +245,8 @@ fn likec4_render_writes_one_svg_per_view_and_drops_stale_renders() {
         !out.join("gone.dot").exists(),
         "a stale dot survived render"
     );
+    assert!(out.join("logo.svg").is_file(), "render removed a stranger");
+    assert!(!out.join(likec4::RENDER_SCRATCH).exists());
 
     let names: Vec<String> = svgs
         .iter()

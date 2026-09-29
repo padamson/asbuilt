@@ -68,8 +68,9 @@ and the strongest evidence as the kind (`implements`, `constructs`,
 `calls`, `names`, `uses`). Descriptions come from the first paragraph of
 each module's `//!` doc. Paths resolve through `pub use` chains and glob
 re-exports to the defining module; an edge from a module to its own
-ancestor or descendant is never recorded. Macro bodies are not parsed and
-method calls on values are not resolved.
+ancestor or descendant is never recorded. A macro's body counts when it
+parses as Rust (`assert_eq!`, `vec!`, `fuzz_target!`); method calls on
+values are not resolved.
 
 ### Configuration
 
@@ -78,6 +79,14 @@ Optional `asbuilt.toml` at the root:
 ```toml
 [output]
 path = "docs/architecture/model.c4"
+
+[docs]
+title = "playwright-rust"
+source_url = "https://github.com/padamson/playwright-rust/blob/main/"
+home_url = "../"                                    # a link back to the hosting site on every page
+
+[theme]
+container = "#f0a884"                               # the diagrams in your palette, per element kind
 
 [rust]
 extra_manifests = ["crates/site-e2e/Cargo.toml"]   # crates in the repo but outside the workspace
@@ -98,9 +107,14 @@ technology = "stdio"
 
 A `from` that names no generated element fails the survey, so a typo is
 an error rather than a missing edge. `[docs] title` and `source_url`
-name the documentation tree and turn its paths into links. Curated views go in a sibling `.c4`
-file that references generated ids; `asbuilt validate` catches a stale
-one.
+name the documentation tree and turn its paths into links;
+`home_url`, `home_title` and `stylesheet` fit it into a host site.
+`docs` replaces only the files an earlier run wrote, and refuses to
+overwrite tree files it did not write unless `--force`. `[theme]`
+colors each element kind in the rendered diagrams. Curated views go in
+a sibling `.c4` file that references generated ids; `asbuilt validate`
+catches a stale one. Rendered SVGs and the docs tree are build output:
+commit `model.c4` and the curated views, and ignore the rest.
 
 ### Keeping it honest
 

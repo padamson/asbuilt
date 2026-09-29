@@ -2,6 +2,7 @@
 //! downstream of the model is LikeC4's; this module runs it and reports
 //! what it said.
 
+use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -212,34 +213,91 @@ pub fn svg_args(dot_file: &Path) -> (PathBuf, Vec<String>) {
     (svg, args)
 }
 
-/// Remove the `.dot` and `.svg` files directly under `dir`, so a view
-/// that no longer exists leaves no render behind. A missing directory is
-/// nothing to clear.
-pub fn clear_renders(dir: &Path) -> Result<(), LikeC4Error> {
-    let Ok(entries) = std::fs::read_dir(dir) else {
-        return Ok(());
+/// The directory a render writes into, inside its output directory so
+/// the final moves are renames on one filesystem. Never a view: views are
+/// files with an extension.
+pub const RENDER_SCRATCH: &str = ".asbuilt-render";
+
+/// The scratch directory under `out_dir`, with anything a crashed earlier
+/// run left there removed. Not created: `likec4 gen dot` creates it.
+pub fn prepare_scratch(out_dir: &Path) -> Result<PathBuf, LikeC4Error> {
+    let scratch = out_dir.join(RENDER_SCRATCH);
+    if scratch.exists() {
+        std::fs::remove_dir_all(&scratch).map_err(|source| LikeC4Error::Io {
+            path: scratch.clone(),
+            source,
+        })?;
+    }
+    Ok(scratch)
+}
+
+/// Whether `path` is a Graphviz file `likec4 gen dot` wrote: LikeC4 names
+/// the view in a `likec4_viewId` graph attribute.
+pub fn is_likec4_dot(path: &Path) -> bool {
+    std::fs::read_to_string(path).is_ok_and(|text| text.contains("likec4_viewId="))
+}
+
+/// Move a finished render from `scratch` into `out_dir`. First the views
+/// an earlier render made and this one did not are removed: a `.dot`
+/// LikeC4 wrote and the `.svg` beside it. Then each new `.dot` and `.svg`
+/// is moved in over any old copy, and `scratch` is removed. Files a
+/// render did not make are never touched. Returns the SVGs now in
+/// `out_dir`, sorted.
+pub fn replace_renders(scratch: &Path, out_dir: &Path) -> Result<Vec<PathBuf>, LikeC4Error> {
+    let io = |path: &Path| {
+        let path = path.to_path_buf();
+        move |source| LikeC4Error::Io { path, source }
     };
-    for path in entries.flatten().map(|e| e.path()) {
-        if path.extension().is_some_and(|e| e == "dot" || e == "svg") {
-            std::fs::remove_file(&path).map_err(|source| LikeC4Error::Io { path, source })?;
+    let stem = |path: &Path| path.file_stem().map(|s| s.to_string_lossy().into_owned());
+    let fresh: BTreeSet<String> = dot_files_in(scratch)?
+        .iter()
+        .filter_map(|p| stem(p))
+        .collect();
+    for old in dot_files_in(out_dir)? {
+        let made_earlier = stem(&old).is_some_and(|name| !fresh.contains(&name));
+        if made_earlier && is_likec4_dot(&old) {
+            std::fs::remove_file(&old).map_err(io(&old))?;
+            let svg = old.with_extension("svg");
+            if svg.is_file() {
+                std::fs::remove_file(&svg).map_err(io(&svg))?;
+            }
         }
     }
-    Ok(())
+    let mut svgs = Vec::new();
+    for name in &fresh {
+        for ext in ["dot", "svg"] {
+            let from = scratch.join(format!("{name}.{ext}"));
+            std::fs::rename(&from, out_dir.join(format!("{name}.{ext}"))).map_err(io(&from))?;
+        }
+        svgs.push(out_dir.join(format!("{name}.svg")));
+    }
+    std::fs::remove_dir_all(scratch).map_err(io(scratch))?;
+    Ok(svgs)
 }
 
 /// Render every view of the model under `dir` to an SVG in `out_dir`:
-/// clear the previous renders, `likec4 gen dot`, then Graphviz `dot
-/// -Tsvg` per file. Returns the SVGs written, sorted. The `.dot` files
-/// stay beside them.
+/// `likec4 gen dot` and Graphviz `dot -Tsvg` into a scratch directory,
+/// then, only once every view rendered, [`replace_renders`]. A failed
+/// render leaves `out_dir` as it was, the previous SVGs included, and
+/// removes a directory it created. Returns the SVGs written, sorted. The
+/// `.dot` files stay beside them.
 pub fn render(dir: &Path, out_dir: &Path) -> Result<Vec<PathBuf>, LikeC4Error> {
-    clear_renders(out_dir)?;
-    let mut svgs = Vec::new();
-    for dot_file in gen_dot(dir, out_dir)? {
-        let (svg, args) = svg_args(&dot_file);
-        run_program("dot", &args)?;
-        svgs.push(svg);
+    let existed = out_dir.exists();
+    let scratch = prepare_scratch(out_dir)?;
+    let rendered = gen_dot(dir, &scratch).and_then(|dot_files| {
+        dot_files
+            .iter()
+            .try_for_each(|dot_file| run_program("dot", &svg_args(dot_file).1).map(|_| ()))
+    });
+    if let Err(err) = rendered {
+        // The primary error is the one to report; cleanup is best effort.
+        let _ = std::fs::remove_dir_all(&scratch);
+        if !existed {
+            let _ = std::fs::remove_dir(out_dir);
+        }
+        return Err(err);
     }
-    Ok(svgs)
+    replace_renders(&scratch, out_dir)
 }
 
 #[cfg(test)]
@@ -325,27 +383,89 @@ mod tests {
         );
     }
 
-    #[test]
-    fn clear_renders_drops_dot_and_svg_files_and_leaves_the_rest() {
-        let dir = tempfile::tempdir().unwrap();
-        for name in ["old.dot", "old.svg", "keep.txt", ".gitkeep"] {
-            std::fs::write(dir.path().join(name), "").unwrap();
-        }
-        std::fs::create_dir(dir.path().join("sub")).unwrap();
-
-        clear_renders(dir.path()).unwrap();
-
-        assert!(!dir.path().join("old.dot").exists());
-        assert!(!dir.path().join("old.svg").exists());
-        assert!(dir.path().join("keep.txt").exists());
-        assert!(dir.path().join(".gitkeep").exists());
-        assert!(dir.path().join("sub").is_dir());
+    /// A render as `dot -Tsvg` leaves it: a LikeC4 `.dot` and its `.svg`.
+    fn write_view(dir: &Path, name: &str, svg: &str) {
+        std::fs::create_dir_all(dir).unwrap();
+        std::fs::write(
+            dir.join(format!("{name}.dot")),
+            format!("digraph {{ graph [likec4_viewId={name}]; }}"),
+        )
+        .unwrap();
+        std::fs::write(dir.join(format!("{name}.svg")), svg).unwrap();
     }
 
     #[test]
-    fn clear_renders_on_a_missing_directory_is_nothing_to_do() {
-        let dir = tempfile::tempdir().unwrap();
-        assert!(clear_renders(&dir.path().join("nowhere")).is_ok());
+    fn replace_renders_moves_the_new_views_in_over_the_old_and_returns_them() {
+        let out = tempfile::tempdir().unwrap();
+        let scratch = out.path().join(RENDER_SCRATCH);
+        write_view(out.path(), "index", "old");
+        write_view(&scratch, "index", "new");
+        write_view(&scratch, "view_app", "new");
+
+        let svgs = replace_renders(&scratch, out.path()).unwrap();
+
+        assert_eq!(
+            svgs,
+            [
+                out.path().join("index.svg"),
+                out.path().join("view_app.svg")
+            ]
+        );
+        assert_eq!(
+            std::fs::read_to_string(out.path().join("index.svg")).unwrap(),
+            "new"
+        );
+        assert!(out.path().join("view_app.dot").is_file());
+        assert!(!scratch.exists());
+    }
+
+    #[test]
+    fn replace_renders_drops_a_view_an_earlier_render_made_and_this_one_did_not() {
+        let out = tempfile::tempdir().unwrap();
+        let scratch = out.path().join(RENDER_SCRATCH);
+        write_view(out.path(), "gone", "old");
+        write_view(&scratch, "index", "new");
+
+        replace_renders(&scratch, out.path()).unwrap();
+
+        assert!(!out.path().join("gone.dot").exists());
+        assert!(!out.path().join("gone.svg").exists());
+    }
+
+    #[test]
+    fn replace_renders_keeps_files_no_render_made() {
+        let out = tempfile::tempdir().unwrap();
+        let scratch = out.path().join(RENDER_SCRATCH);
+        std::fs::write(out.path().join("logo.svg"), "<svg/>").unwrap();
+        std::fs::write(out.path().join("notes.dot"), "digraph {}").unwrap();
+        std::fs::write(out.path().join("notes.svg"), "<svg/>").unwrap();
+        write_view(&scratch, "index", "new");
+
+        replace_renders(&scratch, out.path()).unwrap();
+
+        for kept in ["logo.svg", "notes.dot", "notes.svg"] {
+            assert!(out.path().join(kept).is_file(), "{kept} was removed");
+        }
+    }
+
+    #[test]
+    fn prepare_scratch_removes_what_a_crashed_run_left() {
+        let out = tempfile::tempdir().unwrap();
+        write_view(&out.path().join(RENDER_SCRATCH), "stale", "old");
+
+        let scratch = prepare_scratch(out.path()).unwrap();
+
+        assert_eq!(scratch, out.path().join(RENDER_SCRATCH));
+        assert!(!scratch.exists());
+    }
+
+    #[test]
+    fn prepare_scratch_without_a_leftover_is_nothing_to_remove() {
+        let out = tempfile::tempdir().unwrap();
+        assert_eq!(
+            prepare_scratch(out.path()).unwrap(),
+            out.path().join(RENDER_SCRATCH)
+        );
     }
 
     #[test]

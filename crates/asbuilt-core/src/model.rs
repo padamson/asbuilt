@@ -49,6 +49,18 @@ pub enum ElementKind {
     External(String),
 }
 
+impl ElementKind {
+    /// The element kind declared in the LikeC4 specification: `container`,
+    /// `component`, or an external's own kind name.
+    pub fn keyword(&self) -> &str {
+        match self {
+            ElementKind::Container => "container",
+            ElementKind::Component => "component",
+            ElementKind::External(name) => name,
+        }
+    }
+}
+
 /// Evidence for a relation, strongest first. Aggregation keeps the
 /// minimum, so the declared order is the precedence and must not be
 /// reordered.

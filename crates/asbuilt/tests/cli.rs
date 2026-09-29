@@ -327,6 +327,34 @@ fn render_without_npx_exits_two_and_writes_no_svg() {
     assert!(!ws.root().join("docs/architecture/views/index.svg").exists());
 }
 
+#[test]
+fn render_without_npx_leaves_the_previous_render_as_it_was() {
+    let ws = scratch_copy();
+    let dot_text = "digraph { graph [likec4_viewId=index]; }";
+    let dot = ws.write("docs/architecture/views/index.dot", dot_text);
+    let svg = ws.write("docs/architecture/views/index.svg", "<svg/>");
+
+    let out = without_path(&["render", ws.root().to_str().unwrap()]);
+
+    assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
+    assert!(text(&out.stderr).contains("npx"), "{}", text(&out.stderr));
+    assert_eq!(std::fs::read_to_string(&svg).unwrap(), "<svg/>");
+    assert_eq!(std::fs::read_to_string(&dot).unwrap(), dot_text);
+    assert!(
+        !ws.root()
+            .join("docs/architecture/views/.asbuilt-render")
+            .exists()
+    );
+}
+
+#[test]
+fn render_without_npx_into_a_new_directory_leaves_no_directory() {
+    let ws = scratch_copy();
+    let out = without_path(&["render", ws.root().to_str().unwrap(), "-o", "fresh"]);
+    assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
+    assert!(!ws.root().join("fresh").exists());
+}
+
 // `asbuilt docs` without Node: `--no-render` reuses whatever SVGs exist
 // and the pages are proven here; the `likec4_docs_*` test covers the
 // rendering path.
@@ -432,16 +460,12 @@ fn docs_no_render_copies_the_svgs_render_left_and_not_the_dot_files() {
 }
 
 #[test]
-fn docs_into_the_model_directory_needs_force_and_keeps_an_existing_svg_intact() {
+fn docs_into_the_model_directory_writes_beside_the_model_and_keeps_its_renders() {
     let ws = scratch_copy();
     let svg = ws.write("docs/architecture/views/index.svg", "<svg/>");
 
-    let refused = docs_run(&ws, &["-o", "docs/architecture"]);
-    assert_eq!(refused.status.code(), Some(2), "{}", text(&refused.stderr));
-    assert!(!ws.root().join("docs/architecture/index.html").exists());
-
     for _ in 0..2 {
-        let out = docs_run(&ws, &["-o", "docs/architecture", "--force"]);
+        let out = docs_run(&ws, &["-o", "docs/architecture"]);
         assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
         assert_eq!(std::fs::read_to_string(&svg).unwrap(), "<svg/>");
         assert!(ws.root().join("docs/architecture/index.html").is_file());
@@ -450,49 +474,103 @@ fn docs_into_the_model_directory_needs_force_and_keeps_an_existing_svg_intact() 
 }
 
 #[test]
-fn docs_refuses_a_foreign_non_empty_directory_without_force_and_names_the_flag() {
+fn docs_writes_beside_files_it_does_not_own_without_force() {
     let ws = scratch_copy();
+    ws.write("out/.gitkeep", "");
     ws.write("out/notes.txt", "mine");
+
+    let out = docs_run(&ws, &["-o", "out"]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    assert!(ws.root().join("out/index.html").is_file());
+    assert!(ws.root().join("out/.gitkeep").is_file());
+    assert_eq!(
+        std::fs::read_to_string(ws.root().join("out/notes.txt")).unwrap(),
+        "mine"
+    );
+}
+
+#[test]
+fn docs_refuses_to_replace_an_index_it_did_not_write_and_names_the_flag() {
+    let ws = scratch_copy();
+    ws.write("out/index.html", "<html>host</html>");
 
     let out = docs_run(&ws, &["-o", "out"]);
 
     assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
     let stderr = text(&out.stderr);
     assert!(stderr.contains("--force"), "{stderr}");
-    assert!(stderr.contains("not written by `asbuilt docs`"), "{stderr}");
-    assert!(!ws.root().join("out/index.html").exists());
+    assert!(stderr.contains("did not write"), "{stderr}");
     assert_eq!(
-        std::fs::read_to_string(ws.root().join("out/notes.txt")).unwrap(),
-        "mine"
+        std::fs::read_to_string(ws.root().join("out/index.html")).unwrap(),
+        "<html>host</html>"
     );
 }
 
 #[test]
-fn docs_force_writes_beside_a_stranger_file_and_keeps_it() {
+fn docs_refuses_before_rendering() {
     let ws = scratch_copy();
-    ws.write("out/notes.txt", "mine");
-    ws.write("out/.gitkeep", "");
+    ws.write("out/index.html", "<html>host</html>");
+    let bin = fake_npx();
+
+    let out = asbuilt()
+        .args(["docs", ws.root().to_str().unwrap(), "-o", "out"])
+        .env("PATH", path_with(bin.root()))
+        .output()
+        .unwrap();
+
+    assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
+    let stderr = text(&out.stderr);
+    assert!(stderr.contains("--force"), "{stderr}");
+    assert!(!stderr.contains("npx"), "{stderr}");
+}
+
+#[test]
+fn docs_with_a_failing_render_keeps_the_previous_tree() {
+    let ws = scratch_copy();
+    assert_eq!(docs_run(&ws, &["-o", "out"]).status.code(), Some(0));
+    let bin = fake_npx();
+
+    let out = asbuilt()
+        .args(["docs", ws.root().to_str().unwrap(), "-o", "out"])
+        .env("PATH", path_with(bin.root()))
+        .output()
+        .unwrap();
+
+    assert_eq!(out.status.code(), Some(2), "{}", text(&out.stderr));
+    assert!(ws.root().join("out/index.html").is_file());
+    assert!(ws.root().join("out/containers/app.html").is_file());
+}
+
+#[test]
+fn docs_force_replaces_the_tree_s_own_file_names_and_keeps_the_rest() {
+    let ws = scratch_copy();
+    ws.write("out/index.html", "<html>host</html>");
+    ws.write("out/404.html", "not found");
+    ws.write("out/containers/old.html", "host");
 
     let out = docs_run(&ws, &["-o", "out", "--force"]);
 
     assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
-    assert!(ws.root().join("out/index.html").is_file());
+    let index = std::fs::read_to_string(ws.root().join("out/index.html")).unwrap();
+    assert!(index.contains("content=\"asbuilt docs\""), "{index}");
     assert_eq!(
-        std::fs::read_to_string(ws.root().join("out/notes.txt")).unwrap(),
-        "mine"
+        std::fs::read_to_string(ws.root().join("out/404.html")).unwrap(),
+        "not found"
     );
-    assert!(ws.root().join("out/.gitkeep").is_file());
+    assert!(!ws.root().join("out/containers/old.html").exists());
 }
 
 #[test]
-fn docs_run_twice_removes_what_the_first_run_owned_and_nothing_else() {
+fn docs_run_twice_removes_what_the_first_run_wrote_and_nothing_else() {
     let ws = scratch_copy();
     assert_eq!(docs_run(&ws, &["-o", "out"]).status.code(), Some(0));
     // What a renamed crate and a dropped curated view would leave behind,
-    // plus a host's own file.
+    // and a host's own page and placeholder beside the tree.
     ws.write("out/containers/old.html", "stale");
-    ws.write("out/stale.html", "stale");
+    ws.write("out/views.html", "stale");
     ws.write("out/views/stale.svg", "<svg/>");
+    ws.write("out/extra.html", "host");
     ws.write("out/.gitkeep", "");
 
     let out = docs_run(&ws, &["-o", "out"]);
@@ -500,8 +578,12 @@ fn docs_run_twice_removes_what_the_first_run_owned_and_nothing_else() {
     assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
     let root = ws.root().join("out");
     assert!(!root.join("containers/old.html").exists());
-    assert!(!root.join("stale.html").exists());
+    assert!(!root.join("views.html").exists());
     assert!(!root.join("views/stale.svg").exists());
+    assert_eq!(
+        std::fs::read_to_string(root.join("extra.html")).unwrap(),
+        "host"
+    );
     assert!(root.join(".gitkeep").is_file());
     assert!(root.join("containers/app.html").is_file());
 }

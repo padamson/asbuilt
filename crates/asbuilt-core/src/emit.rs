@@ -9,7 +9,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write;
 
-use crate::model::{Element, ElementKind, Id, Model, RelationKind, sanitize_id, sanitize_segment};
+use crate::model::{Element, Id, Model, RelationKind, sanitize_id, sanitize_segment};
 
 /// The first line of every generated file. No version in it: a version
 /// would turn every asbuilt release into drift in every consumer.
@@ -88,14 +88,6 @@ pub fn link_encode(path: &str) -> String {
     out
 }
 
-fn kind_keyword(kind: &ElementKind) -> &str {
-    match kind {
-        ElementKind::Container => "container",
-        ElementKind::Component => "component",
-        ElementKind::External(name) => name,
-    }
-}
-
 /// The `.c4` text for `model`. The model is normalized on a copy first,
 /// so the caller's element order does not matter.
 pub fn emit(model: &Model, options: &EmitOptions) -> String {
@@ -123,7 +115,7 @@ fn emit_specification(out: &mut String, model: &Model, theme: &BTreeMap<String, 
     let mut kinds: BTreeSet<&str> = BTreeSet::new();
     let mut tags: BTreeSet<&str> = BTreeSet::new();
     for element in &model.elements {
-        kinds.insert(kind_keyword(&element.kind));
+        kinds.insert(element.kind.keyword());
         tags.extend(element.tags.iter().map(String::as_str));
     }
     out.push_str("specification {\n");
@@ -231,7 +223,7 @@ fn emit_element(
     write!(
         out,
         "{indent}{name} = {} {}",
-        kind_keyword(&element.kind),
+        element.kind.keyword(),
         quote(&element.title)
     )
     .unwrap();
@@ -337,7 +329,7 @@ fn emit_views(out: &mut String, model: &Model) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model::Relation;
+    use crate::model::{ElementKind, Relation};
 
     fn id(s: &str) -> Id {
         s.split('.').map(str::to_string).collect()

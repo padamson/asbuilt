@@ -1117,24 +1117,22 @@ mod tests {
     }
 
     #[test]
-    fn a_missing_view_name_is_escaped_in_the_placeholder() {
-        let mut model = sample();
-        model.elements.push(element("a<b", ElementKind::Container));
-        model
-            .elements
-            .push(element("a<b.child", ElementKind::Component));
-        let site = generate(&model, &options());
-        let page = site
-            .pages
-            .iter()
-            .find(|(k, _)| k.starts_with("containers/a"))
-            .map(|(_, v)| v.clone())
-            .unwrap();
-        assert!(
-            page.contains("No diagram for <code>view_a_b</code>") || !page.contains("<code>a<b"),
-            "{page}"
+    fn a_missing_view_placeholder_escapes_the_view_name() {
+        // Generated view names are sanitized to identifier characters, so
+        // only a direct call can hand the placeholder a name to escape.
+        let model = sample();
+        let opts = options();
+        let mut ctx = Ctx {
+            model: &model,
+            options: &opts,
+            views: BTreeMap::new(),
+            places: BTreeMap::new(),
+            missing: BTreeSet::new(),
+        };
+        assert_eq!(
+            ctx.view_figure(0, "a<b", "alt"),
+            "<p class=\"missing\">No diagram for <code>a&lt;b</code>: run <code>asbuilt render</code>.</p>\n"
         );
-        assert!(!page.contains("<code>a<"), "{page}");
     }
 
     #[test]
