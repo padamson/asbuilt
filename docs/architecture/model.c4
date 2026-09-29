@@ -217,8 +217,12 @@ its tests run over an in-memory map and never touch a disk.'
       description 'What one parsed file references, per module: every `use`, every
 path in a type, expression or pattern, every `impl Trait for`, and
 the names the module defines. Pure over a `syn::File`; the tests
-parse strings. Macro token streams are not parsed, and method calls
-on values are not paths, so neither produces a reference.'
+parse strings. A macro invocation\'s body is parsed as Rust where it
+is Rust (an expression, a comma-separated list of them, or items), so
+`fuzz_target!`, `assert_eq!` and `vec!` yield their references; a
+body in another syntax (Leptos `view!`, `macro_rules!` arms) yields
+only the macro\'s own path. Method calls on values are not paths and
+produce no reference.'
       metadata {
         path 'crates/asbuilt-rust/src/visit.rs'
       }
@@ -414,7 +418,7 @@ version switcher needs to know that: every other asset path is relative.'
   asbuilt_core.frontend -[calls]-> asbuilt_core.externals 'apply, externals'
   asbuilt_core.frontend -[constructs]-> asbuilt_core.model 'Model'
   asbuilt_core.model -[constructs]-> asbuilt_core.error 'Error, Result'
-  asbuilt_core.tests -[calls]-> asbuilt_core.config 'Config'
+  asbuilt_core.tests -[constructs]-> asbuilt_core.config 'Config'
   asbuilt_core.tests -[names]-> asbuilt_core.error 'Error'
   asbuilt_rust -[names]-> asbuilt_core.config 'Config'
   asbuilt_rust -[constructs]-> asbuilt_core.error 'Error, Result'

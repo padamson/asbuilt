@@ -41,6 +41,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `[docs] home_url` and `home_title` (flags `--home-url`, `--home-title`): a link back to the site that hosts the tree, as the first crumb and a header link on every page; relative values resolve from each page's depth so they hold under a versioned snapshot
 - `[docs] stylesheet` (flag `--stylesheet`): a stylesheet linked last on every page, so a host site can restate the page tokens (`--bg`, `--fg`, `--muted`, `--accent`, `--rule`, `--code`, `--figure-bg`, light and dark defaults) in its own palette
 - Every page carries `<meta name="generator" content="asbuilt docs">`
+- The Rust front-end walks a macro invocation's body where it is Rust (an expression, a comma-separated list of them, or items), so `fuzz_target!`, `assert_eq!`, `vec!` and friends yield their references; a body in another syntax (Leptos `view!`, `macro_rules!` arms) still yields only the macro's path. A consumer's model gains the edges that were hidden inside macros
 
 ### Changed
 - `asbuilt docs` owns its output directory: a tree a previous run wrote is cleared of what that run owns (root pages, `containers/`, the stylesheets, copied SVGs) before writing, so a renamed crate's page cannot ship; a non-empty directory nobody's run wrote is refused unless `--force`, and even then only the owned set is removed

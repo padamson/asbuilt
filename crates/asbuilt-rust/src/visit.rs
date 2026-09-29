@@ -1,8 +1,12 @@
 //! What one parsed file references, per module: every `use`, every
 //! path in a type, expression or pattern, every `impl Trait for`, and
 //! the names the module defines. Pure over a `syn::File`; the tests
-//! parse strings. Macro token streams are not parsed, and method calls
-//! on values are not paths, so neither produces a reference.
+//! parse strings. A macro invocation's body is parsed as Rust where it
+//! is Rust (an expression, a comma-separated list of them, or items), so
+//! `fuzz_target!`, `assert_eq!` and `vec!` yield their references; a
+//! body in another syntax (Leptos `view!`, `macro_rules!` arms) yields
+//! only the macro's own path. Method calls on values are not paths and
+//! produce no reference.
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -342,6 +346,29 @@ impl<'ast> Visit<'ast> for Collector {
         visit::visit_path(self, p);
     }
 
+    /// The macro's path is a reference; its body is walked when it
+    /// parses as an expression, as comma-separated expressions, or as
+    /// items, in that order. `Collector` stores nothing borrowed, so the
+    /// parsed body can be walked with its own shorter lifetime.
+    fn visit_macro(&mut self, m: &'ast syn::Macro) {
+        self.visit_path(&m.path);
+        if m.path.is_ident("macro_rules") {
+            return;
+        }
+        if let Ok(expr) = m.parse_body::<Expr>() {
+            Visit::visit_expr(self, &expr);
+        } else if let Ok(exprs) = m.parse_body_with(Punctuated::<Expr, Token![,]>::parse_terminated)
+        {
+            for expr in &exprs {
+                Visit::visit_expr(self, expr);
+            }
+        } else if let Ok(file) = m.parse_body::<syn::File>() {
+            for item in &file.items {
+                Visit::visit_item(self, item);
+            }
+        }
+    }
+
     /// `#[derive(a::B)]` names each listed path; any other attribute
     /// names its own path (an attribute macro from another crate is a
     /// reference; `cfg`, `doc` and friends are single segments the
@@ -661,13 +688,49 @@ mod tests {
     }
 
     #[test]
-    fn a_derive_path_is_a_reference_and_macro_arguments_are_not_parsed() {
-        let r = refs("#[derive(my_macros::Thing)] struct S;\nfn f() { foo!(crate::a::B); }");
+    fn a_derive_path_is_a_reference() {
+        let r = refs("#[derive(my_macros::Thing)] struct S;");
         assert!(
             r.contains(&("Bare:my_macros::Thing".to_string(), RelationKind::NamesType)),
             "{r:?}"
         );
-        assert!(!r.iter().any(|(p, _)| p == "Crate:a::B"), "{r:?}");
+    }
+
+    #[test]
+    fn a_macro_body_that_is_an_expression_yields_its_references_and_the_macro_path() {
+        let r = refs("fn f() { fuzz_target!(|data: &[u8]| { crate::a::B::new(data); }); }");
+        assert!(
+            r.contains(&("Bare:fuzz_target".to_string(), RelationKind::NamesType)),
+            "{r:?}"
+        );
+        assert!(
+            r.contains(&("Crate:a::B::new".to_string(), RelationKind::Constructs)),
+            "{r:?}"
+        );
+    }
+
+    #[test]
+    fn a_macro_body_that_is_a_comma_list_yields_each_argument_s_references() {
+        let r = refs("fn f() { assert_eq!(crate::a::B::X, other::Y, \"{}\", z); }");
+        assert!(r.iter().any(|(p, _)| p == "Crate:a::B::X"), "{r:?}");
+        assert!(r.iter().any(|(p, _)| p == "Bare:other::Y"), "{r:?}");
+    }
+
+    #[test]
+    fn a_macro_body_that_is_items_yields_their_references() {
+        let r = refs("m! { impl crate::t::Trait for S {} }");
+        assert!(
+            r.contains(&("Crate:t::Trait".to_string(), RelationKind::Implements)),
+            "{r:?}"
+        );
+    }
+
+    #[test]
+    fn a_macro_body_in_another_syntax_yields_only_the_macro_path() {
+        let r = refs("fn f() { view! { <div class=\"x\">{crate::a::B}</div> }; }");
+        assert_eq!(r, [("Bare:view".to_string(), RelationKind::NamesType)]);
+        let r = refs("macro_rules! m { ($x:expr) => { crate::a::B::new($x) }; }");
+        assert!(!r.iter().any(|(p, _)| p == "Crate:a::B::new"), "{r:?}");
     }
 
     #[test]
