@@ -3,8 +3,8 @@
 //! under the snapshot's base path. The assertions are about the tree
 //! being complete, its views inlined and resolving under the real base
 //! path (which a wrong `-o` or a missing `render` would break), and its
-//! colors following the system's scheme or the visitor's choice, with
-//! and without JavaScript.
+//! colors following the system's scheme or the visitor's choice, and
+//! with the script blocked.
 //!
 //! Driven by the same `SNAPSHOT_DIST`, `SNAPSHOT_BASE` and
 //! `SNAPSHOT_VERSION` variables as the snapshot smoke test; a missing
@@ -16,10 +16,7 @@ use std::sync::{Arc, Mutex};
 
 use axum::Router;
 use playwright_rs::expect;
-use playwright_rs::protocol::{
-    Browser, BrowserContext, BrowserContextOptions, ColorScheme, EmulateMediaOptions, Page,
-    Playwright,
-};
+use playwright_rs::protocol::{Browser, ColorScheme, EmulateMediaOptions, Page, Playwright};
 use tower_http::services::ServeDir;
 
 /// The page background and a crate's box in the site's palette
@@ -85,28 +82,19 @@ async fn serve_snapshot() -> String {
     format!("http://{addr}{base}architecture/")
 }
 
-/// A Chromium page, JavaScript on or off, emulating `scheme` as the
-/// system's color scheme, with every 4xx/5xx response recorded.
+/// A Chromium page emulating `scheme` as the system's color scheme, with
+/// every 4xx/5xx response recorded.
 struct Session {
     _pw: Playwright,
     browser: Browser,
-    _context: BrowserContext,
     page: Page,
     broken: Arc<Mutex<Vec<String>>>,
 }
 
-async fn open_session(javascript: bool, scheme: ColorScheme) -> Session {
+async fn open_session(scheme: ColorScheme) -> Session {
     let pw = Playwright::launch().await.expect("launch playwright");
     let browser = pw.chromium().launch().await.expect("launch chromium");
-    let context = browser
-        .new_context_with_options(
-            BrowserContextOptions::builder()
-                .javascript_enabled(javascript)
-                .build(),
-        )
-        .await
-        .expect("new context");
-    let page = context.new_page().await.expect("new page");
+    let page = browser.new_page().await.expect("new page");
     page.emulate_media(EmulateMediaOptions::builder().color_scheme(scheme).build())
         .await
         .expect("emulate the system color scheme");
@@ -127,7 +115,6 @@ async fn open_session(javascript: bool, scheme: ColorScheme) -> Session {
     Session {
         _pw: pw,
         browser,
-        _context: context,
         page,
         broken,
     }
@@ -155,7 +142,7 @@ async fn crate_fill(page: &Page) -> String {
 async fn site_architecture_section_lists_every_crate_and_embeds_a_view() {
     let containers = committed_containers();
     let root = serve_snapshot().await;
-    let session = open_session(true, ColorScheme::Light).await;
+    let session = open_session(ColorScheme::Light).await;
     let page = &session.page;
 
     page.goto(&root, None)
@@ -225,7 +212,7 @@ async fn site_architecture_section_lists_every_crate_and_embeds_a_view() {
 async fn site_architecture_follows_the_system_scheme_until_the_visitor_chooses_one() {
     let containers = committed_containers();
     let root = serve_snapshot().await;
-    let session = open_session(true, ColorScheme::Dark).await;
+    let session = open_session(ColorScheme::Dark).await;
     let page = &session.page;
     page.goto(&root, None)
         .await
@@ -262,10 +249,20 @@ async fn site_architecture_follows_the_system_scheme_until_the_visitor_chooses_o
 
 #[tokio::test]
 #[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
-async fn site_architecture_without_javascript_follows_the_system_and_shows_no_control() {
+async fn site_architecture_without_its_script_follows_the_system_and_shows_no_control() {
+    // The script blocked, as a strict content security policy or a failed
+    // load would leave it. playwright-rs 0.19's `javascript_enabled` does
+    // not reach the driver (it sends `javascriptEnabled`; Playwright reads
+    // `javaScriptEnabled`), so blocking the one script stands in for it.
     let root = serve_snapshot().await;
-    let session = open_session(false, ColorScheme::Dark).await;
+    let session = open_session(ColorScheme::Dark).await;
     let page = &session.page;
+    page.route(
+        "**/theme.js",
+        |route| async move { route.abort(None).await },
+    )
+    .await
+    .expect("block the scheme script");
     page.goto(&root, None)
         .await
         .expect("navigate to the architecture index");
