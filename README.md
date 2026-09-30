@@ -1,4 +1,17 @@
-# asbuilt
+<p align="center">
+  <img src="brand/mark.svg" width="96" height="96" alt="">
+</p>
+
+<h1 align="center">asbuilt</h1>
+
+<p align="center">
+  <a href="https://github.com/padamson/asbuilt/actions/workflows/test.yml"><img src="https://github.com/padamson/asbuilt/actions/workflows/test.yml/badge.svg?branch=main" alt="Test"></a>
+  <a href="https://github.com/padamson/asbuilt/actions/workflows/security.yml"><img src="https://github.com/padamson/asbuilt/actions/workflows/security.yml/badge.svg?branch=main" alt="Security &amp; Quality"></a>
+  <a href="https://github.com/padamson/asbuilt/actions/workflows/pages.yml"><img src="https://github.com/padamson/asbuilt/actions/workflows/pages.yml/badge.svg?branch=main" alt="Pages"></a>
+  <a href="https://padamson.github.io/asbuilt/"><img src="https://img.shields.io/badge/site-padamson.github.io%2Fasbuilt-ce422b" alt="Site"></a>
+  <img src="https://img.shields.io/badge/MSRV-1.88-555" alt="MSRV 1.88">
+  <a href="#license"><img src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-555" alt="License: MIT OR Apache-2.0"></a>
+</p>
 
 Keep a [LikeC4](https://likec4.dev) architecture model that describes the
 code as it is, the way as-built drawings describe a building as
