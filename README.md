@@ -6,8 +6,10 @@
 </h1>
 
 <p align="center">
+  <a href="https://crates.io/crates/asbuilt"><img src="https://img.shields.io/crates/v/asbuilt.svg" alt="crates.io"></a>
+  <a href="https://docs.rs/asbuilt-core"><img src="https://docs.rs/asbuilt-core/badge.svg" alt="docs.rs"></a>
   <a href="https://github.com/padamson/asbuilt/actions?query=branch%3Amain"><img src="https://img.shields.io/github/check-runs/padamson/asbuilt/main?label=CI&amp;logo=github" alt="CI"></a>
-  <a href="#license"><img src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue" alt="License: MIT OR Apache-2.0"></a>
+  <a href="#license"><img src="https://img.shields.io/crates/l/asbuilt" alt="License: MIT OR Apache-2.0"></a>
   <a href="https://likec4.dev"><img src="https://img.shields.io/badge/LikeC4-1.59.3-45ba4b" alt="LikeC4 1.59.3"></a>
   <img src="https://img.shields.io/badge/MSRV-1.88-555" alt="MSRV 1.88">
   <a href="https://skills.sh/padamson/asbuilt"><img src="https://skills.sh/b/padamson/asbuilt" alt="skills.sh"></a>
@@ -42,15 +44,20 @@ rendered. The site is built, driven with playwright-rs, and deployed by
 
 ## Status
 
-Pre-release. The Rust front-end, `survey`, `check`, and the LikeC4
-wrappers work; the first consumer is being wired up. Until 0.1.0 is on
-crates.io, install from `main`.
+0.1.0, the first release. The model, the Rust front-end, `survey`,
+`check`, the LikeC4 wrappers and `docs` are in use on this repo and on
+[playwright-rust](https://github.com/padamson/playwright-rust). Before
+1.0 a minor version may change the model's shape or the CLI, and
+`CHANGELOG.md` names every such change.
 
 ## Installation
 
 ```bash
-cargo install --git https://github.com/padamson/asbuilt asbuilt
+cargo install asbuilt
 ```
+
+To try what is on `main` before it is released, `cargo install --git
+https://github.com/padamson/asbuilt asbuilt`.
 
 `survey` and `check` need only cargo. `validate`, `export json`,
 `render` and `docs` shell out to `npx likec4@1.59.3` (Node), and

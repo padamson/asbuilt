@@ -55,6 +55,6 @@ Thumbs.db
 # points are symlinks into .agents/, and a tracked symlink would dangle in
 # any clone that has not run the install. A crate that uses its own shipped
 # skill in-repo adds `!/.claude/skills/<name>` here and tracks that one
-# symlink, whose target lives under skills/ (see SETUP.md).
+# symlink, whose target lives under skills/.
 /.agents/
 /.claude/skills/

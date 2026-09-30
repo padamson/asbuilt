@@ -8,7 +8,7 @@ name: Dependabot auto-merge
 # The gate is only as wide as main's branch protection, and it is the whole
 # gate: merges made with GITHUB_TOKEN do not trigger workflows, so the push
 # run on main never fires for these merge commits. Every job that should
-# block a bump must be a required status check (SETUP.md lists them), and
+# block a bump must be a required status check (.github/branch-protection.json lists them), and
 # "require branches to be up to date" stays off so green PRs merge without
 # rebasing onto each sibling that merged first.
 #

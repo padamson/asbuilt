@@ -68,6 +68,7 @@ them. What covers them instead:
 ## Development
 
 ```bash
+cargo install cargo-nextest cargo-deny cargo-vet cargo-mutants cargo-semver-checks prek
 cargo build --workspace
 cargo nextest run --workspace
 cargo test --doc --workspace
@@ -76,6 +77,13 @@ cargo fmt --all
 cargo deny check         # advisories, licenses, bans, sources (one ignore list: deny.toml)
 cargo vet                # supply chain review
 ```
+
+When `cargo vet` fails on a Dependabot PR, new unvetted code is arriving;
+never regenerate exemptions in CI to make it pass. For each entry, on the
+PR branch: `cargo vet certify <crate> <version>` after reading the diff,
+`cargo vet regenerate exemptions` only for a patch bump from a known
+publisher (never a new transitive dependency or a major version), or
+reject the PR.
 
 ## Claude Code sandbox
 
@@ -230,6 +238,6 @@ The tag triggers CI which builds, tests, creates a GitHub Release, and
 publishes the three crates in dependency order, skipping any whose
 version is already on crates.io (the first release is published by hand,
 since a trusted publisher can only be added to a crate that exists;
-SETUP.md).
+`release.yml` explains).
 
 <!-- Add custom skills under .claude/skills/ as needed -->
