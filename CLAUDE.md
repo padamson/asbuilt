@@ -227,6 +227,9 @@ step is not a no-op.
    (builds `/asbuilt/vX.Y.Z/` and makes it `latest`; `docs/versioned-site.md`)
 
 The tag triggers CI which builds, tests, creates a GitHub Release, and
-publishes all three crates to crates.io with `cargo publish --workspace`.
+publishes the three crates in dependency order, skipping any whose
+version is already on crates.io (the first release is published by hand,
+since a trusted publisher can only be added to a crate that exists;
+SETUP.md).
 
 <!-- Add custom skills under .claude/skills/ as needed -->
