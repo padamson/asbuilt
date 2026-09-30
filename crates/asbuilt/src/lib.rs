@@ -5,6 +5,11 @@
 //! version. That pin lives here so the binary and the tests that need
 //! LikeC4 read the same constant.
 
+#![doc(
+    html_logo_url = "https://padamson.github.io/asbuilt/mark.svg",
+    html_favicon_url = "https://padamson.github.io/asbuilt/mark.svg"
+)]
+
 pub mod commands;
 pub mod likec4;
 

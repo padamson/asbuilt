@@ -12,6 +12,11 @@
 //! filesystem, through [`source::FileSource`]. [`analyze`] runs them
 //! in order; [`RustFrontend`] is the same behind the core's trait.
 
+#![doc(
+    html_logo_url = "https://padamson.github.io/asbuilt/mark.svg",
+    html_favicon_url = "https://padamson.github.io/asbuilt/mark.svg"
+)]
+
 pub mod aggregate;
 pub mod config;
 pub mod discover;

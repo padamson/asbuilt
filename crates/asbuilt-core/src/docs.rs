@@ -73,6 +73,20 @@ pub struct Site {
 /// The stylesheet every page links.
 pub const STYLESHEET: &str = include_str!("docs.css");
 
+/// The asbuilt mark as SVG path data for a `0 0 24 24` viewBox, a copy of
+/// `brand/mark.path` (kept identical by `scripts/check-brand-copy.sh`).
+pub const MARK_PATH: &str = include_str!("mark.path");
+
+/// The mark as every page's header draws it, before the tree's title: the
+/// section asbuilt generated, in the page's accent. Decorative, since the
+/// title beside it is the link's name.
+fn mark_svg() -> String {
+    format!(
+        "<svg class=\"mark\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path d=\"{}\"/></svg>",
+        MARK_PATH.trim()
+    )
+}
+
 /// The script behind the scheme control, linked in every page's head.
 pub const SCHEME_SCRIPT: &str = include_str!("theme.js");
 
@@ -262,9 +276,10 @@ impl Ctx<'_> {
         };
         let control = if toggle { SCHEME_CONTROL } else { "" };
         format!(
-            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{page} · {site}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\">{home}<a class=\"site\" href=\"{prefix}index.html\"{index_current}>{site}</a></nav>{control}</div>{containers}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
+            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{page} · {site}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\">{home}<a class=\"site\" href=\"{prefix}index.html\"{index_current}>{mark}{site}</a></nav>{control}</div>{containers}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
             page = escape(page_title),
             site = escape(&self.options.title),
+            mark = mark_svg(),
         )
     }
 
@@ -1215,7 +1230,10 @@ mod tests {
             "{app}"
         );
         assert!(
-            app.contains("<a class=\"site\" href=\"../index.html\">Sample</a>"),
+            app.contains(&format!(
+                "<a class=\"site\" href=\"../index.html\">{MARK}Sample</a>",
+                MARK = mark_svg()
+            )),
             "{app}"
         );
         assert!(app.contains("<title>app · Sample</title>"), "{app}");
@@ -1225,17 +1243,35 @@ mod tests {
             "{index}"
         );
         assert!(
-            index
-                .contains("<a class=\"site\" href=\"index.html\" aria-current=\"page\">Sample</a>"),
+            index.contains(&format!(
+                "<a class=\"site\" href=\"index.html\" aria-current=\"page\">{MARK}Sample</a>",
+                MARK = mark_svg()
+            )),
             "{index}"
         );
+    }
+
+    #[test]
+    fn the_tree_title_carries_the_asbuilt_mark_hidden_from_screen_readers() {
+        assert_eq!(
+            mark_svg(),
+            format!(
+                "<svg class=\"mark\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\"><path d=\"{}\"/></svg>",
+                MARK_PATH.trim()
+            )
+        );
+        assert!(
+            MARK_PATH.starts_with("M14.24 3.21L17.61 1.26"),
+            "{MARK_PATH}"
+        );
+        assert!(!MARK_PATH.trim().contains('\n'));
     }
 
     #[test]
     fn a_container_page_s_header_is_the_trail_then_the_containers_with_this_one_current() {
         let site = generate(&sample(), &options());
         assert!(
-            page(&site, "containers/app.html").contains("<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"site\" href=\"../index.html\">Sample</a></nav></div><nav class=\"containers\" aria-label=\"Containers\"><span aria-current=\"page\">app</span><a href=\"../containers/lib.html\">lib</a></nav></header>"),
+            page(&site, "containers/app.html").contains(&format!("<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"site\" href=\"../index.html\">{MARK}Sample</a></nav></div><nav class=\"containers\" aria-label=\"Containers\"><span aria-current=\"page\">app</span><a href=\"../containers/lib.html\">lib</a></nav></header>", MARK = mark_svg())),
             "{}",
             page(&site, "containers/app.html")
         );
@@ -1295,12 +1331,12 @@ mod tests {
         let site = generate(&sample(), &opts);
         let index = page(&site, "index.html");
         assert!(
-            index.contains("<nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"home\" href=\"../\">Home</a><span class=\"sep\" aria-hidden=\"true\">/</span><a class=\"site\" href=\"index.html\" aria-current=\"page\">Sample</a></nav>"),
+            index.contains(&format!("<nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"home\" href=\"../\">Home</a><span class=\"sep\" aria-hidden=\"true\">/</span><a class=\"site\" href=\"index.html\" aria-current=\"page\">{MARK}Sample</a></nav>", MARK = mark_svg())),
             "{index}"
         );
         let app = page(&site, "containers/app.html");
         assert!(
-            app.contains("<nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"home\" href=\"../../\">Home</a><span class=\"sep\" aria-hidden=\"true\">/</span><a class=\"site\" href=\"../index.html\">Sample</a></nav>"),
+            app.contains(&format!("<nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"home\" href=\"../../\">Home</a><span class=\"sep\" aria-hidden=\"true\">/</span><a class=\"site\" href=\"../index.html\">{MARK}Sample</a></nav>", MARK = mark_svg())),
             "{app}"
         );
     }
@@ -1326,7 +1362,7 @@ mod tests {
         assert!(!index.contains("class=\"home\""), "{index}");
         assert!(!index.contains("class=\"sep\""), "{index}");
         assert!(
-            index.contains("<nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"site\" href=\"index.html\" aria-current=\"page\">Sample</a></nav>"),
+            index.contains(&format!("<nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"site\" href=\"index.html\" aria-current=\"page\">{MARK}Sample</a></nav>", MARK = mark_svg())),
             "{index}"
         );
     }
@@ -1395,8 +1431,10 @@ mod tests {
         opts.views.insert("context".into(), plain_view());
         let site = generate(&sample(), &opts);
         assert!(
-            page(&site, "views.html")
-                .contains("<a class=\"site\" href=\"index.html\">Sample</a></nav>"),
+            page(&site, "views.html").contains(&format!(
+                "<a class=\"site\" href=\"index.html\">{MARK}Sample</a></nav>",
+                MARK = mark_svg()
+            )),
             "{}",
             page(&site, "views.html")
         );

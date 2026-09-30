@@ -210,6 +210,16 @@ async fn site_landing_page_works_as_advertised() {
         .to_have_text("Architecture models that cannot drift")
         .await
         .expect("hero renders once the WASM app boots");
+    expect(page.locator("#hero-brand"))
+        .to_have_attribute("aria-label", "asbuilt")
+        .await
+        .expect(
+            "the hero opens with the asbuilt mark and wordmark, named for assistive technology",
+        );
+    expect(page.locator("#hero-brand .wordmark-built"))
+        .to_have_css("font-family", "Bungee, system-ui, sans-serif")
+        .await
+        .expect("the wordmark's face comes from brand/fonts");
     expect(page.locator("#cta-architecture"))
         .to_have_attribute("href", "architecture/")
         .await

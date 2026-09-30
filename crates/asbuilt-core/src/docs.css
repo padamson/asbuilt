@@ -16,6 +16,7 @@ header .trail { display: flex; flex-wrap: wrap; gap: 0.5em; align-items: baselin
 header .home { color: var(--muted); }
 header .sep { color: var(--muted); }
 header .site { font-weight: 700; color: inherit; }
+header .mark { width: 1.15em; height: 1.15em; vertical-align: -0.2em; margin-right: 0.35em; fill: var(--accent); }
 header .containers { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; font-size: 0.9em; }
 header .containers a { color: var(--muted); }
 header .containers [aria-current] { font-weight: 600; color: var(--fg); }

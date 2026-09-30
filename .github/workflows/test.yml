@@ -81,6 +81,9 @@ jobs:
         with:
           shared-key: lint
 
+      - name: Brand mark copy current
+        run: scripts/check-brand-copy.sh
+
       - name: Check formatting
         run: cargo fmt --all -- --check
 

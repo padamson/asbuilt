@@ -133,6 +133,13 @@ commit `model.c4` and the curated views, and ignore the rest.
 
 and the same command as a CI step on every platform.
 
+## Brand
+
+The asbuilt mark (a telescope sighting over a graduated arc) and the
+AS/BUILT wordmark live in [`brand/`](brand/), with the fonts they need
+and a `VERSION` a copy records. A site that links to asbuilt can copy
+the directory whole; its README says how each piece is used.
+
 ## Agent skill
 
 [![skills.sh](https://skills.sh/b/padamson/asbuilt)](https://skills.sh/padamson/asbuilt)

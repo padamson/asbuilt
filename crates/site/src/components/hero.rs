@@ -16,6 +16,27 @@ pub fn Hero() -> impl IntoView {
 
     view! {
         <header id="hero" class="flex flex-col items-center px-6 pt-24 pb-16 text-center">
+            // The mark and the wordmark (brand/wordmark.css), named once for
+            // assistive technology and drawn for everyone else.
+            <p
+                id="hero-brand"
+                role="img"
+                aria-label="asbuilt"
+                class="mb-8 inline-flex items-center gap-3 text-4xl text-rust-50 sm:text-5xl"
+            >
+                <svg
+                    class="h-12 w-12 text-rust-500 sm:h-14 sm:w-14"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                >
+                    <path d=icons::ASBUILT.trim()/>
+                </svg>
+                <span class="wordmark" aria-hidden="true">
+                    <span class="wordmark-as">"AS"</span>
+                    <span class="wordmark-built">"BUILT"</span>
+                </span>
+            </p>
             <h1
                 id="hero-title"
                 class="text-5xl font-bold tracking-tight text-rust-500 sm:text-6xl"
@@ -66,6 +87,7 @@ pub fn Hero() -> impl IntoView {
                     href="architecture/"
                     class="inline-flex items-center gap-2 rounded-lg bg-rust-500 px-5 py-2.5 font-semibold text-rust-50 transition hover:bg-rust-600"
                 >
+                    <Icon path=icons::ASBUILT.trim()/>
                     "See asbuilt's own architecture"
                 </a>
                 <a

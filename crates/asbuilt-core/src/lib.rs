@@ -8,6 +8,11 @@
 //! `.c4` emitter and drift check that follow in later commits. It never
 //! spawns a process.
 
+#![doc(
+    html_logo_url = "https://padamson.github.io/asbuilt/mark.svg",
+    html_favicon_url = "https://padamson.github.io/asbuilt/mark.svg"
+)]
+
 pub mod check;
 pub mod config;
 pub mod docs;

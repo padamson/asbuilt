@@ -142,6 +142,15 @@ repos:
       # nothing, so a content edit that leaves it alone is invisible to
       # every consumer. The `Skill version guard` CI job runs the same
       # script against the PR base.
+      # asbuilt-core embeds a copy of brand/mark.path (a published crate
+      # cannot include a file outside its directory); the two stay equal.
+      - id: brand-copy-current
+        name: brand mark copy current
+        entry: scripts/check-brand-copy.sh
+        language: system
+        pass_filenames: false
+        files: ^(brand/mark\.path|crates/asbuilt-core/src/mark\.path)$
+
       - id: skill-version-bumped
         name: skill version bumped
         description: Skill edits must bump the version consumers compare against

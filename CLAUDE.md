@@ -105,6 +105,17 @@ One line per job as it reaches a terminal state, then an exit code:
 shell loop is not matched by the sandbox's command exclusion, so this
 script is excluded as a whole in `.claude/settings.json`.
 
+## Brand
+
+`brand/` holds the mark (`mark.path`, the source; `mark.svg`) and the
+wordmark (`wordmark.css` and `fonts/`, OFL). Bump `brand/VERSION` with any change there. The docs
+header draws the mark from `crates/asbuilt-core/src/mark.path`, a copy
+(a published crate cannot include a file outside its directory) that
+`scripts/check-brand-copy.sh` keeps identical in the pre-commit hook and
+the Lint job. The site takes the mark, the wordmark and its favicon from
+`brand/` directly, and the Pages deploy copies `mark.svg` to the site
+root, where the crates' docs.rs pages load it as their logo.
+
 ## Agent skills
 
 `skills/asbuilt/` is the skill this repo ships to consumers (`npx skills

@@ -31,7 +31,8 @@ The tree uses these names, and `docs` treats them as its own:
 `index.html`, `views.html` (only when there are curated views),
 `style.css` (the page), `theme.css` (the diagrams), `theme.js` (the
 scheme control, unless `--no-scheme-toggle`), `containers/<id>.html`,
-and `views/<view>.svg` copied from the render. Every page carries
+and `views/<view>.svg` copied from the render. The header draws the
+asbuilt mark before the tree's title, in the page's `--accent`. Every page carries
 `<meta name="generator" content="asbuilt docs">`, and every link is
 relative, so the tree serves from any directory. This layout, the
 classes and the variables below are stable within 0.x; a change to any

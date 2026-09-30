@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* The asbuilt wordmark from brand/; its fonts are copied beside the built
+   stylesheet by index.html. */
+@import "../../brand/wordmark.css";
 
 /* Tailwind v4 scans these sources for utility class names. Leptos view!
    macros live in .rs files, which v4's automatic content detection won't
@@ -15,4 +18,9 @@
   --color-rust-700: #8f2d19;
   --color-ink-900: #1a1410;
   --color-ink-800: #241c16;
+}
+
+/* The wordmark's accent: rust-300 on the ink ground. */
+:root {
+  --brand-accent: var(--color-rust-300);
 }

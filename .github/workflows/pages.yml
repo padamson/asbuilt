@@ -35,6 +35,7 @@ on:
       - "crates/**"
       - "docs/architecture/**"
       - "asbuilt.toml"
+      - "brand/**"
       - ".github/workflows/pages.yml"
   pull_request:
     branches: [main]
@@ -232,6 +233,10 @@ jobs:
           cp -r crates/site/dist-snapshot/. "gh/$dest/"
           bash crates/site/deploy/update-manifest.sh gh /asbuilt
           touch gh/.nojekyll
+          # The mark at a stable URL, outside any snapshot: the crates' docs.rs
+          # pages take it as their logo and favicon (raw GitHub serves SVG as
+          # plain text, which an <img> refuses).
+          cp brand/mark.svg gh/mark.svg
 
       - name: Commit + push gh-pages
         if: github.event_name != 'pull_request'
