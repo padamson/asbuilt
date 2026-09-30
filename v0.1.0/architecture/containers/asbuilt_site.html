@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en" data-theme-default="system">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="asbuilt docs">
+<title>asbuilt-site · Architecture</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../theme.css">
+<script src="../theme.js"></script>
+<link rel="stylesheet" href="../../architecture.css">
+</head>
+<body>
+<header><div class="bar"><nav class="trail" aria-label="Breadcrumb"><a class="home" href="../../">asbuilt</a><span class="sep" aria-hidden="true">/</span><a class="site" href="../index.html"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.24 3.21L17.61 1.26L21.97 8.81L18.6 10.76zM3.06 11.38L15.28 4.33L18.15 9.3L5.93 16.36zM1 13.77L3.88 12.1L5.71 15.29L2.84 16.96zM20.65 13.45A10.32 10.32 0 0 1 17.16 18.37L15.06 15.65A6.88 6.88 0 0 0 17.39 12.37zM14.78 19.74A10.32 10.32 0 0 1 6.06 19.34L7.65 16.29A6.88 6.88 0 0 0 13.47 16.57zM17.95 12.13L23 14.59L21.8 17.07L16.75 14.6zM9.67 17.46L7.76 22.74L5.16 21.8L7.09 16.52zM10.36 10.49L11.79 12.97L12.78 12.4L11.35 9.91zM13.31 11.7L18.47 20.64L17.77 21.04L12.61 12.1zM11.62 12.68L16.78 21.61L16.08 22.01L10.92 13.08zM18.07 19.94L18.47 20.64L16.08 22.01L15.68 21.31z"/></svg>Architecture</a></nav><label class="scheme" hidden>Theme <select id="scheme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div><nav class="containers" aria-label="Containers"><a href="../containers/asbuilt.html">asbuilt</a><a href="../containers/asbuilt_core.html">asbuilt-core</a><a href="../containers/asbuilt_rust.html">asbuilt-rust</a><span aria-current="page">asbuilt-site</span><a href="../containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a></nav></header>
+<main>
+<h1>asbuilt-site</h1>
+<p class="meta">binary · <a href="https://github.com/padamson/asbuilt/blob/main/crates/site"><code>crates/site</code></a></p>
+<figure class="view"><svg viewBox="0.00 0.00 1329.10 647.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="c4" data-view="view_asbuilt_site" role="img" aria-label="asbuilt-site">
+<g id="view_asbuilt_site-graph0" class="graph" transform="scale(1 1) rotate(0) translate(15.05 632.05)">
+
+<g id="view_asbuilt_site-clust1" class="cluster c4-k-container">
+
+<polygon fill="#722f24" stroke="#57130f" points="8,-8 8,-609 1291,-609 1291,-8 8,-8"/>
+<text text-anchor="start" x="16" y="-597.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT&#45;SITE</text>
+</g>
+
+<g id="view_asbuilt_site-node1" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1251,-549 931,-549 931,-369 1251,-369 1251,-549"/>
+<text text-anchor="start" x="1074" y="-454" font-family="Arial" font-size="20.00" fill="#5b5b5b">app</text>
+</g>
+
+<g id="view_asbuilt_site-node2" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="813,-228 493,-228 493,-48 813,-48 813,-228"/>
+<text text-anchor="start" x="598.5" y="-133" font-family="Arial" font-size="20.00" fill="#5b5b5b">components</text>
+</g>
+
+<g id="view_asbuilt_site-node3" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="821,-549 485,-549 485,-369 821,-369 821,-549"/>
+<text text-anchor="start" x="615.5" y="-498" font-family="Arial" font-size="20.00" fill="#5b5b5b">snippets</text>
+<text text-anchor="start" x="505" y="-476" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Syntax&#45;highlighted code snippets, generated</text>
+<text text-anchor="start" x="553" y="-459" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">at build time by `build.rs` from</text>
+<text text-anchor="start" x="509.5" y="-442" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">the files in `snippets/`. Each constant holds</text>
+<text text-anchor="start" x="576" y="-425" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">highlighted inner HTML</text>
+<text text-anchor="start" x="506.5" y="-408" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">(token spans with inline colors) rendered via</text>
+</g>
+
+<g id="view_asbuilt_site-node4" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="374.5,-549 47.5,-549 47.5,-369 374.5,-369 374.5,-549"/>
+<text text-anchor="start" x="179" y="-498" font-family="Arial" font-size="20.00" fill="#5b5b5b">version</text>
+<text text-anchor="start" x="81.5" y="-476" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The build&#39;s version identity and the one</text>
+<text text-anchor="start" x="124" y="-459" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">place the site&#39;s path prefix</text>
+<text text-anchor="start" x="123.5" y="-442" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">is spelled. `build.rs` injects</text>
+<text text-anchor="start" x="68" y="-425" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`SITE_VERSION`; the deploy serves every</text>
+<text text-anchor="start" x="79" y="-408" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">snapshot under `/asbuilt/&lt;dev|vX.Y.Z&gt;/`</text>
+</g>
+
+<g id="view_asbuilt_site-edge1" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M968.7,-368.93C910.46,-326.51 840.8,-275.78 781.75,-232.77"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="782.94,-230.39 775.34,-228.1 779.85,-234.64 782.94,-230.39"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="885,-288 885,-309 912,-309 912,-288 885,-288" class="c4-label-bg"/>
+<text text-anchor="start" x="888.5" y="-295.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+
+<g id="view_asbuilt_site-edge2" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M653,-228.26C653,-269.64 653,-318.9 653,-361.18"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="650.38,-361.22 653,-368.72 655.63,-361.22 650.38,-361.22"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="653,-288 653,-309 710,-309 710,-288 653,-288" class="c4-label-bg"/>
+<text text-anchor="start" x="656.5" y="-294.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">snippets</text>
+</g>
+
+<g id="view_asbuilt_site-edge3" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M529.55,-228.1C470.65,-270.61 400.19,-321.46 340.52,-364.52"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="338.96,-362.41 334.42,-368.93 342.03,-366.67 338.96,-362.41"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="445,-288 445,-309 472,-309 472,-288 445,-288" class="c4-label-bg"/>
+<text text-anchor="start" x="448.5" y="-295.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+</g>
+</svg></figure>
+<h2>Modules</h2>
+<div class="modules"><ul>
+<li><a href="#asbuilt_site.app">app</a></li>
+<li><a href="#asbuilt_site.components">components</a><ul>
+<li><a href="#asbuilt_site.components.code_block">code_block</a></li>
+<li><a href="#asbuilt_site.components.code_tabs">code_tabs</a></li>
+<li><a href="#asbuilt_site.components.dogfood_banner">dogfood_banner</a></li>
+<li><a href="#asbuilt_site.components.example">example</a></li>
+<li><a href="#asbuilt_site.components.feature_card">feature_card</a></li>
+<li><a href="#asbuilt_site.components.features">features</a></li>
+<li><a href="#asbuilt_site.components.footer">footer</a></li>
+<li><a href="#asbuilt_site.components.hero">hero</a></li>
+<li><a href="#asbuilt_site.components.how_it_works">how_it_works</a></li>
+<li><a href="#asbuilt_site.components.icons_">icons</a></li>
+<li><a href="#asbuilt_site.components.install">install</a></li>
+<li><a href="#asbuilt_site.components.unreleased_badge">unreleased_badge</a></li>
+<li><a href="#asbuilt_site.components.version_switcher">version_switcher</a></li>
+</ul>
+</li>
+<li><a href="#asbuilt_site.snippets">snippets</a></li>
+<li><a href="#asbuilt_site.version">version</a></li>
+</ul>
+</div>
+<section id="asbuilt_site.app">
+<h2>app <small>asbuilt_site.app</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/app.rs"><code>crates/site/src/app.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.dogfood_banner">asbuilt_site.components.dogfood_banner</a></td><td>DogfoodBanner</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.example">asbuilt_site.components.example</a></td><td>Example</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.features">asbuilt_site.components.features</a></td><td>Features</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.footer">asbuilt_site.components.footer</a></td><td>Footer</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.hero">asbuilt_site.components.hero</a></td><td>Hero</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.how_it_works">asbuilt_site.components.how_it_works</a></td><td>HowItWorks</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.install">asbuilt_site.components.install</a></td><td>Install</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.version_switcher">asbuilt_site.components.version_switcher</a></td><td>VersionSwitcher</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components">
+<h2>components <small>asbuilt_site.components</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/mod.rs"><code>crates/site/src/components/mod.rs</code></a></p>
+<figure class="view"><svg viewBox="0.00 0.00 5936.10 895.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="c4" data-view="view_asbuilt_site_components" role="img" aria-label="asbuilt_site.components">
+<g id="view_asbuilt_site_components-graph0" class="graph" transform="scale(1 1) rotate(0) translate(15.05 880.05)">
+
+<g id="view_asbuilt_site_components-clust1" class="cluster c4-k-component">
+
+<polygon fill="#999999" stroke="#808080" points="8,-296 8,-596 5898,-596 5898,-296 8,-296"/>
+<text text-anchor="start" x="16" y="-584.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#6d6d6d" fill-opacity="0.701961">COMPONENTS</text>
+</g>
+
+<g id="view_asbuilt_site_components-node1" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="798,-516 478,-516 478,-336 798,-336 798,-516"/>
+<text text-anchor="start" x="564" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">dogfood_banner</text>
+</g>
+
+<g id="view_asbuilt_site_components-node2" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1228,-516 908,-516 908,-336 1228,-336 1228,-516"/>
+<text text-anchor="start" x="1030" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">example</text>
+</g>
+
+<g id="view_asbuilt_site_components-node3" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1658,-516 1338,-516 1338,-336 1658,-336 1658,-516"/>
+<text text-anchor="start" x="1461.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">features</text>
+</g>
+
+<g id="view_asbuilt_site_components-node4" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4458,-516 4138,-516 4138,-336 4458,-336 4458,-516"/>
+<text text-anchor="start" x="4272" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">footer</text>
+</g>
+
+<g id="view_asbuilt_site_components-node5" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4888,-516 4568,-516 4568,-336 4888,-336 4888,-516"/>
+<text text-anchor="start" x="4707.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">hero</text>
+</g>
+
+<g id="view_asbuilt_site_components-node6" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2088,-516 1768,-516 1768,-336 2088,-336 2088,-516"/>
+<text text-anchor="start" x="1867.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">how_it_works</text>
+</g>
+
+<g id="view_asbuilt_site_components-node7" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="3058,-516 2738,-516 2738,-336 3058,-336 3058,-516"/>
+<text text-anchor="start" x="2872" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">install</text>
+</g>
+
+<g id="view_asbuilt_site_components-node8" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="5858,-516 5538,-516 5538,-336 5858,-336 5858,-516"/>
+<text text-anchor="start" x="5623.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">version_switcher</text>
+</g>
+
+<g id="view_asbuilt_site_components-node9" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4028,-516 3708,-516 3708,-336 4028,-336 4028,-516"/>
+<text text-anchor="start" x="3811.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">feature_card</text>
+</g>
+
+<g id="view_asbuilt_site_components-node10" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="5428,-516 5108,-516 5108,-336 5428,-336 5428,-516"/>
+<text text-anchor="start" x="5244.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">icons</text>
+</g>
+
+<g id="view_asbuilt_site_components-node11" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2628,-516 2308,-516 2308,-336 2628,-336 2628,-516"/>
+<text text-anchor="start" x="2421.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">code_tabs</text>
+</g>
+
+<g id="view_asbuilt_site_components-node12" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="3598,-516 3278,-516 3278,-336 3598,-336 3598,-516"/>
+<text text-anchor="start" x="3387" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">code_block</text>
+</g>
+
+<g id="view_asbuilt_site_components-node13" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="368,-516 48,-516 48,-336 368,-336 368,-516"/>
+<text text-anchor="start" x="124" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">unreleased_badge</text>
+</g>
+
+<g id="view_asbuilt_site_components-node14" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2898,-865 2578,-865 2578,-685 2898,-685 2898,-865"/>
+<text text-anchor="start" x="2721" y="-770" font-family="Arial" font-size="20.00" fill="#5b5b5b">app</text>
+</g>
+
+<g id="view_asbuilt_site_components-node15" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1817,-180 1481,-180 1481,0 1817,0 1817,-180"/>
+<text text-anchor="start" x="1611.5" y="-129" font-family="Arial" font-size="20.00" fill="#5b5b5b">snippets</text>
+<text text-anchor="start" x="1501" y="-107" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Syntax&#45;highlighted code snippets, generated</text>
+<text text-anchor="start" x="1549" y="-90" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">at build time by `build.rs` from</text>
+<text text-anchor="start" x="1505.5" y="-73" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">the files in `snippets/`. Each constant holds</text>
+<text text-anchor="start" x="1572" y="-56" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">highlighted inner HTML</text>
+<text text-anchor="start" x="1502.5" y="-39" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">(token spans with inline colors) rendered via</text>
+</g>
+
+<g id="view_asbuilt_site_components-node16" class="node c4-k-component">
+
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4461.5,-180 4134.5,-180 4134.5,0 4461.5,0 4461.5,-180"/>
+<text text-anchor="start" x="4266" y="-129" font-family="Arial" font-size="20.00" fill="#5b5b5b">version</text>
+<text text-anchor="start" x="4168.5" y="-107" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The build&#39;s version identity and the one</text>
+<text text-anchor="start" x="4211" y="-90" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">place the site&#39;s path prefix</text>
+<text text-anchor="start" x="4210.5" y="-73" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">is spelled. `build.rs` injects</text>
+<text text-anchor="start" x="4155" y="-56" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`SITE_VERSION`; the deploy serves every</text>
+<text text-anchor="start" x="4166" y="-39" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">snapshot under `/asbuilt/&lt;dev|vX.Y.Z&gt;/`</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge9" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1160.92,-516.08C1196.27,-544.48 1238.76,-572.27 1283,-587 1379.46,-619.11 3014.01,-610.18 3113,-587 3172.09,-573.17 3232.75,-546.93 3285.43,-519.59"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3286.71,-521.88 3292.14,-516.08 3284.28,-517.23 3286.71,-521.88"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1907,-604 1907,-625 1979,-625 1979,-604 1907,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="1910" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">CodeBlock</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge10" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1215.12,-335.94C1237.78,-322.45 1260.97,-308.77 1283,-296 1347.28,-258.72 1418.47,-218.6 1480.83,-183.81"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1482.34,-185.98 1487.62,-180.03 1479.79,-181.39 1482.34,-185.98"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1373,-247.5 1373,-268.5 1430,-268.5 1430,-247.5 1373,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="1376.5" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">snippets</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge11" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1590.92,-516.08C1626.27,-544.48 1668.76,-572.27 1713,-587 1815.26,-621.04 3550.74,-621.04 3653,-587 3694.65,-573.13 3734.74,-547.69 3768.79,-521.07"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3770.83,-522.8 3775.08,-516.08 3767.57,-518.69 3770.83,-522.8"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2099,-604 2099,-625 2181,-625 2181,-604 2099,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="2102" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">FeatureCard</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge12" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1590.92,-516.08C1626.27,-544.48 1668.76,-572.27 1713,-587 1860.59,-636.14 2961.54,-622.46 3113,-587 3172.09,-573.17 3232.75,-546.93 3285.43,-519.59"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3286.71,-521.88 3292.14,-516.08 3284.28,-517.23 3286.71,-521.88"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2351,-604 2351,-625 2423,-625 2423,-604 2351,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="2354" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">CodeBlock</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge13" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1538.27,-335.93C1559.04,-289.98 1584.41,-233.87 1605.62,-186.96"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1608.02,-188.02 1608.71,-180.11 1603.23,-185.86 1608.02,-188.02"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1579,-247.5 1579,-268.5 1636,-268.5 1636,-247.5 1579,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="1582.5" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">snippets</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge14" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M4298,-335.93C4298,-290.26 4298,-234.56 4298,-187.83"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4300.63,-187.61 4298,-180.11 4295.38,-187.61 4300.63,-187.61"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4298,-247.5 4298,-268.5 4344,-268.5 4344,-247.5 4298,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="4301" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">is_dev</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge15" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M4888.19,-426C4954.96,-426 5032.53,-426 5100.09,-426"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="5100.36,-428.63 5107.86,-426 5100.36,-423.38 5100.36,-428.63"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4962.5,-429 4962.5,-450 5033.5,-450 5033.5,-429 4962.5,-429" class="c4-label-bg"/>
+<text text-anchor="start" x="4966" y="-435.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Icon, icons</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge16" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M4613.33,-335.93C4553.32,-289.32 4479.86,-232.26 4418.95,-184.95"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4420.25,-182.64 4412.72,-180.11 4417.03,-186.78 4420.25,-182.64"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4525,-247.5 4525,-268.5 4571,-268.5 4571,-247.5 4525,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="4528" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">is_dev</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge17" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2088.19,-426C2154.96,-426 2232.53,-426 2300.09,-426"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2300.36,-428.63 2307.86,-426 2300.36,-423.38 2300.36,-428.63"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2164.5,-429 2164.5,-450 2231.5,-450 2231.5,-429 2164.5,-429" class="c4-label-bg"/>
+<text text-anchor="start" x="2168" y="-435.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">CodeTabs</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge18" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1853.6,-335.93C1814.98,-289.7 1767.77,-233.18 1728.44,-186.1"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1730.26,-184.18 1723.44,-180.11 1726.23,-187.55 1730.26,-184.18"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1797,-247.5 1797,-268.5 1854,-268.5 1854,-247.5 1797,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="1800.5" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">snippets</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge19" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3058.19,-426C3124.96,-426 3202.53,-426 3270.09,-426"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3270.36,-428.63 3277.86,-426 3270.36,-423.38 3270.36,-428.63"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3132,-429 3132,-450 3204,-450 3204,-429 3132,-429" class="c4-label-bg"/>
+<text text-anchor="start" x="3135" y="-435.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">CodeBlock</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge20" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2765.42,-335.87C2738.94,-320.85 2710.72,-306.69 2683,-296 2393.95,-184.53 2035.04,-130.84 1825.05,-107.26"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1825.08,-104.62 1817.34,-106.4 1824.5,-109.84 1825.08,-104.62"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2603,-247.5 2603,-268.5 2660,-268.5 2660,-247.5 2603,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="2606.5" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">snippets</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge21" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3058.31,-354.39C3110.15,-333.45 3168.35,-311.9 3223,-296 3536.03,-204.92 3912.39,-143.84 4126.55,-113.46"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4127.04,-116.04 4134.1,-112.39 4126.31,-110.84 4127.04,-116.04"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3425,-247.5 3425,-268.5 3471,-268.5 3471,-247.5 3425,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="3428" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">is_dev</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge22" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M5566.8,-335.98C5539.96,-320.76 5511.26,-306.5 5483,-296 5137.18,-167.46 4704.17,-118.7 4469.1,-100.82"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4469.19,-98.2 4461.52,-100.25 4468.8,-103.43 4469.19,-98.2"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="5422,-240 5422,-276 5659,-276 5659,-240 5422,-240" class="c4-label-bg"/>
+<text text-anchor="start" x="5425.5" y="-261.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">SITE_VERSION, is_dev, manifest_url,</text>
+<text text-anchor="start" x="5425.5" y="-246.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">snapshot_url</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge23" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3982.67,-335.93C4042.68,-289.32 4116.14,-232.26 4177.05,-184.95"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4178.97,-186.78 4183.28,-180.11 4175.75,-182.64 4178.97,-186.78"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4095,-247.5 4095,-268.5 4141,-268.5 4141,-247.5 4095,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="4098" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">is_dev</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge1" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2577.73,-770.43C2181.44,-759.77 1165.11,-720.72 853,-596 809.86,-578.76 768.3,-550.02 733.4,-521.08"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="734.84,-518.86 727.41,-516.05 731.47,-522.88 734.84,-518.86"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="935,-604 935,-625 1036,-625 1036,-604 935,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="938.5" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">DogfoodBanner</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge2" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2577.72,-765.27C2249.91,-745.66 1514.25,-692.13 1283,-596 1240.42,-578.3 1199.2,-549.7 1164.44,-521.02"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1165.91,-518.84 1158.47,-516.05 1162.55,-522.87 1165.91,-518.84"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1371,-604 1371,-625 1431,-625 1431,-604 1371,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="1374" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Example</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge3" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2577.89,-757.63C2328.89,-730.27 1861.94,-670.8 1713,-596 1673.39,-576.11 1634.08,-548.25 1600.12,-520.89"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1601.76,-518.83 1594.28,-516.14 1598.45,-522.91 1601.76,-518.83"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1774,-604 1774,-625 1834,-625 1834,-604 1774,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="1777" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Features</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge4" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2898.22,-763.44C3206.9,-741.35 3872.19,-684.85 4083,-596 4125.39,-578.13 4166.49,-549.58 4201.21,-520.99"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4203.08,-522.85 4207.17,-516.03 4199.73,-518.81 4203.08,-522.85"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4045,-604 4045,-625 4091,-625 4091,-604 4045,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="4048" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Footer</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge5" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2898.3,-769.34C3277.9,-756.5 4221.7,-713.38 4513,-596 4555.98,-578.68 4597.44,-550 4632.29,-521.14"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4634.21,-522.96 4638.27,-516.13 4630.84,-518.94 4634.21,-522.96"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4489,-604 4489,-625 4525,-625 4525,-604 4489,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="4492" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Hero</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge6" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2617.34,-684.79C2567.99,-653.25 2508.75,-621.33 2450,-604 2407.98,-591.6 2295.34,-607.27 2253,-596 2190.99,-579.5 2127.37,-549.75 2073.05,-519.77"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2074.3,-517.46 2066.47,-516.11 2071.75,-522.05 2074.3,-517.46"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2502,-604 2502,-625 2581,-625 2581,-604 2502,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="2505.5" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">HowItWorks</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge7" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2779.2,-684.64C2802.02,-635.16 2830.39,-573.63 2853.68,-523.11"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2856.18,-523.97 2856.94,-516.06 2851.41,-521.77 2856.18,-523.97"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2813,-604 2813,-625 2855,-625 2855,-604 2813,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="2816" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Install</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge8" class="edge">
+
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2898.07,-769.15C3448.35,-751.71 5241.8,-688.3 5483,-596 5526.7,-579.28 5568.61,-550.39 5603.64,-521.17"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="5605.61,-522.94 5609.65,-516.1 5602.23,-518.93 5605.61,-522.94"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="5438,-604 5438,-625 5541,-625 5541,-604 5438,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="5441.5" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">VersionSwitcher</text>
+</g>
+</g>
+</svg></figure>
+</section>
+<section id="asbuilt_site.components.code_block">
+<h2>code_block <small>asbuilt_site.components.code_block</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/code_block.rs"><code>crates/site/src/components/code_block.rs</code></a></p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.example">asbuilt_site.components.example</a></td><td>CodeBlock</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.features">asbuilt_site.components.features</a></td><td>CodeBlock</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.install">asbuilt_site.components.install</a></td><td>CodeBlock</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.code_tabs">
+<h2>code_tabs <small>asbuilt_site.components.code_tabs</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/code_tabs.rs"><code>crates/site/src/components/code_tabs.rs</code></a></p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.how_it_works">asbuilt_site.components.how_it_works</a></td><td>CodeTabs</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.dogfood_banner">
+<h2>dogfood_banner <small>asbuilt_site.components.dogfood_banner</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/dogfood_banner.rs"><code>crates/site/src/components/dogfood_banner.rs</code></a></p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>DogfoodBanner</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.example">
+<h2>example <small>asbuilt_site.components.example</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/example.rs"><code>crates/site/src/components/example.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.code_block">asbuilt_site.components.code_block</a></td><td>CodeBlock</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.snippets">asbuilt_site.snippets</a></td><td>snippets</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>Example</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.feature_card">
+<h2>feature_card <small>asbuilt_site.components.feature_card</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/feature_card.rs"><code>crates/site/src/components/feature_card.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>is_dev</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.features">asbuilt_site.components.features</a></td><td>FeatureCard</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.features">
+<h2>features <small>asbuilt_site.components.features</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/features.rs"><code>crates/site/src/components/features.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.code_block">asbuilt_site.components.code_block</a></td><td>CodeBlock</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.feature_card">asbuilt_site.components.feature_card</a></td><td>FeatureCard</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.snippets">asbuilt_site.snippets</a></td><td>snippets</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>Features</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.footer">
+<h2>footer <small>asbuilt_site.components.footer</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/footer.rs"><code>crates/site/src/components/footer.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>is_dev</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>Footer</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.hero">
+<h2>hero <small>asbuilt_site.components.hero</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/hero.rs"><code>crates/site/src/components/hero.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.icons_">asbuilt_site.components.icons</a></td><td>Icon, icons</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>is_dev</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>Hero</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.how_it_works">
+<h2>how_it_works <small>asbuilt_site.components.how_it_works</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/how_it_works.rs"><code>crates/site/src/components/how_it_works.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.code_tabs">asbuilt_site.components.code_tabs</a></td><td>CodeTabs</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.snippets">asbuilt_site.snippets</a></td><td>snippets</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>HowItWorks</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.icons_">
+<h2>icons <small>asbuilt_site.components.icons</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/icons.rs"><code>crates/site/src/components/icons.rs</code></a></p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.hero">asbuilt_site.components.hero</a></td><td>Icon, icons</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.install">
+<h2>install <small>asbuilt_site.components.install</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/install.rs"><code>crates/site/src/components/install.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.code_block">asbuilt_site.components.code_block</a></td><td>CodeBlock</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.snippets">asbuilt_site.snippets</a></td><td>snippets</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>is_dev</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>Install</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.unreleased_badge">
+<h2>unreleased_badge <small>asbuilt_site.components.unreleased_badge</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/unreleased_badge.rs"><code>crates/site/src/components/unreleased_badge.rs</code></a></p>
+</section>
+<section id="asbuilt_site.components.version_switcher">
+<h2>version_switcher <small>asbuilt_site.components.version_switcher</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/version_switcher.rs"><code>crates/site/src/components/version_switcher.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>SITE_VERSION, is_dev, manifest_url, snapshot_url</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>VersionSwitcher</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.snippets">
+<h2>snippets <small>asbuilt_site.snippets</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/snippets.rs"><code>crates/site/src/snippets.rs</code></a></p>
+<p>Syntax-highlighted code snippets, generated at build time by <code>build.rs</code> from
+the files in <code>snippets/</code>. Each constant holds highlighted inner HTML
+(token spans with inline colors) rendered via <code>inner_html</code>.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.example">asbuilt_site.components.example</a></td><td>snippets</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.features">asbuilt_site.components.features</a></td><td>snippets</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.how_it_works">asbuilt_site.components.how_it_works</a></td><td>snippets</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.install">asbuilt_site.components.install</a></td><td>snippets</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.version">
+<h2>version <small>asbuilt_site.version</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/version.rs"><code>crates/site/src/version.rs</code></a></p>
+<p>The build's version identity and the one place the site's path prefix
+is spelled. <code>build.rs</code> injects <code>SITE_VERSION</code>; the deploy serves every
+snapshot under <code>/asbuilt/&lt;dev|vX.Y.Z&gt;/</code> (project Pages), and only the
+version switcher needs to know that: every other asset path is relative.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.feature_card">asbuilt_site.components.feature_card</a></td><td>is_dev</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.footer">asbuilt_site.components.footer</a></td><td>is_dev</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.hero">asbuilt_site.components.hero</a></td><td>is_dev</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.install">asbuilt_site.components.install</a></td><td>is_dev</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.version_switcher">asbuilt_site.components.version_switcher</a></td><td>SITE_VERSION, is_dev, manifest_url, snapshot_url</td><td></td></tr>
+</tbody></table>
+</section>
+</main>
+</body>
+</html>
