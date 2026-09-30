@@ -277,9 +277,17 @@ per-target, mutation testing, fuzzing) accumulates tens of gigabytes
 under `target/`, most of it incremental-compilation cache with no
 payoff outside a single edit-rebuild loop.
 
-- **Sweep periodically.** `cargo install cargo-sweep`, then
-  `cargo sweep --time 15` drops artifacts unused for 15 days, and
-  `cargo sweep --installed` keeps only the current toolchain's.
+- **Sweep periodically.** `cargo-sweep` is unmaintained, so use a
+  plain `find` (or `cargo-clean-all`, which is maintained). This lists
+  every `target/` under `~/src` that Cargo made (its `CACHEDIR.TAG` says
+  so) and in which nothing was modified in 30 days, so a repo you only
+  build still counts as in use; add `&& rm -rf "$1"` inside the quotes
+  once the list looks right:
+
+  ```bash
+  find ~/src -type d -name target -prune -exec sh -c \
+    'grep -qs "created by cargo" "$1/CACHEDIR.TAG" && [ -z "$(find "$1" -mtime -30 -print -quit)" ] && echo "$1"' _ {} \;
+  ```
 - **Consider turning incremental off** once the permutation count grows:
   `[build] incremental = false` in `.cargo/config.toml`. CI already has
   it off (`Swatinem/rust-cache` sets `CARGO_INCREMENTAL=0`).
