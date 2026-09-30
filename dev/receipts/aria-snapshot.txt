@@ -1,130 +1,131 @@
 - text: Version
 - combobox "Version" [box=215,8,115,28]:
   - option "dev (main)" [selected] [box=0,0,0,0]
-- banner [box=0,45,1280,482]:
-  - heading "Architecture models that cannot drift" [level=1] [box=33,141,1213,60]
-  - paragraph [box=304,221,672,84]: asbuilt surveys a Rust code base into a LikeC4 model, the way as-built drawings describe a building as constructed rather than as designed, and fails CI when the committed model no longer matches the code.
-  - paragraph [box=425,317,429,16]: Nothing in the model is hand-written. Nothing in the code is annotated.
-  - 'link "crates.io: unreleased" [box=522,361,128,20]':
+- banner [box=0,45,1280,570]:
+  - img "asbuilt" [box=488,141,304,56]
+  - heading "Architecture models that cannot drift" [level=1] [box=33,229,1213,60]
+  - paragraph [box=304,309,672,84]: asbuilt surveys a Rust code base into a LikeC4 model, the way as-built drawings describe a building as constructed rather than as designed, and fails CI when the committed model no longer matches the code.
+  - paragraph [box=425,405,429,16]: Nothing in the model is hand-written. Nothing in the code is annotated.
+  - 'link "crates.io: unreleased" [box=522,449,128,20]':
     - /url: https://crates.io/crates/asbuilt
-    - 'img "crates.io: unreleased" [box=522,361,128,20]'
-  - link "CI" [box=658,371,0,0]:
+    - 'img "crates.io: unreleased" [box=522,449,128,20]'
+  - link "CI" [box=658,459,0,0]:
     - /url: https://github.com/padamson/asbuilt
-    - img "CI" [box=658,371,0,0]
-  - img "LikeC4 1.59.3" [box=666,361,92,20]
-  - link "See asbuilt's own architecture" [box=411,418,314,44]:
+    - img "CI" [box=658,459,0,0]
+  - img "LikeC4 1.59.3" [box=666,449,92,20]
+  - link "See asbuilt's own architecture" [box=397,506,342,44]:
     - /url: architecture/
-  - link "GitHub" [box=737,417,133,46]:
+  - link "GitHub" [box=751,505,133,46]:
     - /url: https://github.com/padamson/asbuilt
-- heading "Install" [level=2] [box=280,575,720,32]
+- heading "Install" [level=2] [box=280,663,720,32]
 - text: Unreleased — installs from GitHub main HEAD cargo install --git https://github.com/padamson/asbuilt asbuilt
-- paragraph [box=280,720,720,42]:
-  - code [box=280,723,50,16]: survey
+- paragraph [box=280,808,720,42]:
+  - code [box=280,811,50,16]: survey
   - text: and
-  - code [box=366,723,42,16]: check
+  - code [box=366,811,42,16]: check
   - text: need only cargo.
-  - code [box=534,723,67,16]: validate
+  - code [box=534,811,67,16]: validate
   - text: ","
-  - code [box=610,723,92,16]: export json
+  - code [box=610,811,92,16]: export json
   - text: ","
-  - code [box=711,723,50,16]: render
+  - code [box=711,811,50,16]: render
   - text: and
-  - code [box=797,723,34,16]: docs
+  - code [box=797,811,34,16]: docs
   - text: shell out to a pinned
-  - code [box=280,744,84,16]: npx likec4
+  - code [box=280,832,84,16]: npx likec4
   - text: (Node), and rendering also needs Graphviz
-  - code [box=674,744,25,16]: dot
+  - code [box=674,832,25,16]: dot
   - text: .
-- heading "How it works" [level=2] [box=152,858,976,32]
-- paragraph [box=152,898,768,98]:
-  - code [box=152,902,134,18]: asbuilt survey
+- heading "How it works" [level=2] [box=152,946,976,32]
+- paragraph [box=152,986,768,98]:
+  - code [box=152,990,134,18]: asbuilt survey
   - text: "reads the workspace with cargo and syn and writes the model: crates as containers, modules as components, and every module-to-module reference as a relation labeled with the item names it references."
-  - code [box=497,951,125,18]: asbuilt check
+  - code [box=497,1039,125,18]: asbuilt check
   - text: surveys again and exits 1 with a diff when the committed model no longer matches, so it runs as a pre-commit hook and a CI step.
-- tablist [box=152,1020,976,30]:
-  - tab "survey" [selected] [box=152,1020,69,30]
-  - tab "model.c4" [box=225,1020,86,30]
-  - tab "check" [box=315,1020,63,30]
-- tabpanel [box=152,1050,976,80]: "asbuilt survey # writes docs/architecture/model.c4 git add docs/architecture/model.c4"
-- heading "Never edit the model" [level=3] [box=173,1182,270,24]
-- paragraph [box=173,1210,270,60]: It is generated. Run the survey and commit the result; that is the whole fix for a red check.
-- heading "Curated views in a sibling file" [level=3] [box=505,1182,270,24]
-- paragraph [box=505,1210,270,82]:
+- tablist [box=152,1108,976,30]:
+  - tab "survey" [selected] [box=152,1108,69,30]
+  - tab "model.c4" [box=225,1108,86,30]
+  - tab "check" [box=315,1108,63,30]
+- tabpanel [box=152,1138,976,80]: "asbuilt survey # writes docs/architecture/model.c4 git add docs/architecture/model.c4"
+- heading "Never edit the model" [level=3] [box=173,1270,270,24]
+- paragraph [box=173,1298,270,60]: It is generated. Run the survey and commit the result; that is the whole fix for a red check.
+- heading "Curated views in a sibling file" [level=3] [box=505,1270,270,24]
+- paragraph [box=505,1298,270,82]:
   - text: Hand-written views reference generated ids, and
-  - code [box=505,1233,195,37]: asbuilt validate
+  - code [box=505,1321,195,37]: asbuilt validate
   - text: runs LikeC4's parser over the directory, so a stale id fails.
-- heading "Externals in the config" [level=3] [box=837,1182,270,24]
-- paragraph [box=837,1210,270,81]:
+- heading "Externals in the config" [level=3] [box=837,1270,270,24]
+- paragraph [box=837,1298,270,81]:
   - text: Nothing static says a module spawns a Node process;
-  - code [box=954,1233,101,16]: asbuilt.toml
+  - code [box=954,1321,101,16]: asbuilt.toml
   - text: does, and a name that matches no module is an error, not a missing edge.
-- heading "Surveying itself" [level=2] [box=152,1409,976,32]
-- paragraph [box=152,1449,768,72]:
+- heading "Surveying itself" [level=2] [box=152,1497,976,32]
+- paragraph [box=152,1537,768,72]:
   - text: This is asbuilt's own context view, rendered from the committed model on every deploy. The full generated documentation, one page per crate with every module and relation, is at
-  - link "architecture/" [box=152,1499,102,19]:
+  - link "architecture/" [box=152,1587,102,19]:
     - /url: architecture/
   - text: .
-- figure [box=152,1545,976,466]:
-  - 'img "asbuilt: the three crates and what they run" [box=534,1554,213,448]'
+- figure [box=152,1633,976,466]:
+  - 'img "asbuilt: the three crates and what they run" [box=534,1642,213,448]'
 - text: "asbuilt.toml: the externals nothing static can state # asbuilt surveying itself. `asbuilt check` runs in the pre-commit hook # and in CI, so docs/architecture/model.c4 cannot drift from the code. [output] path = \"docs/architecture/model.c4\" [docs] title = \"asbuilt\" source_url = \"https://github.com/padamson/asbuilt/blob/main/\" [rust] # The landing site crates are excluded from the workspace (wasm32, big # trees); they are still part of the architecture. extra_manifests = [\"crates/site/Cargo.toml\", \"crates/site-e2e/Cargo.toml\"] [[externals]] id = \"cargo\" kind = \"process\" title = \"cargo metadata\" technology = \"cargo subprocess\" description = \"Lists the workspace's packages and targets; `--no-deps --offline`, so no lockfile is touched.\" [[externals.relations]] from = \"asbuilt_rust.discover\" title = \"runs\" [[externals]] id = \"likec4\" kind = \"process\" title = \"LikeC4 CLI\" technology = \"Node.js via npx, pinned version\" description = \"Validates, exports and lays out the model. Only `validate`, `export json` and `render` reach it.\" [[externals.relations]] from = \"asbuilt.likec4\" title = \"runs\" [[externals]] id = \"graphviz\" kind = \"process\" title = \"Graphviz dot\" technology = \"dot subprocess\" description = \"Renders the Graphviz files LikeC4 generates to SVG.\" [[externals.relations]] from = \"asbuilt.likec4\" title = \"renders with\" [[externals]] id = \"chromium\" kind = \"process\" title = \"Chromium\" technology = \"Playwright driver, via playwright-rs\" description = \"The browser the site's end-to-end tests drive against the built landing page.\" [[externals.relations]] from = \"asbuilt_site_e2e.tests\" title = \"drives\" the pre-commit hook and CI step # .pre-commit-config.yaml - id: asbuilt-check name: asbuilt check entry: asbuilt check language: system pass_filenames: false files: (docs/architecture/|crates/|src/) # .github/workflows/test.yml, after the tests, on every platform - name: Run asbuilt check run: asbuilt check"
-- heading "What you get" [level=2] [box=152,3517,976,32]
-- heading "A drift check, not a diagram" [level=3] [box=173,3594,285,28]
-- paragraph [box=173,3626,436,40]: check surveys in memory and diffs against the committed model. Exit 1 is a stale model; the diff says which edge.
+- heading "What you get" [level=2] [box=152,3605,976,32]
+- heading "A drift check, not a diagram" [level=3] [box=173,3682,285,28]
+- paragraph [box=173,3714,436,40]: check surveys in memory and diffs against the committed model. Exit 1 is a stale model; the diff says which edge.
 - text: "$ asbuilt check --- a/docs/architecture/model.c4 +++ b/docs/architecture/model.c4 + app.client -[calls]-> app.server 'Driver, spawn' asbuilt: docs/architecture/model.c4 is stale"
-- heading "Re-exports resolved" [level=3] [box=671,3594,204,28]
-- paragraph [box=671,3626,436,40]: A pub use chain or a glob re-export lands on the module that defines the item, so the edge points where the code lives.
+- heading "Re-exports resolved" [level=3] [box=671,3682,204,28]
+- paragraph [box=671,3714,436,40]: A pub use chain or a glob re-export lands on the module that defines the item, so the edge points where the code lives.
 - text: "// lib.rs pub use protocol::Page; // protocol/mod.rs pub use page::{Page, Frame as PageFrame}; // consumer.rs use crate::Page; pub fn f() -> Page { Page::new() } // app.consumer -[constructs]-> app.protocol.page 'Frame, Page'"
-- heading "Externals from config" [level=3] [box=173,3937,218,28]
-- paragraph [box=173,3969,436,60]: Processes, browsers and services the code talks to are declared once, and a name that matches no module fails the survey.
+- heading "Externals from config" [level=3] [box=173,4025,218,28]
+- paragraph [box=173,4057,436,60]: Processes, browsers and services the code talks to are declared once, and a name that matches no module fails the survey.
 - text: "[[externals]] id = \"node_driver\" kind = \"process\" title = \"Playwright driver\" technology = \"Node.js process\" [[externals.relations]] from = \"playwright_rs.server.playwright_server\" title = \"spawns\" technology = \"stdio\""
-- heading "Curated views over generated ids" [level=3] [box=671,3937,343,28]
-- paragraph [box=671,3969,436,40]: Write the views you want to look at beside the model; validate rejects a stale id.
+- heading "Curated views over generated ids" [level=3] [box=671,4025,343,28]
+- paragraph [box=671,4057,436,40]: Write the views you want to look at beside the model; validate rejects a stale id.
 - text: "// docs/architecture/views.c4 views { view context { title 'asbuilt: the three crates and what they run' include asbuilt, asbuilt_core, asbuilt_rust, cargo, likec4, graphviz autoLayout LeftRight } }"
-- heading "LikeC4 for everything downstream" [level=3] [box=173,4369,351,28]
-- paragraph [box=173,4401,436,40]: Validation, JSON export, Graphviz rendering and a generated documentation site, through the pinned LikeC4 CLI.
+- heading "LikeC4 for everything downstream" [level=3] [box=173,4457,351,28]
+- paragraph [box=173,4489,436,40]: Validation, JSON export, Graphviz rendering and a generated documentation site, through the pinned LikeC4 CLI.
 - text: "asbuilt validate # likec4 validate over model.c4 and the curated views asbuilt export json # model.json, the same on every machine asbuilt render # one SVG per view, via likec4 gen dot and Graphviz asbuilt docs # a static HTML tree embedding those SVGs"
-- heading "Rust front-end first" [level=3] [box=671,4369,196,28]
-- paragraph [box=671,4401,436,40]: "A language-agnostic core with one front-end per language. Rust ships first: cargo metadata for crates, syn for references."
+- heading "Rust front-end first" [level=3] [box=671,4457,196,28]
+- paragraph [box=671,4489,436,40]: "A language-agnostic core with one front-end per language. Rust ships first: cargo metadata for crates, syn for references."
 - text: "[rust] extra_manifests = [\"crates/site/Cargo.toml\"] # crates outside the workspace include_tests = true # one `tests` component per crate include_examples = true"
-- heading "Modeled by asbuilt, tested by playwright-rs" [level=2] [box=185,4732,910,32]
-- paragraph [box=304,4776,672,72]: "The crates that build and test this page are surveyed into the model above alongside the tool itself, and playwright-rs drives the built page in CI; it deploys only if the test confirms it works. Every run leaves these receipts:"
-- heading "Trace" [level=3] [box=206,4893,174,24]
-- paragraph [box=206,4921,174,80]:
+- heading "Modeled by asbuilt, tested by playwright-rs" [level=2] [box=185,4820,910,32]
+- paragraph [box=304,4864,672,72]: "The crates that build and test this page are surveyed into the model above alongside the tool itself, and playwright-rs drives the built page in CI; it deploys only if the test confirms it works. Every run leaves these receipts:"
+- heading "Trace" [level=3] [box=206,4981,174,24]
+- paragraph [box=206,5009,174,80]:
   - text: Step-by-step timeline of the run. Open it in
-  - link "trace.playwright.dev" [box=206,4963,144,16]:
+  - link "trace.playwright.dev" [box=206,5051,144,16]:
     - /url: https://trace.playwright.dev
   - text: .
-- link "Download .zip" [box=206,5013,174,20]:
+- link "Download .zip" [box=206,5101,174,20]:
   - /url: receipts/trace.zip
-- heading "Network HAR" [level=3] [box=438,4893,174,24]
-- paragraph [box=438,4921,174,80]: Every request the run made, including the rendered views.
-- link "Download .har" [box=438,5013,174,20]:
+- heading "Network HAR" [level=3] [box=438,4981,174,24]
+- paragraph [box=438,5009,174,80]: Every request the run made, including the rendered views.
+- link "Download .har" [box=438,5101,174,20]:
   - /url: receipts/dogfood.har
-- heading "Accessibility tree" [level=3] [box=669,4893,174,24]
-- paragraph [box=669,4921,174,80]: The ARIA snapshot the test asserts, so the page's structure cannot regress unnoticed.
-- link "Download .txt" [box=669,5013,174,20]:
+- heading "Accessibility tree" [level=3] [box=669,4981,174,24]
+- paragraph [box=669,5009,174,80]: The ARIA snapshot the test asserts, so the page's structure cannot regress unnoticed.
+- link "Download .txt" [box=669,5101,174,20]:
   - /url: receipts/aria-snapshot.txt
-- heading "Screenshot" [level=3] [box=901,4893,174,24]
-- paragraph [box=901,4921,174,80]: The hero as the test saw it.
-- link "Download .png" [box=901,5013,174,20]:
+- heading "Screenshot" [level=3] [box=901,4981,174,24]
+- paragraph [box=901,5009,174,80]: The hero as the test saw it.
+- link "Download .png" [box=901,5101,174,20]:
   - /url: receipts/hero.png
-- paragraph [box=185,5078,910,20]:
-  - link "See the test that produces these" [box=510,5080,260,16]:
+- paragraph [box=185,5166,910,20]:
+  - link "See the test that produces these" [box=510,5168,260,16]:
     - /url: https://github.com/padamson/asbuilt/blob/main/crates/site-e2e/tests/landing_page.rs
-- contentinfo [box=0,5211,1280,193]:
-  - navigation [box=128,5252,1024,20]:
-    - link "GitHub" [box=128,5252,49,20]:
+- contentinfo [box=0,5299,1280,193]:
+  - navigation [box=128,5340,1024,20]:
+    - link "GitHub" [box=128,5340,49,20]:
       - /url: https://github.com/padamson/asbuilt
-    - link "Architecture" [box=197,5252,86,20]:
+    - link "Architecture" [box=197,5340,86,20]:
       - /url: architecture/
-    - link "LikeC4" [box=302,5252,47,20]:
+    - link "LikeC4" [box=302,5340,47,20]:
       - /url: https://likec4.dev
-  - paragraph [box=128,5288,768,40]:
+  - paragraph [box=128,5376,768,40]:
     - text: Everything downstream of the model is
-    - link "LikeC4" [box=409,5290,47,16]:
+    - link "LikeC4" [box=409,5378,47,16]:
       - /url: https://likec4.dev
     - text: "'s: validation, export, layout and browsing. This page is tested with"
-    - link "playwright-rs" [box=162,5310,92,16]:
+    - link "playwright-rs" [box=162,5398,92,16]:
       - /url: https://playwright-rust.dev
     - text: .
-  - paragraph [box=128,5344,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.
+  - paragraph [box=128,5432,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.

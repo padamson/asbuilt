@@ -18,7 +18,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://padamson.github.io/asbuilt/" />
     <meta name="twitter:card" content="summary" />
-    <link rel="stylesheet" href="/asbuilt/dev/input-86023510d0de4cf9.css" integrity="sha384-lo9FePn9RB8zvgcl1SV7L4cOfze0S0OD8gXzuI09PGNYN/jkVEWosvHlcnktxOEN"/>
+    <link rel="stylesheet" href="/asbuilt/dev/input-f6e80265cf180483.css" integrity="sha384-v8o6XxweZdFy+a7Il/RGlj74Skuqbl39LcQLnyHQshKcep/kGrJPOxwyx0WhzMdS"/>
     <!-- Receipts (written by the dogfood test), the rendered views
          (written by `asbuilt render`) and the architecture tree (written
          by `asbuilt docs`). Copied on every build, so they survive
@@ -29,11 +29,17 @@
     <!-- The architecture pages' palette, linked from the tree as
          ../architecture.css (`[docs] stylesheet` in asbuilt.toml). -->
     
-  <link rel="modulepreload" href="/asbuilt/dev/asbuilt-site-9ff322c6ec8e95d8.js" crossorigin="anonymous" integrity="sha384-zzrRkVsk51iIcat/O2+dQddCscAGFq6vVO46evKNGHk37fxifQ40/hzN2mE5fbQl"><link rel="preload" href="/asbuilt/dev/asbuilt-site-9ff322c6ec8e95d8_bg.wasm" crossorigin="anonymous" integrity="sha384-l0XGnHeGOAXho6qNDhsfv+FS7iDiDeRH/KaIs7Wu7Tf+m4iyDJ2eW2pw7mz64KeW" as="fetch" type="application/wasm"></head>
+    <!-- The brand from the repo's brand/ directory: the wordmark's faces
+         (OFL, license alongside) beside the built stylesheet, and the mark
+         as the favicon. -->
+    
+    
+    <link rel="icon" type="image/svg+xml" href="mark.svg" />
+  <link rel="modulepreload" href="/asbuilt/dev/asbuilt-site-b690367bc80deaac.js" crossorigin="anonymous" integrity="sha384-DhTI53fl9EI3iVfe7qZpx/XK9w1ui+nblKNjkAfJFBSriQvOoAaYd3/vWCzCjzk/"><link rel="preload" href="/asbuilt/dev/asbuilt-site-b690367bc80deaac_bg.wasm" crossorigin="anonymous" integrity="sha384-pRYH030le3HGvSJxrXT4flIjxtiRYslCY+ZuJIpSVVZKwbl+gERtcHjQhNIj5G/o" as="fetch" type="application/wasm"></head>
   <body>
 <script type="module">
-import init, * as bindings from '/asbuilt/dev/asbuilt-site-9ff322c6ec8e95d8.js';
-const wasm = await init({ module_or_path: '/asbuilt/dev/asbuilt-site-9ff322c6ec8e95d8_bg.wasm' });
+import init, * as bindings from '/asbuilt/dev/asbuilt-site-b690367bc80deaac.js';
+const wasm = await init({ module_or_path: '/asbuilt/dev/asbuilt-site-b690367bc80deaac_bg.wasm' });
 
 
 window.wasmBindings = bindings;
