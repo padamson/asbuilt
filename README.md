@@ -1,16 +1,16 @@
-<p align="center">
-  <img src="brand/mark.svg" width="96" height="96" alt="">
-</p>
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/lockup-dark.svg">
+    <img src="brand/lockup-light.svg" width="360" alt="asbuilt">
+  </picture>
+</h1>
 
-<h1 align="center">asbuilt</h1>
-
 <p align="center">
-  <a href="https://github.com/padamson/asbuilt/actions/workflows/test.yml"><img src="https://github.com/padamson/asbuilt/actions/workflows/test.yml/badge.svg?branch=main" alt="Test"></a>
-  <a href="https://github.com/padamson/asbuilt/actions/workflows/security.yml"><img src="https://github.com/padamson/asbuilt/actions/workflows/security.yml/badge.svg?branch=main" alt="Security &amp; Quality"></a>
-  <a href="https://github.com/padamson/asbuilt/actions/workflows/pages.yml"><img src="https://github.com/padamson/asbuilt/actions/workflows/pages.yml/badge.svg?branch=main" alt="Pages"></a>
-  <a href="https://padamson.github.io/asbuilt/"><img src="https://img.shields.io/badge/site-padamson.github.io%2Fasbuilt-ce422b" alt="Site"></a>
+  <a href="https://github.com/padamson/asbuilt/actions?query=branch%3Amain"><img src="https://img.shields.io/github/check-runs/padamson/asbuilt/main?label=CI&amp;logo=github" alt="CI"></a>
+  <a href="#license"><img src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue" alt="License: MIT OR Apache-2.0"></a>
+  <a href="https://likec4.dev"><img src="https://img.shields.io/badge/LikeC4-1.59.3-45ba4b" alt="LikeC4 1.59.3"></a>
   <img src="https://img.shields.io/badge/MSRV-1.88-555" alt="MSRV 1.88">
-  <a href="#license"><img src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-555" alt="License: MIT OR Apache-2.0"></a>
+  <a href="https://skills.sh/padamson/asbuilt"><img src="https://skills.sh/b/padamson/asbuilt" alt="skills.sh"></a>
 </p>
 
 Keep a [LikeC4](https://likec4.dev) architecture model that describes the
@@ -154,8 +154,6 @@ and a `VERSION` a copy records. A site that links to asbuilt can copy
 the directory whole; its README says how each piece is used.
 
 ## Agent skill
-
-[![skills.sh](https://skills.sh/b/padamson/asbuilt)](https://skills.sh/padamson/asbuilt)
 
 ```bash
 npx skills add padamson/asbuilt
