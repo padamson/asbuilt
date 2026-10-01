@@ -29,8 +29,8 @@ pub struct Element {
     pub title: String,
     /// The first paragraph of the module's own docs, markdown kept.
     pub description: Option<String>,
-    /// `library crate`, `proc-macro crate`, `binary`, or whatever the
-    /// config says for an external.
+    /// `library crate`, `binary crate`, `test crate` and the rest of the
+    /// front-end's labels, or whatever the config says for an external.
     pub technology: Option<String>,
     /// Relative to the surveyed root, `/`-separated on every platform.
     /// `None` for an external.

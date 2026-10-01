@@ -9,7 +9,8 @@ use std::path::PathBuf;
 
 use asbuilt_rust::config::RustConfig;
 use asbuilt_rust::discover::{
-    TECHNOLOGY_BINARY, TECHNOLOGY_LIBRARY, TECHNOLOGY_PROC_MACRO, TECHNOLOGY_TESTS, TargetKind,
+    TECHNOLOGY_BINARY, TECHNOLOGY_EXAMPLES, TECHNOLOGY_LIBRARY, TECHNOLOGY_LIBRARY_AND_BINARY,
+    TECHNOLOGY_PROC_MACRO, TECHNOLOGY_PROC_MACRO_AND_BINARY, TECHNOLOGY_TESTS, TargetKind,
     discover,
 };
 use asbuilt_rust::error::RustFrontendError;
@@ -81,7 +82,6 @@ fn a_crate_with_a_lib_lists_every_target_kind_sorted_with_the_lib_first() {
     let crates = discover(ws.root(), &RustConfig::default()).unwrap();
 
     let core = crates.iter().find(|c| c.crate_name == "my_core").unwrap();
-    assert_eq!(core.technology, TECHNOLOGY_LIBRARY);
     let targets: Vec<(TargetKind, &str)> = core
         .targets
         .iter()
@@ -106,6 +106,44 @@ fn a_crate_with_a_lib_lists_every_target_kind_sorted_with_the_lib_first() {
         "{:?}",
         core.targets[2].root
     );
+}
+
+#[test]
+fn a_lib_with_a_bin_beside_it_is_a_library_and_binary_crate() {
+    let ws = two_members_and_an_extra();
+
+    let crates = discover(ws.root(), &RustConfig::default()).unwrap();
+
+    let core = crates.iter().find(|c| c.crate_name == "my_core").unwrap();
+    assert_eq!(core.technology, TECHNOLOGY_LIBRARY_AND_BINARY);
+}
+
+#[test]
+fn a_lib_with_no_bin_is_a_library_crate() {
+    let ws = Workspace::new();
+    ws.write("Cargo.toml", &package("plain", ""));
+    ws.write("src/lib.rs", "");
+    ws.write("tests/it.rs", "");
+    ws.write("examples/demo.rs", "fn main() {}");
+
+    let crates = discover(ws.root(), &RustConfig::default()).unwrap();
+
+    assert_eq!(crates[0].technology, TECHNOLOGY_LIBRARY);
+}
+
+#[test]
+fn a_proc_macro_with_a_bin_beside_it_is_a_proc_macro_and_binary_crate() {
+    let ws = Workspace::new();
+    ws.write(
+        "Cargo.toml",
+        &package("derive-it", "[lib]\nproc-macro = true\n"),
+    );
+    ws.write("src/lib.rs", "");
+    ws.write("src/main.rs", "fn main() {}");
+
+    let crates = discover(ws.root(), &RustConfig::default()).unwrap();
+
+    assert_eq!(crates[0].technology, TECHNOLOGY_PROC_MACRO_AND_BINARY);
 }
 
 #[test]
@@ -134,6 +172,47 @@ fn a_tests_only_crate_is_a_test_crate_named_after_its_package() {
     assert_eq!(e2e.technology, TECHNOLOGY_TESTS);
     let kinds: Vec<TargetKind> = e2e.targets.iter().map(|t| t.kind).collect();
     assert_eq!(kinds, [TargetKind::Test]);
+}
+
+#[test]
+fn an_examples_only_package_is_an_example_crate() {
+    let ws = Workspace::new();
+    ws.write(
+        "Cargo.toml",
+        &package(
+            "demos",
+            "[[example]]\nname = \"demo\"\npath = \"examples/demo.rs\"\n",
+        ),
+    );
+    ws.write("examples/demo.rs", "fn main() {}");
+
+    let crates = discover(ws.root(), &RustConfig::default()).unwrap();
+
+    assert_eq!(crates[0].technology, TECHNOLOGY_EXAMPLES);
+}
+
+#[test]
+fn a_package_with_tests_and_examples_but_no_lib_or_bin_is_a_test_crate() {
+    let ws = Workspace::new();
+    ws.write("Cargo.toml", &package("checks", ""));
+    ws.write("tests/it.rs", "");
+    ws.write("examples/demo.rs", "fn main() {}");
+
+    let crates = discover(ws.root(), &RustConfig::default()).unwrap();
+
+    assert_eq!(crates[0].technology, TECHNOLOGY_TESTS);
+}
+
+#[test]
+fn a_package_with_benches_and_examples_but_no_lib_or_bin_is_a_test_crate() {
+    let ws = Workspace::new();
+    ws.write("Cargo.toml", &package("timings", ""));
+    ws.write("benches/b.rs", "fn main() {}");
+    ws.write("examples/demo.rs", "fn main() {}");
+
+    let crates = discover(ws.root(), &RustConfig::default()).unwrap();
+
+    assert_eq!(crates[0].technology, TECHNOLOGY_TESTS);
 }
 
 #[test]

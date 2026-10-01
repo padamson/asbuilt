@@ -136,14 +136,10 @@ fn role_of(
     target: &discover::TargetSpec,
     config: &RustConfig,
 ) -> Option<TargetRole> {
-    let has_lib = krate
-        .targets
-        .iter()
-        .any(|t| matches!(t.kind, TargetKind::Lib | TargetKind::ProcMacro));
     match target.kind {
         TargetKind::Lib | TargetKind::ProcMacro => Some(TargetRole::Main),
         TargetKind::Bin => {
-            if !has_lib && target.name.replace('-', "_") == krate.crate_name {
+            if krate.lib.is_none() && target.name.replace('-', "_") == krate.crate_name {
                 Some(TargetRole::Main)
             } else {
                 Some(TargetRole::Bin(target.name.clone()))

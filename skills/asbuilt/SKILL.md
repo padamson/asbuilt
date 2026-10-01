@@ -3,7 +3,7 @@ name: asbuilt
 description: Use when a repo has an `asbuilt.toml` or a `docs/architecture/model.c4`, when `asbuilt check` fails in a pre-commit hook or CI, or when asked to draw, update or explain a code base's architecture with LikeC4. Covers survey, check, externals and theme config, curated views, the documentation tree, and what the model does and does not record.
 license: MIT OR Apache-2.0
 metadata:
-  version: "0.5.3"
+  version: "0.5.4"
 ---
 
 # asbuilt
@@ -42,13 +42,18 @@ saying so.
 
 - One **container** per crate (id is the crate name with `_`, title the
   package name, technology `library crate`, `proc-macro crate`,
-  `binary` or `test crate`), one **component** per module nested in the
-  real hierarchy, plus one `tests` and one `examples` component per
-  crate that has them, and one `bin`-tagged component per bin beside a
-  lib.
+  `library and binary crate`, `proc-macro and binary crate`,
+  `binary crate`, `test crate` or `example crate`), one **component** per module nested
+  in the real hierarchy, plus one `tests` and one `examples` component
+  per crate that has them, and one `bin`-tagged component per bin beside
+  a lib.
 - Every element carries `metadata { path }` and a `link` relative to
   the model file, and the first paragraph of the module's `//!` doc as
-  its description.
+  its description. A crate's description comes from its lib's root
+  (`lib.rs`), or with no lib from the bin named after the package; a
+  crate with neither has none. In a crate with a lib and a bin, write
+  the `lib.rs` paragraph about the whole crate: each bin has its own
+  component.
 - One **relation** per (source module, target module) pair, kind the
   strongest evidence found (`implements` > `constructs` > `calls` >
   `names` > `uses`), label the referenced item names, sorted. Paths

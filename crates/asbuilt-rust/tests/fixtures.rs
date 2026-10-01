@@ -346,7 +346,7 @@ fn a_bin_only_crate_is_a_binary_whose_modules_sit_under_it() {
     let (model, _) = survey("targets");
     assert_eq!(
         element(&model, "runner").technology.as_deref(),
-        Some("binary")
+        Some("binary crate")
     );
     assert_eq!(
         element(&model, "runner").description.as_deref(),

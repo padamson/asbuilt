@@ -19,6 +19,8 @@ pub struct CrateSpec {
     /// there is one (`playwright_rs`), else the package name with `-`
     /// as `_`.
     pub crate_name: String,
+    /// The lib target's kind (`Lib` or `ProcMacro`) when there is one.
+    pub lib: Option<TargetKind>,
     pub technology: &'static str,
     pub manifest_path: PathBuf,
     pub manifest_dir: PathBuf,
@@ -64,9 +66,40 @@ impl TargetKind {
 }
 
 pub const TECHNOLOGY_LIBRARY: &str = "library crate";
+pub const TECHNOLOGY_LIBRARY_AND_BINARY: &str = "library and binary crate";
 pub const TECHNOLOGY_PROC_MACRO: &str = "proc-macro crate";
-pub const TECHNOLOGY_BINARY: &str = "binary";
+pub const TECHNOLOGY_PROC_MACRO_AND_BINARY: &str = "proc-macro and binary crate";
+pub const TECHNOLOGY_BINARY: &str = "binary crate";
 pub const TECHNOLOGY_TESTS: &str = "test crate";
+pub const TECHNOLOGY_EXAMPLES: &str = "example crate";
+/// A package none of whose targets is one the model knows.
+pub const TECHNOLOGY_OTHER: &str = "crate";
+
+/// A crate's label from its lib's kind and its other targets: what the
+/// package builds, whether or not `[rust]` leaves its tests or examples
+/// out of the model.
+fn technology(lib: Option<TargetKind>, targets: &[TargetSpec]) -> &'static str {
+    let has_bin = targets.iter().any(|t| t.kind == TargetKind::Bin);
+    match (lib, has_bin) {
+        (Some(TargetKind::ProcMacro), false) => TECHNOLOGY_PROC_MACRO,
+        (Some(TargetKind::ProcMacro), true) => TECHNOLOGY_PROC_MACRO_AND_BINARY,
+        (Some(_), false) => TECHNOLOGY_LIBRARY,
+        (Some(_), true) => TECHNOLOGY_LIBRARY_AND_BINARY,
+        (None, true) => TECHNOLOGY_BINARY,
+        (None, false) => {
+            if targets
+                .iter()
+                .any(|t| matches!(t.kind, TargetKind::Test | TargetKind::Bench))
+            {
+                TECHNOLOGY_TESTS
+            } else if targets.iter().any(|t| t.kind == TargetKind::Example) {
+                TECHNOLOGY_EXAMPLES
+            } else {
+                TECHNOLOGY_OTHER
+            }
+        }
+    }
+}
 
 impl CrateSpec {
     fn from_package(package: &Package) -> Self {
@@ -89,12 +122,8 @@ impl CrateSpec {
         let crate_name = lib
             .map(|t| t.name.clone())
             .unwrap_or_else(|| package.name.replace('-', "_"));
-        let technology = match lib.map(|t| t.kind) {
-            Some(TargetKind::ProcMacro) => TECHNOLOGY_PROC_MACRO,
-            Some(_) => TECHNOLOGY_LIBRARY,
-            None if targets.iter().any(|t| t.kind == TargetKind::Bin) => TECHNOLOGY_BINARY,
-            None => TECHNOLOGY_TESTS,
-        };
+        let lib = lib.map(|t| t.kind);
+        let technology = technology(lib, &targets);
         let manifest_path: PathBuf = package.manifest_path.clone().into_std_path_buf();
         let manifest_dir = manifest_path
             .parent()
@@ -103,6 +132,7 @@ impl CrateSpec {
         Self {
             package: package.name.to_string(),
             crate_name,
+            lib,
             technology,
             manifest_path,
             manifest_dir,
@@ -217,6 +247,11 @@ mod tests {
             TargetKind::from_cargo(&[CargoTargetKind::Example]),
             Some(TargetKind::Example)
         );
+    }
+
+    #[test]
+    fn a_package_with_no_target_the_model_knows_is_a_plain_crate() {
+        assert_eq!(technology(None, &[]), TECHNOLOGY_OTHER);
     }
 
     #[test]

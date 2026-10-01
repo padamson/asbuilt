@@ -23,7 +23,7 @@ model {
   }
   runner = container 'runner' {
     description 'Runs jobs.'
-    technology 'binary'
+    technology 'binary crate'
     metadata {
       path 'runner'
     }
@@ -37,7 +37,7 @@ model {
   }
   tool = container 'tool' {
     description 'A tool.'
-    technology 'library crate'
+    technology 'library and binary crate'
     metadata {
       path 'tool'
     }
