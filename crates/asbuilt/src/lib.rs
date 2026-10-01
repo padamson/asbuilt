@@ -1,4 +1,6 @@
-//! The library half of the `asbuilt` binary.
+//! The `asbuilt` CLI crate: `main.rs` parses arguments, and this
+//! library runs the subcommands (`commands`) and every call to the
+//! pinned LikeC4 (`likec4`).
 //!
 //! Everything downstream of the model (validation, export, rendering)
 //! is LikeC4's, reached by shelling out to `npx likec4` at one pinned

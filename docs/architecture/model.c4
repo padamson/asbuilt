@@ -31,7 +31,9 @@ specification {
 
 model {
   asbuilt = container 'asbuilt' {
-    description 'The library half of the `asbuilt` binary.'
+    description 'The `asbuilt` CLI crate: `main.rs` parses arguments, and this
+library runs the subcommands (`commands`) and every call to the
+pinned LikeC4 (`likec4`).'
     technology 'library crate'
     metadata {
       path 'crates/asbuilt'
