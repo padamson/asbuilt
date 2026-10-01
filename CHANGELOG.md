@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- `asbuilt docs` page titles follow the header trail: `[docs] home_title` first when it is set, so a tab or bookmark names the host project, then the tree, then the page (`playwright-rust · Architecture · xtask`). The index no longer repeats the tree's title (`playwright-rust · Architecture`, or `Architecture` alone)
+
 ## [0.1.0] - 2026-09-30
 
 ### Added

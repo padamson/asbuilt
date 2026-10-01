@@ -36,7 +36,8 @@ pub struct DocsOptions {
     /// values (`../`) are resolved from each page's own depth, so they
     /// hold under a versioned snapshot; absolute URLs are used verbatim.
     pub home_url: Option<String>,
-    /// The text of that link; `home_url` itself when absent.
+    /// The text of that link; `home_url` itself when absent. Every
+    /// page's `<title>` starts with it, so a tab names the host.
     pub home_title: Option<String>,
     /// A stylesheet linked last in every page's head, after the tree's
     /// own, so a host site can restate the page tokens in its palette.
@@ -209,11 +210,26 @@ impl Ctx<'_> {
         ))
     }
 
+    /// The `<title>`, in the header trail's order: the host when
+    /// `home_title` names it, the tree, then the page. The index is the
+    /// tree's own page, so it ends at the tree.
+    fn document_title(&self, page: Option<&str>) -> String {
+        self.options
+            .home_title
+            .as_deref()
+            .into_iter()
+            .chain([self.options.title.as_str()])
+            .chain(page)
+            .map(escape)
+            .collect::<Vec<_>>()
+            .join(" · ")
+    }
+
     /// A page: the header's trail (the home link, when there is one, and
     /// the tree's index) with the scheme control, the row of containers
     /// with the current one unlinked, then `body`. Every page's own
     /// heading names it, so nothing below the header repeats the trail.
-    fn layout(&self, depth: usize, here: Here<'_>, page_title: &str, body: &str) -> String {
+    fn layout(&self, depth: usize, here: Here<'_>, page_title: Option<&str>, body: &str) -> String {
         let prefix = up(depth);
         let mut containers = String::new();
         for element in children_of(self.model, &[]) {
@@ -276,8 +292,8 @@ impl Ctx<'_> {
         };
         let control = if toggle { SCHEME_CONTROL } else { "" };
         format!(
-            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{page} · {site}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\">{home}<a class=\"site\" href=\"{prefix}index.html\"{index_current}>{mark}{site}</a></nav>{control}</div>{containers}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
-            page = escape(page_title),
+            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{title}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\">{home}<a class=\"site\" href=\"{prefix}index.html\"{index_current}>{mark}{site}</a></nav>{control}</div>{containers}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
+            title = self.document_title(page_title),
             site = escape(&self.options.title),
             mark = mark_svg(),
         )
@@ -507,8 +523,7 @@ impl Ctx<'_> {
             }
             body.push_str("</tbody></table>\n");
         }
-        let title = self.options.title.clone();
-        self.layout(0, Here::Index, &title, &body)
+        self.layout(0, Here::Index, None, &body)
     }
 
     fn container_page_html(&mut self, element: &Element) -> String {
@@ -547,7 +562,7 @@ impl Ctx<'_> {
             body.push_str(&self.relation_tables(&descendant.id, 1));
             body.push_str("</section>\n");
         }
-        self.layout(1, Here::Container(&element.id), &element.title, &body)
+        self.layout(1, Here::Container(&element.id), Some(&element.title), &body)
     }
 
     /// Curated views: stems that are neither `index` nor generated.
@@ -571,7 +586,7 @@ impl Ctx<'_> {
                 escape(view)
             );
         }
-        Some(self.layout(0, Here::Other, "Curated views", &body))
+        Some(self.layout(0, Here::Other, Some("Curated views"), &body))
     }
 }
 
@@ -1236,7 +1251,7 @@ mod tests {
             )),
             "{app}"
         );
-        assert!(app.contains("<title>app · Sample</title>"), "{app}");
+        assert!(app.contains("<title>Sample · app</title>"), "{app}");
         let index = page(&site, "index.html");
         assert!(
             index.contains("<link rel=\"stylesheet\" href=\"style.css\">"),
@@ -1339,6 +1354,31 @@ mod tests {
             app.contains(&format!("<nav class=\"trail\" aria-label=\"Breadcrumb\"><a class=\"home\" href=\"../../\">Home</a><span class=\"sep\" aria-hidden=\"true\">/</span><a class=\"site\" href=\"../index.html\">{MARK}Sample</a></nav>", MARK = mark_svg())),
             "{app}"
         );
+    }
+
+    #[test]
+    fn the_index_title_names_the_tree_once() {
+        let site = generate(&sample(), &options());
+        let index = page(&site, "index.html");
+        assert!(index.contains("<title>Sample</title>"), "{index}");
+    }
+
+    #[test]
+    fn a_home_title_starts_the_index_title() {
+        let mut opts = options();
+        opts.home_title = Some("Host".into());
+        let site = generate(&sample(), &opts);
+        let index = page(&site, "index.html");
+        assert!(index.contains("<title>Host · Sample</title>"), "{index}");
+    }
+
+    #[test]
+    fn a_home_title_starts_a_container_page_title() {
+        let mut opts = options();
+        opts.home_title = Some("Host".into());
+        let site = generate(&sample(), &opts);
+        let app = page(&site, "containers/app.html");
+        assert!(app.contains("<title>Host · Sample · app</title>"), "{app}");
     }
 
     #[test]

@@ -3,7 +3,7 @@ name: asbuilt
 description: Use when a repo has an `asbuilt.toml` or a `docs/architecture/model.c4`, when `asbuilt check` fails in a pre-commit hook or CI, or when asked to draw, update or explain a code base's architecture with LikeC4. Covers survey, check, externals and theme config, curated views, the documentation tree, and what the model does and does not record.
 license: MIT OR Apache-2.0
 metadata:
-  version: "0.5.2"
+  version: "0.5.3"
 ---
 
 # asbuilt

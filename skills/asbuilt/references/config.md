@@ -19,7 +19,8 @@ source_url = "https://github.com/padamson/playwright-rust/blob/main/"
 # header trail (home / tree title). Relative values resolve from each page's depth, so
 # "../" is the directory above the tree under any mount point.
 home_url = "../"
-# The text of that link; the URL itself when absent.
+# The text of that link; the URL itself when absent. Every page's <title>
+# starts with it: "playwright-rust · Architecture · xtask".
 home_title = "playwright-rust"
 # A stylesheet linked last on every page, resolved like home_url. It can
 # restate the page tokens (--bg, --fg, --muted, --accent, --rule, --code,

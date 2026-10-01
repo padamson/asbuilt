@@ -170,7 +170,8 @@ pub struct DocsConfig {
     /// from each page's depth. No link when absent.
     #[serde(default)]
     pub home_url: Option<String>,
-    /// The text of that link; the URL itself when absent.
+    /// The text of that link; the URL itself when absent. Every page's
+    /// `<title>` starts with it.
     #[serde(default)]
     pub home_title: Option<String>,
     /// A stylesheet linked last in every page, after the tree's own, so

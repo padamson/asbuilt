@@ -799,7 +799,7 @@ fn docs_title_and_source_url_come_from_flags_over_the_config_over_the_root_name(
         app.contains("href=\"https://flag/app/src/server.rs\""),
         "{app}"
     );
-    assert!(app.contains("<title>app · From flag</title>"), "{app}");
+    assert!(app.contains("<title>From flag · app</title>"), "{app}");
 
     let configured = docs_run(&ws, &["-o", "configured"]);
     assert_eq!(configured.status.code(), Some(0));
