@@ -121,10 +121,14 @@
 <!-- asbuilt -->
 <g id="node12" class="node">
 <title>asbuilt</title>
-<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="1324.63,-1229 1004.63,-1229 1004.63,-1049 1324.63,-1049 1324.63,-1229"/>
-<text text-anchor="start" x="1136.13" y="-1153" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt</text>
-<text text-anchor="start" x="1129.63" y="-1132.6" font-family="Arial" font-size="13.00" fill="#ffffe5">library crate</text>
-<text text-anchor="start" x="1040.63" y="-1113" font-family="Arial" font-size="15.00" fill="#ffffe5">The library half of the `asbuilt` binary.</text>
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="1350.13,-1229 979.13,-1229 979.13,-1049 1350.13,-1049 1350.13,-1229"/>
+<text text-anchor="start" x="1136.13" y="-1187" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt</text>
+<text text-anchor="start" x="1096.13" y="-1166.6" font-family="Arial" font-size="13.00" fill="#ffffe5">library and binary crate</text>
+<text text-anchor="start" x="1031.13" y="-1147" font-family="Arial" font-size="15.00" fill="#ffffe5">The `asbuilt` CLI crate: `main.rs` parses</text>
+<text text-anchor="start" x="1098.63" y="-1130" font-family="Arial" font-size="15.00" fill="#ffffe5">arguments, and this</text>
+<text text-anchor="start" x="999.63" y="-1113" font-family="Arial" font-size="15.00" fill="#ffffe5">library runs the subcommands (`commands`) and</text>
+<text text-anchor="start" x="1112.13" y="-1096" font-family="Arial" font-size="15.00" fill="#ffffe5">every call to the</text>
+<text text-anchor="start" x="1083.63" y="-1079" font-family="Arial" font-size="15.00" fill="#ffffe5">pinned LikeC4 (`likec4`).</text>
 </g>
 <!-- asbuilt_rust -->
 <g id="node13" class="node">
@@ -293,7 +297,7 @@
 <!-- asbuilt&#45;&gt;check -->
 <g id="edge1" class="edge">
 <title>asbuilt&#45;&gt;check</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1324.65,-1091.09C1423.36,-1059.55 1551.2,-1013.95 1658.63,-960 1690.69,-943.9 1723.69,-924.11 1754.21,-904.27"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1350.22,-1082.81C1444.78,-1051.8 1560.26,-1009.4 1658.63,-960 1690.69,-943.9 1723.69,-924.11 1754.21,-904.27"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1755.84,-906.34 1760.68,-900.04 1752.97,-901.94 1755.84,-906.34"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1632.63,-968 1632.63,-989 1756.63,-989 1756.63,-968 1632.63,-968"/>
 <text text-anchor="start" x="1635.63" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Outcome, compare</text>
@@ -309,7 +313,7 @@
 <!-- asbuilt&#45;&gt;frontend -->
 <g id="edge3" class="edge">
 <title>asbuilt&#45;&gt;frontend</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1324.98,-1117.93C1514.88,-1091.86 1839.5,-1039.98 2109.63,-960 2172.09,-941.51 2238.53,-916.05 2297.26,-891.4"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1350.19,-1114.43C1542.67,-1087.35 1851.1,-1036.54 2109.63,-960 2172.09,-941.51 2238.53,-916.05 2297.26,-891.4"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2298.49,-893.73 2304.39,-888.4 2296.45,-888.89 2298.49,-893.73"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2059.63,-968 2059.63,-989 2105.63,-989 2105.63,-968 2059.63,-968"/>
 <text text-anchor="start" x="2062.63" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">survey</text>
@@ -317,7 +321,7 @@
 <!-- asbuilt&#45;&gt;emit -->
 <g id="edge4" class="edge">
 <title>asbuilt&#45;&gt;emit</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1004.41,-1126C883.37,-1108.41 721.83,-1065.31 623.63,-960 528.85,-858.35 506.83,-692.3 503.14,-587.21"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M978.94,-1122C861.48,-1102.2 715.09,-1058.08 623.63,-960 528.85,-858.35 506.83,-692.3 503.14,-587.21"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="505.76,-586.85 502.9,-579.44 500.51,-587.02 505.76,-586.85"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="623.63,-799.5 623.63,-820.5 656.63,-820.5 656.63,-799.5 623.63,-799.5"/>
 <text text-anchor="start" x="627.13" y="-805.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">emit</text>
@@ -333,7 +337,7 @@
 <!-- asbuilt&#45;&gt;config -->
 <g id="edge6" class="edge">
 <title>asbuilt&#45;&gt;config</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1004.45,-1131.56C856.72,-1117.96 638.53,-1077.6 490.63,-960 283.33,-795.16 141.08,-618.27 289.63,-399 364.25,-288.86 437.78,-316.95 567.63,-288 596.5,-281.56 2365.35,-180.5 2926.07,-148.58"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M978.97,-1129.01C832.48,-1113.2 630.24,-1071.01 490.63,-960 283.33,-795.16 141.08,-618.27 289.63,-399 364.25,-288.86 437.78,-316.95 567.63,-288 596.5,-281.56 2365.35,-180.5 2926.07,-148.58"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2926.49,-151.19 2933.83,-148.14 2926.19,-145.95 2926.49,-151.19"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="239.63,-639 239.63,-660 266.63,-660 266.63,-639 239.63,-639"/>
 <text text-anchor="start" x="243.13" y="-646.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
@@ -341,7 +345,7 @@
 <!-- asbuilt&#45;&gt;model -->
 <g id="edge7" class="edge">
 <title>asbuilt&#45;&gt;model</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1004.38,-1137.01C739.19,-1131.99 225.29,-1106.84 94.63,-989 -23.93,-882.06 -4.43,-797.64 13.63,-639 31.75,-479.93 -24.37,-395.1 94.63,-288 171.44,-218.88 830.41,-169.06 1146.64,-148.9"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M979.03,-1136.48C707.71,-1130.34 221.24,-1103.19 94.63,-989 -23.93,-882.06 -4.43,-797.64 13.63,-639 31.75,-479.93 -24.37,-395.1 94.63,-288 171.44,-218.88 830.41,-169.06 1146.64,-148.9"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1147.19,-151.5 1154.51,-148.4 1146.86,-146.26 1147.19,-151.5"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="13.63,-639 13.63,-660 40.63,-660 40.63,-639 13.63,-639"/>
 <text text-anchor="start" x="17.13" y="-646.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
@@ -349,7 +353,7 @@
 <!-- asbuilt&#45;&gt;error -->
 <g id="edge8" class="edge">
 <title>asbuilt&#45;&gt;error</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1324.77,-1133.93C1677.88,-1123.24 2512.87,-1087.99 2775.63,-989 2826.51,-969.83 2876.27,-937.1 2917.5,-904.9"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1350.39,-1133.14C1716.72,-1121.55 2519.03,-1085.67 2775.63,-989 2826.51,-969.83 2876.27,-937.1 2917.5,-904.9"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2919.26,-906.86 2923.52,-900.15 2916.01,-902.73 2919.26,-906.86"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2819.63,-968 2819.63,-989 2856.63,-989 2856.63,-968 2819.63,-968"/>
 <text text-anchor="start" x="2823.13" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error</text>
