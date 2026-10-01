@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Changed
 - `asbuilt docs` page titles follow the header trail: `[docs] home_title` first when it is set, so a tab or bookmark names the host project, then the tree, then the page (`playwright-rust · Architecture · xtask`). The index no longer repeats the tree's title (`playwright-rust · Architecture`, or `Architecture` alone)
 
+### Fixed
+- `brand/README.md` says "in the asbuilt repo" where it names asbuilt's own paths, so a host's vendored copy no longer claims they are in the host; `brand/VERSION` is 3
+
 ## [0.1.0] - 2026-09-30
 
 ### Added
