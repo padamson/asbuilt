@@ -327,10 +327,8 @@ fn examples_and_tests_collapse_to_one_component_each() {
         element(&model, "tool.examples").path.as_deref(),
         Some("tool/examples")
     );
-    assert_eq!(
-        element(&model, "tool.tests").path.as_deref(),
-        Some("tool/tests")
-    );
+    // tests/ and benches/ are siblings, so the component is at the crate.
+    assert_eq!(element(&model, "tool.tests").path.as_deref(), Some("tool"));
 }
 
 #[test]

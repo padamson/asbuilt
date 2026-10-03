@@ -65,9 +65,9 @@ model {
     tests = component 'tests' {
       #tests
       metadata {
-        path 'tool/tests'
+        path 'tool'
       }
-      link ./tool/tests
+      link ./tool
     }
     tool = component 'tool' {
       #bin

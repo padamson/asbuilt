@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `asbuilt docs` page titles follow the header trail: `[docs] home_title` first when it is set, so a tab or bookmark names the host project, then the tree, then the page (`playwright-rust · Architecture · xtask`). The index no longer repeats the tree's title (`playwright-rust · Architecture`, or `Architecture` alone)
 
 ### Fixed
+- A crate's `tests` and `examples` components point at the deepest directory holding every target folded into them: `tests/` or `benches/` alone, the crate itself when both exist, a custom `[[test]]` or `[[example]]` path's directory. Both were always `tests/` and `examples/`, so a crate with only benches or a custom path linked a directory that does not exist
 - `asbuilt docs` links `views.html` from every page's header when the tree has curated views; nothing linked to it before, so the page could only be found by its URL
 - `brand/README.md` says "in the asbuilt repo" where it names asbuilt's own paths, so a host's vendored copy no longer claims they are in the host; `brand/VERSION` is 3
 

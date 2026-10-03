@@ -127,6 +127,19 @@ fn relative(root: &Path, path: &Path) -> Result<String, RustFrontendError> {
     Ok(parts.join("/"))
 }
 
+/// The deepest directory that holds every one of `files`; `None` for no
+/// files, or files with no ancestor in common.
+fn common_dir(files: &[PathBuf]) -> Option<PathBuf> {
+    let (first, rest) = files.split_first()?;
+    let mut dir = first.parent()?.to_path_buf();
+    for file in rest {
+        while !file.starts_with(&dir) {
+            dir = dir.parent()?.to_path_buf();
+        }
+    }
+    Some(dir)
+}
+
 /// A target's role: the lib (or a bin-only package's default bin) is
 /// the crate's main namespace; a bin beside a lib, or a bin that is not
 /// the package's default, is its own component; tests, benches and
@@ -202,7 +215,8 @@ pub fn analyze(root: &Path, config: &RustConfig) -> Result<Model, RustFrontendEr
             krate.package.clone(),
         );
         container.technology = Some(krate.technology.to_string());
-        container.path = Some(relative(&root_canonical, &krate.manifest_dir)?);
+        let crate_dir = canonical(&krate.manifest_dir)?;
+        container.path = Some(relative(&root_canonical, &crate_dir)?);
         let container_index = elements.len();
         add(&mut elements, &mut ids, container, &krate.package)?;
         let mut synthetic: BTreeSet<Id> = BTreeSet::new();
@@ -287,12 +301,28 @@ pub fn analyze(root: &Path, config: &RustConfig) -> Result<Model, RustFrontendEr
                     };
                     let mut component = element(id, ElementKind::Component, name.to_string());
                     component.tags.push(name.to_string());
-                    let dir = relative(&root_canonical, &krate.manifest_dir)?;
-                    component.path = Some(if dir == "." {
-                        name.to_string()
+                    let kinds: &[TargetKind] = if matches!(role, TargetRole::Tests(_)) {
+                        &[TargetKind::Test, TargetKind::Bench]
                     } else {
-                        format!("{dir}/{name}")
-                    });
+                        &[TargetKind::Example]
+                    };
+                    let folded = krate
+                        .targets
+                        .iter()
+                        .filter(|t| kinds.contains(&t.kind))
+                        .map(|t| canonical(&t.root))
+                        .collect::<Result<Vec<_>, _>>()?;
+                    // The deepest directory holding every target folded in,
+                    // compared canonical because cargo reports a custom path
+                    // as written (`member/../shared/it.rs`): `tests` for the
+                    // usual layout, `benches` for benches alone, the crate
+                    // itself when tests and benches are siblings. Nothing
+                    // above the surveyed root can be named, so a target out
+                    // there leaves the crate directory.
+                    let dir = common_dir(&folded)
+                        .filter(|dir| dir.starts_with(&root_canonical))
+                        .unwrap_or_else(|| crate_dir.clone());
+                    component.path = Some(relative(&root_canonical, &dir)?);
                     add(&mut elements, &mut ids, component, &krate.package)?;
                 }
             }
@@ -376,10 +406,18 @@ mod tests {
     }
 
     fn package_with(files: &[(&str, &str)]) -> tempfile::TempDir {
+        package_with_targets(files, "")
+    }
+
+    /// A package `server` with `files`, and `targets` (`[[test]]`,
+    /// `[[example]]` tables) appended to its manifest.
+    fn package_with_targets(files: &[(&str, &str)], targets: &str) -> tempfile::TempDir {
         let dir = tempfile::tempdir().unwrap();
         fs::write(
             dir.path().join("Cargo.toml"),
-            "[package]\nname = \"server\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+            format!(
+                "[package]\nname = \"server\"\nversion = \"0.1.0\"\nedition = \"2021\"\n{targets}"
+            ),
         )
         .unwrap();
         for (name, text) in files {
@@ -416,6 +454,140 @@ mod tests {
             Err(RustFrontendError::TargetNameCollision { name, .. }) => assert_eq!(name, "tests"),
             other => panic!("expected TargetNameCollision, got {other:?}"),
         }
+    }
+
+    fn component_path(dir: &tempfile::TempDir, id: &str) -> Option<String> {
+        let model = analyze(dir.path(), &RustConfig::default()).unwrap();
+        model
+            .elements
+            .into_iter()
+            .find(|e| e.id.join(".") == id)
+            .and_then(|e| e.path)
+    }
+
+    // The tests and examples components point at the deepest directory
+    // holding every target folded into them.
+
+    #[test]
+    fn benches_alone_put_the_tests_component_at_benches() {
+        let dir = package_with(&[("src/lib.rs", ""), ("benches/b.rs", "fn main() {}")]);
+        assert_eq!(
+            component_path(&dir, "server.tests").as_deref(),
+            Some("benches")
+        );
+    }
+
+    #[test]
+    fn tests_beside_benches_put_the_tests_component_at_the_crate() {
+        let dir = package_with(&[
+            ("src/lib.rs", ""),
+            ("tests/it.rs", ""),
+            ("benches/b.rs", "fn main() {}"),
+        ]);
+        assert_eq!(component_path(&dir, "server.tests").as_deref(), Some("."));
+    }
+
+    #[test]
+    fn a_custom_test_path_beside_the_tests_directory_puts_the_component_at_the_crate() {
+        // `aa` sorts before `zz`: the path must not depend on which target
+        // comes first.
+        let dir = package_with_targets(
+            &[("src/lib.rs", ""), ("tests/zz.rs", ""), ("it/main.rs", "")],
+            "[[test]]\nname = \"aa\"\npath = \"it/main.rs\"\n",
+        );
+        assert_eq!(component_path(&dir, "server.tests").as_deref(), Some("."));
+    }
+
+    #[test]
+    fn a_custom_test_path_alone_names_its_directory() {
+        let dir = package_with_targets(
+            &[("src/lib.rs", ""), ("it/main.rs", "")],
+            "[[test]]\nname = \"it\"\npath = \"it/main.rs\"\n",
+        );
+        assert_eq!(component_path(&dir, "server.tests").as_deref(), Some("it"));
+    }
+
+    #[test]
+    fn a_test_file_at_the_crate_root_puts_the_component_at_the_crate_not_the_file() {
+        let dir = package_with_targets(
+            &[("src/lib.rs", ""), ("it.rs", "")],
+            "[[test]]\nname = \"it\"\npath = \"it.rs\"\n",
+        );
+        assert_eq!(component_path(&dir, "server.tests").as_deref(), Some("."));
+    }
+
+    #[test]
+    fn an_example_under_src_names_src() {
+        let dir = package_with_targets(
+            &[("src/lib.rs", ""), ("src/demo.rs", "fn main() {}")],
+            "[[example]]\nname = \"demo\"\npath = \"src/demo.rs\"\n",
+        );
+        assert_eq!(
+            component_path(&dir, "server.examples").as_deref(),
+            Some("src")
+        );
+    }
+
+    #[test]
+    fn a_custom_example_directory_is_named() {
+        let dir = package_with_targets(
+            &[("src/lib.rs", ""), ("demos/show.rs", "fn main() {}")],
+            "[[example]]\nname = \"show\"\npath = \"demos/show.rs\"\n",
+        );
+        assert_eq!(
+            component_path(&dir, "server.examples").as_deref(),
+            Some("demos")
+        );
+    }
+
+    /// A workspace at the root with one member whose test lives at
+    /// `test_path`, relative to the member.
+    fn member_with_test_at(test_path: &str) -> tempfile::TempDir {
+        let dir = tempfile::tempdir().unwrap();
+        for (name, text) in [
+            (
+                "Cargo.toml",
+                "[workspace]\nmembers = [\"member\"]\nresolver = \"2\"\n".to_string(),
+            ),
+            (
+                "member/Cargo.toml",
+                format!(
+                    "[package]\nname = \"member\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[[test]]\nname = \"it\"\npath = \"{test_path}\"\n"
+                ),
+            ),
+            ("member/src/lib.rs", String::new()),
+        ] {
+            let path = dir.path().join(name);
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(path, text).unwrap();
+        }
+        dir
+    }
+
+    #[test]
+    fn a_test_outside_its_crate_but_inside_the_root_names_its_own_directory() {
+        let dir = member_with_test_at("../shared/it.rs");
+        fs::create_dir_all(dir.path().join("shared")).unwrap();
+        fs::write(dir.path().join("shared/it.rs"), "").unwrap();
+        assert_eq!(
+            component_path(&dir, "member.tests").as_deref(),
+            Some("shared")
+        );
+    }
+
+    #[test]
+    fn a_test_outside_the_surveyed_root_leaves_the_component_at_its_crate() {
+        // A sibling temp dir: the common directory is above the root.
+        let elsewhere = tempfile::tempdir().unwrap();
+        fs::write(elsewhere.path().join("it.rs"), "").unwrap();
+        let dir = member_with_test_at(&format!(
+            "../../{}/it.rs",
+            elsewhere.path().file_name().unwrap().to_str().unwrap()
+        ));
+        assert_eq!(
+            component_path(&dir, "member.tests").as_deref(),
+            Some("member")
+        );
     }
 
     #[test]
