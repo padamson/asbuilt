@@ -53,8 +53,8 @@
 <!-- tests -->
 <g id="node4" class="node">
 <title>tests</title>
-<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1697.83,-579 1377.83,-579 1377.83,-399 1697.83,-399 1697.83,-579"/>
-<text text-anchor="start" x="1516.83" y="-484" font-family="Arial" font-size="20.00" fill="#5b5b5b">tests</text>
+<polygon fill="#d9d4cf" stroke="#b1aca8" stroke-width="0" points="1697.83,-579 1377.83,-579 1377.83,-399 1697.83,-399 1697.83,-579"/>
+<text text-anchor="start" x="1516.83" y="-484" font-family="Arial" font-size="20.00" fill="#3c3834">tests</text>
 </g>
 <!-- check -->
 <g id="node5" class="node">
@@ -193,8 +193,8 @@
 <!-- commands&#45;&gt;config -->
 <g id="edge8" class="edge">
 <title>commands&#45;&gt;config</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2978.37,-1436.79C3441.65,-1370.94 4633.66,-1148.72 4292.83,-639 4065.87,-299.58 3841.21,-381.83 3443.83,-288 3081.72,-202.5 2979.04,-265.11 2608.83,-228 2429.84,-210.06 2225.62,-182.93 2085.89,-163.34"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.24,-160.74 2078.45,-162.29 2085.51,-165.94 2086.24,-160.74"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2978.69,-1436.79C3442.04,-1371.02 4632.7,-1149.14 4292.83,-639 4068.26,-301.93 3845.89,-381.61 3451.83,-288 3086.38,-201.19 2982.58,-265.34 2608.83,-228 2429.84,-210.12 2225.62,-182.98 2085.88,-163.37"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.24,-160.77 2078.44,-162.33 2085.51,-165.97 2086.24,-160.77"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4352.83,-799.5 4352.83,-820.5 4488.83,-820.5 4488.83,-799.5 4352.83,-799.5"/>
 <text text-anchor="start" x="4355.83" y="-805.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">ColorScheme, Config</text>
 </g>
@@ -225,8 +225,8 @@
 <!-- frontend&#45;&gt;model -->
 <g id="edge16" class="edge">
 <title>frontend&#45;&gt;model</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3359.53,-719.85C3376.78,-700.82 3394.05,-680.31 3408.83,-660 3478.07,-564.81 3519.29,-496.83 3453.83,-399 3351.51,-246.08 3141.04,-183.01 2991.57,-157.05"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2991.88,-154.44 2984.05,-155.76 2991,-159.61 2991.88,-154.44"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3359.53,-719.85C3376.78,-700.82 3394.05,-680.31 3408.83,-660 3478.07,-564.81 3517.84,-497.78 3453.83,-399 3353.53,-244.23 3141.82,-181.54 2991.55,-156.18"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2991.82,-153.56 2983.99,-154.93 2990.96,-158.74 2991.82,-153.56"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3485.83,-478.5 3485.83,-499.5 3529.83,-499.5 3529.83,-478.5 3485.83,-478.5"/>
 <text text-anchor="start" x="3488.83" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Model</text>
 </g>
@@ -308,10 +308,10 @@
 <title>externals&#45;&gt;model</title>
 <path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2955.47,-398.58C2930.09,-348.52 2898.42,-286.09 2872.51,-235"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2874.79,-233.69 2869.06,-228.19 2870.11,-236.07 2874.79,-233.69"/>
-<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2922.83,-288 2922.83,-339 3131.83,-339 3131.83,-288 2922.83,-288"/>
-<text text-anchor="start" x="2926.33" y="-324.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, ElementKind, Id, Model,</text>
-<text text-anchor="start" x="2926.33" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Relation, RelationKind, dotted,</text>
-<text text-anchor="start" x="2926.33" y="-294.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">sanitize_id, sanitize_segment</text>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2922.83,-288 2922.83,-339 3178.83,-339 3178.83,-288 2922.83,-288"/>
+<text text-anchor="start" x="2925.83" y="-324.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, ElementKind, Id, Model,</text>
+<text text-anchor="start" x="2925.83" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Relation, RelationKind, SURVEY_KINDS,</text>
+<text text-anchor="start" x="2925.83" y="-294.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">dotted, sanitize_id, sanitize_segment</text>
 </g>
 <!-- externals&#45;&gt;config -->
 <g id="edge27" class="edge">
@@ -397,10 +397,10 @@
 <!-- asbuilt_rust&#45;&gt;config -->
 <g id="edge13" class="edge">
 <title>asbuilt_rust&#45;&gt;config</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3641.56,-1048.64C3651.58,-1029.71 3660.44,-1009.29 3665.83,-989 3734.18,-731.25 3743.86,-589.06 3556.83,-399 3406.68,-246.42 2821.39,-253.28 2608.83,-228 2430.21,-206.76 2225.93,-180.16 2086.08,-161.6"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.41,-159 2078.63,-160.61 2085.72,-164.2 2086.41,-159"/>
-<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3704.83,-639 3704.83,-660 3750.83,-660 3750.83,-639 3704.83,-639"/>
-<text text-anchor="start" x="3707.83" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3641.56,-1048.64C3651.58,-1029.71 3660.44,-1009.29 3665.83,-989 3734.18,-731.25 3740.58,-592.24 3556.83,-399 3409.32,-243.87 2821.5,-252.38 2608.83,-228 2430.12,-207.51 2225.85,-180.8 2086.03,-162"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.37,-159.4 2078.59,-161 2085.67,-164.6 2086.37,-159.4"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3703.83,-639 3703.83,-660 3749.83,-660 3749.83,-639 3703.83,-639"/>
+<text text-anchor="start" x="3706.83" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
 </g>
 <!-- asbuilt_rust&#45;&gt;error -->
 <g id="edge14" class="edge">

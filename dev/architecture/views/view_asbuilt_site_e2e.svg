@@ -16,8 +16,8 @@
 <!-- tests -->
 <g id="node1" class="node">
 <title>tests</title>
-<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="360,-501 40,-501 40,-321 360,-321 360,-501"/>
-<text text-anchor="start" x="179" y="-406" font-family="Arial" font-size="20.00" fill="#5b5b5b">tests</text>
+<polygon fill="#d9d4cf" stroke="#b1aca8" stroke-width="0" points="360,-501 40,-501 40,-321 360,-321 360,-501"/>
+<text text-anchor="start" x="179" y="-406" font-family="Arial" font-size="20.00" fill="#3c3834">tests</text>
 </g>
 <!-- chromium -->
 <g id="node2" class="node">

@@ -7,6 +7,10 @@
   --c4-label-bg: color-mix(in srgb, var(--bg) 88%, transparent);
   --c4-group-fill-mix: 7%;
   --c4-group-stroke-mix: 20%;
+  --c4-bin-fill: #f0a884;
+  --c4-bin-stroke: #cb8e70;
+  --c4-bin-text: #221812;
+  --c4-bin-muted: #4b3429;
   --c4-component-fill: #ffffff;
   --c4-component-stroke: #d8d8d8;
   --c4-component-text: #242424;
@@ -19,11 +23,19 @@
   --c4-process-stroke: #c5b3a9;
   --c4-process-text: #211e1c;
   --c4-process-muted: #49423e;
+  --c4-tests-fill: #d9d4cf;
+  --c4-tests-stroke: #b7b3af;
+  --c4-tests-text: #1e1e1d;
+  --c4-tests-muted: #444241;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --c4-group-fill-mix: 22%;
     --c4-group-stroke-mix: 40%;
+    --c4-bin-fill: #b5391f;
+    --c4-bin-stroke: #c25b45;
+    --c4-bin-text: #fbf3f2;
+    --c4-bin-muted: #edcec7;
     --c4-component-fill: #3d2c22;
     --c4-component-stroke: #5e5047;
     --c4-component-text: #f3f2f2;
@@ -36,11 +48,19 @@
     --c4-process-stroke: #524b46;
     --c4-process-text: #f3f2f2;
     --c4-process-muted: #cbc9c8;
+    --c4-tests-fill: #4a4038;
+    --c4-tests-stroke: #69605a;
+    --c4-tests-text: #f4f4f3;
+    --c4-tests-muted: #d2d0ce;
   }
 }
 :root[data-theme="dark"] {
   --c4-group-fill-mix: 22%;
   --c4-group-stroke-mix: 40%;
+  --c4-bin-fill: #b5391f;
+  --c4-bin-stroke: #c25b45;
+  --c4-bin-text: #fbf3f2;
+  --c4-bin-muted: #edcec7;
   --c4-component-fill: #3d2c22;
   --c4-component-stroke: #5e5047;
   --c4-component-text: #f3f2f2;
@@ -53,6 +73,10 @@
   --c4-process-stroke: #524b46;
   --c4-process-text: #f3f2f2;
   --c4-process-muted: #cbc9c8;
+  --c4-tests-fill: #4a4038;
+  --c4-tests-stroke: #69605a;
+  --c4-tests-text: #f4f4f3;
+  --c4-tests-muted: #d2d0ce;
 }
 svg.c4 { display: block; width: 100%; height: auto; }
 svg.c4 .cluster text { fill: var(--muted); fill-opacity: 1; }
@@ -60,6 +84,10 @@ svg.c4 .edge path { stroke: var(--c4-edge); }
 svg.c4 .edge polygon:not(.c4-label-bg) { fill: var(--c4-edge); stroke: var(--c4-edge); }
 svg.c4 .edge .c4-label-bg { fill: var(--c4-label-bg); fill-opacity: 1; }
 svg.c4 .edge text { fill: var(--c4-edge-text); }
+svg.c4 .node.c4-k-bin > :is(polygon, path, ellipse, polyline) { fill: var(--c4-bin-fill); stroke: var(--c4-bin-stroke); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+svg.c4 .node.c4-k-bin text { fill: var(--c4-bin-text); }
+svg.c4 .node.c4-k-bin text.c4-muted { fill: var(--c4-bin-muted); }
+svg.c4 .cluster.c4-k-bin > :is(polygon, path) { fill: color-mix(in srgb, var(--c4-bin-fill) var(--c4-group-fill-mix), var(--bg)); stroke: color-mix(in srgb, var(--c4-bin-fill) var(--c4-group-stroke-mix), var(--bg)); }
 svg.c4 .node.c4-k-component > :is(polygon, path, ellipse, polyline) { fill: var(--c4-component-fill); stroke: var(--c4-component-stroke); stroke-width: 1px; vector-effect: non-scaling-stroke; }
 svg.c4 .node.c4-k-component text { fill: var(--c4-component-text); }
 svg.c4 .node.c4-k-component text.c4-muted { fill: var(--c4-component-muted); }
@@ -72,3 +100,7 @@ svg.c4 .node.c4-k-process > :is(polygon, path, ellipse, polyline) { fill: var(--
 svg.c4 .node.c4-k-process text { fill: var(--c4-process-text); }
 svg.c4 .node.c4-k-process text.c4-muted { fill: var(--c4-process-muted); }
 svg.c4 .cluster.c4-k-process > :is(polygon, path) { fill: color-mix(in srgb, var(--c4-process-fill) var(--c4-group-fill-mix), var(--bg)); stroke: color-mix(in srgb, var(--c4-process-fill) var(--c4-group-stroke-mix), var(--bg)); }
+svg.c4 .node.c4-k-tests > :is(polygon, path, ellipse, polyline) { fill: var(--c4-tests-fill); stroke: var(--c4-tests-stroke); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+svg.c4 .node.c4-k-tests text { fill: var(--c4-tests-text); }
+svg.c4 .node.c4-k-tests text.c4-muted { fill: var(--c4-tests-muted); }
+svg.c4 .cluster.c4-k-tests > :is(polygon, path) { fill: color-mix(in srgb, var(--c4-tests-fill) var(--c4-group-fill-mix), var(--bg)); stroke: color-mix(in srgb, var(--c4-tests-fill) var(--c4-group-stroke-mix), var(--bg)); }

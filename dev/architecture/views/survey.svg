@@ -32,8 +32,8 @@
 <!-- tests -->
 <g id="node2" class="node">
 <title>tests</title>
-<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1730.5,-827 1410.5,-827 1410.5,-647 1730.5,-647 1730.5,-827"/>
-<text text-anchor="start" x="1549.5" y="-732" font-family="Arial" font-size="20.00" fill="#5b5b5b">tests</text>
+<polygon fill="#d9d4cf" stroke="#b1aca8" stroke-width="0" points="1730.5,-827 1410.5,-827 1410.5,-647 1730.5,-647 1730.5,-827"/>
+<text text-anchor="start" x="1549.5" y="-732" font-family="Arial" font-size="20.00" fill="#3c3834">tests</text>
 </g>
 <!-- resolve -->
 <g id="node3" class="node">
@@ -162,10 +162,10 @@
 <!-- aggregate&#45;&gt;model -->
 <g id="edge4" class="edge">
 <title>aggregate&#45;&gt;model</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M270.71,-1349.92C346.43,-1200.37 516.38,-899.29 738,-717 1188.45,-346.49 1892.87,-205.46 2211.52,-158.56"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2211.93,-161.15 2218.97,-157.47 2211.17,-155.95 2211.93,-161.15"/>
-<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1124,-468 1124,-489 1339,-489 1339,-468 1124,-468"/>
-<text text-anchor="start" x="1127.5" y="-474.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Id, Relation, RelationKind, is_lineal</text>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M270.97,-1349.76C346.93,-1200.3 517.03,-899.77 738,-717 1138.18,-386 1305.2,-385.31 1802,-234 1936.75,-192.96 2094.92,-168.19 2211.38,-154.12"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2211.85,-156.7 2218.99,-153.2 2211.23,-151.49 2211.85,-156.7"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1124,-454 1124,-475 1339,-475 1339,-454 1124,-454"/>
+<text text-anchor="start" x="1127.5" y="-460.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Id, Relation, RelationKind, is_lineal</text>
 </g>
 <!-- tests&#45;&gt;discover -->
 <g id="edge5" class="edge">
@@ -198,18 +198,19 @@
 <!-- tests&#45;&gt;frontend -->
 <g id="edge8" class="edge">
 <title>tests&#45;&gt;frontend</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1730.65,-689.61C1847.89,-653.61 2010.66,-601.35 2151,-548 2168.21,-541.46 2186.01,-534.34 2203.72,-527.01"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2204.85,-529.38 2210.77,-524.08 2202.84,-524.54 2204.85,-529.38"/>
-<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1953.5,-665 1953.5,-686 1999.5,-686 1999.5,-665 1953.5,-665"/>
-<text text-anchor="start" x="1956.5" y="-671.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">survey</text>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1730.73,-690.1C1848,-654.42 2010.79,-602.47 2151,-549 2168.23,-542.43 2186.04,-535.26 2203.77,-527.88"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2204.91,-530.24 2210.82,-524.92 2202.89,-525.4 2204.91,-530.24"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1953.5,-666 1953.5,-687 1999.5,-687 1999.5,-666 1953.5,-666"/>
+<text text-anchor="start" x="1956.5" y="-672.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">survey</text>
 </g>
 <!-- tests&#45;&gt;model -->
 <g id="edge9" class="edge">
 <title>tests&#45;&gt;model</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1604.89,-646.72C1640.9,-561.5 1706.26,-436.19 1802,-363 1930.48,-264.78 2001.42,-321.5 2151,-260 2171.63,-251.52 2192.83,-241.71 2213.61,-231.42"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2214.79,-233.76 2220.33,-228.06 2212.45,-229.06 2214.79,-233.76"/>
-<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1855,-363 1855,-384 2098,-384 2098,-363 1855,-363"/>
-<text text-anchor="start" x="1858.5" y="-369.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, Model, Relation, RelationKind</text>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1602.66,-646.82C1637.69,-558.53 1702.97,-426.48 1802,-350 1929.8,-251.3 2000.35,-307.13 2151,-249 2171.04,-241.27 2191.72,-232.43 2212.06,-223.2"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2213.21,-225.56 2218.94,-220.05 2211.03,-220.78 2213.21,-225.56"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1853,-350 1853,-386 2100,-386 2100,-350 1853,-350"/>
+<text text-anchor="start" x="1856.5" y="-371.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, ElementKind, Model, Relation,</text>
+<text text-anchor="start" x="1856.5" y="-356.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">RelationKind</text>
 </g>
 <!-- resolve&#45;&gt;visit -->
 <g id="edge10" class="edge">
@@ -262,10 +263,10 @@
 <!-- visit&#45;&gt;model -->
 <g id="edge16" class="edge">
 <title>visit&#45;&gt;model</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1623.52,-1148.74C1661.9,-1078.27 1712.41,-976.74 1742,-882 1791.93,-722.15 1691.34,-635.7 1802,-510 1908.87,-388.61 2042.21,-526.67 2151,-407 2182.37,-372.49 2146.89,-343.92 2171,-304 2186.75,-277.92 2208.18,-254.23 2231.31,-233.45"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2233.34,-235.16 2237.22,-228.22 2229.86,-231.22 2233.34,-235.16"/>
-<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1935,-510 1935,-531 2018,-531 2018,-510 1935,-510"/>
-<text text-anchor="start" x="1938.5" y="-516.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">RelationKind</text>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1623.49,-1148.73C1661.87,-1078.26 1712.37,-976.72 1742,-882 1791.73,-723 1691.87,-636.99 1802,-512 1908.92,-390.66 2042.43,-528.86 2151,-409 2182.89,-373.79 2146.51,-344.71 2171,-304 2186.71,-277.89 2208.12,-254.19 2231.23,-233.4"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2233.26,-235.11 2237.14,-228.18 2229.78,-231.17 2233.26,-235.11"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1935,-512 1935,-533 2018,-533 2018,-512 1935,-512"/>
+<text text-anchor="start" x="1938.5" y="-518.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">RelationKind</text>
 </g>
 <!-- walk&#45;&gt;error -->
 <g id="edge17" class="edge">
