@@ -19,6 +19,7 @@ permissions:
 jobs:
   build-release:
     name: Build ${{ matrix.target }}
+    needs: [semver-checks]
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write       # create the GitHub Release and attach files
@@ -123,6 +124,30 @@ jobs:
             *.tar.gz
             *.zip
         continue-on-error: true
+
+  # The tag's version against the latest one on crates.io, per published
+  # crate: a breaking change under a version that does not allow one
+  # fails here, before the GitHub Release or any crate is published. On
+  # 0.x a minor bump (0.1 to 0.2) allows one.
+  semver-checks:
+    name: Semver Compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # stable
+        with:
+          toolchain: stable
+
+      - name: Install cargo-semver-checks
+        uses: taiki-e/install-action@4cef1412cce204788f482e778a0b9187f9626a29 # v2.87.21
+        with:
+          tool: cargo-semver-checks
+
+      - name: Check semver compatibility
+        run: cargo semver-checks check-release --workspace
 
   publish-crates:
     name: Publish to crates.io
