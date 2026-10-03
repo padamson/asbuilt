@@ -393,6 +393,47 @@ async fn site_dev_build_reflects_unreleased_state() {
     browser.close().await.expect("close browser");
 }
 
+/// The roadmap's progress bar agrees with its Now column: the bar's value
+/// is the number of done items and its maximum the number of items.
+#[tokio::test]
+#[ignore = "needs a Trunk-built site and Chromium; run with: cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(/^site_/)'"]
+async fn site_roadmap_progress_counts_the_done_items_in_now() {
+    let dist = dist();
+    let (_pw, browser, page) = open_site_in_process(&dist, None).await;
+
+    for column in ["#roadmap-now", "#roadmap-next", "#roadmap-later"] {
+        expect(page.locator(column))
+            .to_be_visible()
+            .await
+            .unwrap_or_else(|e| panic!("roadmap column {column} should render: {e:?}"));
+    }
+    let done = page
+        .locator("#roadmap-now li [data-status='Done']")
+        .count()
+        .await
+        .expect("count done items");
+    let total = page
+        .locator("#roadmap-now li")
+        .count()
+        .await
+        .expect("count Now items");
+    let bar = page.locator("#roadmap-progress");
+    let value = bar
+        .get_attribute("aria-valuenow")
+        .await
+        .expect("read the bar's value");
+    let max = bar
+        .get_attribute("aria-valuemax")
+        .await
+        .expect("read the bar's maximum");
+    assert_eq!(
+        (value, max),
+        (Some(done.to_string()), Some(total.to_string()))
+    );
+
+    browser.close().await.expect("close browser");
+}
+
 /// The artifact that deploys, not the build the gate above drives: the
 /// snapshot built with `--public-url /asbuilt/<dest>/`, served under that
 /// path with the manifest at the root, as gh-pages lays it out. Every

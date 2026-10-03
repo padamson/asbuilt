@@ -9,6 +9,7 @@ mod hero;
 mod how_it_works;
 pub mod icons;
 mod install;
+mod roadmap;
 mod unreleased_badge;
 mod version_switcher;
 
@@ -22,5 +23,6 @@ pub use footer::Footer;
 pub use hero::Hero;
 pub use how_it_works::HowItWorks;
 pub use install::Install;
+pub use roadmap::Roadmap;
 pub use unreleased_badge::UnreleasedBadge;
 pub use version_switcher::VersionSwitcher;

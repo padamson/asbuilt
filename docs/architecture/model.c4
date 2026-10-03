@@ -366,6 +366,12 @@ directory listing, so discovery order is out of the picture.'
         }
         link ../../crates/site/src/components/install.rs
       }
+      roadmap = component 'roadmap' {
+        metadata {
+          path 'crates/site/src/components/roadmap.rs'
+        }
+        link ../../crates/site/src/components/roadmap.rs
+      }
       unreleased_badge = component 'unreleased_badge' {
         metadata {
           path 'crates/site/src/components/unreleased_badge.rs'
@@ -378,6 +384,15 @@ directory listing, so discovery order is out of the picture.'
         }
         link ../../crates/site/src/components/version_switcher.rs
       }
+    }
+    roadmap = component 'roadmap' {
+      description 'The roadmap as data: Now (the next release, with each item\'s status),
+Next and Later. The section renders straight from `ITEMS`, so moving an
+item is an edit here, made in the commit that does the work.'
+      metadata {
+        path 'crates/site/src/roadmap.rs'
+      }
+      link ../../crates/site/src/roadmap.rs
     }
     snippets = component 'snippets' {
       description 'Syntax-highlighted code snippets, generated at build time by `build.rs` from
@@ -503,6 +518,7 @@ version switcher needs to know that: every other asset path is relative.'
   asbuilt_site.app -[uses]-> asbuilt_site.components.hero 'Hero'
   asbuilt_site.app -[uses]-> asbuilt_site.components.how_it_works 'HowItWorks'
   asbuilt_site.app -[uses]-> asbuilt_site.components.install 'Install'
+  asbuilt_site.app -[uses]-> asbuilt_site.components.roadmap 'Roadmap'
   asbuilt_site.app -[uses]-> asbuilt_site.components.version_switcher 'VersionSwitcher'
   asbuilt_site.components.example -[uses]-> asbuilt_site.components.code_block 'CodeBlock'
   asbuilt_site.components.example -[uses]-> asbuilt_site.snippets 'snippets'
@@ -518,6 +534,7 @@ version switcher needs to know that: every other asset path is relative.'
   asbuilt_site.components.install -[uses]-> asbuilt_site.components.code_block 'CodeBlock'
   asbuilt_site.components.install -[uses]-> asbuilt_site.snippets 'snippets'
   asbuilt_site.components.install -[calls]-> asbuilt_site.version 'is_dev'
+  asbuilt_site.components.roadmap -[calls]-> asbuilt_site.roadmap 'Horizon, ITEMS, Item, MILESTONE, NEXT_MILESTONE, Status, progress, roadmap'
   asbuilt_site.components.version_switcher -[calls]-> asbuilt_site.version 'SITE_VERSION, is_dev, manifest_url, snapshot_url'
   asbuilt_site_e2e.tests -[uses]-> chromium 'drives'
 }

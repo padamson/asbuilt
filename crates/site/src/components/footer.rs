@@ -15,6 +15,7 @@ pub fn Footer() -> impl IntoView {
                 <nav class="flex flex-wrap gap-5">
                     <a href=GITHUB class="hover:text-rust-300">"GitHub"</a>
                     <a href="architecture/" class="hover:text-rust-300">"Architecture"</a>
+                    <a href="#roadmap" class="hover:text-rust-300">"Roadmap"</a>
                     {(!is_dev).then(|| view! {
                         <a href=DOCS_RS class="hover:text-rust-300">"Docs"</a>
                         <a href=CRATES_IO class="hover:text-rust-300">"crates.io"</a>

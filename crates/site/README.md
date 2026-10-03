@@ -86,7 +86,8 @@ deploy/update-manifest.sh   versions.json and the root redirect for the gh-pages
 src/version.rs          SITE_VERSION, is_dev(), SITE_PREFIX and the two URL helpers
 src/app.rs              composes the page sections
 src/components/         Hero, Install, HowItWorks, Example, Features, DogfoodBanner,
-                        VersionSwitcher, CodeBlock, CodeTabs, FeatureCard, Footer, icons
+                        Roadmap, VersionSwitcher, CodeBlock, CodeTabs, FeatureCard, Footer, icons
+src/roadmap.rs          the roadmap as data: Now (the next release, with status), Next, Later
 src/snippets.rs         includes the build-time-generated highlighted HTML
 ```
 
