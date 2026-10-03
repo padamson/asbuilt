@@ -10,6 +10,8 @@ use crate::model::Model;
 
 /// One language's reader. `asbuilt-rust` is the first.
 pub trait Frontend {
+    /// The front-end's name, which is also its `asbuilt.toml` table
+    /// (`rust` reads `[rust]`).
     fn name(&self) -> &str;
     /// Whether `root` is a code base this front-end reads, decided from
     /// marker files (`Cargo.toml`, `package.json`, ...).

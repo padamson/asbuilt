@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 /// Anything the core, a front-end, or the config can get wrong.
 #[derive(Debug, thiserror::Error)]
+#[non_exhaustive]
 pub enum Error {
     #[error("reading {path}: {source}")]
     Io {
@@ -48,6 +49,18 @@ pub enum Error {
     /// have; a typo would otherwise style nothing, silently.
     #[error("theme: \"{kind}\" is not an element kind of the surveyed model (have {have})")]
     UnknownThemeKind { kind: String, have: String },
+
+    /// A top-level `asbuilt.toml` entry that is neither one of asbuilt's
+    /// own tables nor a front-end's: `[rsut]`, `[[external]]` for
+    /// `[[externals]]`, or a key such as `title = ...` that belongs under
+    /// `[docs]`. It would otherwise be ignored, silently. `entry` is
+    /// written as it appears in the file.
+    #[error("{path}: {entry} is not a top-level entry asbuilt reads (tables: {known})")]
+    UnknownTopLevel {
+        path: PathBuf,
+        entry: String,
+        known: String,
+    },
 
     /// No front-end recognized the root.
     #[error("no supported stack detected at {root}")]

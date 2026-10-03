@@ -10,7 +10,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use asbuilt_core::docs::{DocsOptions, GENERATOR_META, generate};
 use asbuilt_core::svg::ViewSource;
-use asbuilt_core::{ColorScheme, Config, EmitOptions, Model, Outcome, compare, emit};
+use asbuilt_core::{ColorScheme, Config, EmitOptions, Frontend, Model, Outcome, compare, emit};
 use asbuilt_rust::RustFrontend;
 
 use crate::likec4::{self, LikeC4Error};
@@ -53,11 +53,15 @@ pub enum CliError {
     LikeC4(#[from] LikeC4Error),
 }
 
+/// The config every command reads, with any top-level entry no
+/// front-end claims rejected before the command does anything.
 fn load_config(root: &Path, config_path: Option<&Path>) -> Result<Config, CliError> {
-    Ok(match config_path {
+    let config = match config_path {
         Some(path) => Config::load_file(path)?,
         None => Config::load(root)?,
-    })
+    };
+    config.check_tables(&[RustFrontend.name()])?;
+    Ok(config)
 }
 
 fn slashes(path: &Path) -> String {

@@ -286,6 +286,21 @@ fn a_config_typo_exits_two_naming_the_file() {
     );
 }
 
+#[test]
+fn render_rejects_a_misspelled_table_before_running_likec4() {
+    let ws = scratch_copy();
+    ws.write("asbuilt.toml", "[outptu]\npath = \"arch/model.c4\"\n");
+
+    let out = without_path(&["render", ws.root().to_str().unwrap()]);
+
+    assert_eq!(out.status.code(), Some(2));
+    assert!(
+        text(&out.stderr).contains("[outptu]"),
+        "{}",
+        text(&out.stderr)
+    );
+}
+
 // The LikeC4 and Graphviz wrappers without Node on the PATH: every one
 // must report that `npx` could not start and exit 2, which is what
 // separates a real call from a stub without needing Node at all. The

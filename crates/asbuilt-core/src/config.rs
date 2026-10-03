@@ -17,12 +17,16 @@ pub const DEFAULT_OUTPUT_PATH: &str = "docs/architecture/model.c4";
 /// The config file name, looked up at the surveyed root.
 pub const FILE_NAME: &str = "asbuilt.toml";
 
+/// asbuilt's own top-level tables, as the file writes them.
+const OWN_TABLES: [&str; 4] = ["[output]", "[docs]", "[theme]", "[[externals]]"];
+
 /// The parsed `asbuilt.toml`.
 ///
-/// Unknown top-level tables are not an error: they are a front-end's
-/// (`[rust]`, say) and stay in `sections` for it to deserialize with its
-/// own schema. Unknown keys *inside* `[output]` or an `[[externals]]`
-/// entry are rejected.
+/// Other top-level entries stay in `sections`, where a front-end's table
+/// (`[rust]`, say) waits to be deserialized with that front-end's schema;
+/// [`Config::check_tables`] rejects any that names no front-end. Unknown
+/// keys *inside* `[output]` or an `[[externals]]` entry are rejected
+/// when parsing.
 ///
 /// ```
 /// use asbuilt_core::Config;
@@ -291,6 +295,47 @@ impl Config {
         Ok(config)
     }
 
+    /// The file this config came from, for error messages: `asbuilt.toml`
+    /// when it was parsed from a string or defaulted.
+    pub fn file_path(&self) -> PathBuf {
+        self.path
+            .clone()
+            .unwrap_or_else(|| PathBuf::from(FILE_NAME))
+    }
+
+    /// Every top-level entry is asbuilt's own or the table of one of
+    /// `frontends` (by [`Frontend::name`](crate::Frontend::name)); the
+    /// first that is neither is an error naming it as written.
+    pub fn check_tables(&self, frontends: &[&str]) -> Result<()> {
+        let Some((name, value)) = self
+            .sections
+            .iter()
+            .find(|(name, _)| !frontends.contains(&name.as_str()))
+        else {
+            return Ok(());
+        };
+        let entry = match value {
+            toml::Value::Table(_) => format!("[{name}]"),
+            toml::Value::Array(items)
+                if !items.is_empty() && items.iter().all(toml::Value::is_table) =>
+            {
+                format!("[[{name}]]")
+            }
+            _ => format!("{name} = ..."),
+        };
+        let known = OWN_TABLES
+            .iter()
+            .map(|t| t.to_string())
+            .chain(frontends.iter().map(|name| format!("[{name}]")))
+            .collect::<Vec<_>>()
+            .join(", ");
+        Err(Error::UnknownTopLevel {
+            path: self.file_path(),
+            entry,
+            known,
+        })
+    }
+
     /// A front-end's own table, deserialized with its schema. `Ok(None)`
     /// when the table is absent; a `Config` error naming the file when
     /// it is present and does not fit.
@@ -303,10 +348,7 @@ impl Config {
             .try_into()
             .map(Some)
             .map_err(|source| Error::Config {
-                path: self
-                    .path
-                    .clone()
-                    .unwrap_or_else(|| PathBuf::from(FILE_NAME)),
+                path: self.file_path(),
                 source,
             })
     }
@@ -342,6 +384,72 @@ technology = "stdio"
     struct RustLike {
         extra_manifests: Vec<String>,
         include_tests: bool,
+    }
+
+    fn unknown(text: &str) -> (PathBuf, String, String) {
+        let config: Config = text.parse().unwrap();
+        match config.check_tables(&["rust"]) {
+            Err(Error::UnknownTopLevel { path, entry, known }) => (path, entry, known),
+            other => panic!("expected UnknownTopLevel, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn a_misspelled_table_is_named_as_written() {
+        assert_eq!(unknown("[rsut]\ninclude_tests = false\n").1, "[rsut]");
+    }
+
+    #[test]
+    fn a_singular_externals_table_is_named_as_an_array_of_tables() {
+        let (_, entry, _) =
+            unknown("[[external]]\nid = \"d\"\nkind = \"process\"\ntitle = \"D\"\n");
+        assert_eq!(entry, "[[external]]");
+    }
+
+    #[test]
+    fn a_stray_top_level_key_is_named_as_a_key() {
+        assert_eq!(unknown("title = \"My docs\"\n").1, "title = ...");
+    }
+
+    #[test]
+    fn a_stray_top_level_list_is_named_as_a_key() {
+        assert_eq!(unknown("tags = [\"a\"]\n").1, "tags = ...");
+    }
+
+    #[test]
+    fn a_stray_empty_list_is_named_as_a_key() {
+        assert_eq!(unknown("tags = []\n").1, "tags = ...");
+    }
+
+    #[test]
+    fn an_unknown_entry_lists_asbuilts_tables_then_the_front_ends() {
+        assert_eq!(
+            unknown("[rsut]\n").2,
+            "[output], [docs], [theme], [[externals]], [rust]"
+        );
+    }
+
+    #[test]
+    fn an_unknown_entry_in_a_defaulted_config_names_the_default_file() {
+        assert_eq!(unknown("[rsut]\n").0, PathBuf::from("asbuilt.toml"));
+    }
+
+    #[test]
+    fn an_unknown_entry_in_a_loaded_config_names_that_file() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("elsewhere.toml");
+        std::fs::write(&path, "[rsut]\n").unwrap();
+        let config = Config::load_file(&path).unwrap();
+        assert!(matches!(
+            config.check_tables(&["rust"]),
+            Err(Error::UnknownTopLevel { path: named, .. }) if named == path
+        ));
+    }
+
+    #[test]
+    fn a_front_ends_table_and_asbuilts_own_pass_the_check() {
+        let config: Config = BRIEF_EXAMPLE.parse().unwrap();
+        assert!(config.check_tables(&["rust"]).is_ok());
     }
 
     #[test]

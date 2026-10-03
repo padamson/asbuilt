@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Changed
+- Every command rejects a top-level `asbuilt.toml` entry that neither asbuilt nor a front-end reads (`[rsut]`, `[[external]]` for `[[externals]]`, or `title = ...` outside `[docs]`), naming the file, the entry as written and the tables there are; before, it was ignored, so the setting it held silently did nothing. A config carrying such an entry worked with 0.1 and fails now: fix or remove the entry after upgrading
+- `asbuilt_core::Error` is `#[non_exhaustive]`, so a new error is no longer a breaking change; a `match` on it needs a `_` arm
 - Crate labels: a crate with a bin beside its lib is a `library and binary crate` (`proc-macro and binary crate` beside a proc-macro), not a `library crate`; a package with only examples is an `example crate`, not a `test crate`; a bin-only package is a `binary crate`, not a `binary`. A consumer with any of these sees its `model.c4` change: re-run `asbuilt survey` after upgrading, or `asbuilt check` fails
 - `asbuilt docs` page titles follow the header trail: `[docs] home_title` first when it is set, so a tab or bookmark names the host project, then the tree, then the page (`playwright-rust · Architecture · xtask`). The index no longer repeats the tree's title (`playwright-rust · Architecture`, or `Architecture` alone)
 
