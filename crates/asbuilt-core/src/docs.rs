@@ -162,7 +162,7 @@ impl Place {
 enum Here<'a> {
     Index,
     Container(&'a [String]),
-    Other,
+    Views,
 }
 
 /// The relative prefix from a page at `depth` back to the tree root.
@@ -192,6 +192,9 @@ struct Ctx<'a> {
     views: BTreeMap<Id, String>,
     /// Where every element is documented.
     places: BTreeMap<Id, Place>,
+    /// The rendered views that are neither `index` nor generated, which
+    /// `views.html` shows; every header links that page when there are any.
+    curated: Vec<String>,
     /// The element kind of each LikeC4 id, for the classes an inlined
     /// view's nodes carry.
     kinds: BTreeMap<String, String>,
@@ -291,8 +294,17 @@ impl Ctx<'_> {
             String::new()
         };
         let control = if toggle { SCHEME_CONTROL } else { "" };
+        let curated = if self.curated.is_empty() {
+            String::new()
+        } else if here == Here::Views {
+            "<nav class=\"views\" aria-label=\"Views\"><span aria-current=\"page\">Curated views</span></nav>".to_string()
+        } else {
+            format!(
+                "<nav class=\"views\" aria-label=\"Views\"><a href=\"{prefix}views.html\">Curated views</a></nav>"
+            )
+        };
         format!(
-            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{title}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\">{home}<a class=\"site\" href=\"{prefix}index.html\"{index_current}>{mark}{site}</a></nav>{control}</div>{containers}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
+            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{title}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\">{home}<a class=\"site\" href=\"{prefix}index.html\"{index_current}>{mark}{site}</a></nav>{curated}{control}</div>{containers}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
             title = self.document_title(page_title),
             site = escape(&self.options.title),
             mark = mark_svg(),
@@ -565,20 +577,13 @@ impl Ctx<'_> {
         self.layout(1, Here::Container(&element.id), Some(&element.title), &body)
     }
 
-    /// Curated views: stems that are neither `index` nor generated.
+    /// The curated views on one page; `None` when there are none.
     fn views_page(&mut self) -> Option<String> {
-        let generated: BTreeSet<&String> = self.views.values().collect();
-        let options = self.options;
-        let curated: Vec<&String> = options
-            .views
-            .keys()
-            .filter(|v| v.as_str() != "index" && !generated.contains(v))
-            .collect();
-        if curated.is_empty() {
+        if self.curated.is_empty() {
             return None;
         }
         let mut body = String::from("<h1>Curated views</h1>\n");
-        for view in curated {
+        for view in &self.curated {
             let markup = self.view_markup(0, view, view).unwrap_or_default();
             let _ = writeln!(
                 body,
@@ -586,7 +591,7 @@ impl Ctx<'_> {
                 escape(view)
             );
         }
-        Some(self.layout(0, Here::Other, Some("Curated views"), &body))
+        Some(self.layout(0, Here::Views, Some("Curated views"), &body))
     }
 }
 
@@ -638,11 +643,19 @@ pub fn generate(model: &Model, options: &DocsOptions) -> Site {
         .map(|e| (sanitize_id(&e.id), e.kind.keyword().to_string()))
         .collect();
     let kind_names: BTreeSet<String> = kinds.values().cloned().collect();
+    let generated: BTreeSet<&String> = views.values().collect();
+    let curated: Vec<String> = options
+        .views
+        .keys()
+        .filter(|v| v.as_str() != "index" && !generated.contains(v))
+        .cloned()
+        .collect();
     let mut ctx = Ctx {
         model: &model,
         options,
         views,
         places,
+        curated,
         kinds,
         missing: BTreeSet::new(),
     };
@@ -1456,12 +1469,46 @@ mod tests {
             options: &opts,
             views: BTreeMap::new(),
             places: BTreeMap::new(),
+            curated: vec![],
             kinds: BTreeMap::new(),
             missing: BTreeSet::new(),
         };
         assert_eq!(
             ctx.view_figure(0, "a<b", "alt"),
             "<p class=\"missing\">No diagram for <code>a&lt;b</code>: run <code>asbuilt render</code>.</p>\n"
+        );
+    }
+
+    #[test]
+    fn a_page_below_the_root_links_the_curated_views_through_the_parent() {
+        let mut opts = options();
+        opts.views.insert("context".into(), plain_view());
+        let site = generate(&sample(), &opts);
+        let app = page(&site, "containers/app.html");
+        assert!(
+            app.contains("<nav class=\"views\" aria-label=\"Views\"><a href=\"../views.html\">Curated views</a></nav>"),
+            "{app}"
+        );
+    }
+
+    #[test]
+    fn the_views_page_marks_its_own_header_link_current() {
+        let mut opts = options();
+        opts.views.insert("context".into(), plain_view());
+        let site = generate(&sample(), &opts);
+        let views = page(&site, "views.html");
+        assert!(
+            views.contains("<nav class=\"views\" aria-label=\"Views\"><span aria-current=\"page\">Curated views</span></nav>"),
+            "{views}"
+        );
+    }
+
+    #[test]
+    fn a_tree_with_no_curated_views_has_no_views_link() {
+        let site = generate(&sample(), &options());
+        assert!(
+            site.pages.values().all(|p| !p.contains("class=\"views\"")),
+            "a page links a views page that does not exist"
         );
     }
 
