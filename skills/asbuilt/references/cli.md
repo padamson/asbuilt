@@ -89,13 +89,25 @@ directory above the tree from every page.
 ## The pre-commit hook and CI step
 
 ```yaml
-# .pre-commit-config.yaml
-- id: asbuilt-check
-  name: asbuilt check
-  entry: asbuilt check
-  language: system
-  pass_filenames: false
-  files: (docs/architecture/|crates/|src/)
+# .pre-commit-config.yaml (pre-commit or prek)
+repos:
+  - repo: https://github.com/padamson/asbuilt
+    rev: v0.2.0
+    hooks:
+      - id: asbuilt-check
+```
+
+The hook is defined in asbuilt's `.pre-commit-hooks.yaml` and runs the
+`asbuilt` on the PATH (`language: system`), so install the release `rev`
+names; a stale model reported right after an upgrade is the binary and
+the committed model disagreeing about the new release's output, fixed by
+`asbuilt survey`. It runs when a `.rs` file, a `Cargo.toml`,
+`asbuilt.toml` or anything under `docs/architecture/` changes; a model
+kept elsewhere (`[output] path`) overrides `files:` on the hook:
+
+```yaml
+      - id: asbuilt-check
+        files: (\.rs$|Cargo\.toml$|asbuilt\.toml$|^arch/)
 ```
 
 In CI, `asbuilt check` after the test step on every platform proves the

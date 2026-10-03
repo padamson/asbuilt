@@ -142,16 +142,19 @@ commit `model.c4` and the curated views, and ignore the rest.
 ### Keeping it honest
 
 ```yaml
-# .pre-commit-config.yaml
-- id: asbuilt-check
-  name: asbuilt check
-  entry: asbuilt check
-  language: system
-  pass_filenames: false
-  files: (docs/architecture/|crates/|src/)
+# .pre-commit-config.yaml (pre-commit or prek)
+repos:
+  - repo: https://github.com/padamson/asbuilt
+    rev: v0.2.0
+    hooks:
+      - id: asbuilt-check
 ```
 
-and the same command as a CI step on every platform.
+The hook runs the `asbuilt` on the PATH, so install the release `rev`
+names. It runs when a `.rs` file, a `Cargo.toml`, `asbuilt.toml` or
+anything under `docs/architecture/` changes; a model kept elsewhere
+(`[output] path`) sets `files:` on the hook to include its directory.
+Run the same command as a CI step on every platform.
 
 ## Brand
 

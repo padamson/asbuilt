@@ -1,11 +1,11 @@
-# .pre-commit-config.yaml
-- id: asbuilt-check
-  name: asbuilt check
-  entry: asbuilt check
-  language: system
-  pass_filenames: false
-  files: (docs/architecture/|crates/|src/)
+# .pre-commit-config.yaml (pre-commit or prek)
+repos:
+  - repo: https://github.com/padamson/asbuilt
+    rev: v0.2.0
+    hooks:
+      - id: asbuilt-check
 
 # .github/workflows/test.yml, after the tests, on every platform
-- name: Run asbuilt check
-  run: asbuilt check
+steps:
+  - name: Run asbuilt check
+    run: asbuilt check

@@ -1,0 +1,20 @@
+# The hook this repo provides. A consumer references it by release:
+#
+#   - repo: https://github.com/padamson/asbuilt
+#     rev: vX.Y.Z
+#     hooks:
+#       - id: asbuilt-check
+#
+# `language: system` runs the `asbuilt` on the PATH, so install the
+# release the `rev` names. `files` is what the model reads (Rust sources,
+# every manifest, the config) and the default model directory with its
+# curated views; a model kept elsewhere (`[output] path`) overrides
+# `files` on the hook. This repo's own hook in .pre-commit-config.yaml
+# runs the working tree's CLI with the same pattern; keep them identical.
+- id: asbuilt-check
+  name: asbuilt check
+  description: The committed architecture model matches the code
+  entry: asbuilt check
+  language: system
+  pass_filenames: false
+  files: (\.rs$|Cargo\.toml$|asbuilt\.toml$|^docs/architecture/)

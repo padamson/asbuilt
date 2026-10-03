@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- `.pre-commit-hooks.yaml`: the `asbuilt-check` hook, referenced by repo and release (`repo: https://github.com/padamson/asbuilt`, `rev: v0.2.0`) instead of copied into each consumer's config. It runs the `asbuilt` on the PATH when a `.rs` file, a `Cargo.toml`, `asbuilt.toml` or anything under `docs/architecture/` changes; the pattern the README documented before missed `asbuilt.toml`, the root `Cargo.toml` and crates outside `crates/` or `src/`
+
 ### Changed
 - Every command rejects a top-level `asbuilt.toml` entry that neither asbuilt nor a front-end reads (`[rsut]`, `[[external]]` for `[[externals]]`, or `title = ...` outside `[docs]`), naming the file, the entry as written and the tables there are; before, it was ignored, so the setting it held silently did nothing. A config carrying such an entry worked with 0.1 and fails now: fix or remove the entry after upgrading
 - `asbuilt_core::Error` is `#[non_exhaustive]`, so a new error is no longer a breaking change; a `match` on it needs a `_` arm

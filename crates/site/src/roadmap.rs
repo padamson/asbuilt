@@ -145,14 +145,14 @@ pub const ITEMS: &[Item] = &[
     now(
         "roadmap-now-fixes",
         "Small fixes",
-        "Link curated views from every page, reject a misspelled config table, and check asbuilt.toml in the documented hook.",
-        Status::Planned,
+        "Link curated views from every page, reject a misspelled config entry, and ship the pre-commit hook as a definition consumers reference by release.",
+        Status::Done,
     ),
     later(
         Horizon::Next,
         "roadmap-next-ci",
         "Drop-in CI",
-        "A pre-commit hook definition, a GitHub Action, cargo-binstall metadata, and aarch64 Linux and musl builds.",
+        "A GitHub Action, cargo-binstall metadata, and aarch64 Linux and musl builds.",
     ),
     later(
         Horizon::Next,
