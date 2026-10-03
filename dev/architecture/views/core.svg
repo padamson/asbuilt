@@ -147,8 +147,8 @@
 <title>commands&#45;&gt;frontend</title>
 <path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2831.37,-1369.76C2869.24,-1265.05 2942.81,-1090.21 3047.83,-968 3067.47,-945.14 3091.12,-923.92 3115.56,-904.94"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3117.43,-906.81 3121.78,-900.17 3114.24,-902.65 3117.43,-906.81"/>
-<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2982.83,-1128.5 2982.83,-1149.5 3028.83,-1149.5 3028.83,-1128.5 2982.83,-1128.5"/>
-<text text-anchor="start" x="2985.83" y="-1134.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">survey</text>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2982.83,-1128.5 2982.83,-1149.5 3090.83,-1149.5 3090.83,-1128.5 2982.83,-1128.5"/>
+<text text-anchor="start" x="2985.83" y="-1134.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Frontend, survey</text>
 </g>
 <!-- commands&#45;&gt;docs -->
 <g id="edge3" class="edge">
