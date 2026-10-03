@@ -6,13 +6,13 @@
   - heading "Architecture models that cannot drift" [level=1] [box=33,229,1213,60]
   - paragraph [box=304,309,672,84]: asbuilt surveys a Rust code base into a LikeC4 model, the way as-built drawings describe a building as constructed rather than as designed, and fails CI when the committed model no longer matches the code.
   - paragraph [box=425,405,429,16]: Nothing in the model is hand-written. Nothing in the code is annotated.
-  - 'link "crates.io: unreleased" [box=522,449,128,20]':
+  - 'link "crates.io: unreleased" [box=472,449,128,20]':
     - /url: https://crates.io/crates/asbuilt
-    - 'img "crates.io: unreleased" [box=522,449,128,20]'
-  - link "CI" [box=658,459,0,0]:
+    - 'img "crates.io: unreleased" [box=472,449,128,20]'
+  - link "CI" [box=608,449,101,20]:
     - /url: https://github.com/padamson/asbuilt
-    - img "CI" [box=658,459,0,0]
-  - img "LikeC4 1.59.3" [box=666,449,92,20]
+    - img "CI" [box=608,449,101,20]
+  - img "LikeC4 1.59.4" [box=717,449,92,20]
   - link "See asbuilt's own architecture" [box=397,506,342,44]:
     - /url: architecture/
   - link "GitHub" [box=751,505,133,46]:
@@ -120,7 +120,7 @@
   - text: .
 - heading "Now · 0.2.0" [level=3] [box=173,5440,270,28]
 - progressbar "0.2.0 progress" [box=173,5476,270,6]
-- paragraph [box=173,5486,270,16]: 3 of 8 done
+- paragraph [box=173,5486,270,16]: 4 of 8 done
 - list [box=173,5518,270,1044]:
   - listitem [box=173,5518,270,112]:
     - heading "Page titles name the project" [level=4] [box=173,5518,210,48]
@@ -147,8 +147,8 @@
     - text: Planned
     - paragraph [box=173,6230,270,40]: "[theme] keys for tags, so a crate's binary stands apart from its modules."
   - listitem [box=173,6286,270,132]:
-    - heading "LikeC4 1.59.4 and a parity check" [level=4] [box=173,6286,187,48]
-    - text: Planned
+    - heading "LikeC4 1.59.4 and a parity check" [level=4] [box=173,6286,210,48]
+    - text: Done
     - paragraph [box=173,6338,270,80]: Bump the pin, and run the LikeC4 tests weekly against the latest release so a break is an issue, not a surprise.
   - listitem [box=173,6434,270,128]:
     - heading "Small fixes" [level=4] [box=173,6434,98,24]
