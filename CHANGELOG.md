@@ -6,9 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Added
+- `Upstream LikeC4 Check`, weekly: when a newer LikeC4 release exists, it runs the LikeC4 tests against it and opens or updates a tracking issue that says whether the bump is clean and what a bump touches
 - `.pre-commit-hooks.yaml`: the `asbuilt-check` hook, referenced by repo and release (`repo: https://github.com/padamson/asbuilt`, `rev: v0.2.0`) instead of copied into each consumer's config. It runs the `asbuilt` on the PATH when a `.rs` file, a `Cargo.toml`, `asbuilt.toml` or anything under `docs/architecture/` changes; the pattern the README documented before missed `asbuilt.toml`, the root `Cargo.toml` and crates outside `crates/` or `src/`
 
 ### Changed
+- LikeC4 is pinned at 1.59.4 (was 1.59.3). Neither the language nor `gen dot` output changed between them; the emitter facts and the reserved-word list were re-verified against it. The release is now named in one place, `asbuilt::LIKEC4_VERSION`: the tests, the site's badge and the README badge derive from it, and `asbuilt_core::model::RESERVED_GRAMMAR_VERSION` records the grammar the reserved-word list came from, held equal to the pin by a test so a bump re-derives the list
 - Every command rejects a top-level `asbuilt.toml` entry that neither asbuilt nor a front-end reads (`[rsut]`, `[[external]]` for `[[externals]]`, or `title = ...` outside `[docs]`), naming the file, the entry as written and the tables there are; before, it was ignored, so the setting it held silently did nothing. A config carrying such an entry worked with 0.1 and fails now: fix or remove the entry after upgrading
 - `asbuilt_core::Error` is `#[non_exhaustive]`, so a new error is no longer a breaking change; a `match` on it needs a `_` arm
 - Crate labels: a crate with a bin beside its lib is a `library and binary crate` (`proc-macro and binary crate` beside a proc-macro), not a `library crate`; a package with only examples is an `example crate`, not a `test crate`; a bin-only package is a `binary crate`, not a `binary`. A consumer with any of these sees its `model.c4` change: re-run `asbuilt survey` after upgrading, or `asbuilt check` fails

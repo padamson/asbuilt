@@ -6,9 +6,9 @@ const CRATES_IO: &str = "https://crates.io/crates/asbuilt";
 const DOCS_RS: &str = "https://docs.rs/asbuilt";
 const GITHUB: &str = "https://github.com/padamson/asbuilt";
 const CI_BADGE: &str = "https://github.com/padamson/asbuilt/actions/workflows/test.yml/badge.svg";
-/// The LikeC4 release every `npx likec4` call is pinned to; bump with
-/// `LIKEC4_VERSION` in `crates/asbuilt/src/lib.rs`.
-const LIKEC4_VERSION: &str = "1.59.3";
+/// The LikeC4 release every `npx likec4` call is pinned to, read by
+/// `build.rs` from `LIKEC4_VERSION` in `crates/asbuilt/src/lib.rs`.
+const LIKEC4_VERSION: &str = env!("LIKEC4_VERSION");
 
 #[component]
 pub fn Hero() -> impl IntoView {

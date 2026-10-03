@@ -140,7 +140,7 @@ pub const ITEMS: &[Item] = &[
         "roadmap-now-likec4",
         "LikeC4 1.59.4 and a parity check",
         "Bump the pin, and run the LikeC4 tests weekly against the latest release so a break is an issue, not a surprise.",
-        Status::Planned,
+        Status::Done,
     ),
     now(
         "roadmap-now-fixes",

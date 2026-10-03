@@ -355,7 +355,7 @@ mod tests {
     fn npx_args_pin_the_release_before_the_subcommand() {
         assert_eq!(
             npx_args(&["validate", "x"]),
-            ["--yes", "likec4@1.59.3", "validate", "x"]
+            ["--yes", &likec4_package(), "validate", "x"]
         );
     }
 

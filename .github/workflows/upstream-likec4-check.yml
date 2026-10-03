@@ -1,0 +1,165 @@
+name: Upstream LikeC4 Check
+
+# Weekly: is there a newer LikeC4 than the one `npx likec4` is pinned to,
+# and would moving the pin pass? Dependabot cannot see the pin (a Rust
+# constant, crates/asbuilt/src/lib.rs), and the `likec4_` tests only
+# ever run against it, so without this a release that changes the
+# grammar or `gen dot` output is found when someone bumps by hand.
+#
+# When a newer release exists, the job moves the pin in its own checkout,
+# runs the tests that meet the real parser against it, and opens or
+# updates one tracking issue per upstream version with the verdict. It
+# never bumps main: a bump also re-derives the reserved-word list and
+# that is a reviewed commit.
+
+on:
+  schedule:
+    # Saturday 10:00 UTC, after the Dependabot window (04:00 ET) and the
+    # weekly Security & Quality run (09:00 UTC).
+    - cron: '0 10 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-upstream:
+    name: Check for a newer LikeC4 release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Read the pinned release
+        id: current
+        run: |
+          # pipefail: a grep miss (constant renamed) must not read as an
+          # empty version that is "behind" and opens a bogus issue.
+          set -euo pipefail
+          version=$(sed -n -E 's/^pub const LIKEC4_VERSION: &str = "([^"]+)";/\1/p' crates/asbuilt/src/lib.rs)
+          if [ -z "$version" ]; then
+            echo "::error::could not read LIKEC4_VERSION from crates/asbuilt/src/lib.rs"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Pinned: likec4@$version"
+
+      - name: Read the latest release on npm
+        id: upstream
+        run: |
+          set -euo pipefail
+          latest=$(npm view likec4 version)
+          if [ -z "$latest" ]; then
+            echo "::error::could not read likec4's latest version from npm"
+            exit 1
+          fi
+          echo "version=$latest" >> "$GITHUB_OUTPUT"
+          echo "Latest: likec4@$latest"
+
+      - name: Install Rust
+        if: steps.current.outputs.version != steps.upstream.outputs.version
+        uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # stable
+        with:
+          toolchain: stable
+
+      - name: Cache Cargo
+        if: steps.current.outputs.version != steps.upstream.outputs.version
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          shared-key: likec4
+
+      - name: Install cargo-nextest
+        if: steps.current.outputs.version != steps.upstream.outputs.version
+        uses: taiki-e/install-action@4cef1412cce204788f482e778a0b9187f9626a29 # v2.87.21
+        with:
+          tool: cargo-nextest
+
+      - name: Install Graphviz
+        if: steps.current.outputs.version != steps.upstream.outputs.version
+        run: sudo apt-get update && sudo apt-get install -y graphviz
+
+      # The pin moved in this checkout only. `validate` first installs the
+      # release into the npx cache once, so the tests do not race to
+      # unpack it (test.yml's LikeC4 job explains). The unit tests that
+      # assert the old spec are not `likec4_` tests, so the filter skips
+      # them.
+      - name: Run the LikeC4 tests against the latest release
+        if: steps.current.outputs.version != steps.upstream.outputs.version
+        id: probe
+        env:
+          LATEST: ${{ steps.upstream.outputs.version }}
+        run: |
+          set -euo pipefail
+          sed -i -E "s/^(pub const LIKEC4_VERSION: &str = \")[^\"]+/\1${LATEST}/" crates/asbuilt/src/lib.rs
+          grep -q "\"${LATEST}\"" crates/asbuilt/src/lib.rs
+          set +e
+          log=$( (cargo run -p asbuilt -- validate && \
+                  cargo nextest run --workspace --profile ci --run-ignored only -E 'test(/^likec4_/)') 2>&1)
+          code=$?
+          set -e
+          echo "$log"
+          if [ "$code" -eq 0 ]; then
+            echo "verdict=pass" >> "$GITHUB_OUTPUT"
+          else
+            echo "verdict=fail" >> "$GITHUB_OUTPUT"
+          fi
+          {
+            echo "tail<<LOG_EOF"
+            echo "$log" | tail -n 60
+            echo "LOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the tracking issue
+        if: steps.current.outputs.version != steps.upstream.outputs.version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CURRENT: ${{ steps.current.outputs.version }}
+          UPSTREAM: ${{ steps.upstream.outputs.version }}
+          VERDICT: ${{ steps.probe.outputs.verdict }}
+          # Through the environment, not interpolated into the script:
+          # the log quotes whatever the parser printed.
+          LOG_TAIL: ${{ steps.probe.outputs.tail }}
+          LABEL: upstream-likec4-bump
+        run: |
+          set -euo pipefail
+          title="LikeC4 bump: ${UPSTREAM} available (we pin ${CURRENT})"
+          if [ "$VERDICT" = "pass" ]; then
+            verdict_line="**The \`likec4_\` tests pass against ${UPSTREAM}** (this repo's model validates, every fixture snapshot validates, export, render and docs work), so the bump is mechanical apart from the reserved-word check below."
+          else
+            verdict_line="**The \`likec4_\` tests fail against ${UPSTREAM}.** The emitter or a wrapper needs a change before the pin can move; the end of the run:"
+          fi
+
+          body="$(cat <<EOF
+          LikeC4 **${UPSTREAM}** is the latest release on npm; \`npx likec4\` is pinned to **${CURRENT}** in \`crates/asbuilt/src/lib.rs\`.
+
+          ${verdict_line}
+
+          $( [ "$VERDICT" = "fail" ] && printf '```\n%s\n```\n' "$LOG_TAIL" )
+
+          ## What a bump touches
+
+          - \`LIKEC4_VERSION\` in \`crates/asbuilt/src/lib.rs\`: the one place the release is named; the tests, the site's badge and the README badge derive from it
+          - \`asbuilt_core::model::RESERVED\`: re-derive against the new grammar (diff the keyword tokens of \`packages/language-server/src/*.langium\` between the two tags; probe any new word by validating a model that uses it as a nested element), then move \`RESERVED_GRAMMAR_VERSION\` beside it. \`cargo test\` fails until it equals the pin
+          - \`CHANGELOG.md\`
+
+          ## Tracking
+
+          - Opened or updated weekly by \`.github/workflows/upstream-likec4-check.yml\`; the verdict is re-run against current main each week
+          - Closes when the bump commit lands referencing it (\`closes #<n>\`)
+          EOF
+          )"
+
+          existing=$(gh issue list --state open --label "$LABEL" \
+            --search "in:title \"${UPSTREAM}\"" --json number,title \
+            --jq ".[] | select(.title == \"${title}\") | .number" | head -n1)
+          if [ -n "$existing" ]; then
+            echo "Updating #${existing}"
+            gh issue edit "$existing" --body "$body"
+          else
+            gh label create "$LABEL" \
+              --description "A newer LikeC4 release than the pinned one" \
+              --color 1d76db 2>/dev/null || true
+            gh issue create --label "$LABEL" --title "$title" --body "$body"
+            echo "Opened a tracking issue for ${UPSTREAM}"
+          fi

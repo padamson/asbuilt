@@ -10,7 +10,7 @@
   <a href="https://docs.rs/asbuilt-core"><img src="https://docs.rs/asbuilt-core/badge.svg" alt="docs.rs"></a>
   <a href="https://github.com/padamson/asbuilt/actions?query=branch%3Amain"><img src="https://img.shields.io/github/check-runs/padamson/asbuilt/main?label=CI&amp;logo=github" alt="CI"></a>
   <a href="#license"><img src="https://img.shields.io/crates/l/asbuilt" alt="License: MIT OR Apache-2.0"></a>
-  <a href="https://likec4.dev"><img src="https://img.shields.io/badge/LikeC4-1.59.3-45ba4b" alt="LikeC4 1.59.3"></a>
+  <a href="https://likec4.dev"><img src="https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fraw.githubusercontent.com%2Fpadamson%2Fasbuilt%2Fmain%2Fcrates%2Fasbuilt%2Fsrc%2Flib.rs&amp;search=LIKEC4_VERSION%3A%20%26str%20%3D%20%22(%5B%5E%22%5D%2B)%22&amp;replace=%241&amp;label=LikeC4&amp;color=45ba4b" alt="LikeC4 version pinned by the CLI"></a>
   <img src="https://img.shields.io/badge/MSRV-1.88-555" alt="MSRV 1.88">
   <a href="https://skills.sh/padamson/asbuilt"><img src="https://skills.sh/b/padamson/asbuilt" alt="skills.sh"></a>
 </p>
@@ -60,7 +60,8 @@ To try what is on `main` before it is released, `cargo install --git
 https://github.com/padamson/asbuilt asbuilt`.
 
 `survey` and `check` need only cargo. `validate`, `export json`,
-`render` and `docs` shell out to `npx likec4@1.59.3` (Node), and
+`render` and `docs` shell out to `npx likec4` (Node) at the release
+the badge above names, and
 `render` and `docs` also need Graphviz `dot`; `docs --no-render`
 reuses SVGs already rendered and needs neither.
 

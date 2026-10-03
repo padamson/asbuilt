@@ -17,13 +17,16 @@ pub mod likec4;
 
 /// The LikeC4 release every `npx likec4` call is pinned to. The emitter
 /// facts in `asbuilt-core` were verified against this version.
-pub const LIKEC4_VERSION: &str = "1.59.3";
+pub const LIKEC4_VERSION: &str = "1.59.4";
 
 /// The package spec handed to `npx --yes`, so every call resolves the
 /// same release.
 ///
 /// ```
-/// assert_eq!(asbuilt::likec4_package(), "likec4@1.59.3");
+/// assert_eq!(
+///     asbuilt::likec4_package(),
+///     format!("likec4@{}", asbuilt::LIKEC4_VERSION)
+/// );
 /// ```
 pub fn likec4_package() -> String {
     format!("likec4@{LIKEC4_VERSION}")
@@ -34,8 +37,21 @@ mod tests {
     // The doctest above makes the same claim, but cargo-mutants runs
     // nextest, which does not run doctests; this is the test that kills
     // a mutated package spec.
+    /// The reserved-word list is derived by hand from one grammar and
+    /// nothing re-derives it, so the pin cannot move without it.
+    #[test]
+    fn the_reserved_words_were_derived_from_the_pinned_release() {
+        assert_eq!(
+            asbuilt_core::model::RESERVED_GRAMMAR_VERSION,
+            super::LIKEC4_VERSION
+        );
+    }
+
     #[test]
     fn the_package_spec_pins_the_verified_release() {
-        assert_eq!(super::likec4_package(), "likec4@1.59.3");
+        assert_eq!(
+            super::likec4_package(),
+            format!("likec4@{}", super::LIKEC4_VERSION)
+        );
     }
 }

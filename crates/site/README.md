@@ -78,7 +78,8 @@ cargo nextest run --manifest-path crates/site/Cargo.toml --config-file .config/n
 index.html              Trunk entry: HTML shell, meta/OG tags, copy-dir of receipts and views
 Trunk.toml              build config; pins Tailwind v4; public_url = "/"
 input.css               Tailwind v4 entry + the rust/ink theme tokens
-build.rs                highlights snippets/ with syntect at build time; SITE_VERSION
+build.rs                highlights snippets/ with syntect at build time; SITE_VERSION;
+                        LIKEC4_VERSION read from the CLI's pin
 snippets/               code samples, one file per language (.rs/.sh/.toml/.c4/.diff/.yaml)
 public/receipts/        written by the dogfood test (ignored, .gitkeep tracked)
 public/views/           context.svg from `asbuilt render` (ignored, .gitkeep tracked)

@@ -62,4 +62,19 @@ fn main() {
     println!("cargo:rerun-if-env-changed=SITE_VERSION");
     let version = env::var("SITE_VERSION").unwrap_or_else(|_| "dev".to_string());
     println!("cargo:rustc-env=SITE_VERSION={version}");
+
+    // The LikeC4 release the CLI pins, for the hero's badge. Read from the
+    // constant, since `crates/asbuilt/src/lib.rs` is the one place the
+    // release is named. Read in-app via `env!("LIKEC4_VERSION")`.
+    let lib_rs = "../asbuilt/src/lib.rs";
+    println!("cargo:rerun-if-changed={lib_rs}");
+    let source = fs::read_to_string(lib_rs).expect("read crates/asbuilt/src/lib.rs");
+    let likec4 = source
+        .lines()
+        .find_map(|line| {
+            line.strip_prefix("pub const LIKEC4_VERSION: &str = \"")?
+                .strip_suffix("\";")
+        })
+        .expect("LIKEC4_VERSION in crates/asbuilt/src/lib.rs");
+    println!("cargo:rustc-env=LIKEC4_VERSION={likec4}");
 }

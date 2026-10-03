@@ -142,10 +142,18 @@ pub fn dotted(id: &[String]) -> String {
     id.join(".")
 }
 
-/// Words likec4 1.59.3 refuses as an element id: every keyword token of
-/// its grammar (extracted from the language server bundle) plus `this`,
-/// `it`, `true` and `false`, each confirmed by validating a model with
-/// the word as a nested element. `model`, `element`, `deployment` and
+/// The likec4 release whose grammar [`RESERVED`] was derived from. The
+/// CLI's tests hold it equal to the release they pin, so a bump fails
+/// until the list is re-derived: diff the keyword tokens of
+/// `packages/language-server/src/*.langium` between the two tags, probe
+/// any new word by validating a model that uses it as a nested element,
+/// then move this.
+pub const RESERVED_GRAMMAR_VERSION: &str = "1.59.4";
+
+/// Words likec4 refuses as an element id: every keyword token of the
+/// grammar at [`RESERVED_GRAMMAR_VERSION`] (extracted from the language
+/// server bundle) plus `this`, `it`, `true` and `false`, each confirmed
+/// by validating a model with the word as a nested element. `model`, `element`, `deployment` and
 /// `relationship` are accepted and so are not here. A module named one
 /// of these gets a trailing `_`.
 pub const RESERVED: &[&str] = &[
@@ -405,7 +413,7 @@ mod tests {
 
     #[test]
     fn model_and_element_are_not_reserved() {
-        // likec4 1.59.3 accepts both as ids; asbuilt-core's own `model`
+        // likec4 accepts both as ids (at `RESERVED_GRAMMAR_VERSION`); asbuilt-core's own `model`
         // module keeps its name.
         assert_eq!(sanitize_segment("model"), "model");
         assert_eq!(sanitize_segment("element"), "element");

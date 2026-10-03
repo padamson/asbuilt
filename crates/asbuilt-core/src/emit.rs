@@ -1,7 +1,7 @@
 //! The LikeC4 emitter: a [`Model`] to the text of one `.c4` file.
 //!
 //! This is the only place LikeC4 syntax is produced. The facts it relies
-//! on were verified against likec4 1.59.3, and the CLI's `likec4_` tests
+//! on were verified against the LikeC4 release the CLI pins, and the CLI's `likec4_` tests
 //! run every emitted shape through the real parser. Output is a pure
 //! function of the normalized model: same model, same bytes, on every
 //! platform.
