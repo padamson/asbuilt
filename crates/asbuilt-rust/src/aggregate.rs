@@ -11,9 +11,9 @@ use crate::resolve::{Location, ResolveTree, TargetRole, resolve};
 use crate::visit::ModuleFacts;
 use crate::walk::ModulePath;
 
-/// The tag on a crate's `tests` component.
+/// The tag on a crate's `tests` element.
 pub const TESTS_COMPONENT: &str = "tests";
-/// The tag on a crate's `examples` component.
+/// The tag on a crate's `examples` element.
 pub const EXAMPLES_COMPONENT: &str = "examples";
 
 /// The element a module of a target belongs to. Every test and bench

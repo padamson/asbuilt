@@ -4,6 +4,7 @@ specification {
   element component
   element container
   element process
+  element tests
   tag external
   tag tests
   relationship implements
@@ -41,7 +42,7 @@ model {
       path 'e2e'
     }
     link ../../e2e
-    tests = component 'tests' {
+    tests = tests 'tests' {
       #tests
       metadata {
         path 'e2e/tests'

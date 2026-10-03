@@ -303,7 +303,7 @@ fn the_workspace_crates_snapshot_is_current() {
 // targets
 
 #[test]
-fn a_bin_beside_a_lib_is_a_tagged_component_that_uses_the_lib() {
+fn a_bin_beside_a_lib_is_a_tagged_element_that_uses_the_lib() {
     let (model, _) = survey("targets");
     assert_eq!(element(&model, "tool.cli").tags, ["bin"]);
     assert_eq!(
@@ -311,6 +311,42 @@ fn a_bin_beside_a_lib_is_a_tagged_component_that_uses_the_lib() {
         Some("tool/src/bin/cli.rs")
     );
     assert_eq!(relation(&model, "tool.cli", "tool.api").items, ["call"]);
+}
+
+#[test]
+fn a_bin_beside_a_lib_is_the_bin_kind() {
+    let (model, _) = survey("targets");
+    assert_eq!(
+        element(&model, "tool.cli").kind,
+        asbuilt_core::model::ElementKind::Bin
+    );
+}
+
+#[test]
+fn a_bins_submodule_is_a_plain_component() {
+    let (model, _) = survey("targets");
+    assert_eq!(
+        element(&model, "runner.jobs").kind,
+        asbuilt_core::model::ElementKind::Component
+    );
+}
+
+#[test]
+fn the_tests_element_is_the_tests_kind() {
+    let (model, _) = survey("targets");
+    assert_eq!(
+        element(&model, "tool.tests").kind,
+        asbuilt_core::model::ElementKind::Tests
+    );
+}
+
+#[test]
+fn the_examples_element_is_the_examples_kind() {
+    let (model, _) = survey("targets");
+    assert_eq!(
+        element(&model, "tool.examples").kind,
+        asbuilt_core::model::ElementKind::Examples
+    );
 }
 
 #[test]

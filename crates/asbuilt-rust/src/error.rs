@@ -15,7 +15,7 @@ pub enum RustFrontendError {
     #[error("[rust] extra_manifests: {manifest} does not exist")]
     ExtraManifestMissing { manifest: PathBuf },
 
-    /// A bin, `tests` or `examples` component would carry the same id as
+    /// A bin, `tests` or `examples` element would carry the same id as
     /// one of the crate's modules.
     #[error(
         "package `{package}`: a module and a target component are both named `{name}`; rename one"

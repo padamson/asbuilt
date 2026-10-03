@@ -39,23 +39,46 @@ pub struct Element {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum ElementKind {
     /// A crate or package.
     Container,
-    /// A module, or a synthetic `tests` / `examples` / bin component.
+    /// A module.
     Component,
+    /// A binary's root beside a crate's lib: an entry point, not a module
+    /// of the lib. Also tagged `bin`.
+    Bin,
+    /// A crate's integration tests and benches, as one element. Also
+    /// tagged `tests`.
+    Tests,
+    /// A crate's examples, as one element. Also tagged `examples`.
+    Examples,
     /// Something outside the code, from `[[externals]]`; carries the
     /// LikeC4 element kind name (`process`, `browser`, ...).
     External(String),
 }
 
+/// The kinds the survey generates. An external may not declare one of
+/// their names: it would be themed and read as the thing it is not.
+pub const SURVEY_KINDS: [ElementKind; 5] = [
+    ElementKind::Container,
+    ElementKind::Component,
+    ElementKind::Bin,
+    ElementKind::Tests,
+    ElementKind::Examples,
+];
+
 impl ElementKind {
-    /// The element kind declared in the LikeC4 specification: `container`,
-    /// `component`, or an external's own kind name.
+    /// The element kind declared in the LikeC4 specification: a
+    /// [`SURVEY_KINDS`] name, or an external's own kind name. `[theme]`
+    /// keys are these.
     pub fn keyword(&self) -> &str {
         match self {
             ElementKind::Container => "container",
             ElementKind::Component => "component",
+            ElementKind::Bin => "bin",
+            ElementKind::Tests => "tests",
+            ElementKind::Examples => "examples",
             ElementKind::External(name) => name,
         }
     }
@@ -357,6 +380,14 @@ mod tests {
         assert!(RelationKind::Constructs < RelationKind::Calls);
         assert!(RelationKind::Calls < RelationKind::NamesType);
         assert!(RelationKind::NamesType < RelationKind::Uses);
+    }
+
+    #[test]
+    fn the_surveyed_kinds_are_every_kind_but_external_in_specification_order() {
+        assert_eq!(
+            SURVEY_KINDS.map(|kind| kind.keyword().to_string()),
+            ["container", "component", "bin", "tests", "examples"]
+        );
     }
 
     #[test]

@@ -8,7 +8,8 @@ use std::collections::BTreeMap;
 use crate::config::Config;
 use crate::error::{Error, Result};
 use crate::model::{
-    Element, ElementKind, Id, Model, Relation, RelationKind, dotted, sanitize_id, sanitize_segment,
+    Element, ElementKind, Id, Model, Relation, RelationKind, SURVEY_KINDS, dotted, sanitize_id,
+    sanitize_segment,
 };
 
 /// The tag every external element carries.
@@ -22,6 +23,17 @@ pub fn apply(model: &mut Model, config: &Config) -> Result<()> {
         if external.id.is_empty() || sanitize_segment(&external.id) != external.id {
             return Err(Error::InvalidExternalId {
                 id: external.id.clone(),
+            });
+        }
+        if SURVEY_KINDS.iter().any(|k| k.keyword() == external.kind) {
+            return Err(Error::ExternalKindIsSurveyed {
+                id: external.id.clone(),
+                kind: external.kind.clone(),
+                surveyed: SURVEY_KINDS
+                    .iter()
+                    .map(ElementKind::keyword)
+                    .collect::<Vec<_>>()
+                    .join(", "),
             });
         }
     }
@@ -101,6 +113,21 @@ from = "play-wright.server"
 title = "spawns"
 technology = "stdio"
 "#;
+
+    #[test]
+    fn an_external_declaring_a_kind_the_survey_generates_is_an_error_naming_both() {
+        let config: Config = "[[externals]]\nid = \"d\"\nkind = \"tests\"\ntitle = \"D\"\n"
+            .parse()
+            .unwrap();
+        let mut model = surveyed();
+        match apply(&mut model, &config) {
+            Err(Error::ExternalKindIsSurveyed { id, kind, surveyed }) => {
+                assert_eq!((id.as_str(), kind.as_str()), ("d", "tests"));
+                assert_eq!(surveyed, "container, component, bin, tests, examples");
+            }
+            other => panic!("expected ExternalKindIsSurveyed, got {other:?}"),
+        }
+    }
 
     #[test]
     fn an_external_becomes_a_tagged_element_of_its_kind_with_no_path() {

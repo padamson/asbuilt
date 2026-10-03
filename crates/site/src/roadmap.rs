@@ -133,8 +133,8 @@ pub const ITEMS: &[Item] = &[
     now(
         "roadmap-now-tags",
         "Color bins, tests and examples",
-        "[theme] keys for tags, so a crate's binary stands apart from its modules.",
-        Status::Planned,
+        "bin, tests and examples are element kinds of their own, so [theme] colors them and a crate's binary stands apart from its modules.",
+        Status::Done,
     ),
     now(
         "roadmap-now-likec4",

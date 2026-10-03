@@ -36,8 +36,8 @@ color_scheme = "system"
 scheme_toggle = true
 
 [theme]
-# A color per element kind: `container`, `component`, or an external's
-# `kind`. A kind with no entry keeps LikeC4's default blue. `light` is
+# A color per element kind: `container`, `component`, `bin`, `tests`,
+# `examples`, or an external's `kind`. A kind with no entry keeps LikeC4's default blue. `light` is
 # what `render` draws the SVG files with; the docs pages switch to
 # `dark` under a dark scheme (the light color again when absent).
 component = { light = "#ffffff", dark = "#3d2c22" }
@@ -48,9 +48,9 @@ process = "#e9d4c8"
 # Crates inside the repo but outside the workspace, each with its own
 # lockfile. Relative to the root.
 extra_manifests = ["crates/site/Cargo.toml", "crates/site-e2e/Cargo.toml"]
-# One `tests` component per crate for its test and bench targets.
+# One `tests` element per crate (its own kind) for its test and bench targets.
 include_tests = true
-# One `examples` component per crate for its example targets.
+# One `examples` element per crate (its own kind) for its example targets.
 include_examples = true
 
 [[externals]]

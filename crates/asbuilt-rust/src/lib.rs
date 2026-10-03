@@ -142,8 +142,8 @@ fn common_dir(files: &[PathBuf]) -> Option<PathBuf> {
 
 /// A target's role: the lib (or a bin-only package's default bin) is
 /// the crate's main namespace; a bin beside a lib, or a bin that is not
-/// the package's default, is its own component; tests, benches and
-/// examples collapse per crate.
+/// the package's default, is its own element (kind `bin`, modules under
+/// it); tests, benches and examples collapse per crate.
 fn role_of(
     krate: &CrateSpec,
     target: &discover::TargetSpec,
@@ -279,7 +279,10 @@ pub fn analyze(root: &Path, config: &RustConfig) -> Result<Model, RustFrontendEr
                         let mut component = element(id, ElementKind::Component, title);
                         component.description = node.doc.clone();
                         component.path = Some(relative(&root_canonical, &node.file)?);
+                        // A bin's root is its own kind and tagged too; its
+                        // submodules are components like the lib's.
                         if path.is_empty() {
+                            component.kind = ElementKind::Bin;
                             component.tags.push(BIN_TAG.to_string());
                         }
                         add(&mut elements, &mut ids, component, &krate.package)?;
@@ -294,12 +297,12 @@ pub fn analyze(root: &Path, config: &RustConfig) -> Result<Model, RustFrontendEr
                     if !synthetic.insert(id.clone()) {
                         continue;
                     }
-                    let name = if matches!(role, TargetRole::Tests(_)) {
-                        TESTS_COMPONENT
+                    let (name, kind) = if matches!(role, TargetRole::Tests(_)) {
+                        (TESTS_COMPONENT, ElementKind::Tests)
                     } else {
-                        EXAMPLES_COMPONENT
+                        (EXAMPLES_COMPONENT, ElementKind::Examples)
                     };
-                    let mut component = element(id, ElementKind::Component, name.to_string());
+                    let mut component = element(id, kind, name.to_string());
                     component.tags.push(name.to_string());
                     let kinds: &[TargetKind] = if matches!(role, TargetRole::Tests(_)) {
                         &[TargetKind::Test, TargetKind::Bench]

@@ -733,7 +733,7 @@ mod tests {
         server.path = Some("crates/app/src/server.rs".into());
         let view = element("app.view", ElementKind::Component);
         let view_element = element("app.view.element", ElementKind::Component);
-        let mut tests = element("app.tests", ElementKind::Component);
+        let mut tests = element("app.tests", ElementKind::Tests);
         tests.tags = vec!["tests".into()];
         let mut lib = element("lib", ElementKind::Container);
         lib.path = Some(".".into());
@@ -847,7 +847,7 @@ mod tests {
             },
         )]);
         let site = generate(&sample(), &opts);
-        let kinds: BTreeSet<String> = ["component", "container", "process"]
+        let kinds: BTreeSet<String> = ["component", "container", "process", "tests"]
             .iter()
             .map(|s| s.to_string())
             .collect();

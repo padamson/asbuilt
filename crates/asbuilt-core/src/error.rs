@@ -36,6 +36,17 @@ pub enum Error {
     )]
     InvalidExternalId { id: String },
 
+    /// An `[[externals]]` `kind` that is one the survey generates;
+    /// `surveyed` lists them.
+    #[error(
+        "externals: \"{id}\" declares kind \"{kind}\", which the survey generates ({surveyed}); give an external its own kind"
+    )]
+    ExternalKindIsSurveyed {
+        id: String,
+        kind: String,
+        surveyed: String,
+    },
+
     /// Two model ids that become the same LikeC4 identifier once `-`
     /// maps to `_` and a leading digit is prefixed.
     #[error("element ids \"{first}\" and \"{second}\" both become the LikeC4 id \"{id}\"")]

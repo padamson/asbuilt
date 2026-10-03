@@ -50,8 +50,9 @@ pub struct Config {
     pub output: OutputConfig,
     #[serde(default)]
     pub docs: DocsConfig,
-    /// `[theme]`: a color per element kind (`container`, `component`, or
-    /// an external kind), emitted as LikeC4 element styles so the
+    /// `[theme]`: a color per element kind (`container`, `component`,
+    /// `bin`, `tests`, `examples`, or an external kind), emitted as
+    /// LikeC4 element styles so the
     /// diagrams come out in the consumer's palette.
     #[serde(default)]
     pub theme: BTreeMap<String, ThemeColor>,

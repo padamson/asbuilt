@@ -23,10 +23,10 @@ pub struct RustConfig {
     /// Manifests of crates inside the repo but outside the workspace
     /// (each with its own lockfile), relative to the surveyed root.
     pub extra_manifests: Vec<PathBuf>,
-    /// Emit one `tests` component per crate for its test and bench
+    /// Emit one `tests` element per crate for its test and bench
     /// targets. A crate with only tests is a real consumer.
     pub include_tests: bool,
-    /// Emit one `examples` component per crate for its example targets.
+    /// Emit one `examples` element per crate for its example targets.
     pub include_examples: bool,
 }
 

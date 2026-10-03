@@ -36,9 +36,11 @@ fn relation(source: &str, target: &str, kind: RelationKind, items: &[&str]) -> R
     }
 }
 
-/// Every shape the emitter can produce, plus the ids most likely to
-/// collide with LikeC4 keywords: a module named `model`, one named
-/// `view`, one named `element`, and a crate named `views`.
+/// Every shape the emitter can produce (every surveyed kind among them:
+/// a bin beside the lib, the tests and the examples elements), plus the
+/// ids most likely to collide with LikeC4 keywords: a module named
+/// `model`, one named `view`, one named `element`, and a crate named
+/// `views`.
 fn probe_model() -> Model {
     let mut app = element("app", ElementKind::Container);
     app.technology = Some("library crate".into());
@@ -50,9 +52,15 @@ fn probe_model() -> Model {
     view_mod.path = Some("crates/app/src/view.rs".into());
     let mut inner = element("app.view.element", ElementKind::Component);
     inner.path = Some("crates/app/src/view/element.rs".into());
-    let mut tests = element("app.tests", ElementKind::Component);
+    let mut cli = element("app.cli", ElementKind::Bin);
+    cli.tags = vec!["bin".into()];
+    cli.path = Some("crates/app/src/bin/cli.rs".into());
+    let mut tests = element("app.tests", ElementKind::Tests);
     tests.tags = vec!["tests".into()];
     tests.path = Some("crates/app/tests".into());
+    let mut examples = element("app.examples", ElementKind::Examples);
+    examples.tags = vec!["examples".into()];
+    examples.path = Some("crates/app/examples".into());
     let mut views = element("views", ElementKind::Container);
     views.technology = Some("binary".into());
     let mut digit = element("3d-lib", ElementKind::Container);
@@ -67,7 +75,7 @@ fn probe_model() -> Model {
     spawns.technology = Some("stdio".into());
     Model {
         elements: vec![
-            app, model_mod, view_mod, inner, tests, views, digit, driver, browsers,
+            app, model_mod, view_mod, inner, cli, tests, examples, views, digit, driver, browsers,
         ],
         relations: vec![
             relation(

@@ -3,6 +3,7 @@
 specification {
   element component
   element container
+  element tests
   tag tests
   relationship implements
   relationship constructs
@@ -45,7 +46,7 @@ model {
       path 'e2e'
     }
     link ./e2e
-    tests = component 'tests' {
+    tests = tests 'tests' {
       #tests
       metadata {
         path 'e2e/tests'
@@ -59,7 +60,7 @@ model {
       path 'standalone'
     }
     link ./standalone
-    tests = component 'tests' {
+    tests = tests 'tests' {
       #tests
       metadata {
         path 'standalone/tests'

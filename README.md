@@ -83,7 +83,8 @@ an invalid model, 2 anything else, with the file or id in the message.
 ### What the model says
 
 One container per crate, one component per module nested as in the code,
-a `tests` and an `examples` component per crate that has them, and one
+a `tests`, an `examples` and a `bin` element per crate that has them
+(each a kind of its own, so `[theme]` colors them apart), and one
 relation per pair of modules with the referenced item names as the label
 and the strongest evidence as the kind (`implements`, `constructs`,
 `calls`, `names`, `uses`). Descriptions come from the first paragraph of

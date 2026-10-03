@@ -354,7 +354,7 @@ mod tests {
         let mut server = element("app.server", ElementKind::Component);
         server.description = Some("Where it's sent.\n\n- one\n- two".into());
         server.path = Some("crates/app/src/server.rs".into());
-        let mut tests = element("app.tests", ElementKind::Component);
+        let mut tests = element("app.tests", ElementKind::Tests);
         tests.tags = vec!["tests".into()];
         let mut driver = element("node_driver", ElementKind::External("process".into()));
         driver.tags = vec!["external".into()];
@@ -399,6 +399,7 @@ mod tests {
             "  element component",
             "  element container",
             "  element process",
+            "  element tests",
             "  tag external",
             "  tag tests",
             "  relationship implements",
@@ -424,7 +425,7 @@ mod tests {
         let spec = text.split("model {").next().unwrap();
         assert!(
             spec.starts_with(&format!(
-                "{HEADER}\n\nspecification {{\n  color theme_container #f0a884\n  color theme_process #c9c9c9\n  element component\n  element container {{\n    style {{\n      color theme_container\n    }}\n  }}\n  element process {{\n    style {{\n      color theme_process\n    }}\n  }}\n  tag external\n"
+                "{HEADER}\n\nspecification {{\n  color theme_container #f0a884\n  color theme_process #c9c9c9\n  element component\n  element container {{\n    style {{\n      color theme_container\n    }}\n  }}\n  element process {{\n    style {{\n      color theme_process\n    }}\n  }}\n  element tests\n  tag external\n"
             )),
             "{spec}"
         );
@@ -456,7 +457,7 @@ mod tests {
     fn tags_come_first_in_a_body() {
         let text = emit(&sample(), &options());
         assert!(
-            text.contains("tests = component 'tests' {\n      #tests\n    }"),
+            text.contains("tests = tests 'tests' {\n      #tests\n    }"),
             "{text}"
         );
     }
