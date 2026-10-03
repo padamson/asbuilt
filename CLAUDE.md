@@ -226,15 +226,23 @@ step is not a no-op.
    `version` on the `asbuilt-core` and `asbuilt-rust` entries under
    `[workspace.dependencies]` in the same file (crates.io needs a version
    on a path dep)
-2. Update `CHANGELOG.md`
-3. Commit: `git commit -m "Release vX.Y.Z"`
-4. Tag: `git tag vX.Y.Z`
-5. Push: `git push origin main --tags`
-6. Publish the site snapshot from the tag:
+2. Update `CHANGELOG.md`, the README's Status paragraph, and the hook
+   `rev: vX.Y.Z` in the README, `skills/asbuilt/references/cli.md` and
+   `crates/site/snippets/pre_commit.yaml` (bump the skill's
+   `metadata.version` with it); in `crates/site/src/roadmap.rs` delete
+   the done items and move `MILESTONE` and `NEXT_MILESTONE` on
+3. `./scripts/check-release-refs.sh X.Y.Z` must pass; the release
+   workflow runs it on the tag and stops before building anything if it
+   does not
+4. Commit: `git commit -m "Release vX.Y.Z"`
+5. Tag: `git tag vX.Y.Z`
+6. Push: `git push origin main --tags`
+7. Publish the site snapshot from the tag:
    `gh workflow run pages.yml -f version=X.Y.Z --ref vX.Y.Z`
    (builds `/asbuilt/vX.Y.Z/` and makes it `latest`; `docs/versioned-site.md`)
 
-The tag triggers CI which builds, tests, creates a GitHub Release, and
+The tag triggers CI which, once `cargo-semver-checks` and the release
+reference check pass, builds, tests, creates a GitHub Release, and
 publishes the three crates in dependency order, skipping any whose
 version is already on crates.io (the first release is published by hand,
 since a trusted publisher can only be added to a crate that exists;

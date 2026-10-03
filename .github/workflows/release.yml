@@ -19,7 +19,7 @@ permissions:
 jobs:
   build-release:
     name: Build ${{ matrix.target }}
-    needs: [semver-checks]
+    needs: [semver-checks, release-refs]
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write       # create the GitHub Release and attach files
@@ -148,6 +148,20 @@ jobs:
 
       - name: Check semver compatibility
         run: cargo semver-checks check-release --workspace
+
+  # Everything that names the release (the workspace and dependency
+  # versions, the hook rev consumers copy, the changelog section, the
+  # README's Status line, the roadmap's milestone) agrees with the tag,
+  # before the GitHub Release or any crate is published.
+  release-refs:
+    name: Release references
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Check release references
+        run: ./scripts/check-release-refs.sh "${GITHUB_REF_NAME#v}"
 
   publish-crates:
     name: Publish to crates.io
