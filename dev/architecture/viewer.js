@@ -1,22 +1,37 @@
 // The diagram viewer: each inlined view sits in a frame at a scale a
-// reader can read, with Fit, 1:1, Wide and Fullscreen controls. Without
-// this script a view is scaled to the text column (the stylesheet's
-// rule) and the controls stay hidden, so a page with no JavaScript shows
-// a diagram and no dead buttons.
+// reader can read, with zoom, pan and Fit, 1:1, Wide and Fullscreen
+// controls. Without this script a view is scaled to the text column (the
+// stylesheet's rule) and the controls stay hidden, so a page with no
+// JavaScript shows a diagram and no dead buttons.
 //
 // Scale: a view is shown at the scale that fits the frame's width, held
 // between MIN and 1, so a wide view scrolls inside its frame instead of
 // shrinking its text to nothing, and a small one is not blown up. Fit
 // shows the whole view, width and height, at whatever scale that takes;
-// 1:1 shows it at the size LikeC4 laid it out. Wide lets every figure on
-// the site take the window's width, remembered like the color scheme;
-// Fullscreen takes one figure to the screen.
+// 1:1 shows it at the size LikeC4 laid it out. Zooming (the wheel with
+// Ctrl or Cmd held, which is what a trackpad pinch sends in Chrome and
+// Firefox, and Safari's own gesture events for a pinch; the + and -
+// buttons; + - 0 with the frame focused) sets the scale freely, kept
+// about the pointer; a plain wheel scrolls the page as usual. The scale
+// is the view's CSS width, and panning is the frame's own scroll, by
+// its scrollbars or by dragging, so text stays crisp and the browser
+// keeps the position. Wide lets every figure on the site take the
+// window's width, remembered like the color scheme; Fullscreen takes one
+// figure to the screen.
 (function () {
   var WIDE_KEY = "asbuilt-docs-wide";
   var MIN = 0.7;
+  var MIN_ZOOM = 0.1;
+  var MAX_ZOOM = 4;
+  var STEP = 1.25;
+  var WHEEL = 0.002; // scale change per pixel of wheel delta, exponential
+  var DRAG = 4; // pixels of movement before a press becomes a drag
   var GUTTER = 16;
   var FRAME_SHARE = 0.75; // of the window's height; the stylesheet's 75vh
   var root = document.documentElement;
+  // The zoom modifier's name for the hint: Cmd on Apple platforms, Ctrl
+  // elsewhere. The script accepts either key everywhere.
+  var MAC = /Mac|iPhone|iPad|iPod/.test(navigator.platform || "");
   var wide = false;
   try {
     wide = window.localStorage.getItem(WIDE_KEY) === "1";
@@ -43,9 +58,17 @@
     if (!svg || !frame || !bar) return;
     var natural = viewBoxSize(svg);
     if (!natural) return;
-    var mode = "auto";
+    var mode = "auto"; // auto | fit | one | zoom
+    var zoom = 1; // the scale in zoom mode
+    var current = 1; // the scale last applied
     var readout = bar.querySelector(".viewer-scale");
     var full = bar.querySelector("[data-viewer-full]");
+    var hint = bar.querySelector(".viewer-hint");
+    if (hint) {
+      // No wheel to hint at on a touch-only device.
+      if (window.matchMedia && window.matchMedia("(hover: none)").matches) hint.hidden = true;
+      else hint.textContent = (MAC ? "\u2318" : "Ctrl") + " scroll to zoom \u00b7 drag to pan";
+    }
 
     function fullscreen() {
       return document.fullscreenElement === figure;
@@ -62,6 +85,7 @@
       return FRAME_SHARE * window.innerHeight;
     }
     function scale() {
+      if (mode === "zoom") return zoom;
       if (mode === "one") return 1;
       if (mode === "fit") return Math.min(widthFit(), heightBudget() / natural.height);
       return Math.min(1, Math.max(MIN, widthFit()));
@@ -79,9 +103,9 @@
         figure.style.marginLeft = "";
         figure.style.width = "";
       }
-      var s = scale();
-      svg.style.width = Math.round(natural.width * s) + "px";
-      if (readout) readout.textContent = Math.round(s * 100) + "%";
+      current = scale();
+      svg.style.width = Math.round(natural.width * current) + "px";
+      if (readout) readout.textContent = Math.round(current * 100) + "%";
       bar.querySelectorAll("[data-viewer-mode]").forEach(function (button) {
         var pressed = button.getAttribute("data-viewer-mode") === mode;
         button.setAttribute("aria-pressed", String(pressed));
@@ -89,12 +113,37 @@
       var wideButton = bar.querySelector("[data-viewer-wide]");
       if (wideButton) wideButton.setAttribute("aria-pressed", String(wide));
     }
+    // Scale to `next`, keeping the view point under the frame point
+    // (`fx`, `fy`, from the frame's top left; its center when absent)
+    // where it is.
+    function zoomTo(next, fx, fy) {
+      next = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next));
+      if (fx === undefined) {
+        fx = frame.clientWidth / 2;
+        fy = frame.clientHeight / 2;
+      }
+      var before = current;
+      var x = frame.scrollLeft + fx;
+      var y = frame.scrollTop + fy;
+      mode = "zoom";
+      zoom = next;
+      layout();
+      var ratio = current / before;
+      frame.scrollLeft = x * ratio - fx;
+      frame.scrollTop = y * ratio - fy;
+    }
 
     bar.querySelectorAll("[data-viewer-mode]").forEach(function (button) {
       button.addEventListener("click", function () {
         var next = button.getAttribute("data-viewer-mode");
         mode = mode === next ? "auto" : next;
         layout();
+      });
+    });
+    bar.querySelectorAll("[data-viewer-zoom]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var out = button.getAttribute("data-viewer-zoom") === "out";
+        zoomTo(out ? current / STEP : current * STEP);
       });
     });
     var wideButton = bar.querySelector("[data-viewer-wide]");
@@ -117,12 +166,114 @@
         full.hidden = true;
       }
     }
+
+    frame.addEventListener(
+      "wheel",
+      function (event) {
+        if (!(event.ctrlKey || event.metaKey)) return;
+        event.preventDefault();
+        // Lines and pages to pixels: a line is about 16px, a page the frame.
+        var unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? frame.clientHeight : 1;
+        var delta = event.deltaY * unit;
+        var rect = frame.getBoundingClientRect();
+        zoomTo(current * Math.exp(-delta * WHEEL), event.clientX - rect.left, event.clientY - rect.top);
+      },
+      { passive: false }
+    );
+    // Safari reports a trackpad pinch as gesture events (its scale is
+    // relative to the gesture's start), not as the wheel with Ctrl.
+    var pinchBase = null;
+    frame.addEventListener("gesturestart", function (event) {
+      event.preventDefault();
+      pinchBase = current;
+    });
+    frame.addEventListener("gesturechange", function (event) {
+      event.preventDefault();
+      if (pinchBase === null) return;
+      var rect = frame.getBoundingClientRect();
+      zoomTo(pinchBase * event.scale, event.clientX - rect.left, event.clientY - rect.top);
+    });
+    frame.addEventListener("gestureend", function () {
+      pinchBase = null;
+    });
+    frame.addEventListener("keydown", function (event) {
+      if (event.target !== frame || event.ctrlKey || event.metaKey || event.altKey) return;
+      if (event.key === "+" || event.key === "=") zoomTo(current * STEP);
+      else if (event.key === "-") zoomTo(current / STEP);
+      else if (event.key === "0") {
+        mode = "auto";
+        layout();
+      } else return;
+      event.preventDefault();
+    });
+
+    // Drag to pan, with the mouse: touch keeps the browser's own
+    // scrolling. A press that moves becomes a drag and is not a click,
+    // so nothing under the pointer is followed on release.
+    var press = null;
+    var suppressClick = false;
+    frame.addEventListener(
+      "click",
+      function (event) {
+        if (!suppressClick) return;
+        suppressClick = false;
+        event.stopPropagation();
+        event.preventDefault();
+      },
+      true
+    );
+    frame.addEventListener("pointerdown", function (event) {
+      suppressClick = false;
+      if (event.pointerType !== "mouse" || event.button !== 0) return;
+      if (event.target.closest("a, button")) return;
+      press = {
+        id: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        left: frame.scrollLeft,
+        top: frame.scrollTop,
+        dragged: false,
+      };
+    });
+    frame.addEventListener("pointermove", function (event) {
+      if (!press || event.pointerId !== press.id) return;
+      // A release the frame never saw (outside it, or behind another
+      // window) leaves the press armed: the button being up says so.
+      if (!(event.buttons & 1)) {
+        press = null;
+        frame.classList.remove("dragging");
+        return;
+      }
+      var dx = event.clientX - press.x;
+      var dy = event.clientY - press.y;
+      if (!press.dragged && Math.abs(dx) < DRAG && Math.abs(dy) < DRAG) return;
+      if (!press.dragged) {
+        press.dragged = true;
+        frame.classList.add("dragging");
+        frame.setPointerCapture(press.id);
+      }
+      frame.scrollLeft = press.left - dx;
+      frame.scrollTop = press.top - dy;
+    });
+    function release(event) {
+      if (!press || event.pointerId !== press.id) return;
+      // The click that follows a drag's release is swallowed above; the
+      // flag is cleared by the next press, so a cancelled drag with no
+      // click leaves nothing armed.
+      suppressClick = press.dragged;
+      press = null;
+      frame.classList.remove("dragging");
+    }
+    frame.addEventListener("pointerup", release);
+    frame.addEventListener("pointercancel", release);
+
     document.addEventListener("fullscreenchange", layout);
     // The frame's width changes with the column; the window's with Wide
     // (which sizes the figure itself, so the frame alone would not tell).
     if (window.ResizeObserver) new ResizeObserver(layout).observe(frame);
 
     figure.setAttribute("data-viewer-active", "");
+    frame.setAttribute("tabindex", "0");
     bar.hidden = false;
     layout();
     figures.push({ layout: layout });

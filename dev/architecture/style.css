@@ -41,7 +41,12 @@ figure img { max-width: 100%; height: auto; border: 1px solid var(--rule); }
 .viewer-bar button { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--rule); border-radius: 4px; padding: 0.1em 0.5em; cursor: pointer; }
 .viewer-bar button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
 .viewer-scale { min-width: 3em; font-variant-numeric: tabular-nums; }
-figure[data-viewer-active] .viewer-frame { overflow: auto; max-height: 75vh; border: 1px solid var(--rule); scrollbar-gutter: stable; }
+.viewer-hint { margin-left: auto; }
+.viewer-hint[hidden] { display: none; }
+@media (max-width: 40rem) { .viewer-hint { display: none; } }
+figure[data-viewer-active] .viewer-frame { overflow: auto; max-height: 75vh; border: 1px solid var(--rule); scrollbar-gutter: stable; cursor: grab; user-select: none; }
+figure[data-viewer-active] .viewer-frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+figure[data-viewer-active] .viewer-frame.dragging { cursor: grabbing; }
 figure[data-viewer-active] svg.c4 { width: auto; max-width: none; }
 figure:fullscreen { margin: 0; padding: 1rem; overflow: auto; background: var(--bg); }
 figure:fullscreen .viewer-frame { max-height: none; border: 0; }

@@ -6,13 +6,13 @@
   - heading "Architecture models that cannot drift" [level=1] [box=33,229,1213,60]
   - paragraph [box=304,309,672,84]: asbuilt surveys a Rust code base into a LikeC4 model, the way as-built drawings describe a building as constructed rather than as designed, and fails CI when the committed model no longer matches the code.
   - paragraph [box=425,405,429,16]: Nothing in the model is hand-written. Nothing in the code is annotated.
-  - 'link "crates.io: unreleased" [box=472,449,128,20]':
+  - 'link "crates.io: unreleased" [box=522,449,128,20]':
     - /url: https://crates.io/crates/asbuilt
-    - 'img "crates.io: unreleased" [box=472,449,128,20]'
-  - link "CI" [box=608,449,101,20]:
+    - 'img "crates.io: unreleased" [box=522,449,128,20]'
+  - link "CI" [box=658,459,0,0]:
     - /url: https://github.com/padamson/asbuilt
-    - img "CI" [box=608,449,101,20]
-  - img "LikeC4 1.59.4" [box=717,449,92,20]
+    - img "CI" [box=658,459,0,0]
+  - img "LikeC4 1.59.4" [box=666,449,92,20]
   - link "See asbuilt's own architecture" [box=397,506,342,44]:
     - /url: architecture/
   - link "GitHub" [box=751,505,133,46]:
@@ -135,8 +135,8 @@
     - text: Done
     - paragraph [box=173,5826,270,80]: Every view at a legible scale in a scrolling frame, with Fit, 1:1, Wide and Fullscreen, so a 5000pt view is not shrunk to 3px text.
   - listitem [box=173,5922,270,112]:
-    - heading "Zoom, pan and click-through" [level=4] [box=173,5922,187,48]
-    - text: Planned
+    - heading "Zoom, pan and click-through" [level=4] [box=173,5922,163,48]
+    - text: In progress
     - paragraph [box=173,5974,270,60]: Wheel and pinch zoom, drag to pan, a node links to its page and names itself on hover.
   - listitem [box=173,6050,270,112]:
     - heading "Open a merged edge" [level=4] [box=173,6050,187,48]
