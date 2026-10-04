@@ -277,6 +277,107 @@
     frame.addEventListener("pointerup", release);
     frame.addEventListener("pointercancel", release);
 
+    // An edge stands for the relations between what it joins, more than
+    // its label can say; the page wrote them beside the view. A click on
+    // such an edge opens them in a popover, each endpoint a link.
+    var edges = null;
+    var edgeData = figure.querySelector("script.viewer-edges");
+    if (edgeData) {
+      try {
+        edges = JSON.parse(edgeData.textContent);
+      } catch (e) {}
+    }
+    var popover = null;
+    function closePopover(refocus) {
+      if (!popover || popover.hidden) return;
+      popover.hidden = true;
+      if (refocus) frame.focus();
+    }
+    function endpoint(text, href) {
+      var el = document.createElement(href ? "a" : "span");
+      if (href) el.href = href;
+      el.textContent = text;
+      return el;
+    }
+    function openPopover(key, relations, event) {
+      if (!popover) {
+        popover = document.createElement("div");
+        popover.className = "viewer-popover";
+        popover.setAttribute("role", "dialog");
+        popover.setAttribute("aria-label", "Relations");
+        popover.hidden = true;
+        var close = document.createElement("button");
+        close.type = "button";
+        close.className = "viewer-popover-close";
+        close.setAttribute("aria-label", "Close");
+        close.textContent = "\u00d7";
+        close.addEventListener("click", function () {
+          closePopover(true);
+        });
+        popover.appendChild(close);
+        popover.appendChild(document.createElement("h3"));
+        popover.appendChild(document.createElement("ul"));
+        popover.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") {
+            e.preventDefault();
+            closePopover(true);
+          }
+        });
+        figure.appendChild(popover);
+      }
+      popover.querySelector("h3").textContent = key.replace("->", " \u2192 ");
+      var list = popover.querySelector("ul");
+      list.textContent = "";
+      relations.forEach(function (r) {
+        var li = document.createElement("li");
+        li.appendChild(endpoint(r.source, r.source_href));
+        li.appendChild(document.createTextNode(" \u2192 "));
+        li.appendChild(endpoint(r.target, r.target_href));
+        var detail = document.createElement("span");
+        detail.className = "rel-detail";
+        detail.textContent =
+          " " +
+          r.kind +
+          (r.items.length ? " " + r.items.join(", ") : "") +
+          (r.technology ? " (" + r.technology + ")" : "");
+        li.appendChild(detail);
+        list.appendChild(li);
+      });
+      popover.hidden = false;
+      // Beside the click, inside the figure (which scrolls in fullscreen).
+      var rect = figure.getBoundingClientRect();
+      var left = event.clientX - rect.left + figure.scrollLeft + 8;
+      var top = event.clientY - rect.top + figure.scrollTop + 8;
+      left = Math.max(0, Math.min(left, figure.scrollLeft + figure.clientWidth - popover.offsetWidth - 8));
+      top = Math.max(0, Math.min(top, figure.scrollTop + figure.clientHeight - popover.offsetHeight - 8));
+      popover.style.left = left + "px";
+      popover.style.top = top + "px";
+      popover.querySelector(".viewer-popover-close").focus();
+    }
+    if (edges) {
+      frame.querySelectorAll(".edge[data-from]").forEach(function (edge) {
+        var key = edge.getAttribute("data-from") + "->" + edge.getAttribute("data-to");
+        if (edges[key]) edge.classList.add("c4-explained");
+      });
+      frame.addEventListener("click", function (event) {
+        var edge = event.target.closest(".edge.c4-explained");
+        if (!edge) return;
+        var key = edge.getAttribute("data-from") + "->" + edge.getAttribute("data-to");
+        event.preventDefault();
+        openPopover(key, edges[key], event);
+      });
+      document.addEventListener("click", function (event) {
+        if (!popover || popover.hidden || popover.contains(event.target)) return;
+        // Another edge of this figure is re-opening it; any other click,
+        // including an edge of another figure, closes it.
+        if (frame.contains(event.target) && event.target.closest(".edge.c4-explained")) return;
+        closePopover(false);
+      });
+      frame.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closePopover(true);
+      });
+    }
+
     document.addEventListener("fullscreenchange", layout);
     // The frame's width changes with the column; the window's with Wide
     // (which sizes the figure itself, so the frame alone would not tell).

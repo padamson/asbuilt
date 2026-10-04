@@ -652,8 +652,9 @@ async fn site_architecture_a_pinch_gesture_zooms_the_view() {
 }
 
 /// The bar's hint as the viewer sees the platform: the page is loaded
-/// with `navigator.platform` reporting `platform`. The index view fits
-/// its frame, so the hint offers no pan.
+/// with `navigator.platform` reporting `platform`. Whether it also offers
+/// a pan depends on the view's size against the window; the pan claims
+/// are their own tests.
 async fn hint_on(platform: &str, root: &str) -> String {
     let session = open_session(ColorScheme::Light).await;
     let page = &session.page;
@@ -683,14 +684,22 @@ async fn hint_on(platform: &str, root: &str) -> String {
 #[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
 async fn site_architecture_hint_names_cmd_on_a_mac() {
     let root = serve_snapshot().await;
-    assert_eq!(hint_on("MacIntel", &root).await, "\u{2318} scroll to zoom");
+    let hint = hint_on("MacIntel", &root).await;
+    assert!(
+        hint.starts_with("\u{2318} scroll to zoom"),
+        "a Mac is told the Cmd key: {hint:?}"
+    );
 }
 
 #[tokio::test]
 #[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
 async fn site_architecture_hint_names_ctrl_elsewhere() {
     let root = serve_snapshot().await;
-    assert_eq!(hint_on("Win32", &root).await, "Ctrl scroll to zoom");
+    let hint = hint_on("Win32", &root).await;
+    assert!(
+        hint.starts_with("Ctrl scroll to zoom"),
+        "Windows is told the Ctrl key: {hint:?}"
+    );
 }
 
 /// The first node link on the index and where it points.
@@ -863,6 +872,179 @@ async fn site_architecture_a_view_larger_than_its_frame_offers_a_pan() {
         frame_cursor(page).await,
         "grab",
         "an overflowing view is pannable"
+    );
+    v.session.browser.close().await.expect("close browser");
+}
+
+/// Relations in the committed model from `from` or anything under it to
+/// `to` or anything under it: what one edge between them stands for.
+fn committed_relations_between(from: &str, to: &str) -> usize {
+    let model = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../docs/architecture/model.c4");
+    let text =
+        std::fs::read_to_string(&model).unwrap_or_else(|e| panic!("read {}: {e}", model.display()));
+    let under = |id: &str, root: &str| id == root || id.starts_with(&format!("{root}."));
+    text.lines()
+        .filter(|line| {
+            let Some(rest) = line.strip_prefix("  ") else {
+                return false;
+            };
+            let Some((source, after)) = rest.split_once(" -[") else {
+                return false;
+            };
+            let Some((_, target)) = after.split_once("]-> ") else {
+                return false;
+            };
+            let target = target.split_whitespace().next().unwrap_or_default();
+            under(source, from) && under(target, to)
+        })
+        .count()
+}
+
+/// Open the index and click the first edge the page can explain; returns
+/// the page, the popover locator and how many relations the model holds
+/// for that edge.
+async fn open_first_edge(root: &str) -> (Session, Locator, usize) {
+    let session = open_session(ColorScheme::Light).await;
+    let page = &session.page;
+    page.goto(root, None)
+        .await
+        .expect("navigate to the architecture index");
+    let edge = page
+        .locator("svg.c4[data-view='index'] .edge.c4-explained")
+        .first();
+    expect(edge.clone())
+        .to_be_visible()
+        .await
+        .expect("the index has an edge the page can explain");
+    let from = edge
+        .get_attribute("data-from")
+        .await
+        .expect("read data-from")
+        .expect("the edge names its source");
+    let to = edge
+        .get_attribute("data-to")
+        .await
+        .expect("read data-to")
+        .expect("the edge names its target");
+    let expected = committed_relations_between(&from, &to);
+    assert!(expected > 0, "the model has relations from {from} to {to}");
+    // A spline's bounding-box center can miss its own stroke, so click
+    // the midpoint of the line itself.
+    edge.scroll_into_view_if_needed()
+        .await
+        .expect("bring the edge into the frame");
+    let point = page
+        .evaluate::<(), Vec<f64>>(
+            "() => { \
+               const line = document.querySelector(\"svg.c4[data-view='index'] .edge.c4-explained path.c4-hit\"); \
+               const p = line.getPointAtLength(line.getTotalLength() / 2); \
+               const m = line.getScreenCTM(); \
+               return [m.a * p.x + m.c * p.y + m.e, m.b * p.x + m.d * p.y + m.f]; \
+             }",
+            None,
+        )
+        .await
+        .expect("a point on the edge's line");
+    page.mouse()
+        .click(point[0], point[1], None)
+        .await
+        .expect("click the edge's line");
+    let popover = page.locator(".viewer-popover").first();
+    (session, popover, expected)
+}
+
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_clicking_an_edge_lists_the_relations_behind_it() {
+    let root = serve_snapshot().await;
+    let (session, popover, expected) = open_first_edge(&root).await;
+    expect(popover.clone())
+        .to_be_visible()
+        .await
+        .expect("the popover opens");
+    let listed = popover
+        .locator("li")
+        .count()
+        .await
+        .expect("count the listed relations");
+    assert_eq!(
+        listed, expected,
+        "the popover lists every relation the edge stands for"
+    );
+    session.browser.close().await.expect("close browser");
+}
+
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_escape_closes_the_edge_popover() {
+    let root = serve_snapshot().await;
+    let (session, popover, _) = open_first_edge(&root).await;
+    expect(popover.clone())
+        .to_be_visible()
+        .await
+        .expect("the popover opens");
+    popover
+        .locator(".viewer-popover-close")
+        .press("Escape", None)
+        .await
+        .expect("press Escape in the popover");
+    expect(popover)
+        .to_be_hidden()
+        .await
+        .expect("Escape closes the popover");
+    session.browser.close().await.expect("close browser");
+}
+
+async fn first_hint(page: &Page) -> String {
+    page.locator(".viewer-hint")
+        .first()
+        .text_content()
+        .await
+        .expect("read the hint")
+        .unwrap_or_default()
+}
+
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_the_hint_drops_the_pan_when_the_view_fits() {
+    let root = serve_snapshot().await;
+    let v = open_first_view(&root).await;
+    let page = &v.session.page;
+    page.locator("[data-viewer-mode='fit']")
+        .first()
+        .click(None)
+        .await
+        .expect("press Fit");
+    let mut overflows = true;
+    for _ in 0..40 {
+        overflows = frame_overflows(page).await;
+        if !overflows {
+            break;
+        }
+        tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+    }
+    assert!(!overflows, "after Fit the view sits inside its frame");
+    let hint = first_hint(page).await;
+    assert!(
+        !hint.contains("drag to pan"),
+        "a fitted view's hint offers no pan: {hint:?}"
+    );
+    v.session.browser.close().await.expect("close browser");
+}
+
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_the_hint_offers_a_pan_when_the_view_overflows() {
+    let root = serve_snapshot().await;
+    let v = open_first_view(&root).await;
+    let page = &v.session.page;
+    press_zoom_in(page, 3).await;
+    let zoomed = wait_for_width(&v.svg, |w| w > v.initial * 1.5).await;
+    assert!(zoomed > v.initial * 1.5, "zoomed in first ({zoomed:.0})");
+    let hint = first_hint(page).await;
+    assert!(
+        hint.ends_with("\u{b7} drag to pan"),
+        "an overflowing view's hint offers a pan: {hint:?}"
     );
     v.session.browser.close().await.expect("close browser");
 }

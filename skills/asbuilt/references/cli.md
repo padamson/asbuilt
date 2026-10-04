@@ -46,7 +46,12 @@ edge label's backing `c4-label-bg`. A node whose element the page knows
 carries a `<title>` with its id (the hover tooltip) and is wrapped in
 an `<a>` to where the element is documented: a crate's page, a module's
 section on it, an external's row on the index; the page's own crate is
-named but not linked. Any other SVG is an `<img>`.
+named but not linked. An edge whose endpoints the page knows carries
+`data-from` and `data-to` (their ids), a `<title>` naming them, and an
+invisible `c4-hit` twin of its line to click; with the viewer, a figure
+carries `<script type="application/json" class="viewer-edges">` mapping
+each `from->to` to the relations the edge stands for (endpoint ids and
+links, kind, items, technology). Any other SVG is an `<img>`.
 `theme.css` colors the inlined views from `[theme]`: per kind,
 `--c4-<kind>-fill`, `-stroke`, `-text` and `-muted`, for light and for
 dark; group boxes are a tint of their kind's color over `--bg`, and
@@ -63,7 +68,10 @@ the + and − buttons step, and + − 0 work from the keyboard with the
 frame focused; a plain wheel scrolls the page as usual, and dragging
 pans a view larger than its frame (the grab cursor says so; a view
 that fits offers neither; a drag that starts on a node pans without
-following its link). The bar's hint names the modifier for the platform (⌘ on a Mac,
+following its link). A click on an edge opens the relations it stands
+for, one line each with both endpoints linked: the whole list behind
+an edge LikeC4 labels `[...]`, or every item of one it truncates.
+Escape, the close button or a click elsewhere dismisses it. The bar's hint names the modifier for the platform (⌘ on a Mac,
 Ctrl elsewhere) and is left out on a touch-only device. The other
 controls: Fit (the whole view at any scale), 1:1 (as
 LikeC4 laid it out), Wide (every figure on the site takes the window's

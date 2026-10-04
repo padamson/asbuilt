@@ -128,7 +128,7 @@ pub const ITEMS: &[Item] = &[
         "roadmap-now-edges",
         "Open a merged edge",
         "Click an edge LikeC4 labels [...] to list the module relations it stands for, each linked.",
-        Status::Planned,
+        Status::Done,
     ),
     now(
         "roadmap-now-tags",

@@ -2,12 +2,13 @@
 //!
 //! The SVG `dot -Tsvg` wrote is rewritten: the prolog and comments go,
 //! and Graphviz's tooltips give way to each known node's own name and a
-//! link to the page that documents it; `width` and `height` give way to
-//! the page's layout; ids are prefixed with the view's name, so several
-//! views share a page; and classes name what `theme.css` colors: each
-//! node's and group box's element kind (read from the `.dot` LikeC4
-//! wrote beside it), a node's secondary text, and an edge label's
-//! backing. Only a LikeC4 render is
+//! link to the page that documents it, and to each edge's endpoints
+//! (named on the edge too, with a wide invisible twin of its line to
+//! click); `width` and `height` give way to the page's layout; ids are
+//! prefixed with the view's name, so several views share a page; and
+//! classes name what `theme.css` colors: each node's and group box's
+//! element kind (read from the `.dot` LikeC4 wrote beside it), a node's
+//! secondary text, and an edge label's backing. Only a LikeC4 render is
 //! inlined. Any other SVG is left for an `<img>`, where a script in it
 //! cannot run, and the rewrite drops scripts, `foreignObject` and event
 //! handlers besides. Pure string work over Graphviz's own output.
@@ -31,6 +32,58 @@ pub struct Node {
     pub kind: String,
     pub title: String,
     pub href: Option<String>,
+}
+
+/// A view inlined for a page: the markup, and the edges it draws as
+/// pairs of LikeC4 ids, in drawing order, so the page can say what each
+/// stands for.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Inlined {
+    pub html: String,
+    pub edges: Vec<(String, String)>,
+}
+
+/// The clusters an edge is drawn out of and into (`ltail`, `lhead`),
+/// keyed by the Graphviz names of the nodes its statement joins. LikeC4
+/// writes them for a relation to or from an expanded element: the arrow
+/// then ends at the cluster, and the page must say so, not name the
+/// inner node Graphviz routed it through.
+fn compound_ends(dot: &str) -> BTreeMap<(String, String), (Option<String>, Option<String>)> {
+    let mut ends = BTreeMap::new();
+    let mut current: Option<(String, String)> = None;
+    for line in dot.lines().map(str::trim) {
+        if let Some((head, _)) = line.split_once('[')
+            && let Some((a, b)) = head.split_once("->")
+        {
+            current = Some((a.trim().to_string(), b.trim().to_string()));
+        }
+        if let Some(key) = &current {
+            for (attr, is_head) in [("ltail=", false), ("lhead=", true)] {
+                if let Some(at) = line.find(attr) {
+                    let value = attr_value(&line[at + attr.len()..]);
+                    let entry = ends.entry(key.clone()).or_insert((None, None));
+                    if is_head {
+                        entry.1 = Some(value);
+                    } else {
+                        entry.0 = Some(value);
+                    }
+                }
+            }
+            if line.ends_with("];") {
+                current = None;
+            }
+        }
+    }
+    ends
+}
+
+/// The two Graphviz names an edge's title joins, `a->b` as the SVG
+/// escapes it (`a&#45;&gt;b`), any port dropped.
+fn edge_ends(title: &str) -> Option<(String, String)> {
+    let plain = title.replace("&#45;", "-").replace("&gt;", ">");
+    let (from, to) = plain.split_once("->")?;
+    let name = |s: &str| s.trim().split(':').next().unwrap_or_default().to_string();
+    Some((name(from), name(to)))
 }
 
 /// Whether `dot` was written by `likec4 gen dot`, which names the view in
@@ -204,6 +257,9 @@ struct Group {
     title_fill: Option<String>,
     /// Whether an `<a>` was opened before the group, to close after it.
     linked: bool,
+    /// Whether an edge's line has had its twin to click: the first
+    /// `<path>` is the spline, any other an arrowhead.
+    hit: bool,
 }
 
 /// An attribute that could run a script: an event handler, or a link to
@@ -228,9 +284,11 @@ pub fn inline(
     view: &str,
     label: &str,
     nodes: &BTreeMap<String, Node>,
-) -> Option<String> {
+) -> Option<Inlined> {
     let dot = source.dot.as_deref().filter(|dot| is_likec4_dot(dot))?;
     let ids = likec4_ids(dot);
+    let compound = compound_ends(dot);
+    let mut edges: Vec<(String, String)> = Vec::new();
     let mut rest = &source.svg[source.svg.find("<svg")?..];
     let mut out = String::with_capacity(rest.len());
     let mut groups: Vec<Group> = Vec::new();
@@ -268,16 +326,44 @@ pub fn inline(
             rest = &rest[close + "</title>".len()..];
             if let Some(group) = groups.last_mut()
                 && let Some(at) = group.class_end.take()
-                && let Some(node) = ids.get(name).and_then(|id| nodes.get(id))
             {
-                out.insert_str(at, &format!(" c4-k-{}", node.kind));
-                if group.role == Some(Role::Node) {
-                    // The element names itself on hover, and its node is
-                    // a link to where the page documents it.
-                    out.push_str(&format!("<title>{}</title>", escape(&node.title)));
-                    if let Some(href) = &node.href {
-                        out.insert_str(group.open_at, &format!("<a href=\"{}\">", escape(href)));
-                        group.linked = true;
+                if group.role == Some(Role::Edge) {
+                    // The edge says what it joins, by id, for the page's
+                    // script and for the hover.
+                    if let Some((a, b)) = edge_ends(name)
+                        && let (tail, head) = compound
+                            .get(&(a.clone(), b.clone()))
+                            .cloned()
+                            .unwrap_or((None, None))
+                        && let (Some(from), Some(to)) = (
+                            ids.get(tail.as_deref().unwrap_or(&a)),
+                            ids.get(head.as_deref().unwrap_or(&b)),
+                        )
+                    {
+                        out.insert_str(
+                            at + 1,
+                            &format!(" data-from=\"{}\" data-to=\"{}\"", escape(from), escape(to)),
+                        );
+                        out.push_str(&format!(
+                            "<title>{} \u{2192} {}</title>",
+                            escape(from),
+                            escape(to)
+                        ));
+                        edges.push((from.clone(), to.clone()));
+                    }
+                } else if let Some(node) = ids.get(name).and_then(|id| nodes.get(id)) {
+                    out.insert_str(at, &format!(" c4-k-{}", node.kind));
+                    if group.role == Some(Role::Node) {
+                        // The element names itself on hover, and its node
+                        // is a link to where the page documents it.
+                        out.push_str(&format!("<title>{}</title>", escape(&node.title)));
+                        if let Some(href) = &node.href {
+                            out.insert_str(
+                                group.open_at,
+                                &format!("<a href=\"{}\">", escape(href)),
+                            );
+                            group.linked = true;
+                        }
                     }
                 }
             }
@@ -316,10 +402,10 @@ pub fn inline(
                 groups.push(Group {
                     role,
                     open_at,
-                    class_end: class_end
-                        .filter(|_| matches!(role, Some(Role::Node | Role::Cluster))),
+                    class_end: class_end.filter(|_| role.is_some()),
                     title_fill: None,
                     linked: false,
+                    hit: false,
                 });
                 continue;
             }
@@ -336,12 +422,26 @@ pub fn inline(
             "polygon" if enclosing == Some(Role::Edge) && tag.get("fill-opacity").is_some() => {
                 tag.add_class("c4-label-bg");
             }
+            "path" if enclosing == Some(Role::Edge) => {
+                // The line is thin: a wide, invisible twin takes the clicks.
+                // Only the first path, the spline; an arrowhead drawn as a
+                // path keeps to its size.
+                tag.write(&mut out);
+                if let Some(group) = groups.last_mut()
+                    && !group.hit
+                    && let Some(d) = tag.get("d")
+                {
+                    group.hit = true;
+                    out.push_str(&format!("<path class=\"c4-hit\" d=\"{d}\"/>"));
+                }
+                continue;
+            }
             _ => {}
         }
         tag.write(&mut out);
     }
     out.push_str(rest);
-    Some(out)
+    Some(Inlined { html: out, edges })
 }
 
 #[cfg(test)]
@@ -385,6 +485,7 @@ mod tests {
 <g id="node1" class="node">
 <title>server</title>
 <polygon fill="#3b82f6" stroke="#2563eb" points="0,0 1,1"/>
+<path fill="none" stroke="#2563eb" d="M1,1"/>
 <text x="1" y="1" fill="#eff6ff">server</text>
 <text x="1" y="2" fill="#bfdbfe">Where it runs</text>
 </g>
@@ -401,6 +502,7 @@ mod tests {
 <g id="edge1" class="edge">
 <title>server&#45;&gt;driver_1</title>
 <path fill="none" stroke="#8d8d8d" d="M0,0"/>
+<path fill="#8d8d8d" stroke="#8d8d8d" d="M9,9"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" points="0,0 1,1"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="0,0 1,1"/>
 <text x="1" y="1" fill="#c9c9c9">spawns</text>
@@ -449,6 +551,10 @@ mod tests {
     }
 
     fn inlined() -> String {
+        inlined_view().html
+    }
+
+    fn inlined_view() -> Inlined {
         inline(&source(), "view_app", "app", &nodes()).expect("inlined")
     }
 
@@ -499,6 +605,7 @@ mod tests {
             "<title>cluster_app</title>",
             "<title>server</title>",
             "<title>driver_1</title>",
+            "&#45;&gt;",
             "graphviz",
         ] {
             assert!(!svg.contains(gone), "{gone} in {svg}");
@@ -507,7 +614,7 @@ mod tests {
 
     #[test]
     fn the_root_gives_way_to_the_page_and_names_the_view() {
-        let svg = inline(&source(), "view_app", "a<b", &nodes()).unwrap();
+        let svg = inline(&source(), "view_app", "a<b", &nodes()).unwrap().html;
         let root = &svg[..svg.find('>').unwrap()];
         assert_eq!(
             root,
@@ -576,6 +683,87 @@ mod tests {
     }
 
     #[test]
+    fn an_edge_carries_its_endpoints_ids_and_names_them() {
+        let out = inlined();
+        assert!(
+            out.contains("class=\"edge\" data-from=\"app.server\" data-to=\"node_driver\">\n<title>app.server \u{2192} node_driver</title>"),
+            "{out}"
+        );
+    }
+
+    #[test]
+    fn an_edge_s_line_gets_an_invisible_twin_to_click() {
+        let out = inlined();
+        assert!(
+            out.contains("d=\"M0,0\"/><path class=\"c4-hit\" d=\"M0,0\"/>"),
+            "{out}"
+        );
+    }
+
+    #[test]
+    fn only_an_edge_s_line_gets_a_twin_to_click() {
+        // Neither the node's own path nor the edge's arrowhead path does.
+        let out = inlined();
+        assert_eq!(out.matches("c4-hit").count(), 1, "{out}");
+    }
+
+    #[test]
+    fn an_edge_drawn_into_a_cluster_is_attributed_to_the_cluster() {
+        let dot = DOT.replace(
+            "server -> driver_1 [likec4_id=\"1ab\"];",
+            "server -> driver_1 [ltail=cluster_app,\n        likec4_id=\"1ab\"];",
+        );
+        let source = ViewSource {
+            svg: SVG.to_string(),
+            dot: Some(dot),
+        };
+        let out = inline(&source, "view_app", "app", &nodes()).unwrap();
+        assert_eq!(out.edges, [("app".to_string(), "node_driver".to_string())]);
+        assert!(
+            out.html
+                .contains("data-from=\"app\" data-to=\"node_driver\""),
+            "{}",
+            out.html
+        );
+    }
+
+    #[test]
+    fn compound_ends_reads_the_clusters_an_edge_statement_names() {
+        let dot = "digraph {\n    a -> b [lhead=cluster_x,\n        likec4_id=\"1\"];\n    c -> d [ltail=cluster_y, lhead=cluster_z];\n    e -> f [likec4_id=\"2\"];\n}\n";
+        let ends = compound_ends(dot);
+        assert_eq!(
+            ends.get(&("a".to_string(), "b".to_string())),
+            Some(&(None, Some("cluster_x".to_string())))
+        );
+        assert_eq!(
+            ends.get(&("c".to_string(), "d".to_string())),
+            Some(&(Some("cluster_y".to_string()), Some("cluster_z".to_string())))
+        );
+        assert_eq!(ends.get(&("e".to_string(), "f".to_string())), None);
+    }
+
+    #[test]
+    fn the_edges_a_view_draws_are_returned_in_order() {
+        assert_eq!(
+            inlined_view().edges,
+            [("app.server".to_string(), "node_driver".to_string())]
+        );
+    }
+
+    #[test]
+    fn an_edge_title_is_two_names_with_ports_dropped() {
+        assert_eq!(
+            edge_ends("a:p&#45;&gt;b:q"),
+            Some(("a".to_string(), "b".to_string()))
+        );
+    }
+
+    #[test]
+    fn a_title_with_no_arrow_is_not_an_edge() {
+        assert_eq!(edge_ends("lonely"), None);
+    }
+
+    #[test]
     fn a_node_the_dot_does_not_name_keeps_its_plain_class() {
         let svg = inlined();
         assert!(
@@ -634,7 +822,7 @@ mod tests {
             ),
             dot: Some(DOT.into()),
         };
-        let svg = inline(&source, "view_app", "app", &nodes()).unwrap();
+        let svg = inline(&source, "view_app", "app", &nodes()).unwrap().html;
         assert!(
             svg.contains("data-note=\"a>b\" fill=\"#bfdbfe\" class=\"c4-muted\">"),
             "{svg}"
@@ -647,7 +835,7 @@ mod tests {
             svg: SVG.replace("<g id=\"graph0\"", "<?render x?><g id=\"graph0\""),
             dot: Some(DOT.into()),
         };
-        let svg = inline(&source, "view_app", "app", &nodes()).unwrap();
+        let svg = inline(&source, "view_app", "app", &nodes()).unwrap().html;
         assert!(!svg.contains("<?render"), "{svg}");
     }
 
@@ -674,7 +862,7 @@ mod tests {
             svg,
             dot: Some(DOT.into()),
         };
-        let out = inline(&source, "view_app", "app", &nodes()).unwrap();
+        let out = inline(&source, "view_app", "app", &nodes()).unwrap().html;
         for gone in ["script", "alert", "foreignObject", "<div>", "onclick"] {
             assert!(!out.contains(gone), "{gone} in {out}");
         }

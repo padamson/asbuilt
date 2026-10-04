@@ -160,6 +160,31 @@ struct Place {
     fragment: Option<String>,
 }
 
+/// A JSON string literal; `<` escaped too, so the text can sit inside a
+/// `<script>` element.
+fn json(text: &str) -> String {
+    let mut out = String::with_capacity(text.len() + 2);
+    out.push('"');
+    for c in text.chars() {
+        match c {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            '<' => out.push_str("\\u003c"),
+            c if (c as u32) < 0x20 => out.push_str(&format!("\\u{:04x}", c as u32)),
+            c => out.push(c),
+        }
+    }
+    out.push('"');
+    out
+}
+
+fn json_opt(text: Option<String>) -> String {
+    text.map(|t| json(&t)).unwrap_or_else(|| "null".to_string())
+}
+
 impl Place {
     fn href(&self, depth: usize) -> String {
         let mut out = format!("{}{}", up(depth), self.page);
@@ -209,6 +234,8 @@ struct Ctx<'a> {
     /// The rendered views that are neither `index` nor generated, which
     /// `views.html` shows; every header links that page when there are any.
     curated: Vec<String>,
+    /// Each element by its LikeC4 id: what a view's nodes and edges name.
+    by_likec4: BTreeMap<String, &'a Element>,
     missing: BTreeSet<String>,
 }
 
@@ -336,10 +363,9 @@ impl Ctx<'_> {
             Here::Container(id) => Some(container_page(id)),
             Here::Index | Here::Views => None,
         };
-        self.model
-            .elements
+        self.by_likec4
             .iter()
-            .map(|element| {
+            .map(|(key, element)| {
                 let place = self.places.get(&element.id);
                 let here = place.is_some_and(|p| {
                     p.fragment.is_none() && this_page.as_deref() == Some(p.page.as_str())
@@ -350,7 +376,7 @@ impl Ctx<'_> {
                     place.map(|p| p.href(depth))
                 };
                 (
-                    sanitize_id(&element.id),
+                    key.clone(),
                     svg::Node {
                         kind: element.kind.keyword().to_string(),
                         title: dotted(&element.id),
@@ -367,28 +393,86 @@ impl Ctx<'_> {
         nodes: &BTreeMap<String, svg::Node>,
         view: &str,
         alt: &str,
-    ) -> Option<String> {
+    ) -> Option<svg::Inlined> {
         let source = self.options.views.get(view)?;
         Some(match svg::inline(source, view, alt, nodes) {
-            Some(inline) => inline.trim_end().to_string(),
-            None => format!(
-                "<img src=\"{}views/{}.svg\" alt=\"{}\">",
-                up(depth),
-                escape(view),
-                escape(alt)
-            ),
+            Some(mut inlined) => {
+                inlined.html.truncate(inlined.html.trim_end().len());
+                inlined
+            }
+            None => svg::Inlined {
+                html: format!(
+                    "<img src=\"{}views/{}.svg\" alt=\"{}\">",
+                    up(depth),
+                    escape(view),
+                    escape(alt)
+                ),
+                edges: Vec::new(),
+            },
         })
+    }
+
+    /// The relations behind each edge a view draws, as JSON for the
+    /// viewer's popover: keyed `from->to` by LikeC4 id, each relation
+    /// with its endpoints' ids and links (the page's own, from `nodes`,
+    /// so its own element is named but not linked here either), its
+    /// kind, items and technology. Empty when no edge has any. The
+    /// relations are sorted by source, so one source prefix is one range.
+    fn edge_data(&self, edges: &[(String, String)], nodes: &BTreeMap<String, svg::Node>) -> String {
+        let href = |id: &Id| json_opt(nodes.get(&sanitize_id(id)).and_then(|n| n.href.clone()));
+        let relations = &self.model.relations;
+        let mut entries = Vec::new();
+        for (from, to) in edges {
+            let (Some(from_el), Some(to_el)) = (self.by_likec4.get(from), self.by_likec4.get(to))
+            else {
+                continue;
+            };
+            let (from_id, to_id) = (&from_el.id, &to_el.id);
+            let start = relations.partition_point(|r| r.source.as_slice() < from_id.as_slice());
+            let behind: Vec<String> = relations[start..]
+                .iter()
+                .take_while(|r| r.source.starts_with(from_id))
+                .filter(|r| r.target.starts_with(to_id))
+                .map(|r| {
+                    format!(
+                        "{{\"source\":{},\"source_href\":{},\"target\":{},\"target_href\":{},\"kind\":{},\"items\":[{}],\"technology\":{}}}",
+                        json(&dotted(&r.source)),
+                        href(&r.source),
+                        json(&dotted(&r.target)),
+                        href(&r.target),
+                        json(r.kind.keyword()),
+                        r.items.iter().map(|i| json(i)).collect::<Vec<_>>().join(","),
+                        json_opt(r.technology.clone()),
+                    )
+                })
+                .collect();
+            if behind.is_empty() {
+                continue;
+            }
+            entries.push(format!(
+                "{}:[{}]",
+                json(&format!("{from}->{to}")),
+                behind.join(",")
+            ));
+        }
+        if entries.is_empty() {
+            return String::new();
+        }
+        format!(
+            "<script type=\"application/json\" class=\"viewer-edges\">{{{}}}</script>",
+            entries.join(",")
+        )
     }
 
     /// A view's `<figure>`: with the viewer, an inlined SVG sits in a
     /// frame (a group named for the view; the script makes it a tab stop
-    /// when it takes it over) under the controls; an `<img>` (a view
-    /// LikeC4 did not draw) and a tree without the viewer keep the bare
-    /// figure.
-    fn figure(&self, label: &str, caption: &str, markup: &str) -> String {
+    /// when it takes it over) under the controls, with the relations
+    /// behind its edges beside it; an `<img>` (a view LikeC4 did not
+    /// draw) and a tree without the viewer keep the bare figure.
+    fn figure(&self, label: &str, caption: &str, markup: &str, edges: &str) -> String {
         if self.options.viewer && markup.starts_with("<svg") {
             format!(
-                "<figure class=\"view\" data-viewer>{caption}{VIEWER_BAR}<div class=\"viewer-frame\" role=\"group\" aria-label=\"{}: diagram\">{markup}</div></figure>",
+                "<figure class=\"view\" data-viewer>{caption}{VIEWER_BAR}{edges}<div class=\"viewer-frame\" role=\"group\" aria-label=\"{}: diagram\">{markup}</div></figure>",
                 escape(label)
             )
         } else {
@@ -406,7 +490,10 @@ impl Ctx<'_> {
         alt: &str,
     ) -> String {
         match self.view_markup(depth, nodes, view, alt) {
-            Some(markup) => format!("{}\n", self.figure(alt, "", &markup)),
+            Some(inlined) => {
+                let edges = self.edge_data(&inlined.edges, nodes);
+                format!("{}\n", self.figure(alt, "", &inlined.html, &edges))
+            }
             None => {
                 self.missing.insert(view.to_string());
                 format!(
@@ -662,9 +749,19 @@ impl Ctx<'_> {
         let mut body = String::from("<h1>Curated views</h1>\n");
         let nodes = self.nodes(0, Here::Views);
         for view in &self.curated {
-            let markup = self.view_markup(0, &nodes, view, view).unwrap_or_default();
+            let inlined = self
+                .view_markup(0, &nodes, view, view)
+                .unwrap_or(svg::Inlined {
+                    html: String::new(),
+                    edges: Vec::new(),
+                });
             let caption = format!("<figcaption>{}</figcaption>", escape(view));
-            let _ = writeln!(body, "{}", self.figure(view, &caption, &markup));
+            let edges = self.edge_data(&inlined.edges, &nodes);
+            let _ = writeln!(
+                body,
+                "{}",
+                self.figure(view, &caption, &inlined.html, &edges)
+            );
         }
         Some(self.layout(0, Here::Views, Some("Curated views"), &body))
     }
@@ -717,6 +814,11 @@ pub fn generate(model: &Model, options: &DocsOptions) -> Site {
         .iter()
         .map(|e| e.kind.keyword().to_string())
         .collect();
+    let by_likec4: BTreeMap<String, &Element> = model
+        .elements
+        .iter()
+        .map(|e| (sanitize_id(&e.id), e))
+        .collect();
     let generated: BTreeSet<&String> = views.values().collect();
     let curated: Vec<String> = options
         .views
@@ -730,6 +832,7 @@ pub fn generate(model: &Model, options: &DocsOptions) -> Site {
         views,
         places,
         curated,
+        by_likec4,
         missing: BTreeSet::new(),
     };
     let mut pages = BTreeMap::new();
@@ -868,17 +971,25 @@ mod tests {
     /// The `index` view as LikeC4 and Graphviz write it: one node, `app`.
     fn likec4_view() -> ViewSource {
         ViewSource {
+            svg: "<svg width=\"10pt\" height=\"10pt\" viewBox=\"0 0 10 10\" xmlns=\"http://www.w3.org/2000/svg\">\n<g id=\"node1\" class=\"node\">\n<title>app</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node2\" class=\"node\">\n<title>lib</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node3\" class=\"node\">\n<title>driver_1</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"edge1\" class=\"edge\">\n<title>app&#45;&gt;lib</title>\n<path fill=\"none\" stroke=\"#8d8d8d\" d=\"M0,0\"/>\n</g>\n<g id=\"edge2\" class=\"edge\">\n<title>lib&#45;&gt;driver_1</title>\n<path fill=\"none\" stroke=\"#8d8d8d\" d=\"M0,0\"/>\n</g>\n</svg>\n".into(),
+            dot: Some("digraph {\n    graph [likec4_viewId=index];\n    app [likec4_id=app];\n    lib [likec4_id=lib];\n    driver_1 [likec4_id=node_driver];\n    app -> lib [likec4_id=\"1ab\"];\n    lib -> driver_1 [likec4_id=\"1ac\"];\n}\n".into()),
+        }
+    }
+
+    /// A view with one node and no edge, for claims about the figure's
+    /// shape around a view.
+    fn likec4_bare_view() -> ViewSource {
+        ViewSource {
             svg: "<svg width=\"10pt\" height=\"10pt\" viewBox=\"0 0 10 10\" xmlns=\"http://www.w3.org/2000/svg\">\n<g id=\"node1\" class=\"node\">\n<title>app</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n</svg>\n".into(),
             dot: Some("digraph {\n    graph [likec4_viewId=index];\n    app [likec4_id=app];\n}\n".into()),
         }
     }
-
     /// `view_app` as LikeC4 would draw it: the crate itself, its `server`
     /// module and the external it spawns, each a node.
     fn likec4_scoped_view() -> ViewSource {
         ViewSource {
-            svg: "<svg width=\"10pt\" height=\"10pt\" viewBox=\"0 0 10 10\" xmlns=\"http://www.w3.org/2000/svg\">\n<g id=\"node1\" class=\"node\">\n<title>app</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node2\" class=\"node\">\n<title>server</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node3\" class=\"node\">\n<title>driver_1</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n</svg>\n".into(),
-            dot: Some("digraph {\n    graph [likec4_viewId=view_app];\n    app [likec4_id=app];\n    server [likec4_id=\"app.server\"];\n    driver_1 [likec4_id=node_driver];\n}\n".into()),
+            svg: "<svg width=\"10pt\" height=\"10pt\" viewBox=\"0 0 10 10\" xmlns=\"http://www.w3.org/2000/svg\">\n<g id=\"node1\" class=\"node\">\n<title>app</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node2\" class=\"node\">\n<title>server</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node3\" class=\"node\">\n<title>driver_1</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"edge1\" class=\"edge\">\n<title>server&#45;&gt;driver_1</title>\n<path fill=\"none\" stroke=\"#8d8d8d\" d=\"M0,0\"/>\n</g>\n</svg>\n".into(),
+            dot: Some("digraph {\n    graph [likec4_viewId=view_app];\n    app [likec4_id=app];\n    server [likec4_id=\"app.server\"];\n    driver_1 [likec4_id=node_driver];\n    server -> driver_1 [likec4_id=\"1ab\"];\n}\n".into()),
         }
     }
     fn options() -> DocsOptions {
@@ -922,9 +1033,91 @@ mod tests {
 
     fn app_page_with_scoped_view() -> String {
         let mut opts = options();
+        opts.viewer = true;
         opts.views.insert("view_app".into(), likec4_scoped_view());
         let site = generate(&sample(), &opts);
         page(&site, "containers/app.html").to_string()
+    }
+
+    #[test]
+    fn a_figure_carries_the_relations_behind_each_edge_it_draws() {
+        let app = app_page_with_scoped_view();
+        assert!(
+            app.contains("<script type=\"application/json\" class=\"viewer-edges\">{\"app.server->node_driver\":[{\"source\":\"app.server\",\"source_href\":\"../containers/app.html#app.server\",\"target\":\"node_driver\",\"target_href\":\"../index.html#node_driver\",\"kind\":\"uses\",\"items\":[\"spawns\"],\"technology\":\"stdio\"}]}</script><div class=\"viewer-frame\""),
+            "{app}"
+        );
+    }
+
+    #[test]
+    fn an_edge_between_crates_lists_the_relations_between_their_modules() {
+        let mut opts = options();
+        opts.viewer = true;
+        opts.views.insert("index".into(), likec4_view());
+        let site = generate(&sample(), &opts);
+        let index = page(&site, "index.html");
+        assert!(
+            index.contains("\"app->lib\":[{\"source\":\"app.server\",\"source_href\":\"containers/app.html#app.server\",\"target\":\"lib.util\",\"target_href\":\"containers/lib.html#lib.util\",\"kind\":\"names\",\"items\":[\"Helper\"],\"technology\":null}]"),
+            "{index}"
+        );
+    }
+
+    #[test]
+    fn the_popover_does_not_link_the_page_s_own_crate_either() {
+        // The sample has lib.util -> app; on lib's page an edge lib->app
+        // would list it with app, the other page, linked; on app's page
+        // the same relation's target is the page itself.
+        let mut opts = options();
+        opts.viewer = true;
+        let mut scoped = likec4_scoped_view();
+        scoped.svg = scoped.svg.replace(
+            "<title>server&#45;&gt;driver_1</title>",
+            "<title>driver_1&#45;&gt;app</title>",
+        );
+        scoped.dot = scoped.dot.map(|d| {
+            d.replace(
+                "server -> driver_1 [likec4_id=\"1ab\"];",
+                "driver_1 -> app [likec4_id=\"1ab\"];",
+            )
+        });
+        let mut model = sample();
+        model
+            .relations
+            .push(relation("node_driver", "app", RelationKind::Uses, &["App"]));
+        opts.views.insert("view_app".into(), scoped);
+        let site = generate(&model, &opts);
+        let app = page(&site, "containers/app.html");
+        assert!(
+            app.contains("\"target\":\"app\",\"target_href\":null"),
+            "{app}"
+        );
+    }
+
+    #[test]
+    fn an_edge_with_no_relation_behind_it_is_left_out_of_the_data() {
+        let mut opts = options();
+        opts.viewer = true;
+        opts.views.insert("index".into(), likec4_view());
+        let site = generate(&sample(), &opts);
+        let index = page(&site, "index.html");
+        assert!(index.contains("viewer-edges"), "{index}");
+        assert!(!index.contains("lib->node_driver"), "{index}");
+    }
+
+    #[test]
+    fn json_escapes_what_would_break_a_string_or_a_script_element() {
+        assert_eq!(json("a\"b\\c\nd<e"), "\"a\\\"b\\\\c\\nd\\u003ce\"");
+    }
+
+    #[test]
+    fn an_absent_text_is_json_null() {
+        assert_eq!(json_opt(None), "null");
+        assert_eq!(json_opt(Some("x".into())), "\"x\"");
+    }
+
+    #[test]
+    fn json_escapes_every_control_character_and_nothing_printable() {
+        assert_eq!(json("\u{1}x\u{1f}"), "\"\\u0001x\\u001f\"");
+        assert_eq!(json(" ~\u{7f}é"), "\" ~\u{7f}é\"");
     }
 
     #[test]
@@ -1052,7 +1245,7 @@ mod tests {
     fn the_viewer_wraps_an_inlined_view_in_a_frame_under_hidden_controls() {
         let mut opts = options();
         opts.viewer = true;
-        opts.views.insert("index".into(), likec4_view());
+        opts.views.insert("index".into(), likec4_bare_view());
         let site = generate(&sample(), &opts);
         let index = page(&site, "index.html");
         assert!(
@@ -1099,7 +1292,7 @@ mod tests {
     fn a_curated_view_puts_its_caption_before_the_controls() {
         let mut opts = options();
         opts.viewer = true;
-        opts.views.insert("context".into(), likec4_view());
+        opts.views.insert("context".into(), likec4_bare_view());
         let site = generate(&sample(), &opts);
         let views = page(&site, "views.html");
         assert!(
@@ -1122,6 +1315,7 @@ mod tests {
             assert!(!contents.contains("viewer.js"), "{path}: {contents}");
             assert!(!contents.contains("data-viewer"), "{path}: {contents}");
             assert!(!contents.contains("viewer-frame"), "{path}: {contents}");
+            assert!(!contents.contains("viewer-edges"), "{path}: {contents}");
         }
     }
 
@@ -1676,6 +1870,7 @@ mod tests {
             views: BTreeMap::new(),
             places: BTreeMap::new(),
             curated: vec![],
+            by_likec4: BTreeMap::new(),
             missing: BTreeSet::new(),
         };
         assert_eq!(
