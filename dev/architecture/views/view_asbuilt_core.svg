@@ -151,8 +151,8 @@
 <title>docs&#45;&gt;svg</title>
 <path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1060.41,-810C1128.01,-810 1205.1,-810 1272.19,-810"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1272.4,-812.63 1279.9,-810 1272.4,-807.38 1272.4,-812.63"/>
-<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1097.13,-813 1097.13,-834 1243.13,-834 1243.13,-813 1097.13,-813"/>
-<text text-anchor="start" x="1100.13" y="-819.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">ViewSource, inline, svg</text>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1053.63,-813 1053.63,-834 1286.63,-834 1286.63,-813 1053.63,-813"/>
+<text text-anchor="start" x="1057.13" y="-819.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Inlined, Node, ViewSource, inline, svg</text>
 </g>
 <!-- docs&#45;&gt;theme -->
 <g id="edge16" class="edge">

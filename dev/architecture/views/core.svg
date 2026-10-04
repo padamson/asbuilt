@@ -259,8 +259,8 @@
 <title>docs&#45;&gt;svg</title>
 <path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1097.22,-810C1029.53,-810 952.29,-810 885.11,-810"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="884.89,-807.38 877.39,-810 884.89,-812.63 884.89,-807.38"/>
-<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="914.33,-813 914.33,-834 1060.33,-834 1060.33,-813 914.33,-813"/>
-<text text-anchor="start" x="917.33" y="-819.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">ViewSource, inline, svg</text>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="870.83,-813 870.83,-834 1103.83,-834 1103.83,-813 870.83,-813"/>
+<text text-anchor="start" x="874.33" y="-819.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Inlined, Node, ViewSource, inline, svg</text>
 </g>
 <!-- docs&#45;&gt;theme -->
 <g id="edge21" class="edge">
