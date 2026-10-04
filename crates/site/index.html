@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +19,15 @@
     <meta property="og:url" content="https://padamson.github.io/asbuilt/" />
     <meta name="twitter:card" content="summary" />
     <link data-trunk rel="tailwind-css" href="input.css" />
+    <!-- The architecture tree's diagram styles and viewer, and the palette
+         its pages use, for the context figure the page lifts from the tree.
+         The page is dark, so data-theme on <html> selects the dark tokens.
+         Plain links: Trunk leaves them, and relative paths hold under a
+         snapshot path. -->
+    <link rel="stylesheet" href="architecture.css" />
+    <link rel="stylesheet" href="architecture/theme.css" />
+    <link rel="stylesheet" href="architecture/viewer.css" />
+    <script src="architecture/viewer.js" defer></script>
     <!-- Receipts (written by the dogfood test), the rendered views
          (written by `asbuilt render`) and the architecture tree (written
          by `asbuilt docs`). Copied on every build, so they survive

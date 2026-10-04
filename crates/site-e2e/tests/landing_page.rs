@@ -145,12 +145,13 @@ async fn shot(page: &Page, dir: &Path, file: &str, selector: &str) {
 
 /// The six feature cards and a token unique to each snippet. The count
 /// check makes adding a card without adding it here a failure.
-const CARDS: [(&str, &str); 6] = [
+const CARDS: [(&str, &str); 7] = [
     ("#feature-drift-check", "is stale"),
     ("#feature-reexports", "pub use"),
     ("#feature-externals", "[[externals]]"),
     ("#feature-views", "view context"),
     ("#feature-likec4", "asbuilt render"),
+    ("#feature-viewer", "viewer = true"),
     ("#feature-rust-first", "extra_manifests"),
 ];
 
@@ -262,18 +263,32 @@ async fn site_landing_page_works_as_advertised() {
         .await
         .expect("the survey snippet is replaced");
 
-    // Step 3: this repo's own context view shipped with the page and loaded.
-    expect(page.locator("#example-context"))
-        .to_have_attribute("src", "views/context.svg")
+    // Step 3: this repo's own context view is the tree's figure, alive with
+    // the viewer, in the page's dark palette, its nodes linking into the
+    // tree (relatively).
+    expect(page.locator("#example-context figure[data-viewer-active] svg.c4[data-view='context']"))
+        .to_be_visible()
         .await
-        .expect("the example embeds the rendered context view, relatively");
-    let width = page
-        .evaluate_value("String(document.querySelector('#example-context').naturalWidth)")
+        .expect("the example embeds the tree's context figure and the viewer took it");
+    let crate_fill = page
+        .evaluate::<(), String>(
+            "() => getComputedStyle(document.querySelector(\"#example-context svg.c4 .node.c4-k-container > polygon\")).fill",
+            None,
+        )
         .await
-        .expect("probe the context view's natural width");
-    assert_ne!(
-        width, "0",
-        "views/context.svg must be present and decodable in the build"
+        .expect("read a crate box's fill");
+    assert_eq!(
+        crate_fill, "rgb(143, 45, 25)",
+        "the figure follows the page's dark palette"
+    );
+    let into_tree = page
+        .locator("#example-context svg.c4 a[href^='architecture/containers/']")
+        .count()
+        .await
+        .expect("count node links into the tree");
+    assert!(
+        into_tree > 0,
+        "a crate's node links to its page in the tree"
     );
 
     // Step 4: every feature card renders its own highlighted snippet.

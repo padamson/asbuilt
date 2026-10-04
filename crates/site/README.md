@@ -79,7 +79,8 @@ index.html              Trunk entry: HTML shell, meta/OG tags, copy-dir of recei
 Trunk.toml              build config; pins Tailwind v4; public_url = "/"
 input.css               Tailwind v4 entry + the rust/ink theme tokens
 build.rs                highlights snippets/ with syntect at build time; SITE_VERSION;
-                        LIKEC4_VERSION read from the CLI's pin
+                        LIKEC4_VERSION read from the CLI's pin; the context figure
+                        lifted from public/architecture/views.html, links re-based
 snippets/               code samples, one file per language (.rs/.sh/.toml/.c4/.diff/.yaml)
 public/receipts/        written by the dogfood test (ignored, .gitkeep tracked)
 public/views/           context.svg from `asbuilt render` (ignored, .gitkeep tracked)

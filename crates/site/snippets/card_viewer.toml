@@ -1,0 +1,5 @@
+[docs]
+title = "Architecture"
+home_url = "../"      # the tree sits inside a host site
+viewer = true         # readable scale, zoom and pan, nodes that link,
+                      # edges that open the relations behind them

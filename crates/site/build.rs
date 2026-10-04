@@ -10,6 +10,22 @@ use syntect::highlighting::ThemeSet;
 use syntect::html::highlighted_html_for_string;
 use syntect::parsing::SyntaxSet;
 
+/// The `context` figure of the tree's views page: its caption dropped (the
+/// page has its own heading) and every link into the tree, in the markup
+/// and in the edge data, re-based from the tree's root to `architecture/`.
+fn context_figure(views_html: &str) -> Option<String> {
+    let caption = "<figcaption>context</figcaption>";
+    let at = views_html.find(caption)?;
+    let start = views_html[..at].rfind("<figure ")?;
+    let end = at + views_html[at..].find("</figure>")? + "</figure>".len();
+    Some(
+        views_html[start..end]
+            .replacen(caption, "", 1)
+            .replace("\"containers/", "\"architecture/containers/")
+            .replace("\"index.html", "\"architecture/index.html"),
+    )
+}
+
 fn main() {
     println!("cargo:rerun-if-changed=snippets");
 
@@ -52,6 +68,22 @@ fn main() {
             .replace(['-', '.'], "_");
         generated.push_str(&format!("pub const {name}: &str = r####\"{inner}\"####;\n"));
     }
+
+    // This repo's own context view, lifted from the generated architecture
+    // tree (`asbuilt docs` runs before Trunk in preview.sh and pages.yml),
+    // so the landing page shows the same figure the tree does: inlined,
+    // in the page's palette, with the viewer. A tree not yet generated (a
+    // plain clippy or test run) leaves it empty and the page shows the
+    // rendered image instead.
+    let views_page = Path::new("public/architecture/views.html");
+    println!("cargo:rerun-if-changed={}", views_page.display());
+    let figure = fs::read_to_string(views_page)
+        .ok()
+        .and_then(|html| context_figure(&html))
+        .unwrap_or_default();
+    generated.push_str(&format!(
+        "pub const CONTEXT_FIGURE: &str = r####\"{figure}\"####;\n"
+    ));
 
     let dest = Path::new(&env::var("OUT_DIR").unwrap()).join("snippets.rs");
     fs::write(dest, generated).expect("write snippets.rs");

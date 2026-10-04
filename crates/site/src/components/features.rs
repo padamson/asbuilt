@@ -3,7 +3,7 @@ use leptos::prelude::*;
 use super::{CodeBlock, FeatureCard};
 use crate::snippets;
 
-/// Six cards. The dogfood test counts them (`[id^='feature-']`), so an
+/// Seven cards. The dogfood test counts them (`[id^='feature-']`), so an
 /// addition here needs its count bumped there.
 #[component]
 pub fn Features() -> impl IntoView {
@@ -45,6 +45,13 @@ pub fn Features() -> impl IntoView {
                     blurb="Validation, JSON export, Graphviz rendering and a generated documentation site, through the pinned LikeC4 CLI."
                 >
                     <CodeBlock html=snippets::CARD_LIKEC4_SH/>
+                </FeatureCard>
+                <FeatureCard
+                    id="feature-viewer"
+                    title="Diagrams you can explore"
+                    blurb="Every view sits at a readable scale. Zoom with the wheel and Ctrl or ⌘, drag to pan, click a node for its page, click an edge for the relations behind it."
+                >
+                    <CodeBlock html=snippets::CARD_VIEWER_TOML/>
                 </FeatureCard>
                 <FeatureCard
                     id="feature-rust-first"
