@@ -42,7 +42,11 @@ of them is called out in the changelog.
 A view LikeC4 drew (its `.dot` carries `likec4_viewId`) is inlined as
 `<svg class="c4" data-view="<view>">`, each node and group box classed
 `c4-k-<kind>` by element kind, a node's secondary text `c4-muted`, an
-edge label's backing `c4-label-bg`. Any other SVG is an `<img>`.
+edge label's backing `c4-label-bg`. A node whose element the page knows
+carries a `<title>` with its id (the hover tooltip) and is wrapped in
+an `<a>` to where the element is documented: a crate's page, a module's
+section on it, an external's row on the index; the page's own crate is
+named but not linked. Any other SVG is an `<img>`.
 `theme.css` colors the inlined views from `[theme]`: per kind,
 `--c4-<kind>-fill`, `-stroke`, `-text` and `-muted`, for light and for
 dark; group boxes are a tint of their kind's color over `--bg`, and
@@ -57,7 +61,9 @@ of shrinking its text, and a small one is not blown up. The wheel with
 Ctrl or Cmd held (what a trackpad pinch sends) zooms about the pointer,
 the + and − buttons step, and + − 0 work from the keyboard with the
 frame focused; a plain wheel scrolls the page as usual, and dragging
-pans. The bar's hint names the modifier for the platform (⌘ on a Mac,
+pans a view larger than its frame (the grab cursor says so; a view
+that fits offers neither; a drag that starts on a node pans without
+following its link). The bar's hint names the modifier for the platform (⌘ on a Mac,
 Ctrl elsewhere) and is left out on a touch-only device. The other
 controls: Fit (the whole view at any scale), 1:1 (as
 LikeC4 laid it out), Wide (every figure on the site takes the window's

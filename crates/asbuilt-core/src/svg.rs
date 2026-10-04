@@ -1,11 +1,13 @@
 //! A rendered view inlined into a page, so the page's colors reach it.
 //!
-//! The SVG `dot -Tsvg` wrote is rewritten: the prolog, comments and
-//! tooltips go; `width` and `height` give way to the page's layout; ids
-//! are prefixed with the view's name, so several views share a page; and
-//! classes name what `theme.css` colors: each node's and group box's
-//! element kind (read from the `.dot` LikeC4 wrote beside it), a node's
-//! secondary text, and an edge label's backing. Only a LikeC4 render is
+//! The SVG `dot -Tsvg` wrote is rewritten: the prolog and comments go,
+//! and Graphviz's tooltips give way to each known node's own name and a
+//! link to the page that documents it; `width` and `height` give way to
+//! the page's layout; ids are prefixed with the view's name, so several
+//! views share a page; and classes name what `theme.css` colors: each
+//! node's and group box's element kind (read from the `.dot` LikeC4
+//! wrote beside it), a node's secondary text, and an edge label's
+//! backing. Only a LikeC4 render is
 //! inlined. Any other SVG is left for an `<img>`, where a script in it
 //! cannot run, and the rewrite drops scripts, `foreignObject` and event
 //! handlers besides. Pure string work over Graphviz's own output.
@@ -19,6 +21,16 @@ use crate::docs::escape;
 pub struct ViewSource {
     pub svg: String,
     pub dot: Option<String>,
+}
+
+/// What a page knows about an element a view may draw: its kind, the
+/// name its node carries on hover, and a link to where it is
+/// documented (`None` for an element the page itself documents).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Node {
+    pub kind: String,
+    pub title: String,
+    pub href: Option<String>,
 }
 
 /// Whether `dot` was written by `likec4 gen dot`, which names the view in
@@ -182,11 +194,16 @@ enum Role {
 #[derive(Debug)]
 struct Group {
     role: Option<Role>,
+    /// Where the group's open tag starts in the output, so a node can be
+    /// wrapped in a link once its `<title>` names the element.
+    open_at: usize,
     /// Where the group's `class` value ends in the output, until its
     /// `<title>` names the element and the kind class goes in there.
     class_end: Option<usize>,
     /// The fill of a node's first text line, its title.
     title_fill: Option<String>,
+    /// Whether an `<a>` was opened before the group, to close after it.
+    linked: bool,
 }
 
 /// An attribute that could run a script: an event handler, or a link to
@@ -202,13 +219,15 @@ fn is_active(key: &str, value: &str) -> bool {
 
 /// `source.svg` rewritten for a page, or `None` when it is not a LikeC4
 /// render (no `.dot` beside it, or one LikeC4 did not write) or not SVG
-/// in the shape Graphviz writes. `kinds` maps a LikeC4 id to its element
-/// kind; `label` is the diagram's accessible name.
+/// in the shape Graphviz writes. `nodes` maps a LikeC4 id to what the
+/// page knows about its element: a node is classed by its kind, titled
+/// by its name (the hover tooltip) and wrapped in a link to its page
+/// when it has one; `label` is the diagram's accessible name.
 pub fn inline(
     source: &ViewSource,
     view: &str,
     label: &str,
-    kinds: &BTreeMap<String, String>,
+    nodes: &BTreeMap<String, Node>,
 ) -> Option<String> {
     let dot = source.dot.as_deref().filter(|dot| is_likec4_dot(dot))?;
     let ids = likec4_ids(dot);
@@ -230,7 +249,12 @@ pub fn inline(
         }
         if let Some(closing) = inner.strip_prefix('/') {
             if closing.trim() == "g" {
-                groups.pop();
+                let group = groups.pop();
+                out.push_str("</g>");
+                if group.is_some_and(|g| g.linked) {
+                    out.push_str("</a>");
+                }
+                continue;
             }
             out.push('<');
             out.push_str(inner);
@@ -244,9 +268,18 @@ pub fn inline(
             rest = &rest[close + "</title>".len()..];
             if let Some(group) = groups.last_mut()
                 && let Some(at) = group.class_end.take()
-                && let Some(kind) = ids.get(name).and_then(|id| kinds.get(id))
+                && let Some(node) = ids.get(name).and_then(|id| nodes.get(id))
             {
-                out.insert_str(at, &format!(" c4-k-{kind}"));
+                out.insert_str(at, &format!(" c4-k-{}", node.kind));
+                if group.role == Some(Role::Node) {
+                    // The element names itself on hover, and its node is
+                    // a link to where the page documents it.
+                    out.push_str(&format!("<title>{}</title>", escape(&node.title)));
+                    if let Some(href) = &node.href {
+                        out.insert_str(group.open_at, &format!("<a href=\"{}\">", escape(href)));
+                        group.linked = true;
+                    }
+                }
             }
             continue;
         }
@@ -278,12 +311,15 @@ pub fn inline(
                     Some("edge") => Some(Role::Edge),
                     _ => None,
                 };
+                let open_at = out.len();
                 let class_end = tag.write(&mut out);
                 groups.push(Group {
                     role,
+                    open_at,
                     class_end: class_end
                         .filter(|_| matches!(role, Some(Role::Node | Role::Cluster))),
                     title_fill: None,
+                    linked: false,
                 });
                 continue;
             }
@@ -374,15 +410,35 @@ mod tests {
 </svg>
 "##;
 
-    fn kinds() -> BTreeMap<String, String> {
-        [
-            ("app", "container"),
-            ("app.server", "component"),
-            ("node_driver", "process"),
-        ]
-        .iter()
-        .map(|(id, kind)| (id.to_string(), kind.to_string()))
-        .collect()
+    fn node(kind: &str, title: &str, href: Option<&str>) -> Node {
+        Node {
+            kind: kind.into(),
+            title: title.into(),
+            href: href.map(String::from),
+        }
+    }
+
+    /// The page's view of the fixture's elements: the crate and its
+    /// module have pages, the external none.
+    fn nodes() -> BTreeMap<String, Node> {
+        BTreeMap::from([
+            (
+                "app".to_string(),
+                node("container", "app", Some("containers/app.html")),
+            ),
+            (
+                "app.server".to_string(),
+                node(
+                    "component",
+                    "app.server",
+                    Some("containers/app.html#app.server"),
+                ),
+            ),
+            (
+                "node_driver".to_string(),
+                node("process", "node_driver", None),
+            ),
+        ])
     }
 
     fn source() -> ViewSource {
@@ -393,7 +449,7 @@ mod tests {
     }
 
     fn inlined() -> String {
-        inline(&source(), "view_app", "app", &kinds()).expect("inlined")
+        inline(&source(), "view_app", "app", &nodes()).expect("inlined")
     }
 
     #[test]
@@ -416,7 +472,7 @@ mod tests {
             svg: SVG.into(),
             dot: None,
         };
-        assert_eq!(inline(&source, "view_app", "app", &kinds()), None);
+        assert_eq!(inline(&source, "view_app", "app", &nodes()), None);
     }
 
     #[test]
@@ -425,21 +481,33 @@ mod tests {
             svg: SVG.into(),
             dot: Some("digraph { a -> b }".into()),
         };
-        assert_eq!(inline(&source, "view_app", "app", &kinds()), None);
+        assert_eq!(inline(&source, "view_app", "app", &nodes()), None);
     }
 
     #[test]
-    fn the_prolog_comments_and_tooltips_are_dropped() {
+    fn the_prolog_comments_and_graphviz_s_tooltips_are_dropped() {
+        // Graphviz titles every group with its own name; a node's is
+        // replaced by the element's, the rest go.
         let svg = inlined();
         assert!(svg.starts_with("<svg "), "{svg}");
-        for gone in ["<?xml", "<!DOCTYPE", "<!--", "-->", "<title>", "graphviz"] {
+        for gone in [
+            "<?xml",
+            "<!DOCTYPE",
+            "<!--",
+            "-->",
+            "<title>G</title>",
+            "<title>cluster_app</title>",
+            "<title>server</title>",
+            "<title>driver_1</title>",
+            "graphviz",
+        ] {
             assert!(!svg.contains(gone), "{gone} in {svg}");
         }
     }
 
     #[test]
     fn the_root_gives_way_to_the_page_and_names_the_view() {
-        let svg = inline(&source(), "view_app", "a<b", &kinds()).unwrap();
+        let svg = inline(&source(), "view_app", "a<b", &nodes()).unwrap();
         let root = &svg[..svg.find('>').unwrap()];
         assert_eq!(
             root,
@@ -469,6 +537,42 @@ mod tests {
             svg.contains("<g id=\"view_app-node2\" class=\"node c4-k-process\">"),
             "{svg}"
         );
+    }
+
+    #[test]
+    fn a_node_with_a_page_is_a_link_to_it_titled_by_its_name() {
+        let out = inlined();
+        assert!(
+            out.contains("<a href=\"containers/app.html#app.server\"><g id=\"view_app-node"),
+            "{out}"
+        );
+        assert!(
+            out.contains("class=\"node c4-k-component\">\n<title>app.server</title>"),
+            "{out}"
+        );
+        assert_eq!(out.matches("</g></a>").count(), 1, "{out}");
+    }
+
+    #[test]
+    fn a_node_without_a_page_is_titled_but_not_linked() {
+        let out = inlined();
+        assert!(
+            out.contains("class=\"node c4-k-process\">\n<title>node_driver</title>"),
+            "{out}"
+        );
+    }
+
+    #[test]
+    fn only_nodes_with_a_page_are_linked() {
+        let out = inlined();
+        assert_eq!(out.matches("<a ").count(), 1, "{out}");
+    }
+
+    #[test]
+    fn a_group_box_is_neither_linked_nor_titled() {
+        let out = inlined();
+        assert!(!out.contains("<title>app</title>"), "{out}");
+        assert!(!out.contains("<title>cluster_app</title>"), "{out}");
     }
 
     #[test]
@@ -530,7 +634,7 @@ mod tests {
             ),
             dot: Some(DOT.into()),
         };
-        let svg = inline(&source, "view_app", "app", &kinds()).unwrap();
+        let svg = inline(&source, "view_app", "app", &nodes()).unwrap();
         assert!(
             svg.contains("data-note=\"a>b\" fill=\"#bfdbfe\" class=\"c4-muted\">"),
             "{svg}"
@@ -543,7 +647,7 @@ mod tests {
             svg: SVG.replace("<g id=\"graph0\"", "<?render x?><g id=\"graph0\""),
             dot: Some(DOT.into()),
         };
-        let svg = inline(&source, "view_app", "app", &kinds()).unwrap();
+        let svg = inline(&source, "view_app", "app", &nodes()).unwrap();
         assert!(!svg.contains("<?render"), "{svg}");
     }
 
@@ -570,7 +674,7 @@ mod tests {
             svg,
             dot: Some(DOT.into()),
         };
-        let out = inline(&source, "view_app", "app", &kinds()).unwrap();
+        let out = inline(&source, "view_app", "app", &nodes()).unwrap();
         for gone in ["script", "alert", "foreignObject", "<div>", "onclick"] {
             assert!(!out.contains(gone), "{gone} in {out}");
         }
@@ -583,6 +687,6 @@ mod tests {
             svg: "<svg viewBox=\"0 0 1 1><g>".into(),
             dot: Some(DOT.into()),
         };
-        assert_eq!(inline(&source, "view_app", "app", &kinds()), None);
+        assert_eq!(inline(&source, "view_app", "app", &nodes()), None);
     }
 }

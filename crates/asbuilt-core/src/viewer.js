@@ -61,14 +61,12 @@
     var mode = "auto"; // auto | fit | one | zoom
     var zoom = 1; // the scale in zoom mode
     var current = 1; // the scale last applied
+    var pannable = false; // whether the view overflows its frame
     var readout = bar.querySelector(".viewer-scale");
     var full = bar.querySelector("[data-viewer-full]");
     var hint = bar.querySelector(".viewer-hint");
-    if (hint) {
-      // No wheel to hint at on a touch-only device.
-      if (window.matchMedia && window.matchMedia("(hover: none)").matches) hint.hidden = true;
-      else hint.textContent = (MAC ? "\u2318" : "Ctrl") + " scroll to zoom \u00b7 drag to pan";
-    }
+    // No wheel to hint at on a touch-only device.
+    if (hint && window.matchMedia && window.matchMedia("(hover: none)").matches) hint = null;
 
     function fullscreen() {
       return document.fullscreenElement === figure;
@@ -105,7 +103,15 @@
       }
       current = scale();
       svg.style.width = Math.round(natural.width * current) + "px";
+      // A view that fits has nowhere to pan to: no grab cursor, no drag.
+      pannable =
+        frame.scrollWidth > frame.clientWidth + 1 || frame.scrollHeight > frame.clientHeight + 1;
+      frame.classList.toggle("pannable", pannable);
       if (readout) readout.textContent = Math.round(current * 100) + "%";
+      if (hint) {
+        hint.textContent =
+          (MAC ? "\u2318" : "Ctrl") + " scroll to zoom" + (pannable ? " \u00b7 drag to pan" : "");
+      }
       bar.querySelectorAll("[data-viewer-mode]").forEach(function (button) {
         var pressed = button.getAttribute("data-viewer-mode") === mode;
         button.setAttribute("aria-pressed", String(pressed));
@@ -209,9 +215,13 @@
 
     // Drag to pan, with the mouse: touch keeps the browser's own
     // scrolling. A press that moves becomes a drag and is not a click,
-    // so nothing under the pointer is followed on release.
+    // so a node's link under the pointer is not followed on release.
     var press = null;
     var suppressClick = false;
+    // A node is a link, which the browser would start dragging as one.
+    frame.addEventListener("dragstart", function (event) {
+      event.preventDefault();
+    });
     frame.addEventListener(
       "click",
       function (event) {
@@ -224,8 +234,8 @@
     );
     frame.addEventListener("pointerdown", function (event) {
       suppressClick = false;
-      if (event.pointerType !== "mouse" || event.button !== 0) return;
-      if (event.target.closest("a, button")) return;
+      if (!pannable || event.pointerType !== "mouse" || event.button !== 0) return;
+      if (event.target.closest("button")) return;
       press = {
         id: event.pointerId,
         x: event.clientX,

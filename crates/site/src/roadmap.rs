@@ -122,7 +122,7 @@ pub const ITEMS: &[Item] = &[
         "roadmap-now-explore",
         "Zoom, pan and click-through",
         "Wheel and pinch zoom, drag to pan, a node links to its page and names itself on hover.",
-        Status::InProgress,
+        Status::Done,
     ),
     now(
         "roadmap-now-edges",

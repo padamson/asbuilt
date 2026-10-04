@@ -209,9 +209,6 @@ struct Ctx<'a> {
     /// The rendered views that are neither `index` nor generated, which
     /// `views.html` shows; every header links that page when there are any.
     curated: Vec<String>,
-    /// The element kind of each LikeC4 id, for the classes an inlined
-    /// view's nodes carry.
-    kinds: BTreeMap<String, String>,
     missing: BTreeSet<String>,
 }
 
@@ -330,9 +327,49 @@ impl Ctx<'_> {
     /// A view as the page shows it: inlined when LikeC4 drew it, so the
     /// page's colors reach it, else an image; `None` when there is no SVG
     /// for it.
-    fn view_markup(&self, depth: usize, view: &str, alt: &str) -> Option<String> {
+    /// What the inliner needs per element for the page `here` at `depth`:
+    /// its kind, its dotted id as the name a node shows on hover, and a
+    /// link to where it is documented, except for the page's own element.
+    /// Built once per page and shared by its views.
+    fn nodes(&self, depth: usize, here: Here<'_>) -> BTreeMap<String, svg::Node> {
+        let this_page = match here {
+            Here::Container(id) => Some(container_page(id)),
+            Here::Index | Here::Views => None,
+        };
+        self.model
+            .elements
+            .iter()
+            .map(|element| {
+                let place = self.places.get(&element.id);
+                let here = place.is_some_and(|p| {
+                    p.fragment.is_none() && this_page.as_deref() == Some(p.page.as_str())
+                });
+                let href = if here {
+                    None
+                } else {
+                    place.map(|p| p.href(depth))
+                };
+                (
+                    sanitize_id(&element.id),
+                    svg::Node {
+                        kind: element.kind.keyword().to_string(),
+                        title: dotted(&element.id),
+                        href,
+                    },
+                )
+            })
+            .collect()
+    }
+
+    fn view_markup(
+        &self,
+        depth: usize,
+        nodes: &BTreeMap<String, svg::Node>,
+        view: &str,
+        alt: &str,
+    ) -> Option<String> {
         let source = self.options.views.get(view)?;
-        Some(match svg::inline(source, view, alt, &self.kinds) {
+        Some(match svg::inline(source, view, alt, nodes) {
             Some(inline) => inline.trim_end().to_string(),
             None => format!(
                 "<img src=\"{}views/{}.svg\" alt=\"{}\">",
@@ -361,8 +398,14 @@ impl Ctx<'_> {
 
     /// The `<figure>` for a view, or the placeholder when its SVG is
     /// missing (recorded for the report).
-    fn view_figure(&mut self, depth: usize, view: &str, alt: &str) -> String {
-        match self.view_markup(depth, view, alt) {
+    fn view_figure(
+        &mut self,
+        depth: usize,
+        nodes: &BTreeMap<String, svg::Node>,
+        view: &str,
+        alt: &str,
+    ) -> String {
+        match self.view_markup(depth, nodes, view, alt) {
             Some(markup) => format!("{}\n", self.figure(alt, "", &markup)),
             None => {
                 self.missing.insert(view.to_string());
@@ -499,7 +542,8 @@ impl Ctx<'_> {
     fn index_page(&mut self) -> String {
         let mut body = String::new();
         let _ = writeln!(body, "<h1>{}</h1>", escape(&self.options.title));
-        body.push_str(&self.view_figure(0, "index", "Overview"));
+        let nodes = self.nodes(0, Here::Index);
+        body.push_str(&self.view_figure(0, &nodes, "index", "Overview"));
         let top = children_of(self.model, &[]);
         let containers: Vec<&Element> = top.iter().copied().filter(|e| !is_external(e)).collect();
         let externals: Vec<&Element> = top.iter().copied().filter(|e| is_external(e)).collect();
@@ -571,11 +615,12 @@ impl Ctx<'_> {
     }
 
     fn container_page_html(&mut self, element: &Element) -> String {
+        let nodes = self.nodes(1, Here::Container(&element.id));
         let mut body = String::new();
         let _ = writeln!(body, "<h1>{}</h1>", escape(&element.title));
         body.push_str(&self.meta_html(element));
         if let Some(view) = self.views.get(&element.id).cloned() {
-            body.push_str(&self.view_figure(1, &view, &element.title));
+            body.push_str(&self.view_figure(1, &nodes, &view, &element.title));
         }
         let modules = self.module_list(&element.id);
         if !modules.is_empty() {
@@ -601,7 +646,7 @@ impl Ctx<'_> {
             );
             body.push_str(&self.meta_html(descendant));
             if let Some(view) = self.views.get(&descendant.id).cloned() {
-                body.push_str(&self.view_figure(1, &view, &dotted(&descendant.id)));
+                body.push_str(&self.view_figure(1, &nodes, &view, &dotted(&descendant.id)));
             }
             body.push_str(&self.relation_tables(&descendant.id, 1));
             body.push_str("</section>\n");
@@ -615,8 +660,9 @@ impl Ctx<'_> {
             return None;
         }
         let mut body = String::from("<h1>Curated views</h1>\n");
+        let nodes = self.nodes(0, Here::Views);
         for view in &self.curated {
-            let markup = self.view_markup(0, view, view).unwrap_or_default();
+            let markup = self.view_markup(0, &nodes, view, view).unwrap_or_default();
             let caption = format!("<figcaption>{}</figcaption>", escape(view));
             let _ = writeln!(body, "{}", self.figure(view, &caption, &markup));
         }
@@ -666,12 +712,11 @@ pub fn generate(model: &Model, options: &DocsOptions) -> Site {
         }
     }
 
-    let kinds: BTreeMap<String, String> = model
+    let kind_names: BTreeSet<String> = model
         .elements
         .iter()
-        .map(|e| (sanitize_id(&e.id), e.kind.keyword().to_string()))
+        .map(|e| e.kind.keyword().to_string())
         .collect();
-    let kind_names: BTreeSet<String> = kinds.values().cloned().collect();
     let generated: BTreeSet<&String> = views.values().collect();
     let curated: Vec<String> = options
         .views
@@ -685,7 +730,6 @@ pub fn generate(model: &Model, options: &DocsOptions) -> Site {
         views,
         places,
         curated,
-        kinds,
         missing: BTreeSet::new(),
     };
     let mut pages = BTreeMap::new();
@@ -829,6 +873,14 @@ mod tests {
         }
     }
 
+    /// `view_app` as LikeC4 would draw it: the crate itself, its `server`
+    /// module and the external it spawns, each a node.
+    fn likec4_scoped_view() -> ViewSource {
+        ViewSource {
+            svg: "<svg width=\"10pt\" height=\"10pt\" viewBox=\"0 0 10 10\" xmlns=\"http://www.w3.org/2000/svg\">\n<g id=\"node1\" class=\"node\">\n<title>app</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node2\" class=\"node\">\n<title>server</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node3\" class=\"node\">\n<title>driver_1</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n</svg>\n".into(),
+            dot: Some("digraph {\n    graph [likec4_viewId=view_app];\n    app [likec4_id=app];\n    server [likec4_id=\"app.server\"];\n    driver_1 [likec4_id=node_driver];\n}\n".into()),
+        }
+    }
     fn options() -> DocsOptions {
         DocsOptions {
             title: "Sample".into(),
@@ -868,6 +920,51 @@ mod tests {
         assert_eq!(page(&site, "theme.js"), SCHEME_SCRIPT);
     }
 
+    fn app_page_with_scoped_view() -> String {
+        let mut opts = options();
+        opts.views.insert("view_app".into(), likec4_scoped_view());
+        let site = generate(&sample(), &opts);
+        page(&site, "containers/app.html").to_string()
+    }
+
+    #[test]
+    fn on_a_crate_page_a_module_node_links_to_its_section() {
+        let app = app_page_with_scoped_view();
+        assert!(
+            app.contains("<a href=\"../containers/app.html#app.server\"><g id=\"view_app-node2\" class=\"node c4-k-component\">\n<title>app.server</title>"),
+            "{app}"
+        );
+    }
+
+    #[test]
+    fn on_a_crate_page_its_own_node_is_named() {
+        let app = app_page_with_scoped_view();
+        assert!(
+            app.contains(
+                "<g id=\"view_app-node1\" class=\"node c4-k-container\">\n<title>app</title>"
+            ),
+            "{app}"
+        );
+    }
+
+    #[test]
+    fn on_a_crate_page_its_own_node_is_not_linked_to_itself() {
+        let app = app_page_with_scoped_view();
+        assert!(
+            !app.contains("<a href=\"../containers/app.html\">"),
+            "{app}"
+        );
+    }
+
+    #[test]
+    fn on_a_crate_page_an_external_node_links_to_its_row_on_the_index() {
+        let app = app_page_with_scoped_view();
+        assert!(
+            app.contains("<a href=\"../index.html#node_driver\"><g id=\"view_app-node3\" class=\"node c4-k-process\">\n<title>node_driver</title>"),
+            "{app}"
+        );
+    }
+
     #[test]
     fn theme_css_colors_every_kind_the_model_has() {
         let mut opts = options();
@@ -900,7 +997,7 @@ mod tests {
             "{index}"
         );
         assert!(
-            index.contains("<g id=\"index-node1\" class=\"node c4-k-container\">"),
+            index.contains("<a href=\"containers/app.html\"><g id=\"index-node1\" class=\"node c4-k-container\">\n<title>app</title>"),
             "{index}"
         );
         assert!(!index.contains("<img src=\"views/index.svg\""), "{index}");
@@ -1579,11 +1676,10 @@ mod tests {
             views: BTreeMap::new(),
             places: BTreeMap::new(),
             curated: vec![],
-            kinds: BTreeMap::new(),
             missing: BTreeSet::new(),
         };
         assert_eq!(
-            ctx.view_figure(0, "a<b", "alt"),
+            ctx.view_figure(0, &BTreeMap::new(), "a<b", "alt"),
             "<p class=\"missing\">No diagram for <code>a&lt;b</code>: run <code>asbuilt render</code>.</p>\n"
         );
     }

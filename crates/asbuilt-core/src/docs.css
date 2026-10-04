@@ -44,9 +44,12 @@ figure img { max-width: 100%; height: auto; border: 1px solid var(--rule); }
 .viewer-hint { margin-left: auto; }
 .viewer-hint[hidden] { display: none; }
 @media (max-width: 40rem) { .viewer-hint { display: none; } }
-figure[data-viewer-active] .viewer-frame { overflow: auto; max-height: 75vh; border: 1px solid var(--rule); scrollbar-gutter: stable; cursor: grab; user-select: none; }
+figure[data-viewer-active] .viewer-frame { overflow: auto; max-height: 75vh; border: 1px solid var(--rule); scrollbar-gutter: stable; user-select: none; }
 figure[data-viewer-active] .viewer-frame:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-figure[data-viewer-active] .viewer-frame.dragging { cursor: grabbing; }
+figure[data-viewer-active] .viewer-frame.pannable { cursor: grab; }
+figure[data-viewer-active] .viewer-frame.pannable.dragging,
+figure[data-viewer-active] .viewer-frame.pannable.dragging a { cursor: grabbing; }
+figure[data-viewer-active] svg.c4 a { -webkit-user-drag: none; }
 figure[data-viewer-active] svg.c4 { width: auto; max-width: none; }
 figure:fullscreen { margin: 0; padding: 1rem; overflow: auto; background: var(--bg); }
 figure:fullscreen .viewer-frame { max-height: none; border: 0; }

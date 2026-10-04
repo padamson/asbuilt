@@ -652,7 +652,8 @@ async fn site_architecture_a_pinch_gesture_zooms_the_view() {
 }
 
 /// The bar's hint as the viewer sees the platform: the page is loaded
-/// with `navigator.platform` reporting `platform`.
+/// with `navigator.platform` reporting `platform`. The index view fits
+/// its frame, so the hint offers no pan.
 async fn hint_on(platform: &str, root: &str) -> String {
     let session = open_session(ColorScheme::Light).await;
     let page = &session.page;
@@ -682,18 +683,186 @@ async fn hint_on(platform: &str, root: &str) -> String {
 #[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
 async fn site_architecture_hint_names_cmd_on_a_mac() {
     let root = serve_snapshot().await;
-    assert_eq!(
-        hint_on("MacIntel", &root).await,
-        "\u{2318} scroll to zoom \u{b7} drag to pan"
-    );
+    assert_eq!(hint_on("MacIntel", &root).await, "\u{2318} scroll to zoom");
 }
 
 #[tokio::test]
 #[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
 async fn site_architecture_hint_names_ctrl_elsewhere() {
     let root = serve_snapshot().await;
-    assert_eq!(
-        hint_on("Win32", &root).await,
-        "Ctrl scroll to zoom \u{b7} drag to pan"
+    assert_eq!(hint_on("Win32", &root).await, "Ctrl scroll to zoom");
+}
+
+/// The first node link on the index and where it points.
+async fn first_node_link(page: &Page) -> (Locator, String) {
+    // A crate's node, not an external's (which links to an index row).
+    let link = page
+        .locator("svg.c4[data-view='index'] a[href^='containers/']")
+        .first();
+    expect(link.clone())
+        .to_be_visible()
+        .await
+        .expect("the index view has a linked node");
+    let href = link
+        .get_attribute("href")
+        .await
+        .expect("read the link")
+        .expect("the link has an href");
+    (link, href)
+}
+
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_a_node_links_to_its_page() {
+    let root = serve_snapshot().await;
+    let session = open_session(ColorScheme::Light).await;
+    let page = &session.page;
+    page.goto(&root, None)
+        .await
+        .expect("navigate to the architecture index");
+    let (link, href) = first_node_link(page).await;
+    link.click(None).await.expect("click the node");
+    page.wait_for_load_state(None)
+        .await
+        .expect("the crate page loads");
+    assert!(
+        page.url().ends_with(&href),
+        "clicking the node opens {href}, not {}",
+        page.url()
     );
+    session.browser.close().await.expect("close browser");
+}
+
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_a_node_names_itself_by_its_id() {
+    let root = serve_snapshot().await;
+    let session = open_session(ColorScheme::Light).await;
+    let page = &session.page;
+    page.goto(&root, None)
+        .await
+        .expect("navigate to the architecture index");
+    let (link, href) = first_node_link(page).await;
+    let title = link
+        .locator("title")
+        .first()
+        .text_content()
+        .await
+        .expect("read the node's title")
+        .unwrap_or_default();
+    assert_eq!(
+        href,
+        format!("containers/{title}.html"),
+        "a crate's node is titled by its id, which names its page"
+    );
+    session.browser.close().await.expect("close browser");
+}
+
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_a_drag_from_a_node_pans_without_following_its_link() {
+    let root = serve_snapshot().await;
+    let v = open_first_view(&root).await;
+    let page = &v.session.page;
+    press_zoom_in(page, 3).await;
+    let zoomed = wait_for_width(&v.svg, |w| w > v.initial * 1.5).await;
+    assert!(zoomed > v.initial * 1.5, "zoomed in first ({zoomed:.0})");
+    // Zoomed about the center, the first node may sit outside the
+    // frame's clip; bring it in, then measure.
+    let link = page.locator("figure[data-viewer-active] svg.c4 a").first();
+    link.scroll_into_view_if_needed()
+        .await
+        .expect("scroll the node into the frame");
+    let node = link
+        .bounding_box()
+        .await
+        .expect("measure a node")
+        .expect("a node is drawn");
+    let (x, y) = (node.x + node.width / 2.0, node.y + node.height / 2.0);
+    let url = page.url();
+    let before = frame_scroll_left(page).await;
+    page.mouse()
+        .move_to(x, y, None)
+        .await
+        .expect("point at the node");
+    page.mouse().down(None).await.expect("press");
+    page.mouse().move_to(x - 60.0, y, None).await.expect("drag");
+    page.mouse()
+        .move_to(x - 120.0, y, None)
+        .await
+        .expect("drag further");
+    page.mouse().up(None).await.expect("release");
+    tokio::time::sleep(std::time::Duration::from_millis(300)).await;
+    let after = frame_scroll_left(page).await;
+    assert!(
+        after > before + 100.0,
+        "the drag panned ({before:.0} -> {after:.0})"
+    );
+    assert_eq!(page.url(), url, "the node's link was not followed");
+    v.session.browser.close().await.expect("close browser");
+}
+
+async fn frame_overflows(page: &Page) -> bool {
+    page.evaluate::<(), bool>(
+        "() => { const f = document.querySelector('figure[data-viewer-active] .viewer-frame'); return f.scrollWidth > f.clientWidth + 1 || f.scrollHeight > f.clientHeight + 1; }",
+        None,
+    )
+    .await
+    .expect("whether the frame overflows")
+}
+
+async fn frame_cursor(page: &Page) -> String {
+    page.evaluate::<(), String>(
+        "() => getComputedStyle(document.querySelector('figure[data-viewer-active] .viewer-frame')).cursor",
+        None,
+    )
+    .await
+    .expect("the frame's cursor")
+}
+
+/// A view that fits its frame has nowhere to pan to, so the frame drops
+/// the grab cursor.
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_a_view_that_fits_offers_no_pan() {
+    let root = serve_snapshot().await;
+    let v = open_first_view(&root).await;
+    let page = &v.session.page;
+    page.locator("[data-viewer-mode='fit']")
+        .first()
+        .click(None)
+        .await
+        .expect("press Fit");
+    let mut overflows = true;
+    for _ in 0..40 {
+        overflows = frame_overflows(page).await;
+        if !overflows {
+            break;
+        }
+        tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+    }
+    assert!(!overflows, "after Fit the view sits inside its frame");
+    assert_ne!(
+        frame_cursor(page).await,
+        "grab",
+        "a fitted view is not pannable"
+    );
+    v.session.browser.close().await.expect("close browser");
+}
+
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_a_view_larger_than_its_frame_offers_a_pan() {
+    let root = serve_snapshot().await;
+    let v = open_first_view(&root).await;
+    let page = &v.session.page;
+    press_zoom_in(page, 3).await;
+    let zoomed = wait_for_width(&v.svg, |w| w > v.initial * 1.5).await;
+    assert!(zoomed > v.initial * 1.5, "zoomed in first ({zoomed:.0})");
+    assert_eq!(
+        frame_cursor(page).await,
+        "grab",
+        "an overflowing view is pannable"
+    );
+    v.session.browser.close().await.expect("close browser");
 }
