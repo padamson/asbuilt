@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -18,7 +18,16 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://padamson.github.io/asbuilt/" />
     <meta name="twitter:card" content="summary" />
-    <link rel="stylesheet" href="/asbuilt/dev/input-8fd9c80fd553b348.css" integrity="sha384-rcGAu+mRVWusZH7ENWPXQSuuMxM5ejQtvJXwg/PY/IhZ19PyBqkNkt977BFl5U8M"/>
+    <link rel="stylesheet" href="/asbuilt/dev/input-755583fcd5488fe0.css" integrity="sha384-xAEyNURbXf7dRW3waMXWKlKU2bMPDD5T6xivIHi1k7UnZr42Qd2dCsffJxvEzVZj"/>
+    <!-- The architecture tree's diagram styles and viewer, and the palette
+         its pages use, for the context figure the page lifts from the tree.
+         The page is dark, so data-theme on <html> selects the dark tokens.
+         Plain links: Trunk leaves them, and relative paths hold under a
+         snapshot path. -->
+    <link rel="stylesheet" href="architecture.css" />
+    <link rel="stylesheet" href="architecture/theme.css" />
+    <link rel="stylesheet" href="architecture/viewer.css" />
+    <script src="architecture/viewer.js" defer></script>
     <!-- Receipts (written by the dogfood test), the rendered views
          (written by `asbuilt render`) and the architecture tree (written
          by `asbuilt docs`). Copied on every build, so they survive
@@ -35,11 +44,11 @@
     
     
     <link rel="icon" type="image/svg+xml" href="mark.svg" />
-  <link rel="modulepreload" href="/asbuilt/dev/asbuilt-site-5ee9a774159a404b.js" crossorigin="anonymous" integrity="sha384-I7pg16hN9QLPVy2iQt3TuqkdmFb5bF3P0U/S+Qtbs1cWSVvGyfBC+YJPKVOhslUW"><link rel="preload" href="/asbuilt/dev/asbuilt-site-5ee9a774159a404b_bg.wasm" crossorigin="anonymous" integrity="sha384-JdKOv0H9TDC2gZZS//nvkSlD0xEsRy97mg1HquFDwTpK78pwqL2aR2LgqgQxNVaQ" as="fetch" type="application/wasm"></head>
+  <link rel="modulepreload" href="/asbuilt/dev/asbuilt-site-78abb30e64d2d5c8.js" crossorigin="anonymous" integrity="sha384-8NlhnNXZggbeXH1Npx0mPOTd3q3q3XFU8JjL47N4MxU2DvFD6V9bpukVYZghJx0W"><link rel="preload" href="/asbuilt/dev/asbuilt-site-78abb30e64d2d5c8_bg.wasm" crossorigin="anonymous" integrity="sha384-AK1k0bN07DEx9MBBhQURgjMEW8EpHE+jsrm+rWTad/4AeCkOMrOenXBn/wNJWg+7" as="fetch" type="application/wasm"></head>
   <body>
 <script type="module">
-import init, * as bindings from '/asbuilt/dev/asbuilt-site-5ee9a774159a404b.js';
-const wasm = await init({ module_or_path: '/asbuilt/dev/asbuilt-site-5ee9a774159a404b_bg.wasm' });
+import init, * as bindings from '/asbuilt/dev/asbuilt-site-78abb30e64d2d5c8.js';
+const wasm = await init({ module_or_path: '/asbuilt/dev/asbuilt-site-78abb30e64d2d5c8_bg.wasm' });
 
 
 window.wasmBindings = bindings;

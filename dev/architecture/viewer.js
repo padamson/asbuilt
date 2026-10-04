@@ -390,8 +390,26 @@
     figures.push({ layout: layout });
   }
 
+  function setupAll(root) {
+    if (root.matches && root.matches("figure[data-viewer]:not([data-viewer-active])")) setup(root);
+    if (root.querySelectorAll) {
+      root.querySelectorAll("figure[data-viewer]:not([data-viewer-active])").forEach(setup);
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll("figure[data-viewer]").forEach(setup);
+    setupAll(document);
     window.addEventListener("resize", layoutAll);
+    // A host that builds its page after load (a single-page app embedding
+    // a figure) gets its figures set up as they arrive.
+    if (window.MutationObserver) {
+      new MutationObserver(function (records) {
+        records.forEach(function (record) {
+          record.addedNodes.forEach(function (node) {
+            if (node.nodeType === 1) setupAll(node);
+          });
+        });
+      }).observe(document.body, { childList: true, subtree: true });
+    }
   });
 })();
