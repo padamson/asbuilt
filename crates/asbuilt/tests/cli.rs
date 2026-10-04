@@ -428,6 +428,7 @@ fn docs_no_render_writes_the_tree_with_placeholders_and_names_the_missing_views(
         "style.css",
         "theme.css",
         "theme.js",
+        "viewer.css",
         "viewer.js",
         "containers/app.html",
         "containers/e2e.html",
@@ -442,7 +443,7 @@ fn docs_no_render_writes_the_tree_with_placeholders_and_names_the_missing_views(
             "{stderr}"
         );
     }
-    assert!(stderr.contains("wrote 7 pages to"), "{stderr}");
+    assert!(stderr.contains("wrote 8 pages to"), "{stderr}");
     let index = std::fs::read_to_string(root.join("index.html")).unwrap();
     assert!(
         index.contains("No diagram for <code>index</code>"),
@@ -460,8 +461,10 @@ fn docs_no_viewer_leaves_out_the_viewer_and_its_script() {
 
     assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
     assert!(!ws.root().join("out/viewer.js").exists());
+    assert!(!ws.root().join("out/viewer.css").exists());
     let index = std::fs::read_to_string(ws.root().join("out/index.html")).unwrap();
     assert!(!index.contains("viewer.js"), "{index}");
+    assert!(!index.contains("viewer.css"), "{index}");
 }
 
 #[test]

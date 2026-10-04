@@ -98,6 +98,10 @@ pub const SCHEME_SCRIPT: &str = include_str!("theme.js");
 /// `viewer.js`: the diagram viewer, when `viewer` is on.
 pub const VIEWER_SCRIPT: &str = include_str!("viewer.js");
 
+/// `viewer.css`: the viewer's own styles, beside `style.css` so a host
+/// page can embed a figure without the tree's page styles.
+pub const VIEWER_STYLESHEET: &str = include_str!("viewer.css");
+
 /// The controls of a viewer figure. Hidden until the script reveals
 /// them, so a page without JavaScript shows no dead buttons. The scale
 /// readout is visual only: it changes on every resize, and the pressed
@@ -330,7 +334,12 @@ impl Ctx<'_> {
         if toggle {
             let _ = writeln!(script, "<script src=\"{prefix}theme.js\"></script>");
         }
+        let mut viewer_css = String::new();
         if self.options.viewer {
+            let _ = writeln!(
+                viewer_css,
+                "<link rel=\"stylesheet\" href=\"{prefix}viewer.css\">"
+            );
             let _ = writeln!(script, "<script src=\"{prefix}viewer.js\" defer></script>");
         }
         let control = if toggle { SCHEME_CONTROL } else { "" };
@@ -344,7 +353,7 @@ impl Ctx<'_> {
             )
         };
         format!(
-            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{title}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{script}{host_css}</head>\n<body>\n<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\">{home}<a class=\"site\" href=\"{prefix}index.html\"{index_current}>{mark}{site}</a></nav>{curated}{control}</div>{containers}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
+            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{title}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{viewer_css}{script}{host_css}</head>\n<body>\n<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\">{home}<a class=\"site\" href=\"{prefix}index.html\"{index_current}>{mark}{site}</a></nav>{curated}{control}</div>{containers}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
             title = self.document_title(page_title),
             site = escape(&self.options.title),
             mark = mark_svg(),
@@ -860,6 +869,7 @@ pub fn generate(model: &Model, options: &DocsOptions) -> Site {
         pages.insert("theme.js".to_string(), SCHEME_SCRIPT.to_string());
     }
     if options.viewer {
+        pages.insert("viewer.css".to_string(), VIEWER_STYLESHEET.to_string());
         pages.insert("viewer.js".to_string(), VIEWER_SCRIPT.to_string());
     }
     Site {
@@ -1276,6 +1286,28 @@ mod tests {
     }
 
     #[test]
+    fn the_viewer_links_its_own_stylesheet_after_the_tree_s_and_adds_it_to_the_page_set() {
+        let mut opts = options();
+        opts.viewer = true;
+        let site = generate(&sample(), &opts);
+        assert!(
+            page(&site, "containers/app.html").contains(
+                "<link rel=\"stylesheet\" href=\"../theme.css\">\n<link rel=\"stylesheet\" href=\"../viewer.css\">\n"
+            ),
+            "{}",
+            page(&site, "containers/app.html")
+        );
+        assert_eq!(page(&site, "viewer.css"), VIEWER_STYLESHEET);
+    }
+
+    #[test]
+    fn the_viewer_s_rules_live_in_its_own_stylesheet_not_the_page_s() {
+        assert!(VIEWER_STYLESHEET.contains(".viewer-frame"));
+        assert!(VIEWER_STYLESHEET.contains(".viewer-popover"));
+        assert!(!STYLESHEET.contains("viewer-"), "{STYLESHEET}");
+    }
+
+    #[test]
     fn the_viewer_leaves_an_image_fallback_as_a_bare_figure() {
         let mut opts = options();
         opts.viewer = true;
@@ -1309,10 +1341,10 @@ mod tests {
         opts.views.insert("index".into(), likec4_view());
         let site = generate(&sample(), &opts);
         assert!(!site.pages.contains_key("viewer.js"));
-        // The stylesheet names the viewer's classes whether or not a tree
-        // uses them; the pages must not.
+        assert!(!site.pages.contains_key("viewer.css"));
         for (path, contents) in site.pages.iter().filter(|(p, _)| p.ends_with(".html")) {
             assert!(!contents.contains("viewer.js"), "{path}: {contents}");
+            assert!(!contents.contains("viewer.css"), "{path}: {contents}");
             assert!(!contents.contains("data-viewer"), "{path}: {contents}");
             assert!(!contents.contains("viewer-frame"), "{path}: {contents}");
             assert!(!contents.contains("viewer-edges"), "{path}: {contents}");

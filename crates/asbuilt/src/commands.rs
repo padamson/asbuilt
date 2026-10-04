@@ -423,12 +423,13 @@ fn page_path(dir: &Path, rel: &str) -> PathBuf {
 }
 
 /// The pages, stylesheets and scripts `asbuilt docs` writes at the root of its tree.
-const DOCS_ROOT_FILES: [&str; 6] = [
+const DOCS_ROOT_FILES: [&str; 7] = [
     "index.html",
     "views.html",
     "style.css",
     "theme.css",
     "theme.js",
+    "viewer.css",
     "viewer.js",
 ];
 

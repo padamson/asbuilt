@@ -30,8 +30,9 @@ directory, are never touched.
 The tree uses these names, and `docs` treats them as its own:
 `index.html`, `views.html` (only when there are curated views),
 `style.css` (the page), `theme.css` (the diagrams), `theme.js` (the
-scheme control, unless `--no-scheme-toggle`), `viewer.js` (the diagram
-viewer, unless `--no-viewer`), `containers/<id>.html`,
+scheme control, unless `--no-scheme-toggle`), `viewer.css` and
+`viewer.js` (the diagram viewer, unless `--no-viewer`),
+`containers/<id>.html`,
 and `views/<view>.svg` copied from the render. The header draws the
 asbuilt mark before the tree's title, in the page's `--accent`. Every page carries
 `<meta name="generator" content="asbuilt docs">`, and every link is
@@ -79,7 +80,11 @@ width, kept in `localStorage` under `asbuilt-docs-wide`) and
 Fullscreen. The controls
 ship hidden and the script reveals them, so without JavaScript a view
 is scaled to the column as before. `--no-viewer` (or `[docs] viewer =
-false`) leaves the viewer and its script out.
+false`) leaves the viewer, its stylesheet and its script out. A host
+page can embed one of the tree's figures (the `<figure data-viewer>`
+from a page, its links re-based) with `theme.css`, `viewer.css` and
+`viewer.js` and the page tokens defined; the script also sets up a
+figure added after the page loads.
 
 The pages follow the system's light or dark setting. With the scheme
 control (the default), a visitor can pick System, Light or Dark in the
