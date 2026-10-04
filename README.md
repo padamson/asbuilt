@@ -136,7 +136,10 @@ overwrite tree files it did not write unless `--force`. `[theme]`
 colors each element kind in the rendered diagrams, with a light and a
 dark color the docs pages switch between; a visitor can pick System,
 Light or Dark in the header, and `[docs] color_scheme` and
-`scheme_toggle` set the default or leave the control out. Curated views go in
+`scheme_toggle` set the default or leave the control out. Every
+diagram sits in a frame at a readable scale with Fit, 1:1, Wide and
+Fullscreen controls; `[docs] viewer = false` (or `--no-viewer`) leaves
+the viewer and its script out. Curated views go in
 a sibling `.c4` file that references generated ids; `asbuilt validate`
 catches a stale one. Rendered SVGs and the docs tree are build output:
 commit `model.c4` and the curated views, and ignore the rest.

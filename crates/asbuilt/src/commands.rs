@@ -422,13 +422,14 @@ fn page_path(dir: &Path, rel: &str) -> PathBuf {
     path
 }
 
-/// The pages and stylesheets `asbuilt docs` writes at the root of its tree.
-const DOCS_ROOT_FILES: [&str; 5] = [
+/// The pages, stylesheets and scripts `asbuilt docs` writes at the root of its tree.
+const DOCS_ROOT_FILES: [&str; 6] = [
     "index.html",
     "views.html",
     "style.css",
     "theme.css",
     "theme.js",
+    "viewer.js",
 ];
 
 /// The files in `out` that `asbuilt docs` writes, by name: the root pages
@@ -497,6 +498,8 @@ pub struct DocsArgs<'a> {
     pub color_scheme: Option<ColorScheme>,
     /// Leave out the visitor's scheme control and the script behind it.
     pub no_scheme_toggle: bool,
+    /// Leave out the diagram viewer and its script.
+    pub no_viewer: bool,
 }
 
 /// Write the documentation tree: survey, refuse to write when the
@@ -518,6 +521,7 @@ pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32
         stylesheet,
         color_scheme,
         no_scheme_toggle,
+        no_viewer,
     } = *args;
     let config = load_config(root, config_path)?;
     let target = output_target(root, &config, None)?;
@@ -568,6 +572,7 @@ pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32
             .or(config.docs.color_scheme)
             .unwrap_or_default(),
         scheme_toggle: !no_scheme_toggle && config.docs.scheme_toggle.unwrap_or(true),
+        viewer: !no_viewer && config.docs.viewer.unwrap_or(true),
     };
     let site = generate(&model, &options);
 

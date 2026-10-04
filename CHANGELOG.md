@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Added
+- The diagram viewer in `asbuilt docs`: every inlined view sits in a frame at the scale that fits the column, held between 0.7 and 1, so a wide view scrolls inside its frame instead of shrinking its text (the widest views here drew their 14pt labels at 2px) and a small one is not blown up; a frame is at most three quarters of the window tall. Fit, 1:1, Wide (every figure takes the window's width, remembered site-wide) and Fullscreen controls, revealed by `viewer.js`, so without JavaScript a page looks as before. `--no-viewer` or `[docs] viewer = false` leaves it out
 - `Upstream LikeC4 Check`, weekly: when a newer LikeC4 release exists, it runs the LikeC4 tests against it and opens or updates a tracking issue that says whether the bump is clean and what a bump touches
 - `.pre-commit-hooks.yaml`: the `asbuilt-check` hook, referenced by repo and release (`repo: https://github.com/padamson/asbuilt`, `rev: v0.2.0`) instead of copied into each consumer's config. It runs the `asbuilt` on the PATH when a `.rs` file, a `Cargo.toml`, `asbuilt.toml` or anything under `docs/architecture/` changes; the pattern the README documented before missed `asbuilt.toml`, the root `Cargo.toml` and crates outside `crates/` or `src/`
 

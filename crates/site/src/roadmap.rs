@@ -115,8 +115,8 @@ pub const ITEMS: &[Item] = &[
     now(
         "roadmap-now-readable",
         "Diagrams at a readable size",
-        "Every view at the same scale in a scrolling frame, with Fit and Wide toggles, so a 5000pt view is not shrunk to 3px text.",
-        Status::Planned,
+        "Every view at a legible scale in a scrolling frame, with Fit, 1:1, Wide and Fullscreen, so a 5000pt view is not shrunk to 3px text.",
+        Status::Done,
     ),
     now(
         "roadmap-now-explore",

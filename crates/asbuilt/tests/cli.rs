@@ -428,6 +428,7 @@ fn docs_no_render_writes_the_tree_with_placeholders_and_names_the_missing_views(
         "style.css",
         "theme.css",
         "theme.js",
+        "viewer.js",
         "containers/app.html",
         "containers/e2e.html",
     ] {
@@ -441,7 +442,7 @@ fn docs_no_render_writes_the_tree_with_placeholders_and_names_the_missing_views(
             "{stderr}"
         );
     }
-    assert!(stderr.contains("wrote 6 pages to"), "{stderr}");
+    assert!(stderr.contains("wrote 7 pages to"), "{stderr}");
     let index = std::fs::read_to_string(root.join("index.html")).unwrap();
     assert!(
         index.contains("No diagram for <code>index</code>"),
@@ -449,6 +450,44 @@ fn docs_no_render_writes_the_tree_with_placeholders_and_names_the_missing_views(
     );
     assert!(index.contains("href=\"containers/app.html\""), "{index}");
     assert!(index.contains("<tr id=\"node_driver\">"), "{index}");
+}
+
+#[test]
+fn docs_no_viewer_leaves_out_the_viewer_and_its_script() {
+    let ws = scratch_copy();
+
+    let out = docs_run(&ws, &["-o", "out", "--no-viewer"]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    assert!(!ws.root().join("out/viewer.js").exists());
+    let index = std::fs::read_to_string(ws.root().join("out/index.html")).unwrap();
+    assert!(!index.contains("viewer.js"), "{index}");
+}
+
+#[test]
+fn docs_no_viewer_removes_an_earlier_viewer_script() {
+    let ws = scratch_copy();
+    assert_eq!(docs_run(&ws, &["-o", "out"]).status.code(), Some(0));
+    assert!(ws.root().join("out/viewer.js").is_file());
+
+    let out = docs_run(&ws, &["-o", "out", "--no-viewer"]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    assert!(!ws.root().join("out/viewer.js").exists());
+}
+
+#[test]
+fn docs_viewer_off_in_the_config_leaves_out_the_viewer_and_its_script() {
+    let ws = scratch_copy();
+    let config = ws.root().join("asbuilt.toml");
+    let mut toml = std::fs::read_to_string(&config).unwrap();
+    toml.push_str("\n[docs]\nviewer = false\n");
+    std::fs::write(&config, toml).unwrap();
+
+    let out = docs_run(&ws, &["-o", "out"]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+    assert!(!ws.root().join("out/viewer.js").exists());
 }
 
 #[test]

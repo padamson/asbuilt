@@ -53,8 +53,11 @@ pub struct DocsOptions {
     /// The scheme the pages show before a visitor chooses one.
     pub color_scheme: ColorScheme,
     /// Whether every page carries a System / Light / Dark control, and
-    /// with it `theme.js`, the tree's one script.
+    /// with it `theme.js`.
     pub scheme_toggle: bool,
+    /// Whether every inlined view gets the viewer (`viewer.js`): a frame
+    /// at a readable scale with Fit, 1:1, Wide and Fullscreen controls.
+    pub viewer: bool,
 }
 
 /// The `<meta name="generator">` every page carries. `asbuilt docs` looks
@@ -90,6 +93,15 @@ fn mark_svg() -> String {
 
 /// The script behind the scheme control, linked in every page's head.
 pub const SCHEME_SCRIPT: &str = include_str!("theme.js");
+
+/// `viewer.js`: the diagram viewer, when `viewer` is on.
+pub const VIEWER_SCRIPT: &str = include_str!("viewer.js");
+
+/// The controls of a viewer figure. Hidden until the script reveals
+/// them, so a page without JavaScript shows no dead buttons. The scale
+/// readout is visual only: it changes on every resize, and the pressed
+/// buttons already say the mode.
+const VIEWER_BAR: &str = "<div class=\"viewer-bar\" hidden><span class=\"viewer-scale\"></span><button type=\"button\" data-viewer-mode=\"fit\" aria-pressed=\"false\">Fit</button><button type=\"button\" data-viewer-mode=\"one\" aria-pressed=\"false\">1:1</button><button type=\"button\" data-viewer-wide aria-pressed=\"false\">Wide</button><button type=\"button\" data-viewer-full>Fullscreen</button></div>";
 
 /// The visitor's scheme control. It ships hidden, and `theme.js` reveals
 /// it, so a page without the script shows no dead control.
@@ -288,11 +300,13 @@ impl Ctx<'_> {
         if toggle {
             let _ = write!(root_attrs, " data-theme-default=\"{}\"", scheme.as_str());
         }
-        let script = if toggle {
-            format!("<script src=\"{prefix}theme.js\"></script>\n")
-        } else {
-            String::new()
-        };
+        let mut script = String::new();
+        if toggle {
+            let _ = writeln!(script, "<script src=\"{prefix}theme.js\"></script>");
+        }
+        if self.options.viewer {
+            let _ = writeln!(script, "<script src=\"{prefix}viewer.js\" defer></script>");
+        }
         let control = if toggle { SCHEME_CONTROL } else { "" };
         let curated = if self.curated.is_empty() {
             String::new()
@@ -327,11 +341,24 @@ impl Ctx<'_> {
         })
     }
 
+    /// A view's `<figure>`: with the viewer, an inlined SVG sits in a
+    /// frame under the controls; an `<img>` (a view LikeC4 did not draw)
+    /// and a tree without the viewer keep the bare figure.
+    fn figure(&self, caption: &str, markup: &str) -> String {
+        if self.options.viewer && markup.starts_with("<svg") {
+            format!(
+                "<figure class=\"view\" data-viewer>{caption}{VIEWER_BAR}<div class=\"viewer-frame\">{markup}</div></figure>"
+            )
+        } else {
+            format!("<figure class=\"view\">{caption}{markup}</figure>")
+        }
+    }
+
     /// The `<figure>` for a view, or the placeholder when its SVG is
     /// missing (recorded for the report).
     fn view_figure(&mut self, depth: usize, view: &str, alt: &str) -> String {
         match self.view_markup(depth, view, alt) {
-            Some(markup) => format!("<figure class=\"view\">{markup}</figure>\n"),
+            Some(markup) => format!("{}\n", self.figure("", &markup)),
             None => {
                 self.missing.insert(view.to_string());
                 format!(
@@ -585,11 +612,8 @@ impl Ctx<'_> {
         let mut body = String::from("<h1>Curated views</h1>\n");
         for view in &self.curated {
             let markup = self.view_markup(0, view, view).unwrap_or_default();
-            let _ = writeln!(
-                body,
-                "<figure class=\"view\"><figcaption>{}</figcaption>{markup}</figure>",
-                escape(view)
-            );
+            let caption = format!("<figcaption>{}</figcaption>", escape(view));
+            let _ = writeln!(body, "{}", self.figure(&caption, &markup));
         }
         Some(self.layout(0, Here::Views, Some("Curated views"), &body))
     }
@@ -682,6 +706,9 @@ pub fn generate(model: &Model, options: &DocsOptions) -> Site {
     );
     if options.scheme_toggle {
         pages.insert("theme.js".to_string(), SCHEME_SCRIPT.to_string());
+    }
+    if options.viewer {
+        pages.insert("viewer.js".to_string(), VIEWER_SCRIPT.to_string());
     }
     Site {
         pages,
@@ -917,6 +944,83 @@ mod tests {
             app.contains("<html lang=\"en\" data-theme-default=\"system\">"),
             "{app}"
         );
+    }
+
+    #[test]
+    fn the_viewer_wraps_an_inlined_view_in_a_frame_under_hidden_controls() {
+        let mut opts = options();
+        opts.viewer = true;
+        opts.views.insert("index".into(), likec4_view());
+        let site = generate(&sample(), &opts);
+        let index = page(&site, "index.html");
+        assert!(
+            index.contains(&format!(
+                "<figure class=\"view\" data-viewer>{VIEWER_BAR}<div class=\"viewer-frame\"><svg viewBox="
+            )),
+            "{index}"
+        );
+    }
+
+    #[test]
+    fn the_viewer_controls_ship_hidden() {
+        assert!(VIEWER_BAR.starts_with("<div class=\"viewer-bar\" hidden>"));
+    }
+
+    #[test]
+    fn the_viewer_links_its_script_deferred_and_adds_it_to_the_page_set() {
+        let mut opts = options();
+        opts.viewer = true;
+        let site = generate(&sample(), &opts);
+        assert!(
+            page(&site, "containers/app.html")
+                .contains("<script src=\"../viewer.js\" defer></script>\n</head>"),
+            "{}",
+            page(&site, "containers/app.html")
+        );
+        assert_eq!(page(&site, "viewer.js"), VIEWER_SCRIPT);
+    }
+
+    #[test]
+    fn the_viewer_leaves_an_image_fallback_as_a_bare_figure() {
+        let mut opts = options();
+        opts.viewer = true;
+        opts.views.insert("context".into(), plain_view());
+        let site = generate(&sample(), &opts);
+        let views = page(&site, "views.html");
+        assert!(
+            views.contains("<figure class=\"view\"><figcaption>context</figcaption><img "),
+            "{views}"
+        );
+    }
+
+    #[test]
+    fn a_curated_view_puts_its_caption_before_the_controls() {
+        let mut opts = options();
+        opts.viewer = true;
+        opts.views.insert("context".into(), likec4_view());
+        let site = generate(&sample(), &opts);
+        let views = page(&site, "views.html");
+        assert!(
+            views.contains(&format!(
+                "<figure class=\"view\" data-viewer><figcaption>context</figcaption>{VIEWER_BAR}<div class=\"viewer-frame\">"
+            )),
+            "{views}"
+        );
+    }
+
+    #[test]
+    fn without_the_viewer_there_is_no_script_and_no_frame() {
+        let mut opts = options();
+        opts.views.insert("index".into(), likec4_view());
+        let site = generate(&sample(), &opts);
+        assert!(!site.pages.contains_key("viewer.js"));
+        // The stylesheet names the viewer's classes whether or not a tree
+        // uses them; the pages must not.
+        for (path, contents) in site.pages.iter().filter(|(p, _)| p.ends_with(".html")) {
+            assert!(!contents.contains("viewer.js"), "{path}: {contents}");
+            assert!(!contents.contains("data-viewer"), "{path}: {contents}");
+            assert!(!contents.contains("viewer-frame"), "{path}: {contents}");
+        }
     }
 
     #[test]

@@ -34,6 +34,17 @@ code { background: var(--code); padding: 0 0.25em; border-radius: 3px; }
 .tag { display: inline-block; font-size: 0.8em; border: 1px solid var(--rule); border-radius: 1em; padding: 0 0.6em; margin-right: 0.25em; }
 figure { margin: 1rem 0; background: var(--figure-bg); }
 figure img { max-width: 100%; height: auto; border: 1px solid var(--rule); }
+/* The viewer (viewer.js): the bar ships hidden and the frame only scrolls
+   once the script sizes the view. Wide is measured by the script. */
+.viewer-bar { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-bottom: 0.3rem; font-size: 0.8em; color: var(--muted); }
+.viewer-bar[hidden] { display: none; }
+.viewer-bar button { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--rule); border-radius: 4px; padding: 0.1em 0.5em; cursor: pointer; }
+.viewer-bar button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.viewer-scale { min-width: 3em; font-variant-numeric: tabular-nums; }
+figure[data-viewer-active] .viewer-frame { overflow: auto; max-height: 75vh; border: 1px solid var(--rule); scrollbar-gutter: stable; }
+figure[data-viewer-active] svg.c4 { width: auto; max-width: none; }
+figure:fullscreen { margin: 0; padding: 1rem; overflow: auto; background: var(--bg); }
+figure:fullscreen .viewer-frame { max-height: none; border: 0; }
 figcaption { color: var(--muted); font-size: 0.9em; }
 .missing { color: var(--muted); font-style: italic; }
 table { border-collapse: collapse; width: 100%; margin: 0.5rem 0 1rem; }

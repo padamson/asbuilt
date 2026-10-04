@@ -263,6 +263,12 @@ async fn site_architecture_without_its_script_follows_the_system_and_shows_no_co
     )
     .await
     .expect("block the scheme script");
+    page.route(
+        "**/viewer.js",
+        |route| async move { route.abort(None).await },
+    )
+    .await
+    .expect("block the viewer script");
     page.goto(&root, None)
         .await
         .expect("navigate to the architecture index");
@@ -273,5 +279,106 @@ async fn site_architecture_without_its_script_follows_the_system_and_shows_no_co
         .to_be_hidden()
         .await
         .expect("without the script the control stays hidden");
+    // And the view is scaled to the column, as the stylesheet alone has it.
+    expect(page.locator(".viewer-bar").first())
+        .to_be_hidden()
+        .await
+        .expect("without the viewer script its controls stay hidden");
+    let fitted = page
+        .evaluate::<(), bool>(
+            "() => { const svg = document.querySelector('svg.c4'); const f = svg.closest('figure'); return Math.abs(svg.getBoundingClientRect().width - f.clientWidth) < 2; }",
+            None,
+        )
+        .await
+        .expect("compare the view's width to its figure's");
+    assert!(fitted, "without the viewer script the view fits the column");
+    session.browser.close().await.expect("close browser");
+}
+
+/// How a page's active views are drawn: how many there are, the smallest
+/// and largest ratio of rendered width to natural (viewBox) width, and
+/// whether any frame scrolls sideways. A page with none reports zeros,
+/// so the caller's claim fails in its own words.
+async fn view_scales(page: &Page) -> (usize, f64, f64, bool) {
+    let values = page
+        .evaluate::<(), Vec<f64>>(
+            "() => { \
+               const views = [...document.querySelectorAll('figure[data-viewer-active] svg.c4')]; \
+               const ratios = views.map(s => s.getBoundingClientRect().width / s.viewBox.baseVal.width); \
+               const frames = [...document.querySelectorAll('figure[data-viewer-active] .viewer-frame')]; \
+               if (ratios.length === 0) return [0, 0, 0, 0]; \
+               return [ratios.length, Math.min(...ratios), Math.max(...ratios), frames.some(f => f.scrollWidth > f.clientWidth + 1) ? 1 : 0]; \
+             }",
+            None,
+        )
+        .await
+        .expect("measure the page's views");
+    assert_eq!(values.len(), 4, "the measurement returns four numbers");
+    (values[0] as usize, values[1], values[2], values[3] > 0.5)
+}
+
+/// The viewer holds every view between the legibility floor and 1:1, so a
+/// wide view scrolls inside its frame rather than shrinking, and Wide
+/// takes a figure past the text column and is remembered across pages.
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_views_are_legible_and_can_go_wide() {
+    let containers = committed_containers();
+    let root = serve_snapshot().await;
+    let session = open_session(ColorScheme::Light).await;
+    let page = &session.page;
+
+    let mut any_scrolls = false;
+    for path in std::iter::once("index.html".to_string())
+        .chain(containers.iter().map(|id| format!("containers/{id}.html")))
+    {
+        page.goto(&format!("{root}{path}"), None)
+            .await
+            .unwrap_or_else(|e| panic!("navigate to {path}: {e:?}"));
+        expect(page.locator(".viewer-bar").first())
+            .to_be_visible()
+            .await
+            .unwrap_or_else(|e| panic!("{path}: the script reveals the viewer controls: {e:?}"));
+        let (count, min, max, scrolls) = view_scales(page).await;
+        assert!(count > 0, "{path}: no view got the viewer");
+        assert!(
+            (0.69..=1.01).contains(&min) && max <= 1.01,
+            "{path}: view scales run {min:.2}..{max:.2}; the viewer holds them in 0.7..1"
+        );
+        any_scrolls |= scrolls;
+    }
+    assert!(
+        any_scrolls,
+        "this repo's widest views exceed the column, so some frame must scroll"
+    );
+
+    // Wide: past the text column, and remembered on the next page.
+    let column = page
+        .evaluate::<(), f64>("() => document.querySelector('main').clientWidth", None)
+        .await
+        .expect("the text column's width");
+    page.locator("[data-viewer-wide]")
+        .first()
+        .click(None)
+        .await
+        .expect("press Wide");
+    let figure = page
+        .evaluate::<(), f64>(
+            "() => document.querySelector('figure[data-viewer-active]').getBoundingClientRect().width",
+            None,
+        )
+        .await
+        .expect("the wide figure's width");
+    assert!(
+        figure > column + 40.0,
+        "Wide should take the figure past the column ({figure:.0}px vs {column:.0}px)"
+    );
+    page.goto(&format!("{root}index.html"), None)
+        .await
+        .expect("navigate to the index");
+    expect(page.locator("[data-viewer-wide]").first())
+        .to_have_attribute("aria-pressed", "true")
+        .await
+        .expect("Wide is remembered on the next page");
     session.browser.close().await.expect("close browser");
 }

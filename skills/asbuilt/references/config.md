@@ -32,8 +32,12 @@ stylesheet = "../architecture.css"
 # "light" or "dark".
 color_scheme = "system"
 # A System / Light / Dark control in every page's header, and theme.js
-# behind it. Set false for a tree with no script.
+# behind it. Set false to leave it out.
 scheme_toggle = true
+# The diagram viewer on every inlined view (a frame at a readable scale;
+# Fit, 1:1, Wide, Fullscreen) and viewer.js behind it. Set false to leave
+# it out; with both false the tree has no script.
+viewer = true
 
 [theme]
 # A color per element kind: `container`, `component`, `bin`, `tests`,

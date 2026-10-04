@@ -189,9 +189,14 @@ pub struct DocsConfig {
     #[serde(default)]
     pub color_scheme: Option<ColorScheme>,
     /// Whether every page carries a System / Light / Dark control, and
-    /// with it the tree's one script. On when absent.
+    /// with it `theme.js`. On when absent.
     #[serde(default)]
     pub scheme_toggle: Option<bool>,
+    /// Whether every inlined view gets the viewer (`viewer.js`): a frame
+    /// at a readable scale with Fit, 1:1, Wide and Fullscreen controls.
+    /// On when absent.
+    #[serde(default)]
+    pub viewer: Option<bool>,
 }
 
 /// The color scheme the documentation pages show before a visitor
@@ -612,6 +617,14 @@ technology = "stdio"
         );
         let err = theme_error("{ light = 3 }");
         assert!(err.contains("light is a integer"), "{err}");
+    }
+
+    #[test]
+    fn the_docs_viewer_key_parses_and_defaults_to_nothing() {
+        let config: Config = "[docs]\nviewer = false\n".parse().unwrap();
+        assert_eq!(config.docs.viewer, Some(false));
+        let empty: Config = "[docs]\n".parse().unwrap();
+        assert_eq!(empty.docs.viewer, None);
     }
 
     #[test]

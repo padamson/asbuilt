@@ -30,7 +30,8 @@ directory, are never touched.
 The tree uses these names, and `docs` treats them as its own:
 `index.html`, `views.html` (only when there are curated views),
 `style.css` (the page), `theme.css` (the diagrams), `theme.js` (the
-scheme control, unless `--no-scheme-toggle`), `containers/<id>.html`,
+scheme control, unless `--no-scheme-toggle`), `viewer.js` (the diagram
+viewer, unless `--no-viewer`), `containers/<id>.html`,
 and `views/<view>.svg` copied from the render. The header draws the
 asbuilt mark before the tree's title, in the page's `--accent`. Every page carries
 `<meta name="generator" content="asbuilt docs">`, and every link is
@@ -48,6 +49,17 @@ dark; group boxes are a tint of their kind's color over `--bg`, and
 edges and labels follow `--fg`, `--bg` and `--muted` (`--c4-edge`,
 `--c4-edge-text`, `--c4-label-bg`). A host stylesheet can restate any of
 these.
+
+Every inlined view sits in a frame the viewer sizes: at the scale that
+fits the text column, held between 0.7 and 1, so a wide view scrolls
+inside its frame (at most three quarters of the window tall) instead
+of shrinking its text, and a small one is not blown up. Its controls:
+Fit (the whole view at any scale), 1:1 (as LikeC4 laid it out), Wide
+(every figure on the site takes the window's width, kept in
+`localStorage` under `asbuilt-docs-wide`) and Fullscreen. The controls
+ship hidden and the script reveals them, so without JavaScript a view
+is scaled to the column as before. `--no-viewer` (or `[docs] viewer =
+false`) leaves the viewer and its script out.
 
 The pages follow the system's light or dark setting. With the scheme
 control (the default), a visitor can pick System, Light or Dark in the

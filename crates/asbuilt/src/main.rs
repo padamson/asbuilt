@@ -84,6 +84,9 @@ enum Command {
         /// Leave out the visitor's System / Light / Dark control and its script.
         #[arg(long)]
         no_scheme_toggle: bool,
+        /// Leave out the diagram viewer (Fit, 1:1, Wide, Fullscreen) and its script.
+        #[arg(long)]
+        no_viewer: bool,
     },
     /// Render every view to an SVG (needs Node and Graphviz `dot`).
     Render {
@@ -147,6 +150,7 @@ fn main() {
             force,
             color_scheme,
             no_scheme_toggle,
+            no_viewer,
         } => commands::docs(
             root.as_deref().unwrap_or(".".as_ref()),
             &commands::DocsArgs {
@@ -161,6 +165,7 @@ fn main() {
                 stylesheet: stylesheet.as_deref(),
                 color_scheme: *color_scheme,
                 no_scheme_toggle: *no_scheme_toggle,
+                no_viewer: *no_viewer,
             },
             &mut std::io::stderr().lock(),
         ),
