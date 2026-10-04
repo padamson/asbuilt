@@ -44,11 +44,14 @@ rendered. The site is built, driven with playwright-rs, and deployed by
 
 ## Status
 
-0.1.0, the first release. The model, the Rust front-end, `survey`,
-`check`, the LikeC4 wrappers and `docs` are in use on this repo and on
+0.2.0. The model, the Rust front-end, `survey`, `check`, the LikeC4
+wrappers and `docs`, now with a viewer (a readable scale, zoom and pan,
+nodes that link to their pages, edges that open the relations behind
+them), are in use on this repo and on
 [playwright-rust](https://github.com/padamson/playwright-rust). Before
 1.0 a minor version may change the model's shape or the CLI, and
-`CHANGELOG.md` names every such change.
+`CHANGELOG.md` names every such change; 0.2.0 changes every model with
+a bin, tests or examples.
 
 ## Installation
 

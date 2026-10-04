@@ -7,10 +7,10 @@
 //! from Next.
 
 /// The release the Now column is building toward.
-pub const MILESTONE: &str = "0.2.0";
+pub const MILESTONE: &str = "0.3.0";
 
 /// The release after it, which the Next column is planned for.
-pub const NEXT_MILESTONE: &str = "0.3.0";
+pub const NEXT_MILESTONE: &str = "0.4.0";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Horizon {
@@ -101,74 +101,38 @@ const fn later(
 
 pub const ITEMS: &[Item] = &[
     now(
-        "roadmap-now-titles",
-        "Page titles name the project",
-        "Every docs page's title leads with home_title: asbuilt · Architecture · asbuilt-core.",
-        Status::Done,
-    ),
-    now(
-        "roadmap-now-labels",
-        "Crate labels say what a crate builds",
-        "A lib with a bin beside it is a library and binary crate; examples-only packages are example crates.",
-        Status::Done,
-    ),
-    now(
-        "roadmap-now-readable",
-        "Diagrams at a readable size",
-        "Every view at a legible scale in a scrolling frame, with Fit, 1:1, Wide and Fullscreen, so a 5000pt view is not shrunk to 3px text.",
-        Status::Done,
-    ),
-    now(
-        "roadmap-now-explore",
-        "Zoom, pan and click-through",
-        "Wheel and pinch zoom, drag to pan, a node links to its page and names itself on hover.",
-        Status::Done,
-    ),
-    now(
-        "roadmap-now-edges",
-        "Open a merged edge",
-        "Click an edge LikeC4 labels [...] to list the module relations it stands for, each linked.",
-        Status::Done,
-    ),
-    now(
-        "roadmap-now-tags",
-        "Color bins, tests and examples",
-        "bin, tests and examples are element kinds of their own, so [theme] colors them and a crate's binary stands apart from its modules.",
-        Status::Done,
-    ),
-    now(
-        "roadmap-now-likec4",
-        "LikeC4 1.59.4 and a parity check",
-        "Bump the pin, and run the LikeC4 tests weekly against the latest release so a break is an issue, not a surprise.",
-        Status::Done,
-    ),
-    now(
-        "roadmap-now-fixes",
-        "Small fixes",
-        "Link curated views from every page, reject a misspelled config entry, and ship the pre-commit hook as a definition consumers reference by release.",
-        Status::Done,
-    ),
-    later(
-        Horizon::Next,
-        "roadmap-next-ci",
+        "roadmap-now-ci",
         "Drop-in CI",
         "A GitHub Action, cargo-binstall metadata, and aarch64 Linux and musl builds.",
+        Status::Planned,
     ),
-    later(
-        Horizon::Next,
-        "roadmap-next-drift",
+    now(
+        "roadmap-now-drift",
         "Drift you can read",
         "check names what changed (a relation added, a module removed) and speaks JSON with --format json.",
+        Status::Planned,
+    ),
+    now(
+        "roadmap-now-kinds",
+        "Relation kinds you can see",
+        "A line and arrowhead per kind, so implements and uses differ at a glance, and a legend.",
+        Status::Planned,
     ),
     later(
         Horizon::Next,
-        "roadmap-next-kinds",
-        "Relation kinds you can see",
-        "A line and arrowhead per kind, so implements and uses differ at a glance, and a legend.",
+        "roadmap-next-rules",
+        "Architecture rules and metrics",
+        "Rules you declare (no cycles, which layers may depend on which) checked like drift, and coupling metrics per crate and module on their pages.",
     ),
     later(
-        Horizon::Later,
-        "roadmap-later-deps",
+        Horizon::Next,
+        "roadmap-next-python",
+        "A second language: Python",
+        "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations.",
+    ),
+    later(
+        Horizon::Next,
+        "roadmap-next-deps",
         "Dependencies as externals",
         "Opt-in externals from Cargo.toml, and crate-to-crate summaries on each container page.",
     ),
@@ -186,9 +150,9 @@ pub const ITEMS: &[Item] = &[
     ),
     later(
         Horizon::Later,
-        "roadmap-later-frontends",
-        "More front-ends",
-        "A second language, and a deployment front-end to fill the model's empty deployment section.",
+        "roadmap-later-deployment",
+        "A deployment front-end",
+        "Infrastructure as the model's deployment section, which is empty today.",
     ),
 ];
 

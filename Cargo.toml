@@ -17,7 +17,7 @@ exclude = [
 resolver = "3"
 
 [workspace.package]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 rust-version = "1.88"
 license = "MIT OR Apache-2.0"
@@ -30,8 +30,8 @@ authors = ["Paul Adamson"]
 # One version for the whole workspace; the two path deps carry it too
 # because every crate publishes, and crates.io needs a version on a path
 # dep. Bump all three together at release.
-asbuilt-core = { version = "0.1.0", path = "crates/asbuilt-core" }
-asbuilt-rust = { version = "0.1.0", path = "crates/asbuilt-rust" }
+asbuilt-core = { version = "0.2.0", path = "crates/asbuilt-core" }
+asbuilt-rust = { version = "0.2.0", path = "crates/asbuilt-rust" }
 clap = { version = "4", features = ["derive"] }
 # Markdown in the one-paragraph descriptions the docs generator renders;
 # `html` only, no CLI helpers.
