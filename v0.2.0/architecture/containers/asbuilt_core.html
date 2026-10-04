@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en" data-theme-default="system">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="asbuilt docs">
+<title>asbuilt · Architecture · asbuilt-core</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="../viewer.css">
+<script src="../theme.js"></script>
+<script src="../viewer.js" defer></script>
+<link rel="stylesheet" href="../../architecture.css">
+</head>
+<body>
+<header><div class="bar"><nav class="trail" aria-label="Breadcrumb"><a class="home" href="../../">asbuilt</a><span class="sep" aria-hidden="true">/</span><a class="site" href="../index.html"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.24 3.21L17.61 1.26L21.97 8.81L18.6 10.76zM3.06 11.38L15.28 4.33L18.15 9.3L5.93 16.36zM1 13.77L3.88 12.1L5.71 15.29L2.84 16.96zM20.65 13.45A10.32 10.32 0 0 1 17.16 18.37L15.06 15.65A6.88 6.88 0 0 0 17.39 12.37zM14.78 19.74A10.32 10.32 0 0 1 6.06 19.34L7.65 16.29A6.88 6.88 0 0 0 13.47 16.57zM17.95 12.13L23 14.59L21.8 17.07L16.75 14.6zM9.67 17.46L7.76 22.74L5.16 21.8L7.09 16.52zM10.36 10.49L11.79 12.97L12.78 12.4L11.35 9.91zM13.31 11.7L18.47 20.64L17.77 21.04L12.61 12.1zM11.62 12.68L16.78 21.61L16.08 22.01L10.92 13.08zM18.07 19.94L18.47 20.64L16.08 22.01L15.68 21.31z"/></svg>Architecture</a></nav><nav class="views" aria-label="Views"><a href="../views.html">Curated views</a></nav><label class="scheme" hidden>Theme <select id="scheme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div><nav class="containers" aria-label="Containers"><a href="../containers/asbuilt.html">asbuilt</a><span aria-current="page">asbuilt-core</span><a href="../containers/asbuilt_rust.html">asbuilt-rust</a><a href="../containers/asbuilt_site.html">asbuilt-site</a><a href="../containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a></nav></header>
+<main>
+<h1>asbuilt-core</h1>
+<p class="meta">library crate · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core"><code>crates/asbuilt-core</code></a></p>
+<p>The language-agnostic core of asbuilt.</p>
+<figure class="view" data-viewer><div class="viewer-bar" hidden><span class="viewer-scale"></span><button type="button" data-viewer-zoom="out" aria-label="Zoom out" title="Zoom out (−)">−</button><button type="button" data-viewer-zoom="in" aria-label="Zoom in" title="Zoom in (+)">+</button><button type="button" data-viewer-mode="fit" aria-pressed="false">Fit</button><button type="button" data-viewer-mode="one" aria-pressed="false">1:1</button><button type="button" data-viewer-wide aria-pressed="false">Wide</button><button type="button" data-viewer-full>Fullscreen</button><span class="viewer-hint"></span></div><script type="application/json" class="viewer-edges">{"asbuilt_core.docs->asbuilt_core.emit":[{"source":"asbuilt_core.docs","source_href":"../containers/asbuilt_core.html#asbuilt_core.docs","target":"asbuilt_core.emit","target_href":"../containers/asbuilt_core.html#asbuilt_core.emit","kind":"calls","items":["children_of","link_encode","view_ids"],"technology":null}],"asbuilt_core.docs->asbuilt_core.svg":[{"source":"asbuilt_core.docs","source_href":"../containers/asbuilt_core.html#asbuilt_core.docs","target":"asbuilt_core.svg","target_href":"../containers/asbuilt_core.html#asbuilt_core.svg","kind":"constructs","items":["Inlined","Node","ViewSource","inline","svg"],"technology":null}],"asbuilt_core.docs->asbuilt_core.theme":[{"source":"asbuilt_core.docs","source_href":"../containers/asbuilt_core.html#asbuilt_core.docs","target":"asbuilt_core.theme","target_href":"../containers/asbuilt_core.html#asbuilt_core.theme","kind":"calls","items":["stylesheet","theme"],"technology":null}],"asbuilt_core.docs->asbuilt_core.config":[{"source":"asbuilt_core.docs","source_href":"../containers/asbuilt_core.html#asbuilt_core.docs","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"names","items":["ColorScheme","ThemeColor"],"technology":null}],"asbuilt_core.docs->asbuilt_core.model":[{"source":"asbuilt_core.docs","source_href":"../containers/asbuilt_core.html#asbuilt_core.docs","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"calls","items":["Element","ElementKind","Id","Model","Relation","dotted","sanitize_id"],"technology":null}],"asbuilt_core.frontend->asbuilt_core.externals":[{"source":"asbuilt_core.frontend","source_href":"../containers/asbuilt_core.html#asbuilt_core.frontend","target":"asbuilt_core.externals","target_href":"../containers/asbuilt_core.html#asbuilt_core.externals","kind":"calls","items":["apply","externals"],"technology":null}],"asbuilt_core.frontend->asbuilt_core.config":[{"source":"asbuilt_core.frontend","source_href":"../containers/asbuilt_core.html#asbuilt_core.frontend","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"names","items":["Config"],"technology":null}],"asbuilt_core.frontend->asbuilt_core.model":[{"source":"asbuilt_core.frontend","source_href":"../containers/asbuilt_core.html#asbuilt_core.frontend","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"constructs","items":["Model"],"technology":null}],"asbuilt_core.frontend->asbuilt_core.error":[{"source":"asbuilt_core.frontend","source_href":"../containers/asbuilt_core.html#asbuilt_core.frontend","target":"asbuilt_core.error","target_href":"../containers/asbuilt_core.html#asbuilt_core.error","kind":"constructs","items":["Error","Result"],"technology":null}],"asbuilt_core.tests->asbuilt_core.config":[{"source":"asbuilt_core.tests","source_href":"../containers/asbuilt_core.html#asbuilt_core.tests","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"constructs","items":["Config"],"technology":null}],"asbuilt_core.tests->asbuilt_core.error":[{"source":"asbuilt_core.tests","source_href":"../containers/asbuilt_core.html#asbuilt_core.tests","target":"asbuilt_core.error","target_href":"../containers/asbuilt_core.html#asbuilt_core.error","kind":"names","items":["Error"],"technology":null}],"asbuilt_core.emit->asbuilt_core.model":[{"source":"asbuilt_core.emit","source_href":"../containers/asbuilt_core.html#asbuilt_core.emit","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"calls","items":["Element","Id","Model","RelationKind","sanitize_id","sanitize_segment"],"technology":null}],"asbuilt_core.svg->asbuilt_core.docs":[{"source":"asbuilt_core.svg","source_href":"../containers/asbuilt_core.html#asbuilt_core.svg","target":"asbuilt_core.docs","target_href":"../containers/asbuilt_core.html#asbuilt_core.docs","kind":"calls","items":["escape"],"technology":null}],"asbuilt_core.theme->asbuilt_core.config":[{"source":"asbuilt_core.theme","source_href":"../containers/asbuilt_core.html#asbuilt_core.theme","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"names","items":["ThemeColor"],"technology":null}],"asbuilt_core.externals->asbuilt_core.config":[{"source":"asbuilt_core.externals","source_href":"../containers/asbuilt_core.html#asbuilt_core.externals","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"names","items":["Config"],"technology":null}],"asbuilt_core.externals->asbuilt_core.model":[{"source":"asbuilt_core.externals","source_href":"../containers/asbuilt_core.html#asbuilt_core.externals","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"constructs","items":["Element","ElementKind","Id","Model","Relation","RelationKind","SURVEY_KINDS","dotted","sanitize_id","sanitize_segment"],"technology":null}],"asbuilt_core.externals->asbuilt_core.error":[{"source":"asbuilt_core.externals","source_href":"../containers/asbuilt_core.html#asbuilt_core.externals","target":"asbuilt_core.error","target_href":"../containers/asbuilt_core.html#asbuilt_core.error","kind":"constructs","items":["Error","Result"],"technology":null}],"asbuilt_core.config->asbuilt_core.error":[{"source":"asbuilt_core.config","source_href":"../containers/asbuilt_core.html#asbuilt_core.config","target":"asbuilt_core.error","target_href":"../containers/asbuilt_core.html#asbuilt_core.error","kind":"constructs","items":["Error","Result"],"technology":null}],"asbuilt_core.model->asbuilt_core.error":[{"source":"asbuilt_core.model","source_href":"../containers/asbuilt_core.html#asbuilt_core.model","target":"asbuilt_core.error","target_href":"../containers/asbuilt_core.html#asbuilt_core.error","kind":"constructs","items":["Error","Result"],"technology":null}],"asbuilt->asbuilt_core.check":[{"source":"asbuilt.commands","source_href":"../containers/asbuilt.html#asbuilt.commands","target":"asbuilt_core.check","target_href":"../containers/asbuilt_core.html#asbuilt_core.check","kind":"calls","items":["Outcome","compare"],"technology":null}],"asbuilt->asbuilt_core.docs":[{"source":"asbuilt.commands","source_href":"../containers/asbuilt.html#asbuilt.commands","target":"asbuilt_core.docs","target_href":"../containers/asbuilt_core.html#asbuilt_core.docs","kind":"constructs","items":["DocsOptions","GENERATOR_META","generate"],"technology":null}],"asbuilt->asbuilt_core.frontend":[{"source":"asbuilt.commands","source_href":"../containers/asbuilt.html#asbuilt.commands","target":"asbuilt_core.frontend","target_href":"../containers/asbuilt_core.html#asbuilt_core.frontend","kind":"calls","items":["Frontend","survey"],"technology":null}],"asbuilt->asbuilt_core.emit":[{"source":"asbuilt.commands","source_href":"../containers/asbuilt.html#asbuilt.commands","target":"asbuilt_core.emit","target_href":"../containers/asbuilt_core.html#asbuilt_core.emit","kind":"calls","items":["emit"],"technology":null},{"source":"asbuilt.tests","source_href":"../containers/asbuilt.html#asbuilt.tests","target":"asbuilt_core.emit","target_href":"../containers/asbuilt_core.html#asbuilt_core.emit","kind":"calls","items":["emit"],"technology":null}],"asbuilt->asbuilt_core.svg":[{"source":"asbuilt.commands","source_href":"../containers/asbuilt.html#asbuilt.commands","target":"asbuilt_core.svg","target_href":"../containers/asbuilt_core.html#asbuilt_core.svg","kind":"constructs","items":["ViewSource"],"technology":null}],"asbuilt->asbuilt_core.config":[{"source":"asbuilt.asbuilt","source_href":"../containers/asbuilt.html#asbuilt.asbuilt","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"names","items":["ColorScheme"],"technology":null},{"source":"asbuilt.commands","source_href":"../containers/asbuilt.html#asbuilt.commands","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"calls","items":["ColorScheme","Config"],"technology":null}],"asbuilt->asbuilt_core.model":[{"source":"asbuilt.commands","source_href":"../containers/asbuilt.html#asbuilt.commands","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"names","items":["Model"],"technology":null},{"source":"asbuilt.tests","source_href":"../containers/asbuilt.html#asbuilt.tests","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"constructs","items":["Element","ElementKind","Id","Model","Relation","RelationKind"],"technology":null}],"asbuilt->asbuilt_core.error":[{"source":"asbuilt.commands","source_href":"../containers/asbuilt.html#asbuilt.commands","target":"asbuilt_core.error","target_href":"../containers/asbuilt_core.html#asbuilt_core.error","kind":"names","items":["Error"],"technology":null}],"asbuilt_rust->asbuilt_core.frontend":[{"source":"asbuilt_rust","source_href":"../containers/asbuilt_rust.html","target":"asbuilt_core.frontend","target_href":"../containers/asbuilt_core.html#asbuilt_core.frontend","kind":"implements","items":["Frontend"],"technology":null},{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_core.frontend","target_href":"../containers/asbuilt_core.html#asbuilt_core.frontend","kind":"calls","items":["survey"],"technology":null}],"asbuilt_rust->asbuilt_core.emit":[{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_core.emit","target_href":"../containers/asbuilt_core.html#asbuilt_core.emit","kind":"calls","items":["emit"],"technology":null}],"asbuilt_rust->asbuilt_core.config":[{"source":"asbuilt_rust","source_href":"../containers/asbuilt_rust.html","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"names","items":["Config"],"technology":null},{"source":"asbuilt_rust.config","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.config","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"names","items":["Config"],"technology":null},{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"calls","items":["Config"],"technology":null}],"asbuilt_rust->asbuilt_core.model":[{"source":"asbuilt_rust","source_href":"../containers/asbuilt_rust.html","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"constructs","items":["Element","ElementKind","Id","Model"],"technology":null},{"source":"asbuilt_rust.aggregate","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.aggregate","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"constructs","items":["Id","Relation","RelationKind","is_lineal"],"technology":null},{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"names","items":["Element","ElementKind","Model","Relation","RelationKind"],"technology":null},{"source":"asbuilt_rust.visit","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.visit","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"names","items":["RelationKind"],"technology":null}],"asbuilt_rust->asbuilt_core.error":[{"source":"asbuilt_rust","source_href":"../containers/asbuilt_rust.html","target":"asbuilt_core.error","target_href":"../containers/asbuilt_core.html#asbuilt_core.error","kind":"constructs","items":["Error","Result"],"technology":null},{"source":"asbuilt_rust.config","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.config","target":"asbuilt_core.error","target_href":"../containers/asbuilt_core.html#asbuilt_core.error","kind":"names","items":["Result"],"technology":null}]}</script><div class="viewer-frame" role="group" aria-label="asbuilt-core: diagram"><svg viewBox="0.00 0.00 4433.73 1259.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="c4" data-view="view_asbuilt_core" role="img" aria-label="asbuilt-core">
+<g id="view_asbuilt_core-graph0" class="graph" transform="scale(1 1) rotate(0) translate(15.05 1244.05)">
+
+<g id="view_asbuilt_core-clust1" class="cluster c4-k-container">
+
+<polygon fill="#722f24" stroke="#57130f" points="303.63,-8 303.63,-960 3972.63,-960 3972.63,-8 303.63,-8"/>
+<text text-anchor="start" x="311.63" y="-948.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT&#45;CORE</text>
+</g>
+
+<a href="../containers/asbuilt_core.html#asbuilt_core.check"><g id="view_asbuilt_core-node1" class="node c4-k-component">
+<title>asbuilt_core.check</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2054.13,-900 1713.13,-900 1713.13,-720 2054.13,-720 2054.13,-900"/>
+<text text-anchor="start" x="1858.13" y="-849" font-family="Arial" font-size="20.00" fill="#5b5b5b">check</text>
+<text text-anchor="start" x="1733.63" y="-827" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The drift check: the committed model against</text>
+<text text-anchor="start" x="1817.63" y="-810" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">a fresh survey, as a</text>
+<text text-anchor="start" x="1748.63" y="-793" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">unified diff when they differ. Line endings</text>
+<text text-anchor="start" x="1809.63" y="-776" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">are normalized first so</text>
+<text text-anchor="start" x="1754.13" y="-759" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">a consumer with `autocrlf` gets a clean</text>
+</g></a>
+
+<a href="../containers/asbuilt_core.html#asbuilt_core.docs"><g id="view_asbuilt_core-node2" class="node c4-k-component">
+<title>asbuilt_core.docs</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1060.13,-900 711.13,-900 711.13,-720 1060.13,-720 1060.13,-900"/>
+<text text-anchor="start" x="864.63" y="-849" font-family="Arial" font-size="20.00" fill="#5b5b5b">docs</text>
+<text text-anchor="start" x="731.63" y="-827" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The documentation generator: a [`Model`] and</text>
+<text text-anchor="start" x="800.63" y="-810" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">the SVGs `asbuilt render`</text>
+<text text-anchor="start" x="738.13" y="-793" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">produced, to a static HTML tree that mounts</text>
+<text text-anchor="start" x="803.13" y="-776" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">anywhere. A view LikeC4</text>
+<text text-anchor="start" x="796.13" y="-759" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">drew is inlined into its page</text>
+</g></a>
+
+<a href="../containers/asbuilt_core.html#asbuilt_core.frontend"><g id="view_asbuilt_core-node3" class="node c4-k-component">
+<title>asbuilt_core.frontend</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2640.63,-900 2304.63,-900 2304.63,-720 2640.63,-720 2640.63,-900"/>
+<text text-anchor="start" x="2435.63" y="-841" font-family="Arial" font-size="20.00" fill="#5b5b5b">frontend</text>
+<text text-anchor="start" x="2331.13" y="-819" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The front&#45;end contract and the survey that</text>
+<text text-anchor="start" x="2404.63" y="-802" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">runs every front&#45;end</text>
+<text text-anchor="start" x="2324.63" y="-785" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">that recognizes a root, merges their models,</text>
+<text text-anchor="start" x="2397.13" y="-768" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">and applies the config.</text>
+</g></a>
+
+<a href="../containers/asbuilt_core.html#asbuilt_core.tests"><g id="view_asbuilt_core-node4" class="node c4-k-tests">
+<title>asbuilt_core.tests</title>
+<polygon fill="#d9d4cf" stroke="#b1aca8" stroke-width="0" points="3932.63,-579 3612.63,-579 3612.63,-399 3932.63,-399 3932.63,-579"/>
+<text text-anchor="start" x="3751.63" y="-484" font-family="Arial" font-size="20.00" fill="#3c3834">tests</text>
+</g></a>
+
+<a href="../containers/asbuilt_core.html#asbuilt_core.emit"><g id="view_asbuilt_core-node5" class="node c4-k-component">
+<title>asbuilt_core.emit</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="665.13,-579 344.13,-579 344.13,-399 665.13,-399 665.13,-579"/>
+<text text-anchor="start" x="486.13" y="-503" font-family="Arial" font-size="20.00" fill="#5b5b5b">emit</text>
+<text text-anchor="start" x="364.63" y="-481" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The LikeC4 emitter: a [`Model`] to the text</text>
+<text text-anchor="start" x="452.13" y="-464" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">of one `.c4` file.</text>
+</g></a>
+
+<a href="../containers/asbuilt_core.html#asbuilt_core.svg"><g id="view_asbuilt_core-node6" class="node c4-k-component">
+<title>asbuilt_core.svg</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1603.13,-900 1280.13,-900 1280.13,-720 1603.13,-720 1603.13,-900"/>
+<text text-anchor="start" x="1426.63" y="-824" font-family="Arial" font-size="20.00" fill="#5b5b5b">svg</text>
+<text text-anchor="start" x="1300.63" y="-802" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">A rendered view inlined into a page, so the</text>
+<text text-anchor="start" x="1368.63" y="-785" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">page&#39;s colors reach it.</text>
+</g></a>
+
+<a href="../containers/asbuilt_core.html#asbuilt_core.theme"><g id="view_asbuilt_core-node7" class="node c4-k-component">
+<title>asbuilt_core.theme</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1810.13,-579 1469.13,-579 1469.13,-399 1810.13,-399 1810.13,-579"/>
+<text text-anchor="start" x="1612.13" y="-528" font-family="Arial" font-size="20.00" fill="#5b5b5b">theme</text>
+<text text-anchor="start" x="1489.63" y="-506" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Diagram colors for the documentation pages.</text>
+<text text-anchor="start" x="1559.13" y="-489" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Per element kind, a light</text>
+<text text-anchor="start" x="1491.13" y="-472" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">and a dark fill come from `[theme]` (LikeC4&#39;s</text>
+<text text-anchor="start" x="1567.63" y="-455" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">default blue for a kind</text>
+<text text-anchor="start" x="1502.13" y="-438" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">with none), and each fill&#39;s text, secondary</text>
+</g></a>
+
+<a href="../containers/asbuilt_core.html#asbuilt_core.externals"><g id="view_asbuilt_core-node8" class="node c4-k-component">
+<title>asbuilt_core.externals</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2632.63,-579 2312.63,-579 2312.63,-399 2632.63,-399 2632.63,-579"/>
+<text text-anchor="start" x="2431.63" y="-528" font-family="Arial" font-size="20.00" fill="#5b5b5b">externals</text>
+<text text-anchor="start" x="2343.13" y="-506" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Externals from `asbuilt.toml`: elements</text>
+<text text-anchor="start" x="2376.13" y="-489" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">outside the code (a spawned</text>
+<text text-anchor="start" x="2338.63" y="-472" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">process, a browser) and the edges from</text>
+<text text-anchor="start" x="2381.63" y="-455" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">surveyed modules to them.</text>
+<text text-anchor="start" x="2332.63" y="-438" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Nothing static in the code states these, so</text>
+</g></a>
+
+<a href="../containers/asbuilt_core.html#asbuilt_core.config"><g id="view_asbuilt_core-node9" class="node c4-k-component">
+<title>asbuilt_core.config</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="3255.13,-228 2934.13,-228 2934.13,-48 3255.13,-48 3255.13,-228"/>
+<text text-anchor="start" x="3068.13" y="-177" font-family="Arial" font-size="20.00" fill="#5b5b5b">config</text>
+<text text-anchor="start" x="2981.63" y="-155" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`asbuilt.toml`: the output path, the</text>
+<text text-anchor="start" x="2997.13" y="-138" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">externals nothing static in the</text>
+<text text-anchor="start" x="2954.63" y="-121" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">code can state, and every front&#45;end&#39;s own</text>
+<text text-anchor="start" x="3022.13" y="-104" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">table kept raw for it to</text>
+<text text-anchor="start" x="3073.63" y="-87" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">parse.</text>
+</g></a>
+
+<a href="../containers/asbuilt_core.html#asbuilt_core.model"><g id="view_asbuilt_core-node10" class="node c4-k-component">
+<title>asbuilt_core.model</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1474.63,-228 1154.63,-228 1154.63,-48 1474.63,-48 1474.63,-228"/>
+<text text-anchor="start" x="1287.63" y="-160" font-family="Arial" font-size="20.00" fill="#5b5b5b">model</text>
+<text text-anchor="start" x="1184.63" y="-138" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The architecture model every front&#45;end</text>
+<text text-anchor="start" x="1231.13" y="-121" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">produces and the emitter</text>
+<text text-anchor="start" x="1278.63" y="-104" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">consumes.</text>
+</g></a>
+
+<a href="../containers/asbuilt_core.html#asbuilt_core.error"><g id="view_asbuilt_core-node11" class="node c4-k-component">
+<title>asbuilt_core.error</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="3180.63,-900 2860.63,-900 2860.63,-720 3180.63,-720 3180.63,-900"/>
+<text text-anchor="start" x="2999.63" y="-832" font-family="Arial" font-size="20.00" fill="#5b5b5b">error</text>
+<text text-anchor="start" x="2881.63" y="-810" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Errors that name the offending input, so a</text>
+<text text-anchor="start" x="2937.13" y="-793" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">message reads without a</text>
+<text text-anchor="start" x="3001.13" y="-776" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">rerun.</text>
+</g></a>
+
+<a href="../containers/asbuilt.html"><g id="view_asbuilt_core-node12" class="node c4-k-container">
+<title>asbuilt</title>
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="1350.13,-1229 979.13,-1229 979.13,-1049 1350.13,-1049 1350.13,-1229"/>
+<text text-anchor="start" x="1136.13" y="-1187" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt</text>
+<text text-anchor="start" x="1096.13" y="-1166.6" font-family="Arial" font-size="13.00" fill="#ffffe5" class="c4-muted">library and binary crate</text>
+<text text-anchor="start" x="1031.13" y="-1147" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">The `asbuilt` CLI crate: `main.rs` parses</text>
+<text text-anchor="start" x="1098.63" y="-1130" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">arguments, and this</text>
+<text text-anchor="start" x="999.63" y="-1113" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">library runs the subcommands (`commands`) and</text>
+<text text-anchor="start" x="1112.13" y="-1096" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">every call to the</text>
+<text text-anchor="start" x="1083.63" y="-1079" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">pinned LikeC4 (`likec4`).</text>
+</g></a>
+
+<a href="../containers/asbuilt_rust.html"><g id="view_asbuilt_core-node13" class="node c4-k-container">
+<title>asbuilt_rust</title>
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="3794.63,-1229 3474.63,-1229 3474.63,-1049 3794.63,-1049 3794.63,-1229"/>
+<text text-anchor="start" x="3586.13" y="-1153" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;rust</text>
+<text text-anchor="start" x="3599.63" y="-1132.6" font-family="Arial" font-size="13.00" fill="#ffffe5" class="c4-muted">library crate</text>
+<text text-anchor="start" x="3549.63" y="-1113" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">Rust front&#45;end for asbuilt.</text>
+</g></a>
+
+<g id="view_asbuilt_core-edge14" class="edge" data-from="asbuilt_core.docs" data-to="asbuilt_core.emit">
+<title>asbuilt_core.docs → asbuilt_core.emit</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M726.64,-719.82C698.86,-701.51 671.07,-681.27 646.63,-660 621.15,-637.82 596.43,-610.84 574.96,-584.97"/><path class="c4-hit" d="M726.64,-719.82C698.86,-701.51 671.07,-681.27 646.63,-660 621.15,-637.82 596.43,-610.84 574.96,-584.97"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="576.93,-583.24 570.14,-579.12 572.88,-586.58 576.93,-583.24"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="646.63,-639 646.63,-660 857.63,-660 857.63,-639 646.63,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="650.13" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">children_of, link_encode, view_ids</text>
+</g>
+
+<g id="view_asbuilt_core-edge15" class="edge" data-from="asbuilt_core.docs" data-to="asbuilt_core.svg">
+<title>asbuilt_core.docs → asbuilt_core.svg</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1060.41,-810C1128.01,-810 1205.1,-810 1272.19,-810"/><path class="c4-hit" d="M1060.41,-810C1128.01,-810 1205.1,-810 1272.19,-810"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1272.4,-812.63 1279.9,-810 1272.4,-807.38 1272.4,-812.63"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1053.63,-813 1053.63,-834 1286.63,-834 1286.63,-813 1053.63,-813" class="c4-label-bg"/>
+<text text-anchor="start" x="1057.13" y="-819.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Inlined, Node, ViewSource, inline, svg</text>
+</g>
+
+<g id="view_asbuilt_core-edge16" class="edge" data-from="asbuilt_core.docs" data-to="asbuilt_core.theme">
+<title>asbuilt_core.docs → asbuilt_core.theme</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1060.51,-735.01C1181.01,-684.03 1340.62,-616.51 1461.76,-565.25"/><path class="c4-hit" d="M1060.51,-735.01C1181.01,-684.03 1340.62,-616.51 1461.76,-565.25"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1463.07,-567.55 1468.95,-562.21 1461.02,-562.72 1463.07,-567.55"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1284.63,-639 1284.63,-660 1397.63,-660 1397.63,-639 1284.63,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="1288.13" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">stylesheet, theme</text>
+</g>
+
+<g id="view_asbuilt_core-edge17" class="edge" data-from="asbuilt_core.docs" data-to="asbuilt_core.config">
+<title>asbuilt_core.docs → asbuilt_core.config</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1060.45,-761.84C1113.41,-747.93 1171.8,-732.97 1225.63,-720 1508.8,-651.77 1625.21,-743.42 1865.63,-579 1971.45,-506.63 1976.8,-457.53 2025.63,-339 2034.43,-317.64 2018.87,-303.89 2035.63,-288 2160.62,-169.57 2660.43,-144.53 2926.29,-139.73"/><path class="c4-hit" d="M1060.45,-761.84C1113.41,-747.93 1171.8,-732.97 1225.63,-720 1508.8,-651.77 1625.21,-743.42 1865.63,-579 1971.45,-506.63 1976.8,-457.53 2025.63,-339 2034.43,-317.64 2018.87,-303.89 2035.63,-288 2160.62,-169.57 2660.43,-144.53 2926.29,-139.73"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2926.64,-142.35 2934.09,-139.59 2926.55,-137.1 2926.64,-142.35"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2001.63,-478.5 2001.63,-499.5 2173.63,-499.5 2173.63,-478.5 2001.63,-478.5" class="c4-label-bg"/>
+<text text-anchor="start" x="2004.63" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">ColorScheme, ThemeColor</text>
+</g>
+
+<g id="view_asbuilt_core-edge18" class="edge" data-from="asbuilt_core.docs" data-to="asbuilt_core.model">
+<title>asbuilt_core.docs → asbuilt_core.model</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M885.77,-719.9C889.8,-632.01 906.8,-496.95 968.63,-399 1012.63,-329.29 1082.47,-271.58 1147.91,-228.38"/><path class="c4-hit" d="M885.77,-719.9C889.8,-632.01 906.8,-496.95 968.63,-399 1012.63,-329.29 1082.47,-271.58 1147.91,-228.38"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1149.39,-230.55 1154.23,-224.25 1146.52,-226.16 1149.39,-230.55"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="968.63,-471 968.63,-507 1177.63,-507 1177.63,-471 968.63,-471" class="c4-label-bg"/>
+<text text-anchor="start" x="972.13" y="-492.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, ElementKind, Id, Model,</text>
+<text text-anchor="start" x="972.13" y="-477.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Relation, dotted, sanitize_id</text>
+</g>
+
+<g id="view_asbuilt_core-edge19" class="edge" data-from="asbuilt_core.frontend" data-to="asbuilt_core.externals">
+<title>asbuilt_core.frontend → asbuilt_core.externals</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2472.63,-719.72C2472.63,-678.33 2472.63,-629.07 2472.63,-586.8"/><path class="c4-hit" d="M2472.63,-719.72C2472.63,-678.33 2472.63,-629.07 2472.63,-586.8"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2475.26,-586.76 2472.63,-579.26 2470.01,-586.76 2475.26,-586.76"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2472.63,-639 2472.63,-660 2572.63,-660 2572.63,-639 2472.63,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="2475.63" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">apply, externals</text>
+</g>
+
+<g id="view_asbuilt_core-edge20" class="edge" data-from="asbuilt_core.frontend" data-to="asbuilt_core.config">
+<title>asbuilt_core.frontend → asbuilt_core.config</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2594.21,-719.84C2637.8,-690.94 2688.39,-660.76 2737.63,-639 2831.91,-597.35 2887.6,-650.71 2961.63,-579 3054.79,-488.76 3083.27,-335.77 3091.65,-236.07"/><path class="c4-hit" d="M2594.21,-719.84C2637.8,-690.94 2688.39,-660.76 2737.63,-639 2831.91,-597.35 2887.6,-650.71 2961.63,-579 3054.79,-488.76 3083.27,-335.77 3091.65,-236.07"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3094.28,-236.08 3092.26,-228.39 3089.05,-235.66 3094.28,-236.08"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3060.63,-478.5 3060.63,-499.5 3106.63,-499.5 3106.63,-478.5 3060.63,-478.5" class="c4-label-bg"/>
+<text text-anchor="start" x="3063.63" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
+</g>
+
+<g id="view_asbuilt_core-edge21" class="edge" data-from="asbuilt_core.frontend" data-to="asbuilt_core.model">
+<title>asbuilt_core.frontend → asbuilt_core.model</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2304.37,-761.63C2243.46,-746.11 2173.87,-730.24 2109.63,-720 2022.7,-706.14 1379.79,-724.27 1319.63,-660 1213.84,-546.96 1247.28,-352.17 1281.06,-235.48"/><path class="c4-hit" d="M2304.37,-761.63C2243.46,-746.11 2173.87,-730.24 2109.63,-720 2022.7,-706.14 1379.79,-724.27 1319.63,-660 1213.84,-546.96 1247.28,-352.17 1281.06,-235.48"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1283.59,-236.19 1283.18,-228.25 1278.55,-234.71 1283.59,-236.19"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1268.63,-478.5 1268.63,-499.5 1312.63,-499.5 1312.63,-478.5 1268.63,-478.5" class="c4-label-bg"/>
+<text text-anchor="start" x="1271.63" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Model</text>
+</g>
+
+<g id="view_asbuilt_core-edge22" class="edge" data-from="asbuilt_core.frontend" data-to="asbuilt_core.error">
+<title>asbuilt_core.frontend → asbuilt_core.error</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2640.78,-810C2708.03,-810 2785.34,-810 2852.58,-810"/><path class="c4-hit" d="M2640.78,-810C2708.03,-810 2785.34,-810 2852.58,-810"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2852.81,-812.63 2860.31,-810 2852.81,-807.38 2852.81,-812.63"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2709.63,-813 2709.63,-834 2791.63,-834 2791.63,-813 2709.63,-813" class="c4-label-bg"/>
+<text text-anchor="start" x="2712.63" y="-819.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error, Result</text>
+</g>
+
+<g id="view_asbuilt_core-edge23" class="edge" data-from="asbuilt_core.tests" data-to="asbuilt_core.config">
+<title>asbuilt_core.tests → asbuilt_core.config</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3638.58,-398.79C3581.24,-362.34 3512.83,-321.07 3448.63,-288 3389.25,-257.41 3322.14,-227.94 3262.43,-203.41"/><path class="c4-hit" d="M3638.58,-398.79C3581.24,-362.34 3512.83,-321.07 3448.63,-288 3389.25,-257.41 3322.14,-227.94 3262.43,-203.41"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3263.12,-200.85 3255.19,-200.44 3261.13,-205.71 3263.12,-200.85"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3539.63,-303 3539.63,-324 3585.63,-324 3585.63,-303 3539.63,-303" class="c4-label-bg"/>
+<text text-anchor="start" x="3542.63" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
+</g>
+
+<g id="view_asbuilt_core-edge24" class="edge" data-from="asbuilt_core.tests" data-to="asbuilt_core.error">
+<title>asbuilt_core.tests → asbuilt_core.error</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3612.53,-571.81C3553.43,-600.94 3485.54,-633.14 3422.63,-660 3346.69,-692.43 3261.07,-724.73 3188.43,-750.93"/><path class="c4-hit" d="M3612.53,-571.81C3553.43,-600.94 3485.54,-633.14 3422.63,-660 3346.69,-692.43 3261.07,-724.73 3188.43,-750.93"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3187.16,-748.6 3180.99,-753.61 3188.94,-753.53 3187.16,-748.6"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3460.63,-639 3460.63,-660 3497.63,-660 3497.63,-639 3460.63,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="3464.13" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error</text>
+</g>
+
+<g id="view_asbuilt_core-edge25" class="edge" data-from="asbuilt_core.emit" data-to="asbuilt_core.model">
+<title>asbuilt_core.emit → asbuilt_core.model</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M549.85,-398.77C574.26,-359.16 607.98,-315.4 649.63,-288 799.17,-189.61 1004.22,-155.47 1146.94,-144.01"/><path class="c4-hit" d="M549.85,-398.77C574.26,-359.16 607.98,-315.4 649.63,-288 799.17,-189.61 1004.22,-155.47 1146.94,-144.01"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1147.27,-146.62 1154.54,-143.42 1146.86,-141.38 1147.27,-146.62"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="649.63,-295.5 649.63,-331.5 857.63,-331.5 857.63,-295.5 649.63,-295.5" class="c4-label-bg"/>
+<text text-anchor="start" x="652.63" y="-317.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, Id, Model, RelationKind,</text>
+<text text-anchor="start" x="652.63" y="-302.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">sanitize_id, sanitize_segment</text>
+</g>
+
+<g id="view_asbuilt_core-edge26" class="edge" data-from="asbuilt_core.svg" data-to="asbuilt_core.docs">
+<title>asbuilt_core.svg → asbuilt_core.docs</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1280.03,-792C1251.77,-789.5 1222.62,-787.33 1195.13,-786 1153.87,-784 1109.57,-785.34 1067.76,-788.22"/><path class="c4-hit" d="M1280.03,-792C1251.77,-789.5 1222.62,-787.33 1195.13,-786 1153.87,-784 1109.57,-785.34 1067.76,-788.22"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1067.55,-785.6 1060.25,-788.75 1067.92,-790.84 1067.55,-785.6"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1145.13,-786 1145.13,-807 1195.13,-807 1195.13,-786 1145.13,-786" class="c4-label-bg"/>
+<text text-anchor="start" x="1148.13" y="-792.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">escape</text>
+</g>
+
+<g id="view_asbuilt_core-edge27" class="edge" data-from="asbuilt_core.theme" data-to="asbuilt_core.config">
+<title>asbuilt_core.theme → asbuilt_core.config</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1738.87,-398.97C1789.7,-358.4 1854.68,-313.76 1920.63,-288 2100.1,-217.9 2646.76,-170.54 2926.24,-150.22"/><path class="c4-hit" d="M1738.87,-398.97C1789.7,-358.4 1854.68,-313.76 1920.63,-288 2100.1,-217.9 2646.76,-170.54 2926.24,-150.22"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2926.73,-152.82 2934.02,-149.66 2926.35,-147.58 2926.73,-152.82"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1920.63,-303 1920.63,-324 2002.63,-324 2002.63,-303 1920.63,-303" class="c4-label-bg"/>
+<text text-anchor="start" x="1923.63" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">ThemeColor</text>
+</g>
+
+<g id="view_asbuilt_core-edge28" class="edge" data-from="asbuilt_core.externals" data-to="asbuilt_core.config">
+<title>asbuilt_core.externals → asbuilt_core.config</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2631.6,-398.8C2722.73,-347.67 2836.95,-283.58 2929.15,-231.85"/><path class="c4-hit" d="M2631.6,-398.8C2722.73,-347.67 2836.95,-283.58 2929.15,-231.85"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2930.49,-234.11 2935.75,-228.15 2927.92,-229.53 2930.49,-234.11"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2820.63,-303 2820.63,-324 2866.63,-324 2866.63,-303 2820.63,-303" class="c4-label-bg"/>
+<text text-anchor="start" x="2823.63" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
+</g>
+
+<g id="view_asbuilt_core-edge29" class="edge" data-from="asbuilt_core.externals" data-to="asbuilt_core.model">
+<title>asbuilt_core.externals → asbuilt_core.model</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2312.39,-428.65C2284.83,-418.63 2256.44,-408.43 2229.63,-399 2084.06,-347.79 2048.63,-331.71 1900.63,-288 1760.61,-246.64 1599.76,-206.24 1482.04,-177.97"/><path class="c4-hit" d="M2312.39,-428.65C2284.83,-418.63 2256.44,-408.43 2229.63,-399 2084.06,-347.79 2048.63,-331.71 1900.63,-288 1760.61,-246.64 1599.76,-206.24 1482.04,-177.97"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1482.61,-175.4 1474.71,-176.21 1481.39,-180.51 1482.61,-175.4"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2059.63,-288 2059.63,-339 2315.63,-339 2315.63,-288 2059.63,-288" class="c4-label-bg"/>
+<text text-anchor="start" x="2062.63" y="-324.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, ElementKind, Id, Model,</text>
+<text text-anchor="start" x="2062.63" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Relation, RelationKind, SURVEY_KINDS,</text>
+<text text-anchor="start" x="2062.63" y="-294.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">dotted, sanitize_id, sanitize_segment</text>
+</g>
+
+<g id="view_asbuilt_core-edge30" class="edge" data-from="asbuilt_core.externals" data-to="asbuilt_core.error">
+<title>asbuilt_core.externals → asbuilt_core.error</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2625.69,-579.1C2699.01,-621.78 2786.78,-672.87 2860.94,-716.04"/><path class="c4-hit" d="M2625.69,-579.1C2699.01,-621.78 2786.78,-672.87 2860.94,-716.04"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2859.82,-718.42 2867.62,-719.93 2862.46,-713.89 2859.82,-718.42"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2762.63,-639 2762.63,-660 2844.63,-660 2844.63,-639 2762.63,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="2765.63" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error, Result</text>
+</g>
+
+<g id="view_asbuilt_core-edge31" class="edge" data-from="asbuilt_core.config" data-to="asbuilt_core.error">
+<title>asbuilt_core.config → asbuilt_core.error</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3156.27,-228.35C3210.19,-318.16 3273.31,-459.98 3227.63,-579 3208.1,-629.91 3171.51,-676.61 3134.46,-714.43"/><path class="c4-hit" d="M3156.27,-228.35C3210.19,-318.16 3273.31,-459.98 3227.63,-579 3208.1,-629.91 3171.51,-676.61 3134.46,-714.43"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3132.41,-712.77 3128.99,-719.95 3136.14,-716.47 3132.41,-712.77"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3242.63,-478.5 3242.63,-499.5 3324.63,-499.5 3324.63,-478.5 3242.63,-478.5" class="c4-label-bg"/>
+<text text-anchor="start" x="3245.63" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error, Result</text>
+</g>
+
+<g id="view_asbuilt_core-edge32" class="edge" data-from="asbuilt_core.model" data-to="asbuilt_core.error">
+<title>asbuilt_core.model → asbuilt_core.error</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1474.73,-153.18C1793.06,-183.93 2491.72,-264.97 2687.63,-399 2751.45,-442.66 2875.7,-606.72 2953.06,-713.6"/><path class="c4-hit" d="M1474.73,-153.18C1793.06,-183.93 2491.72,-264.97 2687.63,-399 2751.45,-442.66 2875.7,-606.72 2953.06,-713.6"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2951.11,-715.38 2957.63,-719.92 2955.36,-712.31 2951.11,-715.38"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2851.63,-478.5 2851.63,-499.5 2933.63,-499.5 2933.63,-478.5 2851.63,-478.5" class="c4-label-bg"/>
+<text text-anchor="start" x="2854.63" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error, Result</text>
+</g>
+
+<g id="view_asbuilt_core-edge1" class="edge" data-from="asbuilt" data-to="asbuilt_core.check">
+<title>asbuilt → asbuilt_core.check</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1350.22,-1082.81C1444.78,-1051.8 1560.26,-1009.4 1658.63,-960 1690.69,-943.9 1723.69,-924.11 1754.21,-904.27"/><path class="c4-hit" d="M1350.22,-1082.81C1444.78,-1051.8 1560.26,-1009.4 1658.63,-960 1690.69,-943.9 1723.69,-924.11 1754.21,-904.27"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1755.84,-906.34 1760.68,-900.04 1752.97,-901.94 1755.84,-906.34"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1632.63,-968 1632.63,-989 1756.63,-989 1756.63,-968 1632.63,-968" class="c4-label-bg"/>
+<text text-anchor="start" x="1635.63" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Outcome, compare</text>
+</g>
+
+<g id="view_asbuilt_core-edge2" class="edge" data-from="asbuilt" data-to="asbuilt_core.docs">
+<title>asbuilt → asbuilt_core.docs</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1042.81,-1048.59C1021.74,-1030.19 1001.05,-1009.99 983.63,-989 963.19,-964.37 944.93,-934.84 929.87,-906.98"/><path class="c4-hit" d="M1042.81,-1048.59C1021.74,-1030.19 1001.05,-1009.99 983.63,-989 963.19,-964.37 944.93,-934.84 929.87,-906.98"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="932.16,-905.69 926.32,-900.31 927.53,-908.17 932.16,-905.69"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="983.63,-968 983.63,-989 1267.63,-989 1267.63,-968 983.63,-968" class="c4-label-bg"/>
+<text text-anchor="start" x="986.63" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">DocsOptions, GENERATOR_META, generate</text>
+</g>
+
+<g id="view_asbuilt_core-edge3" class="edge" data-from="asbuilt" data-to="asbuilt_core.frontend">
+<title>asbuilt → asbuilt_core.frontend</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1350.19,-1114.43C1542.67,-1087.35 1851.1,-1036.54 2109.63,-960 2172.09,-941.51 2238.53,-916.05 2297.26,-891.4"/><path class="c4-hit" d="M1350.19,-1114.43C1542.67,-1087.35 1851.1,-1036.54 2109.63,-960 2172.09,-941.51 2238.53,-916.05 2297.26,-891.4"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2298.49,-893.73 2304.39,-888.4 2296.45,-888.89 2298.49,-893.73"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2059.63,-968 2059.63,-989 2167.63,-989 2167.63,-968 2059.63,-968" class="c4-label-bg"/>
+<text text-anchor="start" x="2062.63" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Frontend, survey</text>
+</g>
+
+<g id="view_asbuilt_core-edge4" class="edge" data-from="asbuilt" data-to="asbuilt_core.emit">
+<title>asbuilt → asbuilt_core.emit</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M978.94,-1122C861.48,-1102.2 715.09,-1058.08 623.63,-960 528.85,-858.35 506.83,-692.3 503.14,-587.21"/><path class="c4-hit" d="M978.94,-1122C861.48,-1102.2 715.09,-1058.08 623.63,-960 528.85,-858.35 506.83,-692.3 503.14,-587.21"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="505.76,-586.85 502.9,-579.44 500.51,-587.02 505.76,-586.85"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="623.63,-799.5 623.63,-820.5 656.63,-820.5 656.63,-799.5 623.63,-799.5" class="c4-label-bg"/>
+<text text-anchor="start" x="627.13" y="-805.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">emit</text>
+</g>
+
+<g id="view_asbuilt_core-edge5" class="edge" data-from="asbuilt" data-to="asbuilt_core.svg">
+<title>asbuilt → asbuilt_core.svg</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1240.32,-1048.65C1277.81,-1004.4 1323.07,-950.96 1361.18,-905.97"/><path class="c4-hit" d="M1240.32,-1048.65C1277.81,-1004.4 1323.07,-950.96 1361.18,-905.97"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1363.19,-907.67 1366.03,-900.25 1359.18,-904.27 1363.19,-907.67"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1302.63,-968 1302.63,-989 1381.63,-989 1381.63,-968 1302.63,-968" class="c4-label-bg"/>
+<text text-anchor="start" x="1306.13" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">ViewSource</text>
+</g>
+
+<g id="view_asbuilt_core-edge6" class="edge" data-from="asbuilt" data-to="asbuilt_core.config">
+<title>asbuilt → asbuilt_core.config</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M978.97,-1129.01C832.48,-1113.2 630.24,-1071.01 490.63,-960 283.33,-795.16 141.08,-618.27 289.63,-399 364.25,-288.86 437.78,-316.95 567.63,-288 596.5,-281.56 2365.35,-180.5 2926.07,-148.58"/><path class="c4-hit" d="M978.97,-1129.01C832.48,-1113.2 630.24,-1071.01 490.63,-960 283.33,-795.16 141.08,-618.27 289.63,-399 364.25,-288.86 437.78,-316.95 567.63,-288 596.5,-281.56 2365.35,-180.5 2926.07,-148.58"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2926.49,-151.19 2933.83,-148.14 2926.19,-145.95 2926.49,-151.19"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="239.63,-639 239.63,-660 266.63,-660 266.63,-639 239.63,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="243.13" y="-646.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+
+<g id="view_asbuilt_core-edge7" class="edge" data-from="asbuilt" data-to="asbuilt_core.model">
+<title>asbuilt → asbuilt_core.model</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M979.03,-1136.48C707.71,-1130.34 221.24,-1103.19 94.63,-989 -23.93,-882.06 -4.43,-797.64 13.63,-639 31.75,-479.93 -24.37,-395.1 94.63,-288 171.44,-218.88 830.41,-169.06 1146.64,-148.9"/><path class="c4-hit" d="M979.03,-1136.48C707.71,-1130.34 221.24,-1103.19 94.63,-989 -23.93,-882.06 -4.43,-797.64 13.63,-639 31.75,-479.93 -24.37,-395.1 94.63,-288 171.44,-218.88 830.41,-169.06 1146.64,-148.9"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1147.19,-151.5 1154.51,-148.4 1146.86,-146.26 1147.19,-151.5"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="13.63,-639 13.63,-660 40.63,-660 40.63,-639 13.63,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="17.13" y="-646.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+
+<g id="view_asbuilt_core-edge8" class="edge" data-from="asbuilt" data-to="asbuilt_core.error">
+<title>asbuilt → asbuilt_core.error</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1350.39,-1133.14C1716.72,-1121.55 2519.03,-1085.67 2775.63,-989 2826.51,-969.83 2876.27,-937.1 2917.5,-904.9"/><path class="c4-hit" d="M1350.39,-1133.14C1716.72,-1121.55 2519.03,-1085.67 2775.63,-989 2826.51,-969.83 2876.27,-937.1 2917.5,-904.9"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2919.26,-906.86 2923.52,-900.15 2916.01,-902.73 2919.26,-906.86"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2819.63,-968 2819.63,-989 2856.63,-989 2856.63,-968 2819.63,-968" class="c4-label-bg"/>
+<text text-anchor="start" x="2823.13" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error</text>
+</g>
+
+<g id="view_asbuilt_core-edge9" class="edge" data-from="asbuilt_rust" data-to="asbuilt_core.frontend">
+<title>asbuilt_rust → asbuilt_core.frontend</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3474.52,-1122.86C3243.3,-1099.29 2828.62,-1050.11 2691.63,-989 2646.19,-968.73 2602.33,-936.52 2565.95,-905.04"/><path class="c4-hit" d="M3474.52,-1122.86C3243.3,-1099.29 2828.62,-1050.11 2691.63,-989 2646.19,-968.73 2602.33,-936.52 2565.95,-905.04"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2567.56,-902.96 2560.18,-900 2564.1,-906.91 2567.56,-902.96"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2691.63,-968 2691.63,-989 2752.63,-989 2752.63,-968 2691.63,-968" class="c4-label-bg"/>
+<text text-anchor="start" x="2695.13" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Frontend</text>
+</g>
+
+<g id="view_asbuilt_core-edge10" class="edge" data-from="asbuilt_rust" data-to="asbuilt_core.emit">
+<title>asbuilt_rust → asbuilt_core.emit</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3644.61,-1048.87C3651.89,-934.02 3644.37,-737.47 3524.63,-639 3410.94,-545.5 1021.61,-597.94 875.63,-579 808.57,-570.3 735.98,-554.38 672.95,-538.39"/><path class="c4-hit" d="M3644.61,-1048.87C3651.89,-934.02 3644.37,-737.47 3524.63,-639 3410.94,-545.5 1021.61,-597.94 875.63,-579 808.57,-570.3 735.98,-554.38 672.95,-538.39"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="673.23,-535.75 665.31,-536.44 671.93,-540.84 673.23,-535.75"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3645.63,-799.5 3645.63,-820.5 3678.63,-820.5 3678.63,-799.5 3645.63,-799.5" class="c4-label-bg"/>
+<text text-anchor="start" x="3649.13" y="-805.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">emit</text>
+</g>
+
+<g id="view_asbuilt_core-edge11" class="edge" data-from="asbuilt_rust" data-to="asbuilt_core.config">
+<title>asbuilt_rust → asbuilt_core.config</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3794.81,-1132.47C3914.99,-1120.15 4076.28,-1085.09 4181.63,-989 4411.82,-779.04 4422.91,-485.11 4181.63,-288 4044.35,-175.85 3532.06,-148.01 3262.66,-141.18"/><path class="c4-hit" d="M3794.81,-1132.47C3914.99,-1120.15 4076.28,-1085.09 4181.63,-989 4411.82,-779.04 4422.91,-485.11 4181.63,-288 4044.35,-175.85 3532.06,-148.01 3262.66,-141.18"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3262.72,-138.55 3255.16,-140.99 3262.59,-143.8 3262.72,-138.55"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4357.63,-639 4357.63,-660 4403.63,-660 4403.63,-639 4357.63,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="4360.63" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
+</g>
+
+<g id="view_asbuilt_core-edge12" class="edge" data-from="asbuilt_rust" data-to="asbuilt_core.model">
+<title>asbuilt_rust → asbuilt_core.model</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3736.11,-1048.81C3889.22,-903.41 4145.46,-610.32 3987.63,-399 3883.62,-259.74 3783.75,-318.48 3612.63,-288 3508.13,-269.39 1995.06,-179.09 1482.77,-148.87"/><path class="c4-hit" d="M3736.11,-1048.81C3889.22,-903.41 4145.46,-610.32 3987.63,-399 3883.62,-259.74 3783.75,-318.48 3612.63,-288 3508.13,-269.39 1995.06,-179.09 1482.77,-148.87"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1482.57,-146.23 1474.92,-148.41 1482.26,-151.47 1482.57,-146.23"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4022.63,-639 4022.63,-660 4227.63,-660 4227.63,-639 4022.63,-639" class="c4-label-bg"/>
+<text text-anchor="start" x="4026.13" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Element, ElementKind, Id, Model</text>
+</g>
+
+<g id="view_asbuilt_core-edge13" class="edge" data-from="asbuilt_rust" data-to="asbuilt_core.error">
+<title>asbuilt_rust → asbuilt_core.error</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3474.51,-1052.73C3386.21,-1005.69 3276.68,-947.37 3187.35,-899.79"/><path class="c4-hit" d="M3474.51,-1052.73C3386.21,-1005.69 3276.68,-947.37 3187.35,-899.79"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="3188.54,-897.45 3180.68,-896.24 3186.07,-902.08 3188.54,-897.45"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3345.63,-968 3345.63,-989 3427.63,-989 3427.63,-968 3345.63,-968" class="c4-label-bg"/>
+<text text-anchor="start" x="3348.63" y="-974.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Error, Result</text>
+</g>
+</g>
+</svg></div></figure>
+<h2>Modules</h2>
+<div class="modules"><ul>
+<li><a href="#asbuilt_core.check">check</a></li>
+<li><a href="#asbuilt_core.config">config</a></li>
+<li><a href="#asbuilt_core.docs">docs</a></li>
+<li><a href="#asbuilt_core.emit">emit</a></li>
+<li><a href="#asbuilt_core.error">error</a></li>
+<li><a href="#asbuilt_core.externals">externals</a></li>
+<li><a href="#asbuilt_core.frontend">frontend</a></li>
+<li><a href="#asbuilt_core.model">model</a></li>
+<li><a href="#asbuilt_core.svg">svg</a></li>
+<li><a href="#asbuilt_core.tests">tests</a></li>
+<li><a href="#asbuilt_core.theme">theme</a></li>
+</ul>
+</div>
+<section id="asbuilt_core.check">
+<h2>check <small>asbuilt_core.check</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/check.rs"><code>crates/asbuilt-core/src/check.rs</code></a></p>
+<p>The drift check: the committed model against a fresh survey, as a
+unified diff when they differ. Line endings are normalized first so
+a consumer with <code>autocrlf</code> gets a clean check.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>Outcome, compare</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.config">
+<h2>config <small>asbuilt_core.config</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/config.rs"><code>crates/asbuilt-core/src/config.rs</code></a></p>
+<p><code>asbuilt.toml</code>: the output path, the externals nothing static in the
+code can state, and every front-end's own table kept raw for it to
+parse.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error, Result</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt.html#asbuilt.asbuilt">asbuilt.asbuilt</a></td><td>ColorScheme</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>ColorScheme, Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>ColorScheme, ThemeColor</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.externals">asbuilt_core.externals</a></td><td>Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>Config</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.tests">asbuilt_core.tests</a></td><td>Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.theme">asbuilt_core.theme</a></td><td>ThemeColor</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.config">asbuilt_rust.config</a></td><td>Config</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>Config</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.docs">
+<h2>docs <small>asbuilt_core.docs</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/docs.rs"><code>crates/asbuilt-core/src/docs.rs</code></a></p>
+<p>The documentation generator: a [<code>Model</code>] and the SVGs <code>asbuilt render</code>
+produced, to a static HTML tree that mounts anywhere. A view LikeC4
+drew is inlined into its page ([<code>crate::svg</code>]) and colored by
+<code>theme.css</code> ([<code>crate::theme</code>]) for the system's light or dark scheme or
+a visitor's choice; <code>theme.js</code>, the tree's one script, carries that
+choice and is left out when <code>scheme_toggle</code> is off.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>ColorScheme, ThemeColor</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>children_of, link_encode, view_ids</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, ElementKind, Id, Model, Relation, dotted, sanitize_id</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.svg">asbuilt_core.svg</a></td><td>Inlined, Node, ViewSource, inline, svg</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.theme">asbuilt_core.theme</a></td><td>stylesheet, theme</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>DocsOptions, GENERATOR_META, generate</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.svg">asbuilt_core.svg</a></td><td>escape</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.emit">
+<h2>emit <small>asbuilt_core.emit</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/emit.rs"><code>crates/asbuilt-core/src/emit.rs</code></a></p>
+<p>The LikeC4 emitter: a [<code>Model</code>] to the text of one <code>.c4</code> file.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, Id, Model, RelationKind, sanitize_id, sanitize_segment</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>emit</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.tests">asbuilt.tests</a></td><td>emit</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>children_of, link_encode, view_ids</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>emit</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.error">
+<h2>error <small>asbuilt_core.error</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/error.rs"><code>crates/asbuilt-core/src/error.rs</code></a></p>
+<p>Errors that name the offending input, so a message reads without a
+rerun.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>Error</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.externals">asbuilt_core.externals</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.tests">asbuilt_core.tests</a></td><td>Error</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.config">asbuilt_rust.config</a></td><td>Result</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.externals">
+<h2>externals <small>asbuilt_core.externals</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/externals.rs"><code>crates/asbuilt-core/src/externals.rs</code></a></p>
+<p>Externals from <code>asbuilt.toml</code>: elements outside the code (a spawned
+process, a browser) and the edges from surveyed modules to them.
+Nothing static in the code states these, so the config does, and a
+<code>from</code> that names no element is an error rather than a missing edge.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, ElementKind, Id, Model, Relation, RelationKind, SURVEY_KINDS, dotted, sanitize_id, sanitize_segment</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>apply, externals</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.frontend">
+<h2>frontend <small>asbuilt_core.frontend</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/frontend.rs"><code>crates/asbuilt-core/src/frontend.rs</code></a></p>
+<p>The front-end contract and the survey that runs every front-end
+that recognizes a root, merges their models, and applies the config.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.externals">asbuilt_core.externals</a></td><td>apply, externals</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Model</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>Frontend, survey</td><td></td></tr>
+<tr><td>implements</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>Frontend</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>survey</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.model">
+<h2>model <small>asbuilt_core.model</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/model.rs"><code>crates/asbuilt-core/src/model.rs</code></a></p>
+<p>The architecture model every front-end produces and the emitter
+consumes.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error, Result</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>Model</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt.html#asbuilt.tests">asbuilt.tests</a></td><td>Element, ElementKind, Id, Model, Relation, RelationKind</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>Element, ElementKind, Id, Model, Relation, dotted, sanitize_id</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>Element, Id, Model, RelationKind, sanitize_id, sanitize_segment</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.externals">asbuilt_core.externals</a></td><td>Element, ElementKind, Id, Model, Relation, RelationKind, SURVEY_KINDS, dotted, sanitize_id, sanitize_segment</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>Model</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html">asbuilt_rust</a></td><td>Element, ElementKind, Id, Model</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.aggregate">asbuilt_rust.aggregate</a></td><td>Id, Relation, RelationKind, is_lineal</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>Element, ElementKind, Model, Relation, RelationKind</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.visit">asbuilt_rust.visit</a></td><td>RelationKind</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.svg">
+<h2>svg <small>asbuilt_core.svg</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/svg.rs"><code>crates/asbuilt-core/src/svg.rs</code></a></p>
+<p>A rendered view inlined into a page, so the page's colors reach it.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>escape</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>ViewSource</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>Inlined, Node, ViewSource, inline, svg</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.tests">
+<h2>tests <small>asbuilt_core.tests</small></h2>
+<p class="meta"><span class="tag">tests</span> · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/tests"><code>crates/asbuilt-core/tests</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_core.theme">
+<h2>theme <small>asbuilt_core.theme</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-core/src/theme.rs"><code>crates/asbuilt-core/src/theme.rs</code></a></p>
+<p>Diagram colors for the documentation pages. Per element kind, a light
+and a dark fill come from <code>[theme]</code> (LikeC4's default blue for a kind
+with none), and each fill's text, secondary text and outline are
+derived from it. <code>theme.css</code> sets them as <code>--c4-&lt;kind&gt;-*</code> variables for
+the system's light and dark schemes and for a visitor's explicit
+choice (<code>data-theme</code> on the root), then applies them to the nodes of an
+inlined view. Group boxes, edges and edge labels take their colors
+from the page tokens (<code>--bg</code>, <code>--fg</code>, <code>--muted</code>), so a host stylesheet
+that restates those restyles the diagrams with the page.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>ThemeColor</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.docs">asbuilt_core.docs</a></td><td>stylesheet, theme</td><td></td></tr>
+</tbody></table>
+</section>
+</main>
+</body>
+</html>
