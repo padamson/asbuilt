@@ -53,10 +53,16 @@ these.
 Every inlined view sits in a frame the viewer sizes: at the scale that
 fits the text column, held between 0.7 and 1, so a wide view scrolls
 inside its frame (at most three quarters of the window tall) instead
-of shrinking its text, and a small one is not blown up. Its controls:
-Fit (the whole view at any scale), 1:1 (as LikeC4 laid it out), Wide
-(every figure on the site takes the window's width, kept in
-`localStorage` under `asbuilt-docs-wide`) and Fullscreen. The controls
+of shrinking its text, and a small one is not blown up. The wheel with
+Ctrl or Cmd held (what a trackpad pinch sends) zooms about the pointer,
+the + and − buttons step, and + − 0 work from the keyboard with the
+frame focused; a plain wheel scrolls the page as usual, and dragging
+pans. The bar's hint names the modifier for the platform (⌘ on a Mac,
+Ctrl elsewhere) and is left out on a touch-only device. The other
+controls: Fit (the whole view at any scale), 1:1 (as
+LikeC4 laid it out), Wide (every figure on the site takes the window's
+width, kept in `localStorage` under `asbuilt-docs-wide`) and
+Fullscreen. The controls
 ship hidden and the script reveals them, so without JavaScript a view
 is scaled to the column as before. `--no-viewer` (or `[docs] viewer =
 false`) leaves the viewer and its script out.

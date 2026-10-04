@@ -56,7 +56,8 @@ pub struct DocsOptions {
     /// with it `theme.js`.
     pub scheme_toggle: bool,
     /// Whether every inlined view gets the viewer (`viewer.js`): a frame
-    /// at a readable scale with Fit, 1:1, Wide and Fullscreen controls.
+    /// at a readable scale, zoom and pan, and Fit, 1:1, Wide and
+    /// Fullscreen controls.
     pub viewer: bool,
 }
 
@@ -100,8 +101,9 @@ pub const VIEWER_SCRIPT: &str = include_str!("viewer.js");
 /// The controls of a viewer figure. Hidden until the script reveals
 /// them, so a page without JavaScript shows no dead buttons. The scale
 /// readout is visual only: it changes on every resize, and the pressed
-/// buttons already say the mode.
-const VIEWER_BAR: &str = "<div class=\"viewer-bar\" hidden><span class=\"viewer-scale\"></span><button type=\"button\" data-viewer-mode=\"fit\" aria-pressed=\"false\">Fit</button><button type=\"button\" data-viewer-mode=\"one\" aria-pressed=\"false\">1:1</button><button type=\"button\" data-viewer-wide aria-pressed=\"false\">Wide</button><button type=\"button\" data-viewer-full>Fullscreen</button></div>";
+/// buttons already say the mode. The hint names the zoom modifier for
+/// the platform, which only the script knows.
+const VIEWER_BAR: &str = "<div class=\"viewer-bar\" hidden><span class=\"viewer-scale\"></span><button type=\"button\" data-viewer-zoom=\"out\" aria-label=\"Zoom out\" title=\"Zoom out (\u{2212})\">\u{2212}</button><button type=\"button\" data-viewer-zoom=\"in\" aria-label=\"Zoom in\" title=\"Zoom in (+)\">+</button><button type=\"button\" data-viewer-mode=\"fit\" aria-pressed=\"false\">Fit</button><button type=\"button\" data-viewer-mode=\"one\" aria-pressed=\"false\">1:1</button><button type=\"button\" data-viewer-wide aria-pressed=\"false\">Wide</button><button type=\"button\" data-viewer-full>Fullscreen</button><span class=\"viewer-hint\"></span></div>";
 
 /// The visitor's scheme control. It ships hidden, and `theme.js` reveals
 /// it, so a page without the script shows no dead control.
@@ -342,12 +344,15 @@ impl Ctx<'_> {
     }
 
     /// A view's `<figure>`: with the viewer, an inlined SVG sits in a
-    /// frame under the controls; an `<img>` (a view LikeC4 did not draw)
-    /// and a tree without the viewer keep the bare figure.
-    fn figure(&self, caption: &str, markup: &str) -> String {
+    /// frame (a group named for the view; the script makes it a tab stop
+    /// when it takes it over) under the controls; an `<img>` (a view
+    /// LikeC4 did not draw) and a tree without the viewer keep the bare
+    /// figure.
+    fn figure(&self, label: &str, caption: &str, markup: &str) -> String {
         if self.options.viewer && markup.starts_with("<svg") {
             format!(
-                "<figure class=\"view\" data-viewer>{caption}{VIEWER_BAR}<div class=\"viewer-frame\">{markup}</div></figure>"
+                "<figure class=\"view\" data-viewer>{caption}{VIEWER_BAR}<div class=\"viewer-frame\" role=\"group\" aria-label=\"{}: diagram\">{markup}</div></figure>",
+                escape(label)
             )
         } else {
             format!("<figure class=\"view\">{caption}{markup}</figure>")
@@ -358,7 +363,7 @@ impl Ctx<'_> {
     /// missing (recorded for the report).
     fn view_figure(&mut self, depth: usize, view: &str, alt: &str) -> String {
         match self.view_markup(depth, view, alt) {
-            Some(markup) => format!("{}\n", self.figure("", &markup)),
+            Some(markup) => format!("{}\n", self.figure(alt, "", &markup)),
             None => {
                 self.missing.insert(view.to_string());
                 format!(
@@ -613,7 +618,7 @@ impl Ctx<'_> {
         for view in &self.curated {
             let markup = self.view_markup(0, view, view).unwrap_or_default();
             let caption = format!("<figcaption>{}</figcaption>", escape(view));
-            let _ = writeln!(body, "{}", self.figure(&caption, &markup));
+            let _ = writeln!(body, "{}", self.figure(view, &caption, &markup));
         }
         Some(self.layout(0, Here::Views, Some("Curated views"), &body))
     }
@@ -955,7 +960,7 @@ mod tests {
         let index = page(&site, "index.html");
         assert!(
             index.contains(&format!(
-                "<figure class=\"view\" data-viewer>{VIEWER_BAR}<div class=\"viewer-frame\"><svg viewBox="
+                "<figure class=\"view\" data-viewer>{VIEWER_BAR}<div class=\"viewer-frame\" role=\"group\" aria-label=\"Overview: diagram\"><svg viewBox="
             )),
             "{index}"
         );
@@ -1002,7 +1007,7 @@ mod tests {
         let views = page(&site, "views.html");
         assert!(
             views.contains(&format!(
-                "<figure class=\"view\" data-viewer><figcaption>context</figcaption>{VIEWER_BAR}<div class=\"viewer-frame\">"
+                "<figure class=\"view\" data-viewer><figcaption>context</figcaption>{VIEWER_BAR}<div class=\"viewer-frame\" role=\"group\" aria-label=\"context: diagram\">"
             )),
             "{views}"
         );
