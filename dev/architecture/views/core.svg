@@ -117,13 +117,13 @@
 <!-- config -->
 <g id="node11" class="node">
 <title>config</title>
-<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2078.33,-228 1757.33,-228 1757.33,-48 2078.33,-48 2078.33,-228"/>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2077.83,-228 1757.83,-228 1757.83,-48 2077.83,-48 2077.83,-228"/>
 <text text-anchor="start" x="1891.33" y="-177" font-family="Arial" font-size="20.00" fill="#5b5b5b">config</text>
-<text text-anchor="start" x="1804.83" y="-155" font-family="Arial" font-size="15.00" fill="#6d6d6d">`asbuilt.toml`: the output path, the</text>
-<text text-anchor="start" x="1820.33" y="-138" font-family="Arial" font-size="15.00" fill="#6d6d6d">externals nothing static in the</text>
-<text text-anchor="start" x="1777.83" y="-121" font-family="Arial" font-size="15.00" fill="#6d6d6d">code can state, and every front&#45;end&#39;s own</text>
-<text text-anchor="start" x="1845.33" y="-104" font-family="Arial" font-size="15.00" fill="#6d6d6d">table kept raw for it to</text>
-<text text-anchor="start" x="1896.83" y="-87" font-family="Arial" font-size="15.00" fill="#6d6d6d">parse.</text>
+<text text-anchor="start" x="1795.33" y="-155" font-family="Arial" font-size="15.00" fill="#6d6d6d">`asbuilt.toml`: the release it is written</text>
+<text text-anchor="start" x="1839.33" y="-138" font-family="Arial" font-size="15.00" fill="#6d6d6d">for, the output path, the</text>
+<text text-anchor="start" x="1787.83" y="-121" font-family="Arial" font-size="15.00" fill="#6d6d6d">externals nothing static in the code can</text>
+<text text-anchor="start" x="1826.33" y="-104" font-family="Arial" font-size="15.00" fill="#6d6d6d">state, and every front&#45;end&#39;s</text>
+<text text-anchor="start" x="1806.33" y="-87" font-family="Arial" font-size="15.00" fill="#6d6d6d">own table kept raw for it to parse.</text>
 </g>
 <!-- error -->
 <g id="node12" class="node">
@@ -193,8 +193,8 @@
 <!-- commands&#45;&gt;config -->
 <g id="edge8" class="edge">
 <title>commands&#45;&gt;config</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2978.69,-1436.79C3442.04,-1371.02 4632.7,-1149.14 4292.83,-639 4068.26,-301.93 3845.89,-381.61 3451.83,-288 3086.38,-201.19 2982.58,-265.34 2608.83,-228 2429.84,-210.12 2225.62,-182.98 2085.88,-163.37"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.24,-160.77 2078.44,-162.33 2085.51,-165.97 2086.24,-160.77"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2978.69,-1436.79C3442.04,-1371.02 4632.7,-1149.14 4292.83,-639 4068.26,-301.93 3845.89,-381.61 3451.83,-288 3086.38,-201.19 2982.58,-265.34 2608.83,-228 2429.69,-210.1 2225.28,-182.93 2085.54,-163.32"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2085.89,-160.72 2078.1,-162.28 2085.16,-165.92 2085.89,-160.72"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4352.83,-799.5 4352.83,-820.5 4488.83,-820.5 4488.83,-799.5 4352.83,-799.5"/>
 <text text-anchor="start" x="4355.83" y="-805.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">ColorScheme, Config</text>
 </g>
@@ -233,8 +233,8 @@
 <!-- frontend&#45;&gt;config -->
 <g id="edge17" class="edge">
 <title>frontend&#45;&gt;config</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3286.93,-719.68C3299.24,-625.66 3301.04,-480.25 3215.83,-399 3104.14,-292.51 3025.15,-369.26 2873.83,-339 2772.43,-318.73 2747.93,-309.69 2646.83,-288 2454.77,-246.8 2233.67,-201.98 2085.79,-172.37"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.23,-169.78 2078.36,-170.88 2085.2,-174.93 2086.23,-169.78"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3286.93,-719.68C3299.24,-625.66 3301.04,-480.25 3215.83,-399 3104.14,-292.51 3025.15,-369.26 2873.83,-339 2772.43,-318.73 2747.93,-309.69 2646.83,-288 2454.61,-246.77 2233.31,-201.9 2085.43,-172.3"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2085.87,-169.71 2078,-170.81 2084.84,-174.86 2085.87,-169.71"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3289.83,-478.5 3289.83,-499.5 3335.83,-499.5 3335.83,-478.5 3289.83,-478.5"/>
 <text text-anchor="start" x="3292.83" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
 </g>
@@ -282,8 +282,8 @@
 <!-- docs&#45;&gt;config -->
 <g id="edge23" class="edge">
 <title>docs&#45;&gt;config</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1097.15,-761.44C1044.47,-747.55 986.41,-732.71 932.83,-720 638.85,-650.29 458.02,-813.75 267.83,-579 217.47,-516.84 215.85,-459.81 267.83,-399 457.4,-177.21 1368.43,-143.45 1749.59,-139.15"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1749.63,-141.78 1757.1,-139.07 1749.57,-136.53 1749.63,-141.78"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M1097.15,-761.44C1044.47,-747.55 986.41,-732.71 932.83,-720 638.85,-650.29 458.02,-813.75 267.83,-579 217.47,-516.84 215.85,-459.81 267.83,-399 457.52,-177.07 1369.55,-143.41 1750.29,-139.15"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1750.33,-141.77 1757.8,-139.07 1750.27,-136.52 1750.33,-141.77"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="267.83,-478.5 267.83,-499.5 439.83,-499.5 439.83,-478.5 267.83,-478.5"/>
 <text text-anchor="start" x="270.83" y="-484.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">ColorScheme, ThemeColor</text>
 </g>
@@ -316,8 +316,8 @@
 <!-- externals&#45;&gt;config -->
 <g id="edge27" class="edge">
 <title>externals&#45;&gt;config</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2840.79,-428.07C2813.2,-418.12 2784.75,-408.09 2757.83,-399 2526.3,-320.83 2255.88,-238.76 2085.74,-188.23"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.4,-185.69 2078.47,-186.07 2084.91,-190.72 2086.4,-185.69"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2840.79,-428.07C2813.2,-418.12 2784.75,-408.09 2757.83,-399 2526.12,-320.77 2255.46,-238.63 2085.34,-188.11"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.01,-185.57 2078.08,-185.96 2084.52,-190.61 2086.01,-185.57"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2573.83,-303 2573.83,-324 2619.83,-324 2619.83,-303 2573.83,-303"/>
 <text text-anchor="start" x="2576.83" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
 </g>
@@ -349,8 +349,8 @@
 <!-- theme&#45;&gt;config -->
 <g id="edge31" class="edge">
 <title>theme&#45;&gt;config</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M836.52,-418.14C855.07,-411.34 873.76,-404.82 891.83,-399 1189.42,-303.12 1544.66,-219.84 1749.46,-174.76"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1750.22,-177.28 1756.98,-173.11 1749.09,-172.16 1750.22,-177.28"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M836.52,-418.14C855.07,-411.34 873.76,-404.82 891.83,-399 1189.63,-303.06 1545.17,-219.72 1749.9,-174.67"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1750.66,-177.19 1757.42,-173.01 1749.53,-172.06 1750.66,-177.19"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1254.83,-303 1254.83,-324 1336.83,-324 1336.83,-303 1254.83,-303"/>
 <text text-anchor="start" x="1257.83" y="-309.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">ThemeColor</text>
 </g>
@@ -397,8 +397,8 @@
 <!-- asbuilt_rust&#45;&gt;config -->
 <g id="edge13" class="edge">
 <title>asbuilt_rust&#45;&gt;config</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3641.56,-1048.64C3651.58,-1029.71 3660.44,-1009.29 3665.83,-989 3734.18,-731.25 3740.58,-592.24 3556.83,-399 3409.32,-243.87 2821.5,-252.38 2608.83,-228 2430.12,-207.51 2225.85,-180.8 2086.03,-162"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2086.37,-159.4 2078.59,-161 2085.67,-164.6 2086.37,-159.4"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M3641.56,-1048.64C3651.58,-1029.71 3660.44,-1009.29 3665.83,-989 3734.18,-731.25 3740.58,-592.24 3556.83,-399 3409.32,-243.87 2821.5,-252.38 2608.83,-228 2429.82,-207.48 2225.18,-180.71 2085.34,-161.91"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2085.68,-159.3 2077.89,-160.9 2084.98,-164.51 2085.68,-159.3"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3703.83,-639 3703.83,-660 3749.83,-660 3749.83,-639 3703.83,-639"/>
 <text text-anchor="start" x="3706.83" y="-645.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Config</text>
 </g>
