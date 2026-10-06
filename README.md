@@ -102,6 +102,8 @@ values are not resolved.
 Optional `asbuilt.toml` at the root:
 
 ```toml
+asbuilt = "0.3.0"                                   # the release the model is surveyed by
+
 [output]
 path = "docs/architecture/model.c4"
 
@@ -130,8 +132,12 @@ title = "spawns"
 technology = "stdio"
 ```
 
-A `from` that names no generated element fails the survey, so a typo is
-an error rather than a missing edge. `[docs] title` and `source_url`
+`asbuilt` pins the release: every command run by another one stops
+before reading anything else and names the `cargo install` line for the
+pinned one, so a contributor with an older or newer binary is not shown
+its output as drift. It is a top-level key, so it goes above the first
+table. A `from` that names no generated element fails the survey, so a
+typo is an error rather than a missing edge. `[docs] title` and `source_url`
 name the documentation tree and turn its paths into links;
 `home_url`, `home_title` and `stylesheet` fit it into a host site.
 `docs` replaces only the files an earlier run wrote, and refuses to
@@ -160,7 +166,9 @@ repos:
 ```
 
 The hook runs the `asbuilt` on the PATH, so install the release `rev`
-names. It runs when a `.rs` file, a `Cargo.toml`, `asbuilt.toml` or
+names; with the release pinned in `asbuilt.toml`, any other one stops
+with the install line instead of reporting drift, and a CI install step
+can read its version from that line. It runs when a `.rs` file, a `Cargo.toml`, `asbuilt.toml` or
 anything under `docs/architecture/` changes; a model kept elsewhere
 (`[output] path`) sets `files:` on the hook to include its directory.
 Run the same command as a CI step on every platform.

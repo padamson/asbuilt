@@ -286,6 +286,54 @@ fn a_config_typo_exits_two_naming_the_file() {
     );
 }
 
+/// The fixture with `asbuilt = "<pin>"` above its first table.
+fn pinned_copy(pin: &str) -> Workspace {
+    let ws = scratch_copy();
+    let config = ws.root().join("asbuilt.toml");
+    let toml = std::fs::read_to_string(&config).unwrap();
+    std::fs::write(&config, format!("asbuilt = \"{pin}\"\n\n{toml}")).unwrap();
+    ws
+}
+
+#[test]
+fn check_under_a_pin_naming_this_release_passes() {
+    let ws = pinned_copy(env!("CARGO_PKG_VERSION"));
+
+    let out = run(&["check", ws.root().to_str().unwrap()]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
+}
+
+/// A release other than this one. The two tests under it fail on the pin
+/// alone: `check_under_a_pin_naming_this_release_passes` is the same
+/// fixture with the same key, passing.
+const OTHER_RELEASE: &str = "0.0.1";
+
+#[test]
+fn check_under_a_pin_naming_another_release_stops_with_exit_two_and_no_diff() {
+    let ws = pinned_copy(OTHER_RELEASE);
+
+    let out = run(&["check", ws.root().to_str().unwrap()]);
+
+    assert_eq!(
+        (out.status.code(), text(&out.stdout)),
+        (Some(2), String::new())
+    );
+}
+
+#[test]
+fn survey_under_a_pin_naming_another_release_writes_nothing() {
+    let ws = pinned_copy(OTHER_RELEASE);
+    std::fs::remove_dir_all(ws.root().join("docs")).unwrap();
+
+    let out = run(&["survey", ws.root().to_str().unwrap()]);
+
+    assert_eq!(
+        (out.status.code(), ws.root().join("docs").exists()),
+        (Some(2), false)
+    );
+}
+
 #[test]
 fn render_rejects_a_misspelled_table_before_running_likec4() {
     let ws = scratch_copy();

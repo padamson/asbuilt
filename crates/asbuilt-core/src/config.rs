@@ -1,13 +1,13 @@
-//! `asbuilt.toml`: the output path, the externals nothing static in the
-//! code can state, and every front-end's own table kept raw for it to
-//! parse.
+//! `asbuilt.toml`: the release it is written for, the output path, the
+//! externals nothing static in the code can state, and every front-end's
+//! own table kept raw for it to parse.
 
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
-use serde::Deserialize;
-use serde::de::DeserializeOwned;
+use serde::de::{DeserializeOwned, Error as _};
+use serde::{Deserialize, Deserializer};
 
 use crate::error::{Error, Result};
 
@@ -16,6 +16,10 @@ pub const DEFAULT_OUTPUT_PATH: &str = "docs/architecture/model.c4";
 
 /// The config file name, looked up at the surveyed root.
 pub const FILE_NAME: &str = "asbuilt.toml";
+
+/// The top-level key that pins the asbuilt release a config is written
+/// for: `asbuilt = "0.3.0"`.
+pub const PIN_KEY: &str = "asbuilt";
 
 /// asbuilt's own top-level tables, as the file writes them.
 const OWN_TABLES: [&str; 4] = ["[output]", "[docs]", "[theme]", "[[externals]]"];
@@ -46,6 +50,12 @@ const OWN_TABLES: [&str; 4] = ["[output]", "[docs]", "[theme]", "[[externals]]"]
 /// ```
 #[derive(Debug, Clone, PartialEq, Deserialize, Default)]
 pub struct Config {
+    /// The asbuilt release this config and its model are written for,
+    /// as `cargo install --version` takes it. [`Config::load_for`] checks
+    /// it against the running release before reading anything else;
+    /// `None` runs under any release.
+    #[serde(default, deserialize_with = "release_pin")]
+    pub asbuilt: Option<String>,
     #[serde(default)]
     pub output: OutputConfig,
     #[serde(default)]
@@ -267,6 +277,8 @@ pub struct ExternalRelation {
     pub technology: Option<String>,
 }
 
+/// Parsing alone: the pin's place and shape are checked by the loaders,
+/// which know the file to name.
 impl FromStr for Config {
     type Err = toml::de::Error;
 
@@ -279,24 +291,62 @@ impl Config {
     /// The config at `root/asbuilt.toml`, or the defaults when there is
     /// no such file.
     pub fn load(root: &Path) -> Result<Self> {
-        let path = root.join(FILE_NAME);
-        if !path.is_file() {
-            return Ok(Self::default());
-        }
-        Self::load_file(&path)
+        Self::locate_and_parse(root, None, None)
     }
 
     /// A config from an explicit path (`--config`); a missing file is an
     /// error here, unlike [`Config::load`].
     pub fn load_file(path: &Path) -> Result<Self> {
+        Self::parse_file(path, None)
+    }
+
+    /// The config a binary at release `running` reads: `config_path`
+    /// when given, else `root/asbuilt.toml`, else the defaults. The pin
+    /// is checked against `running` before the rest of the file is
+    /// deserialized, so a config written for another release fails on
+    /// the version, not on a table or key this release does not know.
+    pub fn load_for(root: &Path, config_path: Option<&Path>, running: &str) -> Result<Self> {
+        Self::locate_and_parse(root, config_path, Some(running))
+    }
+
+    fn locate_and_parse(
+        root: &Path,
+        config_path: Option<&Path>,
+        running: Option<&str>,
+    ) -> Result<Self> {
+        let path = match config_path {
+            Some(path) => path.to_path_buf(),
+            None => {
+                let path = root.join(FILE_NAME);
+                if !path.is_file() {
+                    return Ok(Self::default());
+                }
+                path
+            }
+        };
+        Self::parse_file(&path, running)
+    }
+
+    /// The file at `path`, its pin compared with `running` (when given)
+    /// before the rest is deserialized.
+    fn parse_file(path: &Path, running: Option<&str>) -> Result<Self> {
         let text = std::fs::read_to_string(path).map_err(|source| Error::Io {
             path: path.to_path_buf(),
             source,
         })?;
-        let mut config: Config = text.parse().map_err(|source| Error::Config {
+        let config_error = |source| Error::Config {
             path: path.to_path_buf(),
             source,
-        })?;
+        };
+        // Parsed twice: once for the pin alone, so a config written for
+        // another release fails on the version before any key this one
+        // does not know, then whole from the text, so a schema error
+        // keeps its line and column.
+        let table: toml::Table = toml::from_str(&text).map_err(config_error)?;
+        if let Some(running) = running {
+            check_pin(&table, path, running)?;
+        }
+        let mut config: Config = text.parse().map_err(config_error)?;
         config.path = Some(path.to_path_buf());
         Ok(config)
     }
@@ -329,9 +379,8 @@ impl Config {
             }
             _ => format!("{name} = ..."),
         };
-        let known = OWN_TABLES
-            .iter()
-            .map(|t| t.to_string())
+        let known = std::iter::once(format!("{PIN_KEY} = \"X.Y.Z\""))
+            .chain(OWN_TABLES.iter().map(|t| t.to_string()))
             .chain(frontends.iter().map(|name| format!("[{name}]")))
             .collect::<Vec<_>>()
             .join(", ");
@@ -358,6 +407,62 @@ impl Config {
                 source,
             })
     }
+}
+
+/// The pin against the `running` release. A pin that is not a release
+/// version passes here and fails deserializing, which says where.
+fn check_pin(table: &toml::Table, path: &Path, running: &str) -> Result<()> {
+    match table.get(PIN_KEY).and_then(toml::Value::as_str) {
+        Some(pinned) if is_release_version(pinned) && pinned != running => {
+            Err(Error::PinMismatch {
+                path: path.to_path_buf(),
+                pinned: pinned.to_string(),
+                running: running.to_string(),
+            })
+        }
+        _ => Ok(()),
+    }
+}
+
+/// `asbuilt = "X.Y.Z"`, refused unless it is a release version.
+fn release_pin<'de, D: Deserializer<'de>>(
+    deserializer: D,
+) -> std::result::Result<Option<String>, D::Error> {
+    let pin = String::deserialize(deserializer)?;
+    if !is_release_version(&pin) {
+        return Err(D::Error::custom(format!(
+            "asbuilt = \"{pin}\" is not a release version (\"X.Y.Z\", as `cargo install --version` takes it)"
+        )));
+    }
+    Ok(Some(pin))
+}
+
+/// A release as `cargo install --version` takes it and
+/// `CARGO_PKG_VERSION` reports it: `MAJOR.MINOR.PATCH` with an optional
+/// `-pre` release, as semver writes them. No `+build`: the pin is
+/// compared as written, and build metadata never tells releases apart.
+fn is_release_version(text: &str) -> bool {
+    let (core, pre) = match text.split_once('-') {
+        Some((core, pre)) => (core, Some(pre)),
+        None => (text, None),
+    };
+    let numbers: Vec<&str> = core.split('.').collect();
+    numbers.len() == 3
+        && numbers.iter().all(|n| is_number(n))
+        && pre.is_none_or(|pre| {
+            pre.split('.').all(|id| {
+                !id.is_empty()
+                    && id.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'-')
+                    && (!id.bytes().all(|b| b.is_ascii_digit()) || is_number(id))
+            })
+        })
+}
+
+/// Digits that fit a u64, with no leading zero unless it is `0`.
+fn is_number(text: &str) -> bool {
+    text.bytes().all(|b| b.is_ascii_digit())
+        && text.parse::<u64>().is_ok()
+        && (text == "0" || !text.starts_with('0'))
 }
 
 #[cfg(test)]
@@ -431,7 +536,7 @@ technology = "stdio"
     fn an_unknown_entry_lists_asbuilts_tables_then_the_front_ends() {
         assert_eq!(
             unknown("[rsut]\n").2,
-            "[output], [docs], [theme], [[externals]], [rust]"
+            "asbuilt = \"X.Y.Z\", [output], [docs], [theme], [[externals]], [rust]"
         );
     }
 
@@ -698,6 +803,159 @@ technology = "stdio"
         match Config::load(dir.path()) {
             Err(Error::Config { path: p, .. }) => assert_eq!(p, path),
             other => panic!("expected Config error, got {other:?}"),
+        }
+    }
+
+    /// `text` as the root's `asbuilt.toml`, loaded by a binary at
+    /// `running`, with the file's path.
+    fn load_pinned(text: &str, running: &str) -> (Result<Config>, PathBuf) {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join(FILE_NAME);
+        std::fs::write(&path, text).unwrap();
+        (Config::load_for(dir.path(), None, running), path)
+    }
+
+    #[test]
+    fn a_pin_naming_the_running_release_loads_and_keeps_the_pin() {
+        let (config, _) = load_pinned("asbuilt = \"0.3.0\"\n", "0.3.0");
+        assert_eq!(config.unwrap().asbuilt.as_deref(), Some("0.3.0"));
+    }
+
+    #[test]
+    fn a_pin_naming_another_release_is_a_mismatch_naming_the_file_and_both_releases() {
+        let (config, path) = load_pinned("asbuilt = \"0.3.0\"\n", "0.2.0");
+        assert!(matches!(
+            config,
+            Err(Error::PinMismatch { path: p, pinned, running })
+                if p == path && pinned == "0.3.0" && running == "0.2.0"
+        ));
+    }
+
+    #[test]
+    fn a_pre_release_is_another_release() {
+        let (config, _) = load_pinned("asbuilt = \"0.3.0-rc.1\"\n", "0.3.0");
+        assert!(
+            matches!(config, Err(Error::PinMismatch { .. })),
+            "{config:?}"
+        );
+    }
+
+    #[test]
+    fn load_without_a_running_release_accepts_any_pin() {
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::write(dir.path().join(FILE_NAME), "asbuilt = \"9.9.9\"\n").unwrap();
+        let config = Config::load(dir.path()).unwrap();
+        assert_eq!(config.asbuilt.as_deref(), Some("9.9.9"));
+    }
+
+    #[test]
+    fn a_schema_error_from_a_file_keeps_its_place_in_the_text() {
+        let (config, _) = load_pinned("[output]\npth = \"x\"\n", "0.3.0");
+        match config {
+            Err(Error::Config { source, .. }) => assert!(source.span().is_some(), "{source}"),
+            other => panic!("expected Config error, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn the_pin_is_checked_before_a_key_this_release_does_not_know() {
+        let (config, _) = load_pinned("asbuilt = \"0.9.0\"\n\n[docs]\nnewer = true\n", "0.3.0");
+        assert!(
+            matches!(config, Err(Error::PinMismatch { .. })),
+            "{config:?}"
+        );
+    }
+
+    #[test]
+    fn a_config_without_a_pin_loads_under_any_release() {
+        let (config, _) = load_pinned("[output]\npath = \"m.c4\"\n", "0.3.0");
+        assert_eq!(config.unwrap().asbuilt, None);
+    }
+
+    #[test]
+    fn no_file_at_the_root_loads_the_defaults_for_any_release() {
+        let dir = tempfile::tempdir().unwrap();
+        let config = Config::load_for(dir.path(), None, "0.3.0").unwrap();
+        assert_eq!(config, Config::default());
+    }
+
+    #[test]
+    fn an_explicit_path_is_read_in_place_of_the_roots_file() {
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::write(dir.path().join(FILE_NAME), "asbuilt = \"0.1.0\"\n").unwrap();
+        let other = dir.path().join("other.toml");
+        std::fs::write(&other, "asbuilt = \"0.3.0\"\n").unwrap();
+        let config = Config::load_for(dir.path(), Some(&other), "0.3.0").unwrap();
+        assert_eq!(config.path, Some(other));
+    }
+
+    #[test]
+    fn a_malformed_file_is_still_a_config_error_when_loaded_for_a_release() {
+        let (config, path) = load_pinned("asbuilt = \"0.3.0\"\n[output\n", "0.3.0");
+        assert!(matches!(config, Err(Error::Config { path: p, .. }) if p == path));
+    }
+
+    /// The error from parsing `text`, with where it points.
+    fn pin_error(text: &str) -> Option<std::ops::Range<usize>> {
+        text.parse::<Config>().err().and_then(|e| e.span())
+    }
+
+    #[test]
+    fn a_pin_that_is_not_a_release_version_is_refused_where_it_is_written() {
+        let text = "asbuilt = \"v0.3.0\"\n";
+        assert_eq!(pin_error(text), Some(10..18));
+    }
+
+    #[test]
+    fn a_pin_that_is_not_a_string_is_refused_where_it_is_written() {
+        assert_eq!(pin_error("asbuilt = 3\n"), Some(10..11));
+    }
+
+    #[test]
+    fn a_pin_written_as_a_table_is_refused() {
+        assert!(
+            "[asbuilt]\nversion = \"0.3.0\"\n"
+                .parse::<Config>()
+                .is_err()
+        );
+    }
+
+    #[test]
+    fn an_invalid_pin_from_a_file_is_a_config_error_naming_it() {
+        let (config, path) = load_pinned("asbuilt = \"v0.3.0\"\n", "0.3.0");
+        assert!(matches!(config, Err(Error::Config { path: p, .. }) if p == path));
+    }
+
+    #[test]
+    fn a_release_version_is_semver_as_cargo_install_takes_it() {
+        for good in [
+            "0.3.0",
+            "10.20.30",
+            "1.0.0-rc.1",
+            "1.0.0-alpha-2",
+            "1.0.0-0",
+            "1.0.0-0a.01x",
+        ] {
+            assert!(is_release_version(good), "{good}");
+        }
+        for bad in [
+            "",
+            "v0.3.0",
+            "0.3",
+            "0.3.0.1",
+            "0.3.x",
+            "0..3",
+            "0.3.0-",
+            "0.3.0-rc!",
+            "0.03.0",
+            "01.2.3",
+            "1.0.0-01",
+            "1.0.0-rc..1",
+            "1.0.0+build",
+            "1.0.0-rc.1+b",
+            "99999999999999999999.0.0",
+        ] {
+            assert!(!is_release_version(bad), "{bad}");
         }
     }
 

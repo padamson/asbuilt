@@ -53,13 +53,11 @@ pub enum CliError {
     LikeC4(#[from] LikeC4Error),
 }
 
-/// The config every command reads, with any top-level entry no
-/// front-end claims rejected before the command does anything.
+/// The config every command reads, refused before the command does
+/// anything when it pins another release or has a top-level entry no
+/// front-end claims.
 fn load_config(root: &Path, config_path: Option<&Path>) -> Result<Config, CliError> {
-    let config = match config_path {
-        Some(path) => Config::load_file(path)?,
-        None => Config::load(root)?,
-    };
+    let config = Config::load_for(root, config_path, env!("CARGO_PKG_VERSION"))?;
     config.check_tables(&[RustFrontend.name()])?;
     Ok(config)
 }

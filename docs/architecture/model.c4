@@ -106,9 +106,9 @@ a consumer with `autocrlf` gets a clean check.'
       link ../../crates/asbuilt-core/src/check.rs
     }
     config = component 'config' {
-      description '`asbuilt.toml`: the output path, the externals nothing static in the
-code can state, and every front-end\'s own table kept raw for it to
-parse.'
+      description '`asbuilt.toml`: the release it is written for, the output path, the
+externals nothing static in the code can state, and every front-end\'s
+own table kept raw for it to parse.'
       metadata {
         path 'crates/asbuilt-core/src/config.rs'
       }

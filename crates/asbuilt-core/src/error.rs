@@ -66,11 +66,24 @@ pub enum Error {
     /// `[[externals]]`, or a key such as `title = ...` that belongs under
     /// `[docs]`. It would otherwise be ignored, silently. `entry` is
     /// written as it appears in the file.
-    #[error("{path}: {entry} is not a top-level entry asbuilt reads (tables: {known})")]
+    #[error("{path}: {entry} is not a top-level entry asbuilt reads (those are {known})")]
     UnknownTopLevel {
         path: PathBuf,
         entry: String,
         known: String,
+    },
+
+    /// `asbuilt = "X.Y.Z"` pins a release other than the one running. A
+    /// survey is only meaningful against the release that wrote the
+    /// model, so every command stops here rather than report the other
+    /// release's output as drift.
+    #[error(
+        "{path} pins asbuilt {pinned}, but this is asbuilt {running}: install the pinned release with `cargo install asbuilt --version {pinned} --locked`"
+    )]
+    PinMismatch {
+        path: PathBuf,
+        pinned: String,
+        running: String,
     },
 
     /// No front-end recognized the root.
@@ -101,6 +114,20 @@ mod tests {
         .to_string();
         assert!(msg.contains("node_driver"), "{msg}");
         assert!(msg.contains("playwright_rs.nope"), "{msg}");
+    }
+
+    #[test]
+    fn a_pin_mismatch_gives_the_install_command_for_the_pinned_release() {
+        let msg = Error::PinMismatch {
+            path: "asbuilt.toml".into(),
+            pinned: "0.3.0".into(),
+            running: "0.2.0".into(),
+        }
+        .to_string();
+        assert!(
+            msg.contains("`cargo install asbuilt --version 0.3.0 --locked`"),
+            "{msg}"
+        );
     }
 
     #[test]

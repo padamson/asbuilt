@@ -3,7 +3,7 @@ name: asbuilt
 description: Use when a repo has an `asbuilt.toml` or a `docs/architecture/model.c4`, when `asbuilt check` fails in a pre-commit hook or CI, or when asked to draw, update or explain a code base's architecture with LikeC4. Covers survey, check, externals and theme config, curated views, the documentation tree, and what the model does and does not record.
 license: MIT OR Apache-2.0
 metadata:
-  version: "0.5.13"
+  version: "0.5.14"
 ---
 
 # asbuilt
@@ -28,7 +28,11 @@ saying so.
 ## The three rules
 
 1. **Never edit `model.c4`.** It is generated. Run `asbuilt survey` and
-   commit the result; that is the whole fix for a red `check`.
+   commit the result; that is the whole fix for a red `check`. A
+   command that stops on the pin (exit 2, `pins asbuilt X.Y.Z, but this
+   is asbuilt ...`) needs the pinned release installed, with the
+   `cargo install` line it prints; never move the pin to match whatever
+   is on the PATH.
 2. **Curated views go in a sibling file** (`docs/architecture/views.c4`,
    say) that references generated ids. `asbuilt validate` runs LikeC4's
    parser over the directory and rejects a stale id, which is the gate

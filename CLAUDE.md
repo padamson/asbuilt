@@ -226,11 +226,13 @@ step is not a no-op.
    `version` on the `asbuilt-core` and `asbuilt-rust` entries under
    `[workspace.dependencies]` in the same file (crates.io needs a version
    on a path dep)
-2. Update `CHANGELOG.md`, the README's Status paragraph, and the hook
+2. Update `CHANGELOG.md`, the README's Status paragraph, the hook
    `rev: vX.Y.Z` in the README, `skills/asbuilt/references/cli.md` and
-   `crates/site/snippets/pre_commit.yaml` (bump the skill's
-   `metadata.version` with it); in `crates/site/src/roadmap.rs` delete
-   the done items and move `MILESTONE` and `NEXT_MILESTONE` on
+   `crates/site/snippets/pre_commit.yaml`, and the `asbuilt = "X.Y.Z"`
+   pin examples in the README and `skills/asbuilt/references/config.md`
+   (bump the skill's `metadata.version` with them); in
+   `crates/site/src/roadmap.rs` delete the done items and move
+   `MILESTONE` and `NEXT_MILESTONE` on
 3. `./scripts/check-release-refs.sh X.Y.Z` must pass; the release
    workflow runs it on the tag and stops before building anything if it
    does not

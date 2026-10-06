@@ -101,9 +101,15 @@ const fn later(
 
 pub const ITEMS: &[Item] = &[
     now(
+        "roadmap-now-pin",
+        "A pinned release",
+        "asbuilt = \"X.Y.Z\" in asbuilt.toml, and any other release stops with the install line instead of showing its output as drift.",
+        Status::Done,
+    ),
+    now(
         "roadmap-now-ci",
         "Drop-in CI",
-        "A GitHub Action, cargo-binstall metadata, and aarch64 Linux and musl builds.",
+        "A GitHub Action that installs the release asbuilt.toml pins and notes a newer one, cargo-binstall metadata, and aarch64 Linux and musl builds.",
         Status::Planned,
     ),
     now(

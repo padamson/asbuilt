@@ -118,7 +118,8 @@ directory above the tree from every page.
   on stderr), `docs` refused because the committed model is stale, or
   `validate` found the model directory invalid (LikeC4's diagnostics on
   stderr).
-- `2`: anything else: no model yet, no `Cargo.toml` at the root, a
+- `2`: anything else: `asbuilt.toml` pinning another release (checked
+  before anything runs), no model yet, no `Cargo.toml` at the root, a
   config typo, an externals `from` or a `[theme]` key naming nothing, a
   bin named like a module, `npx` or `dot` missing, `docs` refusing tree
   files it did not write. The message names the file, id or directory.
@@ -136,9 +137,12 @@ repos:
 
 The hook is defined in asbuilt's `.pre-commit-hooks.yaml` and runs the
 `asbuilt` on the PATH (`language: system`), so install the release `rev`
-names; a stale model reported right after an upgrade is the binary and
-the committed model disagreeing about the new release's output, fixed by
-`asbuilt survey`. It runs when a `.rs` file, a `Cargo.toml`,
+names. Pin that release in `asbuilt.toml` (`asbuilt = "X.Y.Z"`) and a
+contributor on any other one gets the install line instead of a diff;
+read the pin from there in the CI install step too, so one edit moves
+both. Without a pin, a stale model reported right after an upgrade is
+the binary and the committed model disagreeing about the new release's
+output, fixed by `asbuilt survey`. It runs when a `.rs` file, a `Cargo.toml`,
 `asbuilt.toml` or anything under `docs/architecture/` changes; a model
 kept elsewhere (`[output] path`) overrides `files:` on the hook:
 

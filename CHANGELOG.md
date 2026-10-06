@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- A release pin: `asbuilt = "X.Y.Z"` at the top of `asbuilt.toml`. Every command run by another release exits 2 before it surveys, printing the `cargo install` line for the pinned one, so a contributor with an older or newer binary no longer sees its output reported as drift. The match is exact, since a patch release can change survey output; without the key, any release runs. A 0.2 binary reports the key as an unknown top-level entry: install the pinned release
+- `asbuilt_core::Config::load_for`, which checks the pin against the running release, and the `PinMismatch` error
+
 ## [0.2.0] - 2026-10-04
 
 ### Added

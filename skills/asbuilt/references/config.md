@@ -7,6 +7,14 @@ top-level entry asbuilt does not read (`[rsut]`, `[[external]]` for
 `[[externals]]`, or a key such as `title` outside `[docs]`).
 
 ```toml
+# The release this config and its model are written for. Every command
+# run by another release stops before reading the rest of the file, naming
+# both releases and the `cargo install asbuilt --version X.Y.Z --locked`
+# line; absent, any release runs. Exact: a patch can change survey output.
+# A top-level key, so above the first table: written below one, TOML puts
+# it in that table, which rejects it.
+asbuilt = "0.3.0"
+
 [output]
 # Where `survey` writes and `check` reads, relative to the root.
 path = "docs/architecture/model.c4"

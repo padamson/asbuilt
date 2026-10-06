@@ -6,7 +6,8 @@
 #       - id: asbuilt-check
 #
 # `language: system` runs the `asbuilt` on the PATH, so install the
-# release the `rev` names. `files` is what the model reads (Rust sources,
+# release the `rev` names; `asbuilt = "X.Y.Z"` in asbuilt.toml makes any
+# other release stop before it surveys. `files` is what the model reads (Rust sources,
 # every manifest, the config) and the default model directory with its
 # curated views; a model kept elsewhere (`[output] path`) overrides
 # `files` on the hook. This repo's own hook in .pre-commit-config.yaml

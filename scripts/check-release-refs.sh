@@ -12,7 +12,8 @@
 # What it checks, each a place a release has to touch:
 #   - workspace.package.version, and the version on the asbuilt-core and
 #     asbuilt-rust entries under [workspace.dependencies];
-#   - every `rev: vX.Y.Z` a consumer copies to reference the hook;
+#   - every `rev: vX.Y.Z` a consumer copies to reference the hook, and
+#     every `asbuilt = "X.Y.Z"` pin a consumer copies into asbuilt.toml;
 #   - a `## [X.Y.Z]` section in CHANGELOG.md (the release notes);
 #   - the README's Status paragraph, which opens with the version;
 #   - the site roadmap's MILESTONE, which must already name the next one.
@@ -48,6 +49,16 @@ for file in README.md skills/asbuilt/references/cli.md crates/site/snippets/pre_
     [ "$rev" = "$version" ] || fail "$file:${line%%:*}: rev: v$rev"
   done < <(grep -n -E '^[[:space:]]*rev: *v[0-9]' "$file" || true)
   [ "$found" = 1 ] || fail "$file: no hook rev: line"
+done
+
+for file in README.md skills/asbuilt/references/config.md; do
+  found=0
+  while IFS= read -r line; do
+    found=1
+    pin=$(echo "${line#*:}" | sed -E 's/^[[:space:]]*asbuilt *= *"([^"]*)".*/\1/')
+    [ "$pin" = "$version" ] || fail "$file:${line%%:*}: asbuilt = \"$pin\""
+  done < <(grep -n -E '^[[:space:]]*asbuilt *= *"' "$file" || true)
+  [ "$found" = 1 ] || fail "$file: no asbuilt = pin line"
 done
 
 grep -q -F "## [$version]" CHANGELOG.md || fail "CHANGELOG.md: no ## [$version] section"
