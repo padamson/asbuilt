@@ -293,9 +293,25 @@
       popover.hidden = true;
       if (refocus) frame.focus();
     }
+    // A link only for a web or file URL. asbuilt docs writes relative
+    // paths in the edge data, but a host that copies this script may feed
+    // it others; the browser's URL parser reads the scheme however it is
+    // spelled, so a `javascript:` or `data:` link shows as text. The link
+    // gets the resolved URL: the value checked is the value written.
+    var LINKABLE = ["http:", "https:", "file:"];
+    function linkable(href) {
+      if (!href) return null;
+      try {
+        var url = new URL(href, document.baseURI);
+        return LINKABLE.indexOf(url.protocol) >= 0 ? url.href : null;
+      } catch (e) {
+        return null;
+      }
+    }
     function endpoint(text, href) {
-      var el = document.createElement(href ? "a" : "span");
-      if (href) el.href = href;
+      var url = linkable(href);
+      var el = document.createElement(url ? "a" : "span");
+      if (url) el.href = url;
       el.textContent = text;
       return el;
     }
