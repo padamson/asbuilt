@@ -155,8 +155,9 @@
 <title>commands&#45;&gt;docs</title>
 <path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M2625.2,-1384.19C2332.39,-1260.18 1749.44,-1013.28 1453.4,-887.9"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1454.39,-885.47 1446.46,-884.96 1452.34,-890.3 1454.39,-885.47"/>
-<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2237.83,-1128.5 2237.83,-1149.5 2521.83,-1149.5 2521.83,-1128.5 2237.83,-1128.5"/>
-<text text-anchor="start" x="2240.83" y="-1134.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">DocsOptions, GENERATOR_META, generate</text>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2237.83,-1121 2237.83,-1157 2520.83,-1157 2520.83,-1121 2237.83,-1121"/>
+<text text-anchor="start" x="2241.33" y="-1142.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">DocsOptions, GENERATOR_META_PREFIX,</text>
+<text text-anchor="start" x="2241.33" y="-1127.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">generate</text>
 </g>
 <!-- commands&#45;&gt;check -->
 <g id="edge4" class="edge">
