@@ -228,8 +228,10 @@ step is not a no-op.
    on a path dep)
 2. Update `CHANGELOG.md`, the README's Status paragraph, the hook
    `rev: vX.Y.Z` in the README, `skills/asbuilt/references/cli.md` and
-   `crates/site/snippets/pre_commit.yaml`, and the `asbuilt = "X.Y.Z"`
-   pin examples in the README and `skills/asbuilt/references/config.md`
+   `crates/site/snippets/pre_commit.yaml`, the action's `uses:
+   padamson/asbuilt@vX.Y.Z` in the README and that `cli.md`, and the
+   `asbuilt = "X.Y.Z"` pin examples in the README and
+   `skills/asbuilt/references/config.md`
    (bump the skill's `metadata.version` with them); in
    `crates/site/src/roadmap.rs` delete the done items and move
    `MILESTONE` and `NEXT_MILESTONE` on

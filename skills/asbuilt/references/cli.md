@@ -128,7 +128,7 @@ directory above the tree from every page.
   bin named like a module, `npx` or `dot` missing, `docs` refusing tree
   files it did not write. The message names the file, id or directory.
 
-## The pre-commit hook and CI step
+## The pre-commit hook and the CI action
 
 ```yaml
 # .pre-commit-config.yaml (pre-commit or prek)
@@ -143,8 +143,7 @@ The hook is defined in asbuilt's `.pre-commit-hooks.yaml` and runs the
 `asbuilt` on the PATH (`language: system`), so install the release `rev`
 names. Pin that release in `asbuilt.toml` (`asbuilt = "X.Y.Z"`) and a
 contributor on any other one gets the install line instead of a diff;
-read the pin from there in the CI install step too, so one edit moves
-both. Without a pin, a stale model reported right after an upgrade is
+the CI action reads the same line, so one edit moves both. Without a pin, a stale model reported right after an upgrade is
 the binary and the committed model disagreeing about the new release's
 output, fixed by `asbuilt survey`. It runs when a `.rs` file, a `Cargo.toml`,
 `asbuilt.toml` or anything under `docs/architecture/` changes; a model
@@ -155,9 +154,25 @@ kept elsewhere (`[output] path`) overrides `files:` on the hook:
         files: (\.rs$|Cargo\.toml$|asbuilt\.toml$|^arch/)
 ```
 
-In CI, `asbuilt check` after the test step on every platform proves the
-survey is byte-identical across them; a Linux-only step can add
-`asbuilt validate` where Node is available.
+In CI, the action installs the pinned release and runs `asbuilt check`:
+
+```yaml
+- uses: padamson/asbuilt@v0.3.0
+  # with:
+  #   version: "X.Y.Z"            # instead of the pin in asbuilt.toml
+  #   working-directory: path     # where asbuilt.toml is and the command runs
+  #   command: validate           # another subcommand; "" installs only
+```
+
+It installs the release archive for the runner only after `gh
+attestation verify` confirms asbuilt's release workflow built it from
+that release's tag (on Linux, the static musl build where the release
+has one); with no archive for the platform it runs `cargo install`,
+saying so, and checks no attestation. A newer release on
+crates.io is a notice, never a failure. Run it on every platform the
+code builds on, which proves the survey byte-identical across them. It
+runs one command per step, so `validate` (needs Node) is a second step
+with `command: validate`, not a replacement for `check`.
 
 ## Installing
 

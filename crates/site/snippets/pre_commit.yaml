@@ -5,7 +5,6 @@ repos:
     hooks:
       - id: asbuilt-check
 
-# .github/workflows/test.yml, after the tests, on every platform
+# .github/workflows/test.yml, on every platform
 steps:
-  - name: Run asbuilt check
-    run: asbuilt check
+  - uses: padamson/asbuilt@v0.3.0

@@ -133,6 +133,7 @@ runs:
         gh attestation verify "$archive" --repo padamson/asbuilt \
           --signer-workflow padamson/asbuilt/.github/workflows/release.yml \
           --source-ref "refs/tags/v$VERSION"
+        echo "Verified $archive: built by asbuilt's release workflow at refs/tags/v$VERSION."
         mkdir unpacked
         case "$archive" in
           *.zip) (cd unpacked && 7z x "../$archive" > /dev/null) ;;

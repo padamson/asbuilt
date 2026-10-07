@@ -171,11 +171,25 @@ repos:
 
 The hook runs the `asbuilt` on the PATH, so install the release `rev`
 names; with the release pinned in `asbuilt.toml`, any other one stops
-with the install line instead of reporting drift, and a CI install step
-can read its version from that line. It runs when a `.rs` file, a `Cargo.toml`, `asbuilt.toml` or
-anything under `docs/architecture/` changes; a model kept elsewhere
-(`[output] path`) sets `files:` on the hook to include its directory.
-Run the same command as a CI step on every platform.
+with the install line instead of reporting drift. It runs when a `.rs`
+file, a `Cargo.toml`, `asbuilt.toml` or anything under
+`docs/architecture/` changes; a model kept elsewhere (`[output] path`)
+sets `files:` on the hook to include its directory.
+
+In CI, one step:
+
+```yaml
+- uses: padamson/asbuilt@v0.3.0
+```
+
+The action reads the release from the pin in `asbuilt.toml` (or its
+`version` input), installs that release's archive only once `gh
+attestation verify` says asbuilt's release workflow built it from that
+tag (a release with no archive for the runner is built with `cargo
+install` instead, and the run says so), and runs `asbuilt check`
+(`command:` runs another subcommand, or none). A newer release is a notice in the run, never a failure. Run it
+on every platform the code builds on: the survey is byte-identical
+across them.
 
 ## Brand
 

@@ -13,6 +13,7 @@
 #   - workspace.package.version, and the version on the asbuilt-core and
 #     asbuilt-rust entries under [workspace.dependencies];
 #   - every `rev: vX.Y.Z` a consumer copies to reference the hook, and
+#     every `uses: padamson/asbuilt@vX.Y.Z` that references the action, and
 #     every `asbuilt = "X.Y.Z"` pin a consumer copies into asbuilt.toml;
 #   - a `## [X.Y.Z]` section in CHANGELOG.md (the release notes);
 #   - the README's Status paragraph, which opens with the version;
@@ -41,25 +42,28 @@ for crate in asbuilt-core asbuilt-rust; do
     fail "Cargo.toml: [workspace.dependencies] $crate is \"$dep\""
 done
 
-for file in README.md skills/asbuilt/references/cli.md crates/site/snippets/pre_commit.yaml; do
-  found=0
-  while IFS= read -r line; do
-    found=1
-    rev=$(echo "${line#*:}" | sed -E 's/.*rev: *v?([^ ]*).*/\1/')
-    [ "$rev" = "$version" ] || fail "$file:${line%%:*}: rev: v$rev"
-  done < <(grep -n -E '^[[:space:]]*rev: *v[0-9]' "$file" || true)
-  [ "$found" = 1 ] || fail "$file: no hook rev: line"
-done
+# Every line in each file that matches `pattern` names the release, as
+# the sed expression `extract` reads it from the line; each file has one.
+check_refs() {
+  local label="$1" pattern="$2" extract="$3" file line ref found
+  shift 3
+  for file in "$@"; do
+    found=0
+    while IFS= read -r line; do
+      found=1
+      ref=$(echo "${line#*:}" | sed -E "$extract")
+      [ "$ref" = "$version" ] || fail "$file:${line%%:*}: $label $ref"
+    done < <(grep -n -E "$pattern" "$file" || true)
+    [ "$found" = 1 ] || fail "$file: no $label line"
+  done
+}
 
-for file in README.md skills/asbuilt/references/config.md; do
-  found=0
-  while IFS= read -r line; do
-    found=1
-    pin=$(echo "${line#*:}" | sed -E 's/^[[:space:]]*asbuilt *= *"([^"]*)".*/\1/')
-    [ "$pin" = "$version" ] || fail "$file:${line%%:*}: asbuilt = \"$pin\""
-  done < <(grep -n -E '^[[:space:]]*asbuilt *= *"' "$file" || true)
-  [ "$found" = 1 ] || fail "$file: no asbuilt = pin line"
-done
+check_refs "the hook's rev:" '^[[:space:]]*rev: *v[0-9]' 's/.*rev: *v?([^ ]*).*/\1/' \
+  README.md skills/asbuilt/references/cli.md crates/site/snippets/pre_commit.yaml
+check_refs "the action's uses:" '^[[:space:]]*(- )?uses: *padamson/asbuilt@v[0-9]' 's/.*padamson\/asbuilt@v([0-9][0-9A-Za-z.-]*).*/\1/' \
+  README.md skills/asbuilt/references/cli.md crates/site/snippets/pre_commit.yaml
+check_refs "the asbuilt.toml pin" '^[[:space:]]*asbuilt *= *"' 's/^[[:space:]]*asbuilt *= *"([^"]*)".*/\1/' \
+  README.md skills/asbuilt/references/config.md
 
 grep -q -F "## [$version]" CHANGELOG.md || fail "CHANGELOG.md: no ## [$version] section"
 
