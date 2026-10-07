@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 - A release pin: `asbuilt = "X.Y.Z"` at the top of `asbuilt.toml`. Every command run by another release exits 2 before it surveys, printing the `cargo install` line for the pinned one, so a contributor with an older or newer binary no longer sees its output reported as drift. The match is exact, since a patch release can change survey output; without the key, any release runs. A 0.2 binary reports the key as an unknown top-level entry: install the pinned release
 - `asbuilt_core::Config::load_for`, which checks the pin against the running release, and the `PinMismatch` error
+- `asbuilt docs` names the release that wrote the tree: every page ends with a `<footer>` reading "Built with asbuilt v0.3.0" (with the build commit when it is not a tagged release), linking to the asbuilt site, and the generator meta carries the same version (`content="asbuilt docs 0.3.0"`). `DocsOptions::asbuilt_version` sets it; `GENERATOR_META` is now `GENERATOR_META_PREFIX`, which a tree from any release carries, so `docs` still replaces a 0.2 tree without `--force`. The header's and footer's rules frame the page in a new `--frame` token (the accent at 30%, 2px), set apart from the 1px `--rule` lines inside it; a host stylesheet can restate it
 
 ## [0.2.0] - 2026-10-04
 

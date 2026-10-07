@@ -35,8 +35,12 @@ scheme control, unless `--no-scheme-toggle`), `viewer.css` and
 `containers/<id>.html`,
 and `views/<view>.svg` copied from the render. The header draws the
 asbuilt mark before the tree's title, in the page's `--accent`. Every page carries
-`<meta name="generator" content="asbuilt docs">`, and every link is
-relative, so the tree serves from any directory. This layout, the
+`<meta name="generator" content="asbuilt docs X.Y.Z">` and a `<footer>`
+naming the same release ("Built with asbuilt vX.Y.Z", with the build
+commit when it is not a tagged release); `docs` recognizes a tree as its
+own by the meta's `asbuilt docs` prefix, so a tree any release wrote is
+replaced without `--force`. Every link but the footer's is relative, so
+the tree serves from any directory. This layout, the
 classes and the variables below are stable within 0.x; a change to any
 of them is called out in the changelog.
 

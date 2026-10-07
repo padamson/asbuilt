@@ -660,12 +660,31 @@ fn docs_force_replaces_the_tree_s_own_file_names_and_keeps_the_rest() {
 
     assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
     let index = std::fs::read_to_string(ws.root().join("out/index.html")).unwrap();
-    assert!(index.contains("content=\"asbuilt docs\""), "{index}");
+    assert!(
+        index.contains(&format!(
+            "content=\"asbuilt docs {}",
+            env!("CARGO_PKG_VERSION")
+        )),
+        "{index}"
+    );
     assert_eq!(
         std::fs::read_to_string(ws.root().join("out/404.html")).unwrap(),
         "not found"
     );
     assert!(!ws.root().join("out/containers/old.html").exists());
+}
+
+#[test]
+fn docs_replaces_a_tree_whose_generator_meta_names_no_release() {
+    let ws = scratch_copy();
+    ws.write(
+        "out/index.html",
+        "<meta name=\"generator\" content=\"asbuilt docs\">",
+    );
+
+    let out = docs_run(&ws, &["-o", "out"]);
+
+    assert_eq!(out.status.code(), Some(0), "{}", text(&out.stderr));
 }
 
 #[test]
@@ -938,5 +957,5 @@ fn docs_title_and_source_url_come_from_flags_over_the_config_over_the_root_name(
         .into_owned();
     assert!(index.contains(&format!("<h1>{root_name}</h1>")), "{index}");
     let app = std::fs::read_to_string(ws.root().join("bare/containers/app.html")).unwrap();
-    assert!(!app.contains("href=\"https://"), "{app}");
+    assert!(!app.contains("app/src/server.rs\""), "{app}");
 }

@@ -33,8 +33,9 @@ home_url = "../"
 # starts with it: "playwright-rust · Architecture · xtask".
 home_title = "playwright-rust"
 # A stylesheet linked last on every page, resolved like home_url. It can
-# restate the page tokens (--bg, --fg, --muted, --accent, --rule, --code,
-# --figure-bg) and the diagram variables (--c4-*) in the host's palette.
+# restate the page tokens (--bg, --fg, --muted, --accent, --rule, --frame
+# for the header and footer rules, --code, --figure-bg) and the diagram
+# variables (--c4-*) in the host's palette.
 stylesheet = "../architecture.css"
 # The scheme pages show before a visitor chooses: "system" (the default),
 # "light" or "dark".

@@ -59,12 +59,19 @@ pub struct DocsOptions {
     /// at a readable scale, zoom and pan, and Fit, 1:1, Wide and
     /// Fullscreen controls.
     pub viewer: bool,
+    /// The asbuilt release writing the tree, named in every page's
+    /// generator meta and footer; neither names one when absent.
+    pub asbuilt_version: Option<String>,
 }
 
-/// The `<meta name="generator">` every page carries. `asbuilt docs` looks
-/// for it before clearing an output directory: a tree that has it was
-/// written by a previous run and is safe to replace.
-pub const GENERATOR_META: &str = "<meta name=\"generator\" content=\"asbuilt docs\">";
+/// How every page's `<meta name="generator">` starts, whatever release
+/// wrote it (`content="asbuilt docs 0.3.0"`). `asbuilt docs` looks for it
+/// before clearing an output directory: a tree that has it was written by
+/// a previous run and is safe to replace.
+pub const GENERATOR_META_PREFIX: &str = "<meta name=\"generator\" content=\"asbuilt docs";
+
+/// Where every page's footer links: the asbuilt landing site.
+const ASBUILT_URL: &str = "https://padamson.github.io/asbuilt/";
 
 /// The generated tree.
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
@@ -343,6 +350,20 @@ impl Ctx<'_> {
             let _ = writeln!(script, "<script src=\"{prefix}viewer.js\" defer></script>");
         }
         let control = if toggle { SCHEME_CONTROL } else { "" };
+        let version = self
+            .options
+            .asbuilt_version
+            .as_deref()
+            .map(escape)
+            .unwrap_or_default();
+        let (generator, built_with) = if version.is_empty() {
+            (format!("{GENERATOR_META_PREFIX}\">"), String::new())
+        } else {
+            (
+                format!("{GENERATOR_META_PREFIX} {version}\">"),
+                format!(" v{version}"),
+            )
+        };
         let curated = if self.curated.is_empty() {
             String::new()
         } else if here == Here::Views {
@@ -353,7 +374,7 @@ impl Ctx<'_> {
             )
         };
         format!(
-            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{GENERATOR_META}\n<title>{title}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{viewer_css}{script}{host_css}</head>\n<body>\n<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\">{home}<a class=\"site\" href=\"{prefix}index.html\"{index_current}>{mark}{site}</a></nav>{curated}{control}</div>{containers}</header>\n<main>\n{body}</main>\n</body>\n</html>\n",
+            "<!doctype html>\n<html lang=\"en\"{root_attrs}>\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n{generator}\n<title>{title}</title>\n<link rel=\"stylesheet\" href=\"{prefix}style.css\">\n<link rel=\"stylesheet\" href=\"{prefix}theme.css\">\n{viewer_css}{script}{host_css}</head>\n<body>\n<header><div class=\"bar\"><nav class=\"trail\" aria-label=\"Breadcrumb\">{home}<a class=\"site\" href=\"{prefix}index.html\"{index_current}>{mark}{site}</a></nav>{curated}{control}</div>{containers}</header>\n<main>\n{body}</main>\n<footer>Built with <a href=\"{ASBUILT_URL}\">asbuilt</a>{built_with}</footer>\n</body>\n</html>\n",
             title = self.document_title(page_title),
             site = escape(&self.options.title),
             mark = mark_svg(),
@@ -1765,13 +1786,60 @@ mod tests {
         );
     }
 
+    fn html_pages(site: &Site) -> impl Iterator<Item = (&String, &String)> {
+        site.pages
+            .iter()
+            .filter(|(path, _)| path.ends_with(".html"))
+    }
+
+    fn versioned() -> DocsOptions {
+        DocsOptions {
+            asbuilt_version: Some("1.2.3".into()),
+            ..options()
+        }
+    }
+
     #[test]
-    fn every_page_carries_the_generator_meta() {
+    fn every_page_names_the_writing_release_in_its_generator_meta() {
+        let site = generate(&sample(), &versioned());
+        for (path, contents) in html_pages(&site) {
+            assert!(
+                contents.contains("<meta name=\"generator\" content=\"asbuilt docs 1.2.3\">"),
+                "{path}: {contents}"
+            );
+        }
+    }
+
+    #[test]
+    fn without_a_release_the_generator_meta_names_none() {
         let site = generate(&sample(), &options());
-        for (path, contents) in &site.pages {
-            if path.ends_with(".html") {
-                assert!(contents.contains(GENERATOR_META), "{path}: {contents}");
-            }
+        for (path, contents) in html_pages(&site) {
+            assert!(
+                contents.contains("<meta name=\"generator\" content=\"asbuilt docs\">"),
+                "{path}: {contents}"
+            );
+        }
+    }
+
+    #[test]
+    fn every_page_s_footer_names_the_writing_release() {
+        let site = generate(&sample(), &versioned());
+        for (path, contents) in html_pages(&site) {
+            assert!(
+                contents.contains("<footer>Built with <a href=\"https://padamson.github.io/asbuilt/\">asbuilt</a> v1.2.3</footer>"),
+                "{path}: {contents}"
+            );
+        }
+    }
+
+    #[test]
+    fn without_a_release_the_footer_names_none() {
+        let site = generate(&sample(), &options());
+        for (path, contents) in html_pages(&site) {
+            assert!(
+                contents.contains("<footer>Built with <a href=\"https://padamson.github.io/asbuilt/\">asbuilt</a></footer>"),
+                "{path}: {contents}"
+            );
         }
     }
 

@@ -8,7 +8,7 @@ use std::path::{Component, Path, PathBuf};
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use asbuilt_core::docs::{DocsOptions, GENERATOR_META, generate};
+use asbuilt_core::docs::{DocsOptions, GENERATOR_META_PREFIX, generate};
 use asbuilt_core::svg::ViewSource;
 use asbuilt_core::{ColorScheme, Config, EmitOptions, Frontend, Model, Outcome, compare, emit};
 use asbuilt_rust::RustFrontend;
@@ -457,7 +457,7 @@ fn check_output(out: &Path, force: bool, views_are_renders: bool) -> Result<(), 
         return Ok(());
     }
     let ours = std::fs::read_to_string(out.join("index.html"))
-        .is_ok_and(|index| index.contains(GENERATOR_META));
+        .is_ok_and(|index| index.contains(GENERATOR_META_PREFIX));
     if ours {
         Ok(())
     } else {
@@ -572,6 +572,7 @@ pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32
             .unwrap_or_default(),
         scheme_toggle: !no_scheme_toggle && config.docs.scheme_toggle.unwrap_or(true),
         viewer: !no_viewer && config.docs.viewer.unwrap_or(true),
+        asbuilt_version: Some(env!("CRATE_VERSION_WITH_BUILD").to_string()),
     };
     let site = generate(&model, &options);
 
