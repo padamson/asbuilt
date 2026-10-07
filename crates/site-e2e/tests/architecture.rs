@@ -17,7 +17,7 @@ use std::sync::{Arc, Mutex};
 use axum::Router;
 use playwright_rs::expect;
 use playwright_rs::protocol::{
-    Browser, ColorScheme, EmulateMediaOptions, Locator, Page, Playwright,
+    Browser, ColorScheme, EmulateMediaOptions, FulfillOptions, Locator, Page, Playwright,
 };
 use tower_http::services::ServeDir;
 
@@ -904,7 +904,11 @@ fn committed_relations_between(from: &str, to: &str) -> usize {
 /// the page, the popover locator and how many relations the model holds
 /// for that edge.
 async fn open_first_edge(root: &str) -> (Session, Locator, usize) {
-    let session = open_session(ColorScheme::Light).await;
+    click_first_edge(open_session(ColorScheme::Light).await, root).await
+}
+
+/// [`open_first_edge`] in a session the caller has set up (a route, say).
+async fn click_first_edge(session: Session, root: &str) -> (Session, Locator, usize) {
     let page = &session.page;
     page.goto(root, None)
         .await
@@ -993,6 +997,72 @@ async fn site_architecture_escape_closes_the_edge_popover() {
         .await
         .expect("Escape closes the popover");
     session.browser.close().await.expect("close browser");
+}
+
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_a_javascript_endpoint_in_the_edge_data_is_text_not_a_link() {
+    let root = serve_snapshot().await;
+    let session = open_session(ColorScheme::Light).await;
+    // The index as served, with every source link in its edge data made a
+    // `javascript:` URL, as a host feeding the viewer other data might.
+    session
+        .page
+        .route(&root, |route| async move {
+            let served = route.fetch(None).await?.text()?;
+            let body = served.replace(
+                "\"source_href\":\"",
+                "\"source_href\":\"javascript:alert(1)//",
+            );
+            route
+                .fulfill(
+                    FulfillOptions::builder()
+                        .body_string(body)
+                        .content_type("text/html; charset=utf-8")
+                        .build(),
+                )
+                .await
+        })
+        .await
+        .expect("rewrite the index's edge data");
+    let (session, popover, _) = click_first_edge(session, &root).await;
+    expect(popover.clone())
+        .to_be_visible()
+        .await
+        .expect("the popover opens");
+    // Each item opens with its source endpoint: every one rewritten, so
+    // every one text, which also says the rewrite matched.
+    assert_eq!(
+        count(&popover, "li > span:first-child").await,
+        count(&popover, "li").await,
+        "every javascript: source endpoint is text"
+    );
+    session.browser.close().await.expect("close browser");
+}
+
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_a_popover_s_source_endpoints_are_links() {
+    let root = serve_snapshot().await;
+    let (session, popover, _) = open_first_edge(&root).await;
+    expect(popover.clone())
+        .to_be_visible()
+        .await
+        .expect("the popover opens");
+    assert_eq!(
+        count(&popover, "li > a:first-child").await,
+        count(&popover, "li").await,
+        "every source endpoint links to where it is documented"
+    );
+    session.browser.close().await.expect("close browser");
+}
+
+async fn count(scope: &Locator, selector: &str) -> usize {
+    scope
+        .locator(selector)
+        .count()
+        .await
+        .unwrap_or_else(|e| panic!("count {selector}: {e}"))
 }
 
 async fn first_hint(page: &Page) -> String {

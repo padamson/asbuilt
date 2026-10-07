@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `asbuilt docs` names the release that wrote the tree: every page ends with a `<footer>` reading "Built with asbuilt v0.3.0" (with the build commit when it is not a tagged release), linking to the asbuilt site, and the generator meta carries the same version (`content="asbuilt docs 0.3.0"`). `DocsOptions::asbuilt_version` sets it; `GENERATOR_META` is now `GENERATOR_META_PREFIX`, which a tree from any release carries, so `docs` still replaces a 0.2 tree without `--force`. The header's and footer's rules frame the page in a new `--frame` token (the accent at 30%, 2px), set apart from the 1px `--rule` lines inside it; a host stylesheet can restate it
 
 ### Fixed
+- The diagram viewer's relation popover makes an endpoint a link only when the browser resolves it to an `http:`, `https:` or `file:` URL, and links the resolved URL; a `javascript:` or `data:` link shows as text. `asbuilt docs` writes only relative links there, but a host that copies `viewer.js` may feed it other data (CodeQL `js/xss-through-dom`)
 - The Windows release archive holds `asbuilt.exe` at its root, as the tarballs hold `asbuilt`; 0.2.0's nested it under `target/x86_64-pc-windows-msvc/release/`
 
 ## [0.2.0] - 2026-10-04
