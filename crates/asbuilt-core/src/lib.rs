@@ -5,8 +5,9 @@
 //! and paths, and relations between them labeled with the item names
 //! they reference. This crate owns that model, the `asbuilt.toml`
 //! [`Config`] that adds what no code can state (externals, the theme,
-//! the documentation settings), the `.c4` emitter, the drift check, and
-//! the generator of the documentation tree. It never spawns a process.
+//! the documentation settings), the `.c4` emitter and its reader, the
+//! drift check, and the generator of the documentation tree. It never
+//! spawns a process.
 
 #![doc(
     html_logo_url = "https://padamson.github.io/asbuilt/mark.svg",
@@ -21,6 +22,7 @@ pub mod error;
 pub mod externals;
 pub mod frontend;
 pub mod model;
+pub mod read;
 pub mod svg;
 pub mod theme;
 
@@ -33,3 +35,4 @@ pub use emit::{EmitOptions, emit, view_ids};
 pub use error::{Error, Result};
 pub use frontend::{Frontend, survey};
 pub use model::{Deployment, Element, ElementKind, Id, Model, Relation, RelationKind};
+pub use read::{Written, WrittenElement, WrittenRelation, read};

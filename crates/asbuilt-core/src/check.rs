@@ -12,7 +12,7 @@ pub enum Outcome {
     Drift(String),
 }
 
-fn normalize(text: &str) -> String {
+pub(crate) fn normalize(text: &str) -> String {
     text.replace("\r\n", "\n")
 }
 

@@ -167,6 +167,18 @@ consumes.'
       }
       link ../../crates/asbuilt-core/src/model.rs
     }
+    read = component 'read' {
+      description 'A model asbuilt wrote, read back: the elements and relations in the
+`model` block of a `.c4` file, as the file spells them. The inverse of
+[`emit`](crate::emit) for the model block it writes, so the drift
+check can say what changed rather than only which lines did. The
+specification and views are derived from the model block and are not
+read.'
+      metadata {
+        path 'crates/asbuilt-core/src/read.rs'
+      }
+      link ../../crates/asbuilt-core/src/read.rs
+    }
     svg = component 'svg' {
       description 'A rendered view inlined into a page, so the page\'s colors reach it.'
       metadata {
@@ -493,6 +505,8 @@ version switcher needs to know that: every other asset path is relative.'
   asbuilt_core.frontend -[calls]-> asbuilt_core.externals 'apply, externals'
   asbuilt_core.frontend -[constructs]-> asbuilt_core.model 'Model'
   asbuilt_core.model -[constructs]-> asbuilt_core.error 'Error, Result'
+  asbuilt_core.read -[calls]-> asbuilt_core.check 'normalize'
+  asbuilt_core.read -[names]-> asbuilt_core.emit 'HEADER'
   asbuilt_core.svg -[calls]-> asbuilt_core.docs 'escape'
   asbuilt_core.tests -[constructs]-> asbuilt_core.config 'Config'
   asbuilt_core.tests -[names]-> asbuilt_core.error 'Error'
@@ -515,7 +529,8 @@ version switcher needs to know that: every other asset path is relative.'
   asbuilt_rust.tests -[calls]-> asbuilt_core.config 'Config'
   asbuilt_rust.tests -[calls]-> asbuilt_core.emit 'emit'
   asbuilt_rust.tests -[calls]-> asbuilt_core.frontend 'survey'
-  asbuilt_rust.tests -[names]-> asbuilt_core.model 'Element, ElementKind, Model, Relation, RelationKind'
+  asbuilt_rust.tests -[calls]-> asbuilt_core.model 'Element, ElementKind, Model, Relation, RelationKind, sanitize_id'
+  asbuilt_rust.tests -[calls]-> asbuilt_core.read 'read'
   asbuilt_rust.tests -[constructs]-> asbuilt_rust.config 'RustConfig'
   asbuilt_rust.tests -[calls]-> asbuilt_rust.discover 'TECHNOLOGY_BINARY, TECHNOLOGY_EXAMPLES, TECHNOLOGY_LIBRARY, TECHNOLOGY_LIBRARY_AND_BINARY, TECHNOLOGY_PROC_MACRO, TECHNOLOGY_PROC_MACRO_AND_BINARY, TECHNOLOGY_TESTS, TargetKind, discover'
   asbuilt_rust.tests -[names]-> asbuilt_rust.error 'RustFrontendError'

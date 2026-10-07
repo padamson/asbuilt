@@ -7,8 +7,9 @@
 
 use std::path::{Path, PathBuf};
 
-use asbuilt_core::model::{Element, Model, Relation, RelationKind};
+use asbuilt_core::model::{Element, Model, Relation, RelationKind, sanitize_id};
 use asbuilt_core::{Config, EmitOptions, emit};
+use asbuilt_core::{Written, WrittenElement, WrittenRelation};
 use asbuilt_rust::{RustConfig, RustFrontend, analyze};
 
 fn fixture_root(case: &str) -> PathBuf {
@@ -437,4 +438,57 @@ fn a_survey_is_the_same_twice() {
     let (a, _) = survey("workspace_crates");
     let (b, _) = survey("workspace_crates");
     assert_eq!(a, b);
+}
+
+// The drift check reads committed models back (`asbuilt_core::read`). Every
+// case's emitted model reads back as exactly what the survey made: each
+// element and relation, field for field, under the id the file writes.
+#[test]
+fn every_case_s_model_reads_back_as_the_survey_made_it() {
+    let cases = std::fs::read_dir(Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures"))
+        .unwrap()
+        .map(|entry| entry.unwrap().file_name().to_string_lossy().into_owned());
+    for case in cases {
+        let (model, text) = survey(&case);
+        assert_eq!(asbuilt_core::read(&text), Some(written(&model)), "{case}");
+    }
+}
+
+/// What `emit` writes of `model`, as `read` reads it back.
+fn written(model: &Model) -> Written {
+    let mut model = model.clone();
+    model.normalize();
+    Written {
+        elements: model
+            .elements
+            .iter()
+            .map(|e| {
+                (
+                    sanitize_id(&e.id),
+                    WrittenElement {
+                        kind: e.kind.keyword().to_string(),
+                        title: e.title.clone(),
+                        description: e.description.as_ref().map(|d| d.replace('\r', "")),
+                        technology: e.technology.clone(),
+                        path: e.path.clone(),
+                        tags: e.tags.clone(),
+                    },
+                )
+            })
+            .collect(),
+        relations: model
+            .relations
+            .iter()
+            .map(|r| {
+                (
+                    (sanitize_id(&r.source), sanitize_id(&r.target)),
+                    WrittenRelation {
+                        kind: r.kind.keyword().to_string(),
+                        label: (!r.items.is_empty()).then(|| r.items.join(", ")),
+                        technology: r.technology.clone(),
+                    },
+                )
+            })
+            .collect(),
+    }
 }
