@@ -186,8 +186,10 @@ The action reads the release from the pin in `asbuilt.toml` (or its
 `version` input), installs that release's archive only once `gh
 attestation verify` says asbuilt's release workflow built it from that
 tag (a release with no archive for the runner is built with `cargo
-install` instead, and the run says so), and runs `asbuilt check`
-(`command:` runs another subcommand, or none). A newer release is a notice in the run, never a failure. Run it
+install` instead, and the run says so), and runs `asbuilt check`.
+`command:` runs any other subcommand instead (`docs -o site` writes the
+documentation tree), installing Graphviz for `render` and `docs` when
+the runner lacks it; `command: ''` installs only. A newer release is a notice in the run, never a failure. Run it
 on every platform the code builds on: the survey is byte-identical
 across them.
 

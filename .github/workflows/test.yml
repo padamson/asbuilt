@@ -258,6 +258,42 @@ jobs:
         shell: bash
         run: test "$(asbuilt --version)" = "asbuilt 0.2.0"
 
+      # Graphviz installed by the action (apt, brew, choco), then the tree
+      # rendered with it.
+      - name: Write the fixture's documentation tree
+        uses: ./
+        with:
+          version: "0.2.0"
+          working-directory: crates/asbuilt/tests/fixtures/consumer
+          command: docs -o site
+
+      - name: The tree has its index and a rendered view
+        shell: bash
+        run: |
+          site=crates/asbuilt/tests/fixtures/consumer/site
+          test -f "$site/index.html"
+          ls "$site"/views/*.svg
+
+      # Which commands get Graphviz, decided by the script the action runs.
+      - name: Graphviz is installed for render and docs only
+        if: runner.os == 'Linux' && runner.arch == 'X64'
+        shell: bash
+        run: |
+          expect() {
+            got=$(action/needs-graphviz.sh "$1")
+            [ "$got" = "$2" ] || { echo "\"$1\": got \"$got\", expected \"$2\""; exit 1; }
+          }
+          expect "check" ""
+          expect "" ""
+          expect "validate" ""
+          expect "validate render" ""
+          expect "render" "render"
+          expect "docs -o site" "docs"
+          expect "docs -o docs" "docs"
+          expect "docs --no-render -o docs" ""
+          expect "--config x.toml docs" "docs"
+          expect "--config=x.toml render" "render"
+
       # 0.2.0 does not read the pin itself, so these install only.
       - name: Write a pinned config and one without a pin
         shell: bash

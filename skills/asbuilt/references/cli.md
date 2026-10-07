@@ -172,7 +172,10 @@ saying so, and checks no attestation. A newer release on
 crates.io is a notice, never a failure. Run it on every platform the
 code builds on, which proves the survey byte-identical across them. It
 runs one command per step, so `validate` (needs Node) is a second step
-with `command: validate`, not a replacement for `check`.
+with `command: validate`, not a replacement for `check`. For `render`,
+and `docs` without `--no-render`, it installs Graphviz when `dot` is
+missing: apt on Linux (where the runner has it), brew on macOS, choco on
+Windows.
 
 ## Installing
 

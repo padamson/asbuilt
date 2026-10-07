@@ -1,7 +1,8 @@
 name: asbuilt
 description: >
   Install the asbuilt release a repo's asbuilt.toml pins, verified against
-  its build provenance, and run `asbuilt check`.
+  its build provenance, and run an asbuilt command: `check` by default,
+  or `docs`, `validate`, `render`.
 author: padamson
 branding:
   icon: layers
@@ -174,6 +175,42 @@ runs:
           echo "::notice title=asbuilt::asbuilt $latest is available; $SOURCE pins $VERSION. Moving the pin means re-running asbuilt survey."
         fi
 
+    # `render`, and `docs` unless --no-render, lay the views out with
+    # Graphviz `dot`, which the hosted runners lack. Node, for `npx
+    # likec4`, they have.
+    - name: Install Graphviz
+      shell: bash
+      env:
+        COMMAND: ${{ inputs.command }}
+        HOMEBREW_NO_AUTO_UPDATE: "1"
+        HOMEBREW_NO_INSTALL_CLEANUP: "1"
+      run: |
+        needs=$(bash "$GITHUB_ACTION_PATH/action/needs-graphviz.sh" "$COMMAND")
+        [ -n "$needs" ] || exit 0
+        command -v dot > /dev/null && exit 0
+        case "$RUNNER_OS" in
+          Linux)
+            if ! command -v apt-get > /dev/null; then
+              echo "::error title=asbuilt::asbuilt $needs needs Graphviz dot, which this action installs with apt-get, and this runner has none: install Graphviz before this step."
+              exit 1
+            fi
+            sudo=""
+            [ "$(id -u)" = 0 ] || sudo=sudo
+            $sudo apt-get update -qq
+            $sudo apt-get install -y -qq graphviz
+            ;;
+          macOS) brew install graphviz ;;
+          Windows)
+            choco install graphviz -y --no-progress
+            bin="C:\Program Files\Graphviz\bin"
+            echo "$bin" >> "$GITHUB_PATH"
+            PATH="$(cygpath -u "$bin"):$PATH"
+            # Registers the layout plugins, which the installer may not.
+            dot -c
+            ;;
+        esac
+        dot -V
+
     - name: asbuilt ${{ inputs.command }}
       shell: bash
       working-directory: ${{ inputs.working-directory }}
@@ -182,7 +219,10 @@ runs:
       run: |
         asbuilt --version
         if [ -n "$COMMAND" ]; then
-          # Word splitting is the point: the input is a subcommand and its arguments.
+          # Word splitting is the point: the input is a subcommand and its
+          # arguments. Glob expansion is not: `-o out/*` reaches asbuilt as
+          # written.
+          set -f
           # shellcheck disable=SC2086
           asbuilt $COMMAND
         fi
