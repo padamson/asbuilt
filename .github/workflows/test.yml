@@ -224,6 +224,73 @@ jobs:
           ./target/${{ matrix.target }}/release/asbuilt --version
           ./target/${{ matrix.target }}/release/asbuilt check
 
+  # The published action (action.yml), run from this checkout against a
+  # release that exists. 0.2.0 exercises every install path: an attested
+  # download (the glibc archive on x86_64 Linux, the zip with its nested
+  # binary on Windows) and the cargo install fallback on aarch64 Linux,
+  # which it shipped no archive for. Then the pin read from asbuilt.toml,
+  # and the error when there is neither a pin nor an input.
+  action:
+    name: Action on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      # For the cargo install fallback, rather than whatever the image has.
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # stable
+        with:
+          toolchain: stable
+
+      - name: Check the consumer fixture with a released asbuilt
+        id: released
+        uses: ./
+        with:
+          version: "0.2.0"
+          working-directory: crates/asbuilt/tests/fixtures/consumer
+
+      - name: The release asked for is the one on the PATH
+        shell: bash
+        run: test "$(asbuilt --version)" = "asbuilt 0.2.0"
+
+      # 0.2.0 does not read the pin itself, so these install only.
+      - name: Write a pinned config and one without a pin
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/pinned" "$RUNNER_TEMP/unpinned"
+          printf 'asbuilt = "0.2.0"\n\n[output]\npath = "m.c4"\n' > "$RUNNER_TEMP/pinned/asbuilt.toml"
+          printf '[output]\npath = "m.c4"\n' > "$RUNNER_TEMP/unpinned/asbuilt.toml"
+
+      - name: The pin chooses the release
+        id: pinned
+        uses: ./
+        with:
+          working-directory: ${{ runner.temp }}/pinned
+          command: ""
+
+      - name: It installed the pinned release
+        shell: bash
+        run: test "${{ steps.pinned.outputs.version }}" = 0.2.0
+
+      - name: No pin and no input
+        id: unpinned
+        continue-on-error: true
+        uses: ./
+        with:
+          working-directory: ${{ runner.temp }}/unpinned
+          command: ""
+
+      - name: It failed choosing a release, before installing anything
+        shell: bash
+        run: |
+          test "${{ steps.unpinned.outcome }}" = failure
+          test -z "${{ steps.unpinned.outputs.version }}"
+
   test:
     name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}

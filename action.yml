@@ -1,0 +1,187 @@
+name: asbuilt
+description: >
+  Install the asbuilt release a repo's asbuilt.toml pins, verified against
+  its build provenance, and run `asbuilt check`.
+author: padamson
+branding:
+  icon: layers
+  color: orange
+
+# A consumer's whole CI step:
+#
+#   - uses: padamson/asbuilt@vX.Y.Z
+#
+# The version comes from the `asbuilt = "X.Y.Z"` pin at the top of
+# asbuilt.toml, so the one line a release bump edits moves CI, the
+# pre-commit hook's binary and every contributor together. The action's
+# own ref only selects this file.
+
+inputs:
+  version:
+    description: The asbuilt release to install; the pin in asbuilt.toml when empty.
+    required: false
+    default: ""
+  working-directory:
+    description: Where asbuilt.toml is read and the command runs.
+    required: false
+    default: "."
+  command:
+    description: The asbuilt subcommand and its arguments; empty installs only.
+    required: false
+    default: check
+
+outputs:
+  version:
+    description: The asbuilt release installed.
+    value: ${{ steps.resolve.outputs.version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve the asbuilt release
+      id: resolve
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+      run: |
+        if [ -n "$INPUT_VERSION" ]; then
+          version="$INPUT_VERSION"
+          source="the action's version input"
+        else
+          # A top-level key, so only the lines above the first table can
+          # hold it; either TOML string quote.
+          version=$(awk -v q="'" '
+            /^[[:space:]]*\[/ { exit }
+            /^[[:space:]]*asbuilt[[:space:]]*=/ {
+              sub(/^[^=]*=[[:space:]]*/, "")
+              quote = substr($0, 1, 1)
+              if (quote == "\"" || quote == q) { $0 = substr($0, 2); sub(quote ".*", "") }
+              print
+              exit
+            }' asbuilt.toml 2>/dev/null || true)
+          source="asbuilt.toml"
+        fi
+        if [ -z "$version" ]; then
+          echo "::error title=asbuilt::No release to install: put asbuilt = \"X.Y.Z\" at the top of asbuilt.toml, or set the action's version input."
+          exit 1
+        fi
+        if ! printf '%s' "$version" | grep -Eq '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$'; then
+          echo "::error title=asbuilt::$source names \"$version\", which is not a release version (X.Y.Z, as cargo install --version takes it)."
+          exit 1
+        fi
+        # The archive for this runner, best first: Linux takes the static
+        # build, then the glibc one (all 0.2.0 shipped). None matching
+        # means cargo install.
+        case "$RUNNER_OS-$RUNNER_ARCH" in
+          Linux-X64) targets="x86_64-unknown-linux-musl x86_64-unknown-linux-gnu" ;;
+          Linux-ARM64) targets="aarch64-unknown-linux-musl" ;;
+          macOS-X64) targets="x86_64-apple-darwin" ;;
+          macOS-ARM64) targets="aarch64-apple-darwin" ;;
+          Windows-X64) targets="x86_64-pc-windows-msvc" ;;
+          *) targets="" ;;
+        esac
+        {
+          echo "version=$version"
+          echo "source=$source"
+          echo "targets=$targets"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Cache the asbuilt binary
+      id: cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+      with:
+        path: ~/.asbuilt/${{ steps.resolve.outputs.version }}
+        key: asbuilt-${{ steps.resolve.outputs.version }}-${{ runner.os }}-${{ runner.arch }}-v1
+
+    # The release archive, refused unless its provenance attestation says
+    # asbuilt's release workflow built it from that release's tag. Only a
+    # release with no archive for this platform falls back to building
+    # from crates.io; a failure to reach the release fails the step.
+    - name: Install asbuilt
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        VERSION: ${{ steps.resolve.outputs.version }}
+        TARGETS: ${{ steps.resolve.outputs.targets }}
+      run: |
+        dir="$HOME/.asbuilt/$VERSION"
+        work="$RUNNER_TEMP/asbuilt-download"
+        rm -rf "$work" && mkdir -p "$work" "$dir/bin"
+        cd "$work" || exit 1
+        assets=$(gh release view "v$VERSION" --repo padamson/asbuilt --json assets --jq '.assets[].name')
+        archive=""
+        for target in $TARGETS; do
+          for name in "asbuilt-v$VERSION-$target.tar.gz" "asbuilt-v$VERSION-$target.zip"; do
+            if printf '%s\n' "$assets" | grep -qxF "$name"; then
+              archive="$name"
+              break 2
+            fi
+          done
+        done
+        if [ -z "$archive" ]; then
+          if ! command -v cargo > /dev/null; then
+            echo "::error title=asbuilt::asbuilt $VERSION has no release archive for $RUNNER_OS $RUNNER_ARCH, and there is no cargo to build it: install Rust before this step."
+            exit 1
+          fi
+          echo "::notice title=asbuilt::asbuilt $VERSION has no release archive for $RUNNER_OS $RUNNER_ARCH; building it from crates.io (no provenance attestation to check)."
+          cargo install asbuilt --version "$VERSION" --locked --root "$dir"
+          exit 0
+        fi
+        gh release download "v$VERSION" --repo padamson/asbuilt --pattern "$archive"
+        gh attestation verify "$archive" --repo padamson/asbuilt \
+          --signer-workflow padamson/asbuilt/.github/workflows/release.yml \
+          --source-ref "refs/tags/v$VERSION"
+        mkdir unpacked
+        case "$archive" in
+          *.zip) (cd unpacked && 7z x "../$archive" > /dev/null) ;;
+          *) tar xzf "$archive" -C unpacked ;;
+        esac
+        # Anywhere in the archive: 0.2.0's zip nested it under target/.
+        binary=$(find unpacked -type f \( -name asbuilt -o -name asbuilt.exe \) | head -n 1)
+        [ -n "$binary" ] || { echo "::error title=asbuilt::$archive holds no asbuilt binary"; exit 1; }
+        mv "$binary" "$dir/bin/"
+        chmod +x "$dir/bin/$(basename "$binary")"
+
+    - name: Put asbuilt on the PATH
+      shell: bash
+      env:
+        VERSION: ${{ steps.resolve.outputs.version }}
+      run: |
+        bin="$HOME/.asbuilt/$VERSION/bin"
+        if [ "$RUNNER_OS" = Windows ]; then bin=$(cygpath -w "$bin"); fi
+        echo "$bin" >> "$GITHUB_PATH"
+
+    # A notice, never a failure: a newer release is the maintainer's
+    # decision, and crates.io being unreachable is no reason to fail CI.
+    - name: Look for a newer release
+      shell: bash
+      env:
+        VERSION: ${{ steps.resolve.outputs.version }}
+        SOURCE: ${{ steps.resolve.outputs.source }}
+      run: |
+        latest=$(curl -sf --max-time 10 -A "asbuilt action (github.com/padamson/asbuilt)" \
+          https://crates.io/api/v1/crates/asbuilt \
+          | sed -n 's/.*"max_stable_version":"\([^"]*\)".*/\1/p' || true)
+        [ -n "$latest" ] || exit 0
+        if awk -v a="$latest" -v b="$VERSION" 'BEGIN {
+              split(a, x, /[.-]/); split(b, y, /[.-]/)
+              for (i = 1; i <= 3; i++) { if (x[i] + 0 > y[i] + 0) exit 0; if (x[i] + 0 < y[i] + 0) exit 1 }
+              # The same numbers: the stable release is newer than a pre-release of it.
+              exit !(b ~ /-/) }'; then
+          echo "::notice title=asbuilt::asbuilt $latest is available; $SOURCE pins $VERSION. Moving the pin means re-running asbuilt survey."
+        fi
+
+    - name: asbuilt ${{ inputs.command }}
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        COMMAND: ${{ inputs.command }}
+      run: |
+        asbuilt --version
+        if [ -n "$COMMAND" ]; then
+          # Word splitting is the point: the input is a subcommand and its arguments.
+          # shellcheck disable=SC2086
+          asbuilt $COMMAND
+        fi
