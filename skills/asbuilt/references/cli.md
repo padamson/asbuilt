@@ -163,5 +163,6 @@ survey is byte-identical across them; a Linux-only step can add
 
 ```bash
 cargo install asbuilt                                             # from crates.io
+cargo binstall asbuilt                                            # the release's prebuilt binary
 cargo install --git https://github.com/padamson/asbuilt asbuilt   # from main
 ```

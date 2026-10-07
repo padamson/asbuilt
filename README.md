@@ -57,9 +57,13 @@ a bin, tests or examples.
 
 ```bash
 cargo install asbuilt
+cargo binstall asbuilt     # the release's prebuilt binary, no compile
 ```
 
-To try what is on `main` before it is released, `cargo install --git
+Each GitHub release also carries the archives directly: Linux
+(static, for x86_64 and aarch64), macOS and Windows, each with a
+build-provenance attestation (`gh attestation verify <archive> --repo
+padamson/asbuilt`). To try what is on `main` before it is released, `cargo install --git
 https://github.com/padamson/asbuilt asbuilt`.
 
 `survey` and `check` need only cargo. `validate`, `export json`,

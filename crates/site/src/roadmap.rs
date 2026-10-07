@@ -110,7 +110,7 @@ pub const ITEMS: &[Item] = &[
         "roadmap-now-ci",
         "Drop-in CI",
         "A GitHub Action that installs the release asbuilt.toml pins and notes a newer one, cargo-binstall metadata, and aarch64 Linux and musl builds.",
-        Status::Planned,
+        Status::InProgress,
     ),
     now(
         "roadmap-now-drift",

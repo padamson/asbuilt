@@ -21,3 +21,21 @@ thiserror.workspace = true
 
 [dev-dependencies]
 tempfile.workspace = true
+
+# `cargo binstall asbuilt` takes the release's archive for the target
+# instead of compiling: the names release.yml gives them, the binary at
+# the archive's root. Linux hosts get the static musl build, which runs
+# whatever the host's glibc (the gnu archive needs the build image's).
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/{ name }-v{ version }-{ target }{ archive-suffix }"
+bin-dir = "{ bin }{ binary-ext }"
+pkg-fmt = "tgz"
+
+[package.metadata.binstall.overrides.x86_64-unknown-linux-gnu]
+pkg-url = "{ repo }/releases/download/v{ version }/{ name }-v{ version }-x86_64-unknown-linux-musl.tar.gz"
+
+[package.metadata.binstall.overrides.aarch64-unknown-linux-gnu]
+pkg-url = "{ repo }/releases/download/v{ version }/{ name }-v{ version }-aarch64-unknown-linux-musl.tar.gz"
+
+[package.metadata.binstall.overrides.x86_64-pc-windows-msvc]
+pkg-fmt = "zip"

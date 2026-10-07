@@ -17,20 +17,31 @@ permissions:
   contents: read
 
 jobs:
+  # Each target builds, tests, archives and attests on its own runner, then
+  # hands its archive on as a workflow artifact. Nothing is public until
+  # `github-release`, which needs every one of them.
   build-release:
     name: Build ${{ matrix.target }}
     needs: [semver-checks, release-refs]
     runs-on: ${{ matrix.os }}
     permissions:
-      contents: write       # create the GitHub Release and attach files
+      contents: read
       id-token: write       # provenance attestation
       attestations: write
     strategy:
       fail-fast: false
       matrix:
+        # The targets beyond the runners' own are built on every push too,
+        # by `release-targets` in test.yml; a target added here goes there.
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
+          # Static binaries: what cargo binstall and the action install on
+          # Linux, since they run on any glibc or on musl.
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+          - os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
           - os: macos-latest
             target: x86_64-apple-darwin
           - os: macos-latest
@@ -61,19 +72,21 @@ jobs:
         with:
           shared-key: release-${{ matrix.target }}
 
-      - name: Install cargo-nextest & parse-changelog
+      - name: Install cargo-nextest
         uses: taiki-e/install-action@4cef1412cce204788f482e778a0b9187f9626a29 # v2.87.21
         with:
-          tool: cargo-nextest,parse-changelog
+          tool: cargo-nextest
 
+      # `--locked`: the shipped binary is built from the lockfile CI tested
+      # and cargo-vet reviewed, never a fresh resolution.
       - name: Run tests
-        run: cargo nextest run --workspace --target ${{ matrix.target }}
+        run: cargo nextest run --locked --workspace --target ${{ matrix.target }}
 
       # A failed release build fails the release. Library crates build
       # fine here too; the binary-only steps below check for a binary
       # before doing anything.
       - name: Build release binary
-        run: cargo build --release --target ${{ matrix.target }} --verbose
+        run: cargo build --locked --release --target ${{ matrix.target }} --verbose
 
       - name: Strip binary (Unix)
         if: runner.os != 'Windows'
@@ -91,39 +104,75 @@ jobs:
             tar czf "$BINARY_NAME-v${{ steps.get_version.outputs.version }}-${{ matrix.target }}.tar.gz" -C "target/${{ matrix.target }}/release" "$BINARY_NAME"
           fi
 
+      # From inside the release directory, so the binary sits at the
+      # archive's root as it does in the tarballs (7z keeps the path it is
+      # given; the 0.2.0 zip nested it under target/). The archive path is
+      # relative, so it means the same to bash and to the native 7z.
       - name: Create archive (Windows)
         if: runner.os == 'Windows'
         shell: bash
         run: |
           BINARY_NAME=$(cargo metadata --no-deps --format-version 1 | python3 -c "import sys,json; pkgs=json.load(sys.stdin)['packages']; bins=[t['name'] for p in pkgs for t in p['targets'] if 'bin' in t['kind']]; print(bins[0] if bins else '')")
           if [ -n "$BINARY_NAME" ] && [ -f "target/${{ matrix.target }}/release/${BINARY_NAME}.exe" ]; then
-            7z a "${BINARY_NAME}-v${{ steps.get_version.outputs.version }}-${{ matrix.target }}.zip" "target/${{ matrix.target }}/release/${BINARY_NAME}.exe"
+            archive="${BINARY_NAME}-v${{ steps.get_version.outputs.version }}-${{ matrix.target }}.zip"
+            (cd "target/${{ matrix.target }}/release" && 7z a "../../../$archive" "${BINARY_NAME}.exe")
           fi
 
-      - name: Generate release notes
-        shell: bash
-        run: parse-changelog CHANGELOG.md ${{ steps.get_version.outputs.version }} > release_notes.md
-
-      - name: Upload release asset
-        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
-        with:
-          files: |
-            *.tar.gz
-            *.zip
-          body_path: release_notes.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # A library crate produces no archive, and the action fails on an
-      # empty subject list. That is the only failure this tolerates; a
-      # binary crate whose attestation fails should look into it.
+      # Before anything is public, so a release whose attestation fails
+      # publishes nothing. Consumers check an archive with `gh attestation
+      # verify <archive> --repo padamson/asbuilt`; no `continue-on-error`.
       - name: Generate SLSA provenance attestation
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
         with:
           subject-path: |
             *.tar.gz
             *.zip
-        continue-on-error: true
+
+      - name: Hand the archive on
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: archive-${{ matrix.target }}
+          path: |
+            *.tar.gz
+            *.zip
+          if-no-files-found: error
+
+  # One job publishes every archive, after every target built: a release is
+  # whole or absent, never missing the targets whose runner failed.
+  github-release:
+    name: GitHub Release
+    needs: [build-release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # create the GitHub Release and attach files
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install parse-changelog
+        uses: taiki-e/install-action@4cef1412cce204788f482e778a0b9187f9626a29 # v2.87.21
+        with:
+          tool: parse-changelog
+
+      - name: Collect the archives
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: archive-*
+          path: dist
+          merge-multiple: true
+
+      - name: Generate release notes
+        run: parse-changelog CHANGELOG.md "${GITHUB_REF_NAME#v}" > release_notes.md
+
+      - name: Create the release
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
+        with:
+          files: |
+            dist/*.tar.gz
+            dist/*.zip
+          body_path: release_notes.md
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # The tag's version against the latest one on crates.io, per published
   # crate: a breaking change under a version that does not allow one
@@ -165,7 +214,7 @@ jobs:
 
   publish-crates:
     name: Publish to crates.io
-    needs: [build-release]
+    needs: [github-release]
     runs-on: ubuntu-latest
     # Only publishing needs to mint an OIDC token, and `id-token: write`
     # is what lets a job request one.

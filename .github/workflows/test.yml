@@ -181,6 +181,49 @@ jobs:
       - name: Check the e2e crate
         run: cargo check --manifest-path crates/site-e2e/Cargo.toml --locked --all-targets
 
+  # The release targets no runner here builds natively, tested and run on
+  # every push so the tag is not the first time: keep the list in step
+  # with the build matrix in release.yml.
+  release-targets:
+    name: Release target ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+          - os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-musl
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@7e38f4b43b4db5c8dd498af069a4f6196df1d067 # stable
+        with:
+          toolchain: stable
+          targets: ${{ matrix.target }}
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          shared-key: release-target-${{ matrix.target }}
+
+      - name: Install cargo-nextest
+        uses: taiki-e/install-action@4cef1412cce204788f482e778a0b9187f9626a29 # v2.87.21
+        with:
+          tool: cargo-nextest
+
+      - name: Run tests
+        run: cargo nextest run --locked --workspace --profile ci --target ${{ matrix.target }}
+
+      - name: Build the release binary and run it
+        run: |
+          cargo build --locked --release -p asbuilt --target ${{ matrix.target }}
+          ./target/${{ matrix.target }}/release/asbuilt --version
+          ./target/${{ matrix.target }}/release/asbuilt check
+
   test:
     name: Test on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
