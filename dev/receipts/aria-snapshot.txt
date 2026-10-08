@@ -160,8 +160,8 @@
   - text: .
 - heading "Now · 0.3.0" [level=3] [box=173,5910,270,28]
 - progressbar "0.3.0 progress" [box=173,5946,270,6]
-- paragraph [box=173,5956,270,16]: 2 of 4 done
-- list [box=173,5988,270,488]:
+- paragraph [box=173,5956,270,16]: 3 of 4 done
+- list [box=173,5988,270,464]:
   - listitem [box=173,5988,270,108]:
     - heading "A pinned release" [level=4] [box=173,5988,152,24]
     - text: Done
@@ -170,14 +170,14 @@
     - heading "Drop-in CI" [level=4] [box=173,6112,90,24]
     - text: Done
     - paragraph [box=173,6140,270,80]: A GitHub Action that installs the release asbuilt.toml pins and notes a newer one, cargo-binstall metadata, and aarch64 Linux and musl builds.
-  - listitem [box=173,6236,270,112]:
-    - heading "Drift you can read" [level=4] [box=173,6236,163,48]
-    - text: In progress
-    - paragraph [box=173,6288,270,60]: check names what changed (a relation added, a module removed) and speaks JSON with --format json.
-  - listitem [box=173,6364,270,112]:
-    - heading "Relation kinds you can see" [level=4] [box=173,6364,187,48]
+  - listitem [box=173,6236,270,88]:
+    - heading "Drift you can read" [level=4] [box=173,6236,163,24]
+    - text: Done
+    - paragraph [box=173,6264,270,60]: check names what changed (a relation added, a module removed) and speaks JSON with --format json.
+  - listitem [box=173,6340,270,112]:
+    - heading "Relation kinds you can see" [level=4] [box=173,6340,187,48]
     - text: Planned
-    - paragraph [box=173,6416,270,60]: A line and arrowhead per kind, so implements and uses differ at a glance, and a legend.
+    - paragraph [box=173,6392,270,60]: A line and arrowhead per kind, so implements and uses differ at a glance, and a legend.
 - heading "Next · 0.4.0" [level=3] [box=505,5910,270,28]
 - list [box=505,5954,270,360]:
   - listitem [box=505,5954,270,132]:
@@ -204,22 +204,22 @@
   - listitem [box=837,6266,270,152]:
     - heading "Architecture diff between revisions" [level=4] [box=837,6266,270,48]
     - paragraph [box=837,6318,270,100]: asbuilt diff main..HEAD names how the architecture changed between two commits (modules added, relations moved), for a pull request comment or a release note.
-- contentinfo [box=0,6577,1280,193]:
-  - navigation [box=128,6618,1024,20]:
-    - link "GitHub" [box=128,6618,49,20]:
+- contentinfo [box=0,6553,1280,193]:
+  - navigation [box=128,6594,1024,20]:
+    - link "GitHub" [box=128,6594,49,20]:
       - /url: https://github.com/padamson/asbuilt
-    - link "Architecture" [box=197,6618,86,20]:
+    - link "Architecture" [box=197,6594,86,20]:
       - /url: architecture/
-    - link "Roadmap" [box=302,6618,66,20]:
+    - link "Roadmap" [box=302,6594,66,20]:
       - /url: "#roadmap"
-    - link "LikeC4" [box=388,6618,47,20]:
+    - link "LikeC4" [box=388,6594,47,20]:
       - /url: https://likec4.dev
-  - paragraph [box=128,6654,768,40]:
+  - paragraph [box=128,6630,768,40]:
     - text: Everything downstream of the model is
-    - link "LikeC4" [box=409,6656,47,16]:
+    - link "LikeC4" [box=409,6632,47,16]:
       - /url: https://likec4.dev
     - text: "'s: validation, export, layout and browsing. This page is tested with"
-    - link "playwright-rs" [box=162,6676,92,16]:
+    - link "playwright-rs" [box=162,6652,92,16]:
       - /url: https://playwright-rust.dev
     - text: .
-  - paragraph [box=128,6710,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.
+  - paragraph [box=128,6686,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.
