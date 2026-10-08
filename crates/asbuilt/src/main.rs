@@ -38,6 +38,11 @@ enum Command {
     Check {
         /// The repository root; the current directory by default.
         root: Option<PathBuf>,
+        /// `text`: on drift, the diff on stdout and what changed with the
+        /// verdict on stderr; `<model> is current` on stdout otherwise.
+        /// `json`: one object on stdout with all of it.
+        #[arg(long, value_enum, default_value_t = FormatArg::Text)]
+        format: FormatArg,
     },
     /// Run `likec4 validate` over the model directory (needs Node).
     Validate {
@@ -110,6 +115,22 @@ enum ExportFormat {
     },
 }
 
+/// `check --format`, kept here so the library's `Format` carries no clap.
+#[derive(Clone, Copy, clap::ValueEnum)]
+enum FormatArg {
+    Text,
+    Json,
+}
+
+impl From<FormatArg> for commands::Format {
+    fn from(arg: FormatArg) -> Self {
+        match arg {
+            FormatArg::Text => commands::Format::Text,
+            FormatArg::Json => commands::Format::Json,
+        }
+    }
+}
+
 fn main() {
     let cli = Cli::parse();
     let config = cli.config.as_deref();
@@ -119,9 +140,10 @@ fn main() {
             config,
             output.as_deref(),
         ),
-        Command::Check { root } => commands::check(
+        Command::Check { root, format } => commands::check(
             root.as_deref().unwrap_or(".".as_ref()),
             config,
+            (*format).into(),
             &mut std::io::stdout().lock(),
             &mut std::io::stderr().lock(),
         ),

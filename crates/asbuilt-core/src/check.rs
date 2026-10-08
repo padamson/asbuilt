@@ -49,10 +49,12 @@ pub enum Change {
         kind: String,
     },
     /// An element in both, with the fields that differ in the order emit
-    /// writes them; `kind` is the fresh one.
+    /// writes them; `kind` is the fresh one, `kind_was` the committed one
+    /// when it changed.
     ElementChanged {
         id: String,
         kind: String,
+        kind_was: Option<String>,
         fields: Vec<ElementField>,
     },
     RelationAdded {
@@ -65,19 +67,20 @@ pub enum Change {
         to: String,
         kind: String,
     },
-    /// A relation in both: its kind when that changed (committed, then
-    /// fresh), whether its label changed and the names it gained and lost,
-    /// and whether its technology changed. The names are the label split
-    /// on `, ` (a surveyed relation's items, an external's title in its
-    /// pieces), so they describe a label change; a reorder or a repeat
+    /// A relation in both: its fresh kind and the committed one when it
+    /// changed, whether its label changed and the names it gained and
+    /// lost, and whether its technology changed. The names are the label
+    /// split on `, ` (a surveyed relation's items, an external's title in
+    /// its pieces), so they describe a label change; a reorder or a repeat
     /// changes the label with none gained or lost.
     RelationChanged {
         from: String,
         to: String,
-        kind: Option<(String, String)>,
+        kind: String,
+        kind_was: Option<String>,
         label: bool,
-        added: Vec<String>,
-        removed: Vec<String>,
+        gained: Vec<String>,
+        lost: Vec<String>,
         technology: bool,
     },
 }
@@ -129,6 +132,7 @@ pub fn changes(committed: &Written, fresh: &Written) -> Vec<Change> {
                     out.push(Change::ElementChanged {
                         id: id.clone(),
                         kind: element.kind.clone(),
+                        kind_was: (before.kind != element.kind).then(|| before.kind.clone()),
                         fields,
                     });
                 }
@@ -224,21 +228,22 @@ fn relation_change(
             .unwrap_or_default()
     };
     let (old, new) = (names(before), names(after));
-    let added: Vec<String> = new.iter().filter(|n| !old.contains(n)).cloned().collect();
-    let removed: Vec<String> = old.iter().filter(|n| !new.contains(n)).cloned().collect();
-    let kind = (before.kind != after.kind).then(|| (before.kind.clone(), after.kind.clone()));
+    let gained: Vec<String> = new.iter().filter(|n| !old.contains(n)).cloned().collect();
+    let lost: Vec<String> = old.iter().filter(|n| !new.contains(n)).cloned().collect();
+    let kind_was = (before.kind != after.kind).then(|| before.kind.clone());
     let label = before.label != after.label;
     let technology = before.technology != after.technology;
-    if kind.is_none() && !label && !technology {
+    if kind_was.is_none() && !label && !technology {
         return None;
     }
     Some(Change::RelationChanged {
         from: from.to_string(),
         to: to.to_string(),
-        kind,
+        kind: after.kind.clone(),
+        kind_was,
         label,
-        added,
-        removed,
+        gained,
+        lost,
         technology,
     })
 }
@@ -369,13 +374,14 @@ mod tests {
             vec![Change::ElementChanged {
                 id: "app.server".into(),
                 kind: "component".into(),
+                kind_was: None,
                 fields: vec![ElementField::Description, ElementField::Path]
             }]
         );
     }
 
     #[test]
-    fn an_element_s_kind_change_names_the_fresh_kind() {
+    fn an_element_s_kind_change_names_both_kinds() {
         let mut fresh = base();
         fresh.elements.get_mut("app.server").unwrap().kind = "bin".into();
         assert_eq!(
@@ -383,6 +389,7 @@ mod tests {
             vec![Change::ElementChanged {
                 id: "app.server".into(),
                 kind: "bin".into(),
+                kind_was: Some("component".into()),
                 fields: vec![ElementField::Kind]
             }]
         );
@@ -431,10 +438,11 @@ mod tests {
             vec![Change::RelationChanged {
                 from: "app".into(),
                 to: "app.server".into(),
-                kind: None,
+                kind: "calls".into(),
+                kind_was: None,
                 label: true,
-                added: vec!["start".into()],
-                removed: vec!["serve".into()],
+                gained: vec!["start".into()],
+                lost: vec!["serve".into()],
                 technology: false
             }]
         );
@@ -452,10 +460,11 @@ mod tests {
             vec![Change::RelationChanged {
                 from: "app".into(),
                 to: "app.server".into(),
-                kind: Some(("calls".into(), "constructs".into())),
+                kind: "constructs".into(),
+                kind_was: Some("calls".into()),
                 label: false,
-                added: vec![],
-                removed: vec![],
+                gained: vec![],
+                lost: vec![],
                 technology: false
             }]
         );
@@ -474,10 +483,11 @@ mod tests {
             vec![Change::RelationChanged {
                 from: "app".into(),
                 to: "app.server".into(),
-                kind: None,
+                kind: "calls".into(),
+                kind_was: None,
                 label: false,
-                added: vec![],
-                removed: vec![],
+                gained: vec![],
+                lost: vec![],
                 technology: true
             }]
         );
@@ -535,10 +545,11 @@ mod tests {
             vec![Change::RelationChanged {
                 from: "app".into(),
                 to: "app.server".into(),
-                kind: None,
+                kind: "uses".into(),
+                kind_was: None,
                 label: true,
-                added: vec![],
-                removed: vec![],
+                gained: vec![],
+                lost: vec![],
                 technology: false
             }]
         );

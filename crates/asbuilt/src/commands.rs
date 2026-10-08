@@ -199,12 +199,19 @@ fn frontends() -> [&'static dyn Frontend; 1] {
     [&RustFrontend]
 }
 
-/// What a kind is called in the language surveyed at `root`: the word of
-/// the first front-end that reads `root` and has one, else the kind.
-fn noun(root: &Path, kind: &str) -> String {
+/// The front-ends that read `root`.
+fn detected(root: &Path) -> Vec<&'static dyn Frontend> {
     frontends()
-        .iter()
+        .into_iter()
         .filter(|frontend| frontend.detect(root))
+        .collect()
+}
+
+/// What a kind is called in the surveyed language: the word of the first
+/// of `detected` that has one, else the kind.
+fn noun(detected: &[&dyn Frontend], kind: &str) -> String {
+    detected
+        .iter()
         .find_map(|frontend| frontend.noun(kind))
         .unwrap_or(kind)
         .to_string()
@@ -282,12 +289,15 @@ fn drift(root: &Path, config: &Config, target: &OutputTarget) -> Result<Drift, C
     })
 }
 
-/// Survey in memory and compare with the committed model. On drift, the
-/// unified diff goes to `out` (nothing else, so it pipes as a patch), and
-/// what changed and the verdict line to `err`.
+/// Survey in memory and compare with the committed model. As text: on
+/// drift, the unified diff on `out` (nothing else, so it pipes as a
+/// patch) and what changed with the verdict on `err`; when current, a
+/// line saying so on `out`. As JSON: one object on `out` and nothing on
+/// `err`. The exit code is the same either way.
 pub fn check(
     root: &Path,
     config_path: Option<&Path>,
+    format: Format,
     out: &mut dyn Write,
     err: &mut dyn Write,
 ) -> Result<i32, CliError> {
@@ -295,22 +305,128 @@ pub fn check(
     let target = output_target(root, &config, None)?;
     let rel = target.label.clone();
     let drift = drift(root, &config, &target)?;
-    match &drift.outcome {
-        Outcome::Current => {
-            let _ = writeln!(out, "{rel} is current");
-            Ok(EXIT_OK)
+    let detected = detected(root);
+    let noun = |kind: &str| noun(&detected, kind);
+    let (changes, code) = match &drift.outcome {
+        Outcome::Current => (Some(Vec::new()), EXIT_OK),
+        Outcome::Drift(_) => (summarize(&drift.committed, &drift.fresh), EXIT_DRIFT),
+    };
+    match (format, &drift.outcome) {
+        (Format::Json, outcome) => {
+            let report = report(&rel, outcome, changes.as_deref(), &noun);
+            let _ = writeln!(out, "{report:#}");
         }
-        Outcome::Drift(diff) => {
+        (Format::Text, Outcome::Current) => {
+            let _ = writeln!(out, "{rel} is current");
+        }
+        (Format::Text, Outcome::Drift(diff)) => {
             let _ = write!(out, "{diff}");
-            let changes = summarize(&drift.committed, &drift.fresh);
-            for line in summary(&rel, changes.as_deref(), &|kind| noun(root, kind)) {
+            for line in summary(&rel, changes.as_deref(), &noun) {
                 let _ = writeln!(err, "{line}");
             }
             let _ = writeln!(
                 err,
                 "asbuilt: {rel} is stale; run `asbuilt survey` and commit the result"
             );
-            Ok(EXIT_DRIFT)
+        }
+    }
+    Ok(code)
+}
+
+/// How `check` reports.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Format {
+    /// On drift, the diff on stdout and what changed with the verdict on
+    /// stderr; when current, a line saying so on stdout.
+    Text,
+    /// One JSON object on stdout with the verdict, what changed and the
+    /// diff; stderr only for errors.
+    Json,
+}
+
+/// `check --format json`: the model's path, whether it is current,
+/// whether the committed model could be read back, what changed (`null`
+/// when it could not) and the diff (`null` when current).
+fn report(
+    label: &str,
+    outcome: &Outcome,
+    changes: Option<&[Change]>,
+    noun: &dyn Fn(&str) -> String,
+) -> serde_json::Value {
+    let diff = match outcome {
+        Outcome::Current => None,
+        Outcome::Drift(diff) => Some(diff),
+    };
+    serde_json::json!({
+        "model": label,
+        "current": diff.is_none(),
+        "readable": changes.is_some(),
+        "changes": changes.map(|changes| {
+            changes.iter().map(|c| change_json(c, noun)).collect::<Vec<_>>()
+        }),
+        "diff": diff,
+    })
+}
+
+/// One change as JSON. `"change"` is `added`, `removed` or `changed`;
+/// `"element"` is its id, kind and the language's noun, `"relation"` its
+/// from, to and kind (the fresh one, or the committed one when removed).
+/// A changed element or relation lists the `"fields"` that changed and
+/// `"kind_was"`, the committed kind when the kind changed; a changed
+/// relation's `"names"` are those its label `"gained"` and `"lost"`.
+fn change_json(change: &Change, noun: &dyn Fn(&str) -> String) -> serde_json::Value {
+    use serde_json::json;
+    let element = |id: &str, kind: &str| json!({"id": id, "kind": kind, "noun": noun(kind)});
+    let relation = |from: &str, to: &str, kind: &str| json!({"from": from, "to": to, "kind": kind});
+    match change {
+        Change::ElementAdded { id, kind } => {
+            json!({"change": "added", "element": element(id, kind)})
+        }
+        Change::ElementRemoved { id, kind } => {
+            json!({"change": "removed", "element": element(id, kind)})
+        }
+        Change::ElementChanged {
+            id,
+            kind,
+            kind_was,
+            fields,
+        } => json!({
+            "change": "changed",
+            "element": element(id, kind),
+            "fields": fields.iter().map(|f| f.name()).collect::<Vec<_>>(),
+            "kind_was": kind_was,
+        }),
+        Change::RelationAdded { from, to, kind } => {
+            json!({"change": "added", "relation": relation(from, to, kind)})
+        }
+        Change::RelationRemoved { from, to, kind } => {
+            json!({"change": "removed", "relation": relation(from, to, kind)})
+        }
+        Change::RelationChanged {
+            from,
+            to,
+            kind,
+            kind_was,
+            label,
+            gained,
+            lost,
+            technology,
+        } => {
+            let fields: Vec<&str> = [
+                ("kind", kind_was.is_some()),
+                ("label", *label),
+                ("technology", *technology),
+            ]
+            .into_iter()
+            .filter_map(|(field, changed)| changed.then_some(field))
+            .collect();
+            json!({
+                "change": "changed",
+                "relation": relation(from, to, kind),
+                "fields": fields,
+                "kind_was": kind_was,
+                "names": {"gained": gained, "lost": lost},
+            })
         }
     }
 }
@@ -345,7 +461,12 @@ fn describe(change: &Change, noun: &dyn Fn(&str) -> String) -> String {
     match change {
         Change::ElementAdded { id, kind } => format!("+ {} {id}", noun(kind)),
         Change::ElementRemoved { id, kind } => format!("- {} {id}", noun(kind)),
-        Change::ElementChanged { id, kind, fields } => {
+        Change::ElementChanged {
+            id,
+            kind,
+            kind_was: _,
+            fields,
+        } => {
             let fields: Vec<&str> = fields.iter().map(|f| f.name()).collect();
             format!("~ {} {id}: {}", noun(kind), fields.join(", "))
         }
@@ -355,18 +476,19 @@ fn describe(change: &Change, noun: &dyn Fn(&str) -> String) -> String {
             from,
             to,
             kind,
+            kind_was,
             label,
-            added,
-            removed,
+            gained,
+            lost,
             technology,
         } => {
             let mut parts = Vec::new();
-            if let Some((old, new)) = kind {
-                parts.push(format!("{old} to {new}"));
+            if let Some(was) = kind_was {
+                parts.push(format!("{was} to {kind}"));
             }
-            parts.extend(added.iter().map(|name| format!("+ {name}")));
-            parts.extend(removed.iter().map(|name| format!("- {name}")));
-            if *label && added.is_empty() && removed.is_empty() {
+            parts.extend(gained.iter().map(|name| format!("+ {name}")));
+            parts.extend(lost.iter().map(|name| format!("- {name}")));
+            if *label && gained.is_empty() && lost.is_empty() {
                 parts.push("label".to_string());
             }
             if *technology {
@@ -899,12 +1021,12 @@ mod tests {
     fn a_cargo_root_s_kinds_take_rust_s_nouns() {
         let dir = root();
         std::fs::write(dir.path().join("Cargo.toml"), "[package]\n").unwrap();
-        assert_eq!(noun(dir.path(), "container"), "crate");
+        assert_eq!(noun(&detected(dir.path()), "container"), "crate");
     }
 
     #[test]
     fn a_root_no_front_end_reads_keeps_the_kind() {
-        assert_eq!(noun(root().path(), "container"), "container");
+        assert_eq!(noun(&detected(root().path()), "container"), "container");
     }
 
     fn line(change: Change) -> String {
@@ -939,6 +1061,7 @@ mod tests {
             line(Change::ElementChanged {
                 id: "app".into(),
                 kind: "container".into(),
+                kind_was: None,
                 fields: vec![ElementField::Description, ElementField::Tags]
             }),
             "~ crate app: description, tags"
@@ -975,10 +1098,11 @@ mod tests {
             line(Change::RelationChanged {
                 from: "a".into(),
                 to: "b".into(),
-                kind: Some(("calls".into(), "constructs".into())),
+                kind: "constructs".into(),
+                kind_was: Some("calls".into()),
                 label: true,
-                added: vec!["New".into()],
-                removed: vec!["old".into()],
+                gained: vec!["New".into()],
+                lost: vec!["old".into()],
                 technology: true
             }),
             "~ a -> b: calls to constructs, + New, - old, technology"
@@ -991,10 +1115,11 @@ mod tests {
             line(Change::RelationChanged {
                 from: "a".into(),
                 to: "b".into(),
-                kind: None,
+                kind: "uses".into(),
+                kind_was: None,
                 label: false,
-                added: vec![],
-                removed: vec![],
+                gained: vec![],
+                lost: vec![],
                 technology: true
             }),
             "~ a -> b: technology"
@@ -1007,10 +1132,11 @@ mod tests {
             line(Change::RelationChanged {
                 from: "a".into(),
                 to: "b".into(),
-                kind: None,
+                kind: "uses".into(),
+                kind_was: None,
                 label: true,
-                added: vec![],
-                removed: vec![],
+                gained: vec![],
+                lost: vec![],
                 technology: false
             }),
             "~ a -> b: label"
@@ -1042,6 +1168,143 @@ mod tests {
         assert_eq!(
             summary("m.c4", None, &rust_noun),
             ["m.c4: not a model this release wrote; see the diff"]
+        );
+    }
+
+    use serde_json::json;
+
+    fn as_json(change: Change) -> serde_json::Value {
+        change_json(&change, &rust_noun)
+    }
+
+    #[test]
+    fn an_added_element_s_json_carries_its_kind_and_noun() {
+        assert_eq!(
+            as_json(Change::ElementAdded {
+                id: "app.store".into(),
+                kind: "component".into()
+            }),
+            json!({"change": "added", "element": {"id": "app.store", "kind": "component", "noun": "module"}})
+        );
+    }
+
+    #[test]
+    fn a_removed_element_s_json_says_removed() {
+        assert_eq!(
+            as_json(Change::ElementRemoved {
+                id: "old".into(),
+                kind: "container".into()
+            }),
+            json!({"change": "removed", "element": {"id": "old", "kind": "container", "noun": "crate"}})
+        );
+    }
+
+    #[test]
+    fn a_changed_element_s_json_lists_its_fields_and_the_kind_it_was() {
+        assert_eq!(
+            as_json(Change::ElementChanged {
+                id: "app.main".into(),
+                kind: "bin".into(),
+                kind_was: Some("component".into()),
+                fields: vec![asbuilt_core::ElementField::Kind]
+            }),
+            json!({
+                "change": "changed",
+                "element": {"id": "app.main", "kind": "bin", "noun": "bin"},
+                "fields": ["kind"],
+                "kind_was": "component"
+            })
+        );
+    }
+
+    #[test]
+    fn an_added_relation_s_json_carries_its_kind() {
+        assert_eq!(
+            as_json(Change::RelationAdded {
+                from: "a".into(),
+                to: "b".into(),
+                kind: "calls".into()
+            }),
+            json!({"change": "added", "relation": {"from": "a", "to": "b", "kind": "calls"}})
+        );
+    }
+
+    #[test]
+    fn a_removed_relation_s_json_says_removed() {
+        assert_eq!(
+            as_json(Change::RelationRemoved {
+                from: "a".into(),
+                to: "b".into(),
+                kind: "uses".into()
+            }),
+            json!({"change": "removed", "relation": {"from": "a", "to": "b", "kind": "uses"}})
+        );
+    }
+
+    #[test]
+    fn a_changed_relation_s_json_carries_its_kind_where_an_added_one_does() {
+        assert_eq!(
+            as_json(Change::RelationChanged {
+                from: "a".into(),
+                to: "b".into(),
+                kind: "constructs".into(),
+                kind_was: Some("calls".into()),
+                label: true,
+                gained: vec!["New".into()],
+                lost: vec!["old".into()],
+                technology: true
+            }),
+            json!({
+                "change": "changed",
+                "relation": {"from": "a", "to": "b", "kind": "constructs"},
+                "fields": ["kind", "label", "technology"],
+                "kind_was": "calls",
+                "names": {"gained": ["New"], "lost": ["old"]}
+            })
+        );
+    }
+
+    #[test]
+    fn a_relabeled_relation_s_json_lists_only_the_label() {
+        assert_eq!(
+            as_json(Change::RelationChanged {
+                from: "a".into(),
+                to: "b".into(),
+                kind: "uses".into(),
+                kind_was: None,
+                label: true,
+                gained: vec![],
+                lost: vec![],
+                technology: false
+            }),
+            json!({
+                "change": "changed",
+                "relation": {"from": "a", "to": "b", "kind": "uses"},
+                "fields": ["label"],
+                "kind_was": null,
+                "names": {"gained": [], "lost": []}
+            })
+        );
+    }
+
+    #[test]
+    fn a_current_model_s_report_has_no_changes_and_no_diff() {
+        assert_eq!(
+            report("m.c4", &Outcome::Current, Some(&[]), &rust_noun),
+            json!({"model": "m.c4", "current": true, "readable": true, "changes": [], "diff": null})
+        );
+    }
+
+    #[test]
+    fn a_model_this_release_did_not_write_reports_the_diff_without_changes() {
+        assert_eq!(
+            report(
+                "m.c4",
+                &Outcome::Drift("--- a/m.c4\n".into()),
+                None,
+                &rust_noun
+            ),
+            json!({"model": "m.c4", "current": false, "readable": false, "changes": null, "diff": "--- a/m.c4\n"})
         );
     }
 }

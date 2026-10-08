@@ -7,12 +7,53 @@ config from somewhere other than `<root>/asbuilt.toml`.
 | Command | Does | Needs |
 |---|---|---|
 | `asbuilt survey [root] [-o PATH]` | writes the model at the configured path, or at `-o` (relative to the root); creates parent directories; prints nothing on success | cargo |
-| `asbuilt check [root]` | surveys in memory and compares with the committed model; on drift, prints the unified diff on stdout and names what changed on stderr (`+ module app.store`, `- app.client -[calls]-> app.server`, `~ crate app: description`) | cargo |
+| `asbuilt check [root] [--format json]` | surveys in memory and compares with the committed model; on drift, prints the unified diff on stdout and names what changed on stderr (`+ module app.store`, `- app.client -[calls]-> app.server`, `~ crate app: description`); `--format json` puts all of it in one object on stdout (see "check's JSON") | cargo |
 | `asbuilt validate [root]` | `likec4 validate` over the model directory, which also checks curated `.c4` files beside the model | Node |
 | `asbuilt export json [root] [-o PATH]` | `likec4 export json`, normalized (the machine-specific `links[].relative` removed), to `<model dir>/model.json` by default | Node |
 | `asbuilt render [root] [-o DIR]` | `likec4 gen dot` then `dot -Tsvg`, one SVG per view with its `.dot` beside it, into `<model dir>/views` by default; see "What `render` replaces" | Node, Graphviz |
 | `asbuilt docs [root] [-o DIR] [--no-render] [--force] [--title TEXT] [--source-url URL] [--home-url URL] [--home-title TEXT] [--stylesheet URL] [--color-scheme SCHEME] [--no-scheme-toggle]` | a static HTML tree (index, one page per crate with modules and relations, the views inlined) into `<model dir>/site` by default; renders first unless `--no-render`; exits 1 on a stale model; see "What `docs` writes" | Node, Graphviz (neither with `--no-render`) |
 | `asbuilt --version` | the version, with the build commit when not a tagged release | |
+
+## check's JSON
+
+`asbuilt check --format json` writes one object on stdout and nothing on
+stderr unless it fails (exit 2, the error as text). The exit code is the
+same as without the flag.
+
+```json
+{
+  "model": "docs/architecture/model.c4",
+  "current": false,
+  "readable": true,
+  "changes": [
+    {"change": "added", "element": {"id": "app.store", "kind": "component", "noun": "module"}},
+    {"change": "removed", "relation": {"from": "app.client", "to": "app.server", "kind": "calls"}},
+    {"change": "changed", "element": {"id": "app", "kind": "container", "noun": "crate"},
+     "fields": ["description"], "kind_was": null},
+    {"change": "changed", "relation": {"from": "a", "to": "b", "kind": "constructs"},
+     "fields": ["kind", "label"], "kind_was": "calls",
+     "names": {"gained": ["New"], "lost": ["old"]}}
+  ],
+  "diff": "--- a/docs/architecture/model.c4\n+++ b/docs/architecture/model.c4\n…"
+}
+```
+
+Read the verdict from `current` (or the exit code), never from
+`changes`: drift no element or relation explains (a blank line, a
+reordered label) is `current: false` with `changes: []`. `readable`
+false means the committed model is not one this release wrote: `changes`
+is `null` and the diff is all there is; `diff` is `null` when current.
+
+Every change has `change` (`added`, `removed`, `changed`) and either an
+`element` (`id`, `kind`, and `noun`, the surveyed language's word for
+the kind) or a `relation` (`from`, `to`, `kind`: the fresh kind, or the
+committed one when removed). A changed one lists the `fields` that
+changed (an element's `kind`, `title`, `description`, `technology`,
+`path`, `tags`; a relation's `kind`, `label`, `technology`) and
+`kind_was`, the committed kind when `kind` is among them, else `null`. A
+changed relation's `names` are those its label `gained` and `lost`;
+both are empty when it was only reordered or a name repeated. Ids are as
+the `.c4` file writes them.
 
 ## What `render` replaces
 

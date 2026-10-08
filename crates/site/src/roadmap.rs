@@ -116,7 +116,7 @@ pub const ITEMS: &[Item] = &[
         "roadmap-now-drift",
         "Drift you can read",
         "check names what changed (a relation added, a module removed) and speaks JSON with --format json.",
-        Status::InProgress,
+        Status::Done,
     ),
     now(
         "roadmap-now-kinds",
