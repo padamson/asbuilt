@@ -191,7 +191,7 @@
     - paragraph [box=505,6254,270,60]: Opt-in externals from Cargo.toml, and crate-to-crate summaries on each container page.
 - heading "Later" [level=3] [box=837,5910,270,28]
 - paragraph [box=837,5942,270,16]: Under consideration, not yet planned
-- list [box=837,5974,270,276]:
+- list [box=837,5974,270,444]:
   - listitem [box=837,5974,270,68]:
     - heading "Features and cfg" [level=4] [box=837,5974,152,24]
     - paragraph [box=837,6002,270,40]: Know which modules and relations a feature or platform turns on.
@@ -201,6 +201,9 @@
   - listitem [box=837,6162,270,88]:
     - heading "A deployment front-end" [level=4] [box=837,6162,216,24]
     - paragraph [box=837,6190,270,60]: Infrastructure as the model's deployment section, which is empty today.
+  - listitem [box=837,6266,270,152]:
+    - heading "Architecture diff between revisions" [level=4] [box=837,6266,270,48]
+    - paragraph [box=837,6318,270,100]: asbuilt diff main..HEAD names how the architecture changed between two commits (modules added, relations moved), for a pull request comment or a release note.
 - contentinfo [box=0,6577,1280,193]:
   - navigation [box=128,6618,1024,20]:
     - link "GitHub" [box=128,6618,49,20]:
