@@ -17,6 +17,7 @@ The repo is served as project Pages, so every path below sits under
 /asbuilt/v0.1.0/                immutable release snapshot
 /asbuilt/v0.1.0/architecture/   `asbuilt docs` for that release
 /asbuilt/dev/                   main HEAD (unreleased preview)
+/asbuilt/dev/roadmap.json       main's roadmap, which every version fetches
 /asbuilt/.nojekyll
 ```
 
@@ -27,6 +28,17 @@ decide whether to show the "newer release available" or "unreleased dev
 build" banner. `crates/site/src/version.rs` holds the one runtime copy
 of the prefix (`SITE_PREFIX`); every other asset path in the app is
 relative, so a snapshot mounts anywhere.
+
+The roadmap works the same way. Its data is `crates/site/public/roadmap.json`,
+which Trunk copies to every build's root, so the `dev` build publishes main's
+copy at `/asbuilt/dev/roadmap.json`. The dev build shows its own copy, which is
+main's. A release snapshot fetches the dev one and shows it, saying it is
+main's, so the roadmap is current whichever version a visitor views; it shows
+nothing until the fetch answers, and its own copy only if the fetch fails (a
+local preview), so it never shows its release's roadmap as current. A status or
+column a newer main adds reads as unknown rather than failing the fetch.
+Snapshots published before this (v0.1.0, v0.2.0) keep the roadmap they shipped
+with.
 
 ## How a build knows its version
 

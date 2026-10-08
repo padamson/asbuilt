@@ -16,6 +16,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `cargo binstall asbuilt` downloads the release archive instead of compiling; on Linux it takes the static build, which runs whatever the host's glibc
 - `asbuilt docs` names the release that wrote the tree: every page ends with a `<footer>` reading "Built with asbuilt v0.3.0" (with the build commit when it is not a tagged release), linking to the asbuilt site, and the generator meta carries the same version (`content="asbuilt docs 0.3.0"`). `DocsOptions::asbuilt_version` sets it; `GENERATOR_META` is now `GENERATOR_META_PREFIX`, which a tree from any release carries, so `docs` still replaces a 0.2 tree without `--force`. The header's and footer's rules frame the page in a new `--frame` token (the accent at 30%, 2px), set apart from the 1px `--rule` lines inside it; a host stylesheet can restate it
 
+### Changed
+- The landing page's roadmap is the current one on every version: its data moved from Rust constants to `crates/site/public/roadmap.json`, the `dev` build publishes main's copy, and every release snapshot fetches it, so a release no longer shows the roadmap as it stood at that release (it says it is showing main's, and falls back to its own copy only when the fetch fails)
+
 ### Fixed
 - The diagram viewer's relation popover makes an endpoint a link only when the browser resolves it to an `http:`, `https:` or `file:` URL, and links the resolved URL; a `javascript:` or `data:` link shows as text. `asbuilt docs` writes only relative links there, but a host that copies `viewer.js` may feed it other data (CodeQL `js/xss-through-dom`)
 - The Windows release archive holds `asbuilt.exe` at its root, as the tarballs hold `asbuilt`; 0.2.0's nested it under `target/x86_64-pc-windows-msvc/release/`

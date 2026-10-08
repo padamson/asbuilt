@@ -17,7 +17,7 @@
 #     every `asbuilt = "X.Y.Z"` pin a consumer copies into asbuilt.toml;
 #   - a `## [X.Y.Z]` section in CHANGELOG.md (the release notes);
 #   - the README's Status paragraph, which opens with the version;
-#   - the site roadmap's MILESTONE, which must already name the next one.
+#   - the site roadmap's milestone, which must already name the next one.
 set -euo pipefail
 
 [ $# -eq 1 ] || { echo "usage: $(basename "$0") <version, e.g. 0.2.0>" >&2; exit 2; }
@@ -73,9 +73,13 @@ case "$status" in
   *) fail "README.md: the Status paragraph opens \"${status:0:40}\"" ;;
 esac
 
-milestone=$(sed -n -E 's/^pub const MILESTONE: &str = "([^"]*)";/\1/p' crates/site/src/roadmap.rs)
+# Read without a JSON parser, whatever the file's layout; an empty read is
+# a failure, not a pass.
+milestone=$(grep -o -E '"milestone"[[:space:]]*:[[:space:]]*"[^"]*"' crates/site/public/roadmap.json \
+  | head -n 1 | sed -E 's/.*"([^"]*)"$/\1/')
+[ -n "$milestone" ] || fail "crates/site/public/roadmap.json: no milestone found"
 [ "$milestone" != "$version" ] ||
-  fail "crates/site/src/roadmap.rs: MILESTONE is still \"$milestone\"; move it to the next release"
+  fail "crates/site/public/roadmap.json: milestone is still \"$milestone\"; move it to the next release"
 
 if [ "$failures" -gt 0 ]; then
   echo "$failures reference(s) disagree with release $version" >&2

@@ -1,0 +1,75 @@
+{
+  "milestone": "0.3.0",
+  "next_milestone": "0.4.0",
+  "items": [
+    {
+      "id": "roadmap-now-pin",
+      "title": "A pinned release",
+      "blurb": "asbuilt = \"X.Y.Z\" in asbuilt.toml, and any other release stops with the install line instead of showing its output as drift.",
+      "horizon": "now",
+      "status": "done"
+    },
+    {
+      "id": "roadmap-now-ci",
+      "title": "Drop-in CI",
+      "blurb": "A GitHub Action that installs the release asbuilt.toml pins and notes a newer one, cargo-binstall metadata, and aarch64 Linux and musl builds.",
+      "horizon": "now",
+      "status": "done"
+    },
+    {
+      "id": "roadmap-now-drift",
+      "title": "Drift you can read",
+      "blurb": "check names what changed (a relation added, a module removed) and speaks JSON with --format json.",
+      "horizon": "now",
+      "status": "done"
+    },
+    {
+      "id": "roadmap-now-kinds",
+      "title": "Relation kinds you can see",
+      "blurb": "A line and arrowhead per kind, so implements and uses differ at a glance, and a legend.",
+      "horizon": "now"
+    },
+    {
+      "id": "roadmap-next-rules",
+      "title": "Architecture rules and metrics",
+      "blurb": "Rules you declare (no cycles, which layers may depend on which) checked like drift, and coupling metrics per crate and module on their pages.",
+      "horizon": "next"
+    },
+    {
+      "id": "roadmap-next-python",
+      "title": "A second language: Python",
+      "blurb": "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations.",
+      "horizon": "next"
+    },
+    {
+      "id": "roadmap-next-deps",
+      "title": "Dependencies as externals",
+      "blurb": "Opt-in externals from Cargo.toml, and crate-to-crate summaries on each container page.",
+      "horizon": "next"
+    },
+    {
+      "id": "roadmap-later-cfg",
+      "title": "Features and cfg",
+      "blurb": "Know which modules and relations a feature or platform turns on.",
+      "horizon": "later"
+    },
+    {
+      "id": "roadmap-later-viewer",
+      "title": "LikeC4's interactive viewer",
+      "blurb": "An option to embed LikeC4's own web component: element details, a relationship browser, search.",
+      "horizon": "later"
+    },
+    {
+      "id": "roadmap-later-deployment",
+      "title": "A deployment front-end",
+      "blurb": "Infrastructure as the model's deployment section, which is empty today.",
+      "horizon": "later"
+    },
+    {
+      "id": "roadmap-later-diff",
+      "title": "Architecture diff between revisions",
+      "blurb": "asbuilt diff main..HEAD names how the architecture changed between two commits (modules added, relations moved), for a pull request comment or a release note.",
+      "horizon": "later"
+    }
+  ]
+}
