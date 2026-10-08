@@ -75,6 +75,14 @@ impl Frontend for RustFrontend {
             source: Box::new(source),
         })
     }
+
+    fn noun(&self, kind: &str) -> Option<&'static str> {
+        match kind {
+            "container" => Some("crate"),
+            "component" => Some("module"),
+            _ => None,
+        }
+    }
 }
 
 /// `path` canonicalized, with the Windows verbatim prefix dropped so
@@ -354,6 +362,21 @@ mod tests {
         assert!(detect(dir.path()));
         assert!(RustFrontend.detect(dir.path()));
         assert_eq!(RustFrontend.name(), "rust");
+    }
+
+    #[test]
+    fn rust_calls_a_container_a_crate() {
+        assert_eq!(RustFrontend.noun("container"), Some("crate"));
+    }
+
+    #[test]
+    fn rust_calls_a_component_a_module() {
+        assert_eq!(RustFrontend.noun("component"), Some("module"));
+    }
+
+    #[test]
+    fn rust_keeps_the_name_of_any_other_kind() {
+        assert_eq!(RustFrontend.noun("bin"), None);
     }
 
     #[test]

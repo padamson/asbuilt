@@ -76,7 +76,7 @@ reuses SVGs already rendered and needs neither.
 
 ```bash
 asbuilt survey                 # writes docs/architecture/model.c4
-asbuilt check                  # exit 1 with a diff when the committed model is stale
+asbuilt check                  # exit 1 with a diff, naming what changed, when the model is stale
 asbuilt validate               # likec4 validate over the model directory (and curated views beside it)
 asbuilt export json            # docs/architecture/model.json, machine-independent
 asbuilt render                 # one SVG per view under docs/architecture/views/

@@ -10,7 +10,9 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use asbuilt_core::docs::{DocsOptions, GENERATOR_META_PREFIX, generate};
 use asbuilt_core::svg::ViewSource;
-use asbuilt_core::{ColorScheme, Config, EmitOptions, Frontend, Model, Outcome, compare, emit};
+use asbuilt_core::{
+    Change, ColorScheme, Config, EmitOptions, Frontend, Model, Outcome, compare, emit, summarize,
+};
 use asbuilt_rust::RustFrontend;
 
 use crate::likec4::{self, LikeC4Error};
@@ -189,7 +191,23 @@ pub fn output_target(
 
 /// A fresh model of `root` with every front-end this binary carries.
 pub fn survey_model(root: &Path, config: &Config) -> Result<Model, CliError> {
-    Ok(asbuilt_core::survey(root, config, &[&RustFrontend])?)
+    Ok(asbuilt_core::survey(root, config, &frontends())?)
+}
+
+/// Every front-end this CLI carries.
+fn frontends() -> [&'static dyn Frontend; 1] {
+    [&RustFrontend]
+}
+
+/// What a kind is called in the language surveyed at `root`: the word of
+/// the first front-end that reads `root` and has one, else the kind.
+fn noun(root: &Path, kind: &str) -> String {
+    frontends()
+        .iter()
+        .filter(|frontend| frontend.detect(root))
+        .find_map(|frontend| frontend.noun(kind))
+        .unwrap_or(kind)
+        .to_string()
 }
 
 /// Write the model at the configured (or overridden) path, creating
@@ -220,15 +238,20 @@ pub fn survey(
     Ok(EXIT_OK)
 }
 
+/// A fresh survey against the committed model: the model, the verdict,
+/// and both texts, for `check` to say what changed.
+struct Drift {
+    model: Model,
+    outcome: Outcome,
+    committed: String,
+    fresh: String,
+}
+
 /// A fresh survey of `root` and how it compares with the committed
 /// model: the shared half of `check` and `docs`. Errors name the
 /// root-relative label, which is what the user configured and reads the
 /// same on every platform.
-fn drift(
-    root: &Path,
-    config: &Config,
-    target: &OutputTarget,
-) -> Result<(Model, Outcome), CliError> {
+fn drift(root: &Path, config: &Config, target: &OutputTarget) -> Result<Drift, CliError> {
     let rel = &target.label;
     let committed = std::fs::read_to_string(&target.path).map_err(|source| {
         if source.kind() == io::ErrorKind::NotFound {
@@ -251,11 +274,17 @@ fn drift(
         },
     );
     let outcome = compare(&committed, &fresh, rel);
-    Ok((model, outcome))
+    Ok(Drift {
+        model,
+        outcome,
+        committed,
+        fresh,
+    })
 }
 
-/// Survey in memory and compare with the committed model. The diff, if
-/// any, goes to `out`; the verdict line goes to `err`.
+/// Survey in memory and compare with the committed model. On drift, the
+/// unified diff goes to `out` (nothing else, so it pipes as a patch), and
+/// what changed and the verdict line to `err`.
 pub fn check(
     root: &Path,
     config_path: Option<&Path>,
@@ -265,18 +294,85 @@ pub fn check(
     let config = load_config(root, config_path)?;
     let target = output_target(root, &config, None)?;
     let rel = target.label.clone();
-    match drift(root, &config, &target)?.1 {
+    let drift = drift(root, &config, &target)?;
+    match &drift.outcome {
         Outcome::Current => {
             let _ = writeln!(out, "{rel} is current");
             Ok(EXIT_OK)
         }
         Outcome::Drift(diff) => {
             let _ = write!(out, "{diff}");
+            let changes = summarize(&drift.committed, &drift.fresh);
+            for line in summary(&rel, changes.as_deref(), &|kind| noun(root, kind)) {
+                let _ = writeln!(err, "{line}");
+            }
             let _ = writeln!(
                 err,
                 "asbuilt: {rel} is stale; run `asbuilt survey` and commit the result"
             );
             Ok(EXIT_DRIFT)
+        }
+    }
+}
+
+/// The lines naming what changed, beside the diff: a heading, then one
+/// line per change, marked as the diff marks lines (`~` for changed).
+/// Without `changes` the committed model is not one this release wrote,
+/// and the heading says so.
+fn summary(label: &str, changes: Option<&[Change]>, noun: &dyn Fn(&str) -> String) -> Vec<String> {
+    let Some(changes) = changes else {
+        return vec![format!(
+            "{label}: not a model this release wrote; see the diff"
+        )];
+    };
+    if changes.is_empty() {
+        return vec![format!(
+            "{label}: no element or relation changed; see the diff"
+        )];
+    }
+    let count = match changes.len() {
+        1 => "1 change".to_string(),
+        n => format!("{n} changes"),
+    };
+    std::iter::once(format!("{label}: {count}"))
+        .chain(changes.iter().map(|c| format!("  {}", describe(c, noun))))
+        .collect()
+}
+
+/// One change as a line: elements by the language's noun and id,
+/// relations in the model file's arrow form.
+fn describe(change: &Change, noun: &dyn Fn(&str) -> String) -> String {
+    match change {
+        Change::ElementAdded { id, kind } => format!("+ {} {id}", noun(kind)),
+        Change::ElementRemoved { id, kind } => format!("- {} {id}", noun(kind)),
+        Change::ElementChanged { id, kind, fields } => {
+            let fields: Vec<&str> = fields.iter().map(|f| f.name()).collect();
+            format!("~ {} {id}: {}", noun(kind), fields.join(", "))
+        }
+        Change::RelationAdded { from, to, kind } => format!("+ {from} -[{kind}]-> {to}"),
+        Change::RelationRemoved { from, to, kind } => format!("- {from} -[{kind}]-> {to}"),
+        Change::RelationChanged {
+            from,
+            to,
+            kind,
+            label,
+            added,
+            removed,
+            technology,
+        } => {
+            let mut parts = Vec::new();
+            if let Some((old, new)) = kind {
+                parts.push(format!("{old} to {new}"));
+            }
+            parts.extend(added.iter().map(|name| format!("+ {name}")));
+            parts.extend(removed.iter().map(|name| format!("- {name}")));
+            if *label && added.is_empty() && removed.is_empty() {
+                parts.push("label".to_string());
+            }
+            if *technology {
+                parts.push("technology".to_string());
+            }
+            format!("~ {from} -> {to}: {}", parts.join(", "))
         }
     }
 }
@@ -524,7 +620,7 @@ pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32
     } = *args;
     let config = load_config(root, config_path)?;
     let target = output_target(root, &config, None)?;
-    let (model, outcome) = drift(root, &config, &target)?;
+    let Drift { model, outcome, .. } = drift(root, &config, &target)?;
     if let Outcome::Drift(_) = outcome {
         let _ = writeln!(
             err,
@@ -790,5 +886,162 @@ mod tests {
             load_config(Path::new("."), Some(Path::new("/no/such/asbuilt.toml"))),
             Err(CliError::Core(asbuilt_core::Error::Io { .. }))
         ));
+    }
+
+    use asbuilt_core::ElementField;
+
+    /// Rust's nouns, as `check` gets them for a Cargo root.
+    fn rust_noun(kind: &str) -> String {
+        RustFrontend.noun(kind).unwrap_or(kind).to_string()
+    }
+
+    #[test]
+    fn a_cargo_root_s_kinds_take_rust_s_nouns() {
+        let dir = root();
+        std::fs::write(dir.path().join("Cargo.toml"), "[package]\n").unwrap();
+        assert_eq!(noun(dir.path(), "container"), "crate");
+    }
+
+    #[test]
+    fn a_root_no_front_end_reads_keeps_the_kind() {
+        assert_eq!(noun(root().path(), "container"), "container");
+    }
+
+    fn line(change: Change) -> String {
+        describe(&change, &rust_noun)
+    }
+
+    #[test]
+    fn an_added_element_is_named_by_the_language_s_noun() {
+        assert_eq!(
+            line(Change::ElementAdded {
+                id: "app.store".into(),
+                kind: "component".into()
+            }),
+            "+ module app.store"
+        );
+    }
+
+    #[test]
+    fn a_removed_element_of_a_kind_without_a_noun_keeps_the_kind() {
+        assert_eq!(
+            line(Change::ElementRemoved {
+                id: "node_driver".into(),
+                kind: "process".into()
+            }),
+            "- process node_driver"
+        );
+    }
+
+    #[test]
+    fn a_changed_element_lists_its_fields() {
+        assert_eq!(
+            line(Change::ElementChanged {
+                id: "app".into(),
+                kind: "container".into(),
+                fields: vec![ElementField::Description, ElementField::Tags]
+            }),
+            "~ crate app: description, tags"
+        );
+    }
+
+    #[test]
+    fn an_added_relation_is_written_in_the_model_s_arrow_form() {
+        assert_eq!(
+            line(Change::RelationAdded {
+                from: "app.client".into(),
+                to: "app.store".into(),
+                kind: "calls".into()
+            }),
+            "+ app.client -[calls]-> app.store"
+        );
+    }
+
+    #[test]
+    fn a_removed_relation_is_written_in_the_model_s_arrow_form() {
+        assert_eq!(
+            line(Change::RelationRemoved {
+                from: "app.client".into(),
+                to: "app.server".into(),
+                kind: "calls".into()
+            }),
+            "- app.client -[calls]-> app.server"
+        );
+    }
+
+    #[test]
+    fn a_changed_relation_lists_its_kind_names_and_technology() {
+        assert_eq!(
+            line(Change::RelationChanged {
+                from: "a".into(),
+                to: "b".into(),
+                kind: Some(("calls".into(), "constructs".into())),
+                label: true,
+                added: vec!["New".into()],
+                removed: vec!["old".into()],
+                technology: true
+            }),
+            "~ a -> b: calls to constructs, + New, - old, technology"
+        );
+    }
+
+    #[test]
+    fn a_relation_whose_technology_alone_changed_says_only_technology() {
+        assert_eq!(
+            line(Change::RelationChanged {
+                from: "a".into(),
+                to: "b".into(),
+                kind: None,
+                label: false,
+                added: vec![],
+                removed: vec![],
+                technology: true
+            }),
+            "~ a -> b: technology"
+        );
+    }
+
+    #[test]
+    fn a_relabeled_relation_with_no_name_gained_or_lost_says_label() {
+        assert_eq!(
+            line(Change::RelationChanged {
+                from: "a".into(),
+                to: "b".into(),
+                kind: None,
+                label: true,
+                added: vec![],
+                removed: vec![],
+                technology: false
+            }),
+            "~ a -> b: label"
+        );
+    }
+
+    #[test]
+    fn a_summary_heads_its_lines_with_the_count() {
+        let changes = [Change::ElementAdded {
+            id: "app.store".into(),
+            kind: "component".into(),
+        }];
+        assert_eq!(
+            summary("m.c4", Some(&changes), &rust_noun),
+            ["m.c4: 1 change", "  + module app.store"]
+        );
+    }
+
+    #[test]
+    fn a_summary_without_element_or_relation_changes_points_at_the_diff() {
+        assert_eq!(
+            summary("m.c4", Some(&[]), &rust_noun),
+            ["m.c4: no element or relation changed; see the diff"]
+        );
+    }
+
+    #[test]
+    fn a_summary_of_a_model_this_release_did_not_write_says_so() {
+        assert_eq!(
+            summary("m.c4", None, &rust_noun),
+            ["m.c4: not a model this release wrote; see the diff"]
+        );
     }
 }

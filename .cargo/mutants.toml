@@ -45,7 +45,8 @@ examine_globs = ["crates/*/src/**/*.rs"]
 # Every exclude carries its equivalence argument next to it. The LikeC4
 # wrappers need none: the CLI tests run them with an empty PATH, so a
 # stubbed wrapper exits 0 where the real one must exit 2.
-# exclude_re = [
-#   # shoelace: += -> -= is .abs()'d two lines later, so the sign is lost
-#   "shoelace_area.*replace \\+= with -=",
-# ]
+exclude_re = [
+  # The trait's default body is `None`; replacing it with `None` is the
+  # same function. Rust's own nouns are mutated and tested.
+  "replace Frontend::noun -> Option<&'static str> with None",
+]

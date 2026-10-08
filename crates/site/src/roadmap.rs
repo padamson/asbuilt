@@ -160,6 +160,12 @@ pub const ITEMS: &[Item] = &[
         "A deployment front-end",
         "Infrastructure as the model's deployment section, which is empty today.",
     ),
+    later(
+        Horizon::Later,
+        "roadmap-later-diff",
+        "Architecture diff between revisions",
+        "asbuilt diff main..HEAD names how the architecture changed between two commits (modules added, relations moved), for a pull request comment or a release note.",
+    ),
 ];
 
 /// The items in one column, in roadmap order.

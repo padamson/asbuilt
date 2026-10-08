@@ -34,7 +34,7 @@ enum Command {
         #[arg(short, long, value_name = "PATH")]
         output: Option<PathBuf>,
     },
-    /// Survey in memory and exit 1 with a diff if the committed model differs.
+    /// Survey in memory; if the committed model differs, print the diff, name what changed and exit 1.
     Check {
         /// The repository root; the current directory by default.
         root: Option<PathBuf>,

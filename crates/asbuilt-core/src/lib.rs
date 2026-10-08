@@ -26,7 +26,7 @@ pub mod read;
 pub mod svg;
 pub mod theme;
 
-pub use check::{Outcome, compare};
+pub use check::{Change, ElementField, Outcome, compare, summarize};
 pub use config::{
     ColorScheme, Config, DocsConfig, External, ExternalRelation, OutputConfig, ThemeColor,
 };

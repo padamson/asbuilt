@@ -17,6 +17,14 @@ pub trait Frontend {
     /// marker files (`Cargo.toml`, `package.json`, ...).
     fn detect(&self, root: &Path) -> bool;
     fn analyze(&self, root: &Path, config: &Config) -> Result<Model>;
+    /// The word this front-end's language has for an element of `kind`
+    /// (a model kind keyword), for what people read: Rust calls a
+    /// `container` a crate and a `component` a module. The kinds stay the
+    /// model's; `None`, the default, keeps the kind's own name.
+    fn noun(&self, kind: &str) -> Option<&'static str> {
+        let _ = kind;
+        None
+    }
 }
 
 /// The model of `root`: every front-end that detects it, merged, with
@@ -191,5 +199,16 @@ mod tests {
             survey(Path::new("."), &Config::default(), &[&a, &b]),
             Err(Error::DuplicateId { .. })
         ));
+    }
+
+    #[test]
+    fn a_front_end_without_its_own_nouns_keeps_every_kind_s_name() {
+        let fake = Fake {
+            name: "fake",
+            detects: true,
+            elements: vec![],
+            fails: false,
+        };
+        assert_eq!(fake.noun("container"), None);
     }
 }

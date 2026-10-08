@@ -3,7 +3,7 @@ name: asbuilt
 description: Use when a repo has an `asbuilt.toml` or a `docs/architecture/model.c4`, when `asbuilt check` fails in a pre-commit hook or CI, or when asked to draw, update or explain a code base's architecture with LikeC4. Covers survey, check, externals and theme config, curated views, the documentation tree, and what the model does and does not record.
 license: MIT OR Apache-2.0
 metadata:
-  version: "0.5.18"
+  version: "0.5.19"
 ---
 
 # asbuilt
@@ -12,7 +12,8 @@ metadata:
 describes the code as it is, the way as-built drawings describe a
 building as constructed rather than as designed. `asbuilt survey` reads
 the code base and writes the `.c4` model; `asbuilt check` surveys again
-and exits 1 with a diff when the committed model no longer matches.
+and exits 1 with a diff, naming what changed, when the committed model
+no longer matches.
 Nothing in the model is hand-written and nothing in the code is
 annotated, so the model cannot drift from the code without `check`
 saying so.
