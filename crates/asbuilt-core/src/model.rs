@@ -108,6 +108,35 @@ impl RelationKind {
         }
     }
 
+    /// The line LikeC4 draws it with: solid for the strong evidence (it
+    /// implements, constructs or calls), dotted for the weak (it names a
+    /// type, or uses). An edge that merges relations of several kinds
+    /// keeps their line when they share one and is dashed (LikeC4's
+    /// default) when they do not.
+    pub(crate) fn line(self) -> &'static str {
+        match self {
+            RelationKind::Implements | RelationKind::Constructs | RelationKind::Calls => "solid",
+            RelationKind::NamesType | RelationKind::Uses => "dotted",
+        }
+    }
+
+    /// The arrowhead, one per kind, so kinds that share a line still
+    /// differ: a hollow triangle for implements (UML's for realizing an
+    /// interface), a filled diamond at the constructed end for constructs,
+    /// a chevron for calls, a filled dot for names, a hollow dot for uses.
+    /// No kind takes the filled triangle (`normal`, LikeC4's default
+    /// head): LikeC4 gives it to an edge merging relations of several
+    /// kinds, so it marks one whatever the line.
+    pub(crate) fn head(self) -> &'static str {
+        match self {
+            RelationKind::Implements => "onormal",
+            RelationKind::Constructs => "diamond",
+            RelationKind::Calls => "vee",
+            RelationKind::NamesType => "dot",
+            RelationKind::Uses => "odot",
+        }
+    }
+
     /// Every kind, in precedence order; the emitter declares them all.
     pub const ALL: [RelationKind; 5] = [
         RelationKind::Implements,
@@ -616,5 +645,19 @@ mod tests {
             Some("b")
         );
         assert_eq!(model.element(&id("a.b.c")), None);
+    }
+
+    #[test]
+    fn each_relation_kind_is_drawn_with_its_line_and_head() {
+        assert_eq!(
+            RelationKind::ALL.map(|kind| (kind.keyword(), kind.line(), kind.head())),
+            [
+                ("implements", "solid", "onormal"),
+                ("constructs", "solid", "diamond"),
+                ("calls", "solid", "vee"),
+                ("names", "dotted", "dot"),
+                ("uses", "dotted", "odot"),
+            ]
+        );
     }
 }

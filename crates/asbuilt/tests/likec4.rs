@@ -5,6 +5,8 @@
 
 mod common;
 
+use std::collections::BTreeMap;
+
 use asbuilt::likec4;
 use asbuilt_core::model::{Element, ElementKind, Id, Model, Relation, RelationKind};
 use asbuilt_core::{EmitOptions, emit};
@@ -225,6 +227,131 @@ fn likec4_export_json_is_free_of_relative_links_and_keeps_the_elements() {
     assert!(
         text.ends_with("}\n"),
         "pretty-printed with a trailing newline"
+    );
+}
+
+/// A crate whose modules are joined by one relation of each kind, so every
+/// edge in its view carries a single kind.
+fn one_relation_of_each_kind() -> Model {
+    let mut elements = vec![element("app", ElementKind::Container)];
+    for name in ["a", "b", "c", "d", "e", "f"] {
+        elements.push(element(&format!("app.{name}"), ElementKind::Component));
+    }
+    Model {
+        elements,
+        relations: vec![
+            relation("app.a", "app.b", RelationKind::Implements, &["T"]),
+            relation("app.a", "app.c", RelationKind::Constructs, &["C"]),
+            relation("app.a", "app.d", RelationKind::Calls, &["f"]),
+            relation("app.a", "app.e", RelationKind::NamesType, &["N"]),
+            relation("app.a", "app.f", RelationKind::Uses, &["u"]),
+        ],
+        ..Default::default()
+    }
+}
+
+/// One attribute's value in a dot statement, unquoted.
+fn dot_attribute(statement: &str, key: &str) -> Option<String> {
+    let rest = statement.split(&format!("{key}=")).nth(1)?;
+    let value: String = rest
+        .chars()
+        .take_while(|c| !matches!(c, ',' | '\n' | ']'))
+        .collect();
+    Some(value.trim().trim_matches('"').to_string())
+}
+
+/// Every edge of a LikeC4 dot file, by its target's model id: the
+/// arrowhead and the line style Graphviz draws it with.
+fn edges_by_target(dot: &str) -> BTreeMap<String, (String, String)> {
+    let statements: Vec<&str> = dot.split("];").collect();
+    let ids: BTreeMap<&str, String> = statements
+        .iter()
+        .filter(|s| !s.contains(" -> "))
+        .filter_map(|s| {
+            let name = s.split(" [").next()?.split_whitespace().last()?;
+            Some((name, dot_attribute(s, "likec4_id")?))
+        })
+        .collect();
+    statements
+        .iter()
+        .filter_map(|s| {
+            let target = s.split(" -> ").nth(1)?.split(" [").next()?.trim();
+            Some((
+                ids.get(target)?.clone(),
+                (dot_attribute(s, "arrowhead")?, dot_attribute(s, "style")?),
+            ))
+        })
+        .collect()
+}
+
+/// `model` emitted and rendered; the dot file of `view`.
+fn rendered(model: &Model, view: &str) -> String {
+    let ws = Workspace::new();
+    let text = emit(
+        model,
+        &EmitOptions::for_output_path("docs/architecture/model.c4"),
+    );
+    ws.write("docs/architecture/model.c4", &text);
+    let dir = ws.root().join("docs/architecture");
+    likec4::render(&dir, &dir.join("views")).unwrap();
+    std::fs::read_to_string(dir.join(format!("views/{view}.dot"))).unwrap()
+}
+
+#[test]
+#[ignore = "needs npx (Node), network and Graphviz dot; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_render_draws_each_relation_kind_with_its_head_and_line() {
+    let pair = |head: &str, line: &str| (head.to_string(), line.to_string());
+    assert_eq!(
+        edges_by_target(&rendered(&one_relation_of_each_kind(), "view_app")),
+        BTreeMap::from([
+            ("app.b".to_string(), pair("onormal", "solid")),
+            ("app.c".to_string(), pair("diamond", "solid")),
+            ("app.d".to_string(), pair("vee", "solid")),
+            ("app.e".to_string(), pair("dot", "dotted")),
+            ("app.f".to_string(), pair("odot", "dotted")),
+        ])
+    );
+}
+
+/// Two crates and two module relations between them, of `first` and
+/// `second`: the index draws one crate-to-crate edge for both.
+fn merged(first: RelationKind, second: RelationKind) -> Model {
+    Model {
+        elements: vec![
+            element("x", ElementKind::Container),
+            element("x.m", ElementKind::Component),
+            element("x.n", ElementKind::Component),
+            element("y", ElementKind::Container),
+            element("y.p", ElementKind::Component),
+        ],
+        relations: vec![
+            relation("x.m", "y.p", first, &["a"]),
+            relation("x.n", "y.p", second, &["b"]),
+        ],
+        ..Default::default()
+    }
+}
+
+/// The merged edge into `y` on the index: its head and line.
+fn merged_edge(first: RelationKind, second: RelationKind) -> Option<(String, String)> {
+    edges_by_target(&rendered(&merged(first, second), "index")).remove("y")
+}
+
+#[test]
+#[ignore = "needs npx (Node), network and Graphviz dot; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_render_draws_an_edge_merging_kinds_of_one_line_with_a_filled_triangle_on_it() {
+    assert_eq!(
+        merged_edge(RelationKind::Implements, RelationKind::Calls),
+        Some(("normal".to_string(), "solid".to_string()))
+    );
+}
+
+#[test]
+#[ignore = "needs npx (Node), network and Graphviz dot; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_render_draws_an_edge_merging_kinds_of_two_lines_with_a_filled_triangle_dashed() {
+    assert_eq!(
+        merged_edge(RelationKind::Implements, RelationKind::Uses),
+        Some(("normal".to_string(), "dashed".to_string()))
     );
 }
 

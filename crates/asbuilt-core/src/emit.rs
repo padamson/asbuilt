@@ -140,7 +140,14 @@ fn emit_specification(out: &mut String, model: &Model, theme: &BTreeMap<String, 
         writeln!(out, "  tag {tag}").unwrap();
     }
     for kind in RelationKind::ALL {
-        writeln!(out, "  relationship {}", kind.keyword()).unwrap();
+        writeln!(
+            out,
+            "  relationship {} {{\n    line {}\n    head {}\n  }}",
+            kind.keyword(),
+            kind.line(),
+            kind.head()
+        )
+        .unwrap();
     }
     out.push_str("}\n");
 }
@@ -402,11 +409,11 @@ mod tests {
             "  element tests",
             "  tag external",
             "  tag tests",
-            "  relationship implements",
-            "  relationship constructs",
-            "  relationship calls",
-            "  relationship names",
-            "  relationship uses",
+            "  relationship implements {",
+            "  relationship constructs {",
+            "  relationship calls {",
+            "  relationship names {",
+            "  relationship uses {",
         ] {
             assert!(
                 spec.contains(&format!("{line}\n")),
@@ -713,5 +720,14 @@ mod tests {
             "../../../"
         );
         assert_eq!(EmitOptions::for_output_path("a/m.c4").link_prefix, "../");
+    }
+
+    #[test]
+    fn a_relationship_kind_is_declared_with_its_line_and_head() {
+        let text = emit(&sample(), &options());
+        assert!(
+            text.contains("  relationship implements {\n    line solid\n    head onormal\n  }\n"),
+            "{text}"
+        );
     }
 }

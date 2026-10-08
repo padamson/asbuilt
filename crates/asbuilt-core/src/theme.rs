@@ -166,7 +166,8 @@ pub fn stylesheet(kinds: &BTreeSet<String>, theme: &BTreeMap<String, ThemeColor>
         "svg.c4 { display: block; width: 100%; height: auto; }\n\
          svg.c4 .cluster text { fill: var(--muted); fill-opacity: 1; }\n\
          svg.c4 .edge path { stroke: var(--c4-edge); }\n\
-         svg.c4 .edge polygon:not(.c4-label-bg) { fill: var(--c4-edge); stroke: var(--c4-edge); }\n\
+         svg.c4 .edge :is(polygon, ellipse):not(.c4-label-bg):not([fill=\"none\"]) { fill: var(--c4-edge); stroke: var(--c4-edge); }\n\
+         svg.c4 .edge :is(polygon, ellipse)[fill=\"none\"] { stroke: var(--c4-edge); }\n\
          svg.c4 .edge .c4-label-bg { fill: var(--c4-label-bg); fill-opacity: 1; }\n\
          svg.c4 .edge text { fill: var(--c4-edge-text); }\n",
     );
@@ -390,6 +391,26 @@ mod tests {
         assert!(
             css.contains(
                 "svg.c4 .edge .c4-label-bg { fill: var(--c4-label-bg); fill-opacity: 1; }"
+            ),
+            "{css}"
+        );
+    }
+
+    #[test]
+    fn a_filled_arrowhead_takes_the_edge_color() {
+        let css = stylesheet(&kinds(&["container"]), &BTreeMap::new());
+        assert!(
+            css.contains("svg.c4 .edge :is(polygon, ellipse):not(.c4-label-bg):not([fill=\"none\"]) { fill: var(--c4-edge); stroke: var(--c4-edge); }"),
+            "{css}"
+        );
+    }
+
+    #[test]
+    fn a_hollow_arrowhead_keeps_its_hollow_and_takes_the_edge_color_as_its_outline() {
+        let css = stylesheet(&kinds(&["container"]), &BTreeMap::new());
+        assert!(
+            css.contains(
+                "svg.c4 .edge :is(polygon, ellipse)[fill=\"none\"] { stroke: var(--c4-edge); }"
             ),
             "{css}"
         );

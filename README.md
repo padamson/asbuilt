@@ -95,7 +95,8 @@ a `tests`, an `examples` and a `bin` element per crate that has them
 (each a kind of its own, so `[theme]` colors them apart), and one
 relation per pair of modules with the referenced item names as the label
 and the strongest evidence as the kind (`implements`, `constructs`,
-`calls`, `names`, `uses`). Descriptions come from the first paragraph of
+`calls`, `names`, `uses`), each drawn with its own line and arrowhead.
+Descriptions come from the first paragraph of
 each module's `//!` doc. Paths resolve through `pub use` chains and glob
 re-exports to the defining module; an edge from a module to its own
 ancestor or descendant is never recorded. A macro's body counts when it

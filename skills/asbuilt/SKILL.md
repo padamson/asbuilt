@@ -3,7 +3,7 @@ name: asbuilt
 description: Use when a repo has an `asbuilt.toml` or a `docs/architecture/model.c4`, when `asbuilt check` fails in a pre-commit hook or CI, or when asked to draw, update or explain a code base's architecture with LikeC4. Covers survey, check, externals and theme config, curated views, the documentation tree, and what the model does and does not record.
 license: MIT OR Apache-2.0
 metadata:
-  version: "0.5.20"
+  version: "0.5.21"
 ---
 
 # asbuilt
@@ -62,7 +62,12 @@ saying so.
   component.
 - One **relation** per (source module, target module) pair, kind the
   strongest evidence found (`implements` > `constructs` > `calls` >
-  `names` > `uses`), label the referenced item names, sorted. Paths
+  `names` > `uses`), label the referenced item names, sorted. Each
+  kind is drawn its own way: solid lines for `implements` (hollow
+  triangle), `constructs` (diamond at the constructed end) and `calls`
+  (chevron), dotted for `names` (filled dot) and `uses` (hollow dot). A
+  filled triangle marks an edge merging relations of several kinds; its
+  line is theirs when they share one, dashed when they do not. Paths
   resolve through `pub use` chains and glob re-exports to the defining
   module. An edge between a module and its own ancestor or descendant
   is never recorded: `mod x;` is structure, not coupling.
