@@ -657,6 +657,9 @@
   .text-rust-500 {
     color: var(--color-rust-500);
   }
+  .lowercase {
+    text-transform: lowercase;
+  }
   .uppercase {
     text-transform: uppercase;
   }
