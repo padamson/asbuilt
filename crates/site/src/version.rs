@@ -1,7 +1,9 @@
-//! The build's version identity and the one place the site's path prefix
-//! is spelled. `build.rs` injects `SITE_VERSION`; the deploy serves every
-//! snapshot under `/asbuilt/<dev|vX.Y.Z>/` (project Pages), and only the
-//! version switcher needs to know that: every other asset path is relative.
+//! The build's version identity, the one place the site's path prefix is
+//! spelled, and the fetch of the files the deploy shares between versions.
+//! `build.rs` injects `SITE_VERSION`; the deploy serves every snapshot
+//! under `/asbuilt/<dev|vX.Y.Z>/` (project Pages), and only what reads a
+//! shared file (the version switcher's manifest, the roadmap's data) needs
+//! to know that: every other asset path is relative.
 
 /// The snapshot identifier: `"dev"` for the main-HEAD build, or the
 /// release version (e.g. `"0.1.0"`).
@@ -19,6 +21,17 @@ pub fn is_dev() -> bool {
 /// Where the deploy writes the manifest of published versions.
 pub fn manifest_url() -> String {
     format!("{SITE_PREFIX}/versions.json")
+}
+
+/// A JSON file the deploy shares between versions, or `None` when it
+/// cannot be fetched or read (no deploy yet, a local preview, a shape this
+/// build does not know): every caller has a fallback of its own.
+pub async fn fetch_json<T: serde::de::DeserializeOwned>(url: &str) -> Option<T> {
+    let response = gloo_net::http::Request::get(url).send().await.ok()?;
+    if !response.ok() {
+        return None;
+    }
+    response.json::<T>().await.ok()
 }
 
 /// The root of a snapshot: `dev` or a version number.

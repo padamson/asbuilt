@@ -408,6 +408,28 @@ async fn site_dev_build_reflects_unreleased_state() {
     browser.close().await.expect("close browser");
 }
 
+/// main's roadmap, which every release build fetches from the dev build so
+/// any version shows the current one.
+const CURRENT_ROADMAP_PATH: &str = "/asbuilt/dev/roadmap.json";
+
+/// A roadmap no build has compiled in, served where main's is published.
+/// A release snapshot showing it shows main's, not its own.
+fn current_roadmap() -> Router {
+    Router::new().route(
+        CURRENT_ROADMAP_PATH,
+        axum::routing::get(|| async {
+            (
+                [(CONTENT_TYPE, "application/json")],
+                r#"{"milestone": "9.9.0", "next_milestone": "9.10.0", "items": [
+                    {"id": "roadmap-now-fetched", "title": "Fetched", "blurb": "From main.", "horizon": "now", "status": "done"},
+                    {"id": "roadmap-next-fetched", "title": "Next", "blurb": "", "horizon": "next"},
+                    {"id": "roadmap-later-fetched", "title": "Later", "blurb": "", "horizon": "later"}
+                ]}"#,
+            )
+        }),
+    )
+}
+
 /// The roadmap's progress bar agrees with its Now column: the bar's value
 /// is the number of done items and its maximum the number of items.
 #[tokio::test]
@@ -476,8 +498,13 @@ async fn site_deployed_snapshot_is_sound() {
     // manifest at the site prefix shared by every snapshot.
     let mount = base.trim_end_matches('/').to_string();
     let manifest = format!(r#"{{"latest":"{version}","versions":["{version}"]}}"#);
-    let overlay =
+    let mut overlay =
         versions_manifest(&backend_answering(&manifest)).nest_service(&mount, ServeDir::new(&dist));
+    // gh-pages always has the dev build beside a release, and a release
+    // fetches main's roadmap from it.
+    if version != "dev" {
+        overlay = overlay.merge(current_roadmap());
+    }
     let (addr, server) = serve_with(&dist, Some(overlay)).await;
     let (_pw, browser, page) = launch_page().await;
 
@@ -526,6 +553,18 @@ async fn site_deployed_snapshot_is_sound() {
             .await
             .expect("count unreleased badges");
         assert_eq!(unreleased, 0, "unreleased cards are dev-only");
+        expect(page.locator("#roadmap-now h3"))
+            .to_have_text("Now · 9.9.0")
+            .await
+            .expect("a release shows main's roadmap, not its own");
+        expect(page.locator("#roadmap-now-fetched"))
+            .to_be_visible()
+            .await
+            .expect("a release lists main's items");
+        expect(page.locator("#roadmap-current"))
+            .to_be_visible()
+            .await
+            .expect("a release says the roadmap is main's");
     }
     expect(page.locator("#version-select"))
         .to_contain_text(if version == "dev" { "dev (main)" } else { "v" })

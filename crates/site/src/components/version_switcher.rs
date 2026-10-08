@@ -1,4 +1,4 @@
-use crate::version::{SITE_VERSION, is_dev, manifest_url, snapshot_url};
+use crate::version::{SITE_VERSION, fetch_json, is_dev, manifest_url, snapshot_url};
 use leptos::prelude::*;
 use leptos::task::spawn_local;
 use serde::Deserialize;
@@ -107,10 +107,7 @@ pub fn VersionSwitcher() -> impl IntoView {
     // Fetch the manifest so a snapshot can list versions released after it was
     // built. Failure (e.g. no manifest yet) leaves just the current version.
     spawn_local(async move {
-        if let Ok(resp) = gloo_net::http::Request::get(&manifest_url()).send().await
-            && resp.ok()
-            && let Ok(m) = resp.json::<Manifest>().await
-        {
+        if let Some(m) = fetch_json::<Manifest>(&manifest_url()).await {
             manifest.set(Some(m));
         }
     });
