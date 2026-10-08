@@ -81,7 +81,8 @@
 svg.c4 { display: block; width: 100%; height: auto; }
 svg.c4 .cluster text { fill: var(--muted); fill-opacity: 1; }
 svg.c4 .edge path { stroke: var(--c4-edge); }
-svg.c4 .edge polygon:not(.c4-label-bg) { fill: var(--c4-edge); stroke: var(--c4-edge); }
+svg.c4 .edge :is(polygon, ellipse):not(.c4-label-bg):not([fill="none"]) { fill: var(--c4-edge); stroke: var(--c4-edge); }
+svg.c4 .edge :is(polygon, ellipse)[fill="none"] { stroke: var(--c4-edge); }
 svg.c4 .edge .c4-label-bg { fill: var(--c4-label-bg); fill-opacity: 1; }
 svg.c4 .edge text { fill: var(--c4-edge-text); }
 svg.c4 .node.c4-k-bin > :is(polygon, path, ellipse, polyline) { fill: var(--c4-bin-fill); stroke: var(--c4-bin-stroke); stroke-width: 1px; vector-effect: non-scaling-stroke; }

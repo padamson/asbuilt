@@ -61,16 +61,16 @@
 <!-- app&#45;&gt;components -->
 <g id="edge1" class="edge">
 <title>app&#45;&gt;components</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M978.37,-704.93C915.08,-662.42 839.36,-611.57 775.24,-568.51"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="776.36,-566.1 768.67,-564.1 773.43,-570.46 776.36,-566.1"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M978.37,-704.93C914.57,-662.08 838.13,-610.75 773.68,-567.46"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="771.16" cy="-565.77" rx="3" ry="3"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="887,-624 887,-645 914,-645 914,-624 887,-624"/>
 <text text-anchor="start" x="890.5" y="-631.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
 </g>
 <!-- components&#45;&gt;roadmap -->
 <g id="edge2" class="edge">
 <title>components&#45;&gt;roadmap</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M563.2,-383.93C525.41,-337.7 479.22,-281.18 440.73,-234.1"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="442.61,-232.25 435.83,-228.11 438.55,-235.58 442.61,-232.25"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M563.2,-383.93C525.41,-337.7 479.22,-281.18 440.73,-234.1"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="435.83,-228.11 443.19,-231.78 438.59,-230.7 440.97,-233.6 440.58,-233.92 440.19,-234.23 437.82,-231.33 437.97,-236.05 435.83,-228.11 435.83,-228.11"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="507,-288 507,-324 712,-324 712,-288 507,-288"/>
 <text text-anchor="start" x="510.5" y="-309.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Horizon, Item, Roadmap, Status,</text>
 <text text-anchor="start" x="510.5" y="-294.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">current_url, roadmap, says_main</text>
@@ -78,24 +78,24 @@
 <!-- components&#45;&gt;snippets -->
 <g id="edge3" class="edge">
 <title>components&#45;&gt;snippets</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M646.35,-564.26C651.15,-605.64 656.87,-654.9 661.77,-697.18"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="659.17,-697.57 662.64,-704.72 664.39,-696.96 659.17,-697.57"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M646.35,-564.26C651.21,-606.16 657.01,-656.13 661.95,-698.75"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="662.3" cy="-701.74" rx="3" ry="3"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="655,-624 655,-645 712,-645 712,-624 655,-624"/>
 <text text-anchor="start" x="658.5" y="-630.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">snippets</text>
 </g>
 <!-- components&#45;&gt;version -->
 <g id="edge4" class="edge">
 <title>components&#45;&gt;version</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M520.09,-564.1C464.9,-606.52 398.9,-657.26 342.95,-700.26"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="341.22,-698.28 336.88,-704.93 344.42,-702.44 341.22,-698.28"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M520.09,-564.1C464.9,-606.52 398.9,-657.26 342.95,-700.26"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="336.88,-704.93 340.77,-697.68 339.54,-702.25 342.52,-699.96 342.82,-700.36 343.13,-700.75 340.15,-703.04 344.88,-703.03 336.88,-704.93 336.88,-704.93"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="440,-624 440,-645 467,-645 467,-624 440,-624"/>
 <text text-anchor="start" x="443.5" y="-631.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
 </g>
 <!-- roadmap&#45;&gt;version -->
 <g id="edge5" class="edge">
 <title>roadmap&#45;&gt;version</title>
-<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="5,2" d="M343.69,-228.09C317.08,-350.81 269.34,-571.03 241.91,-697.54"/>
-<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="239.32,-697.1 240.3,-704.98 244.45,-698.21 239.32,-697.1"/>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M343.69,-228.09C317.08,-350.81 269.34,-571.03 241.91,-697.54"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="240.3,-704.98 238.59,-696.94 240.6,-701.21 241.4,-697.55 241.89,-697.65 242.38,-697.76 241.58,-701.42 245.19,-698.37 240.3,-704.98 240.3,-704.98"/>
 <polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="308,-463.5 308,-484.5 392,-484.5 392,-463.5 308,-463.5"/>
 <text text-anchor="start" x="311" y="-469.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">snapshot_url</text>
 </g>
