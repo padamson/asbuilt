@@ -37,8 +37,10 @@ main's, so the roadmap is current whichever version a visitor views; it shows
 nothing until the fetch answers, and its own copy only if the fetch fails (a
 local preview), so it never shows its release's roadmap as current. A status or
 column a newer main adds reads as unknown rather than failing the fetch.
-Snapshots published before this (v0.1.0, v0.2.0) keep the roadmap they shipped
-with.
+v0.2.0 was rebuilt once for this, from the tag `site-v0.2.0`: the v0.2.0
+release with only the live-roadmap change applied, so its snapshot is otherwise
+as it shipped (republish with `gh workflow run pages.yml -f version=0.2.0 --ref
+site-v0.2.0`). v0.1.0 has no roadmap section, so nothing on it goes stale.
 
 ## How a build knows its version
 
