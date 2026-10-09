@@ -247,6 +247,16 @@ jobs:
         with:
           toolchain: stable
 
+      # The fixture's committed model follows main's emitter, not this
+      # release's, so the release surveys it first: the check then proves
+      # the action, not the release agreeing with main.
+      - name: Survey the consumer fixture with a released asbuilt
+        uses: ./
+        with:
+          version: "0.2.0"
+          working-directory: crates/asbuilt/tests/fixtures/consumer
+          command: survey
+
       - name: Check the consumer fixture with a released asbuilt
         id: released
         uses: ./
