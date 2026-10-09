@@ -385,6 +385,53 @@ async fn site_architecture_views_are_legible_and_can_go_wide() {
     session.browser.close().await.expect("close browser");
 }
 
+/// Each diagram carries its legend; Legend hides it, and the choice holds
+/// on every other page of the site.
+#[tokio::test]
+#[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
+async fn site_architecture_legend_shows_until_hidden_and_stays_hidden() {
+    let container = committed_containers()
+        .into_iter()
+        .next()
+        .expect("the model has a crate");
+    let root = serve_snapshot().await;
+    let session = open_session(ColorScheme::Light).await;
+    let page = &session.page;
+    page.goto(&format!("{root}index.html"), None)
+        .await
+        .expect("navigate to the index");
+    let legend = page.locator("figure[data-viewer-active] .legend").first();
+    expect(legend.clone())
+        .to_be_visible()
+        .await
+        .expect("the diagram shows its legend");
+
+    page.locator("[data-viewer-legend]")
+        .first()
+        .click(None)
+        .await
+        .expect("press Legend");
+    expect(legend)
+        .to_be_hidden()
+        .await
+        .expect("Legend hides the legend");
+
+    page.goto(&format!("{root}containers/{container}.html"), None)
+        .await
+        .expect("navigate to a crate's page");
+    // The button proves the page has a diagram whose legend could show:
+    // hidden on a page with no diagram would prove nothing.
+    expect(page.locator("[data-viewer-legend]").first())
+        .to_have_attribute("aria-pressed", "false")
+        .await
+        .expect("the crate's diagram has Legend off");
+    expect(page.locator("figure[data-viewer-active] .legend").first())
+        .to_be_hidden()
+        .await
+        .expect("the legend stays hidden on another page");
+    session.browser.close().await.expect("close browser");
+}
+
 /// The rendered width of a located element.
 async fn width_of(locator: &Locator) -> f64 {
     locator

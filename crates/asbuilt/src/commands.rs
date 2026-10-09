@@ -791,6 +791,16 @@ pub fn docs(root: &Path, args: &DocsArgs<'_>, err: &mut dyn Write) -> Result<i32
         scheme_toggle: !no_scheme_toggle && config.docs.scheme_toggle.unwrap_or(true),
         viewer: !no_viewer && config.docs.viewer.unwrap_or(true),
         asbuilt_version: Some(env!("CRATE_VERSION_WITH_BUILD").to_string()),
+        nouns: {
+            let detected = detected(root);
+            asbuilt_core::model::SURVEY_KINDS
+                .iter()
+                .filter_map(|kind| {
+                    let word = detected.iter().find_map(|f| f.noun(kind.keyword()))?;
+                    Some((kind.keyword().to_string(), word.to_string()))
+                })
+                .collect()
+        },
     };
     let site = generate(&model, &options);
 

@@ -121,8 +121,17 @@ Escape, the close button or a click elsewhere dismisses it. The bar's hint names
 Ctrl elsewhere) and is left out on a touch-only device. The other
 controls: Fit (the whole view at any scale), 1:1 (as
 LikeC4 laid it out), Wide (every figure on the site takes the window's
-width, kept in `localStorage` under `asbuilt-docs-wide`) and
-Fullscreen. The controls
+width, kept in `localStorage` under `asbuilt-docs-wide`), Legend and
+Fullscreen. Every diagram carries a legend of what it draws: each
+element kind, by the surveyed language's word with a swatch in its
+color, and each relation kind its edges stand for, with a sample of
+its line and head (a filled triangle is an edge merging several kinds:
+"several strong kinds" on a solid line, "several weak kinds" on a
+dotted one, "several kinds" dashed), read off the drawing itself, so a filtered
+view lists only what it shows. The viewer makes it the frame's last
+strip, inside its border, and Legend hides every figure's, kept under
+`asbuilt-docs-legend`; without the viewer it is a row under the
+diagram. Its styles are in `theme.css`, so an embedded figure has them. The controls
 ship hidden and the script reveals them, so without JavaScript a view
 is scaled to the column as before. `--no-viewer` (or `[docs] viewer =
 false`) leaves the viewer, its stylesheet and its script out. A host

@@ -89,7 +89,7 @@ enum Command {
         /// Leave out the visitor's System / Light / Dark control and its script.
         #[arg(long)]
         no_scheme_toggle: bool,
-        /// Leave out the diagram viewer (Fit, 1:1, Wide, Fullscreen) and its script.
+        /// Leave out the diagram viewer (Fit, 1:1, Wide, Legend, Fullscreen) and its script.
         #[arg(long)]
         no_viewer: bool,
     },

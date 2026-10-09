@@ -13,7 +13,7 @@
 //! cannot run, and the rewrite drops scripts, `foreignObject` and event
 //! handlers besides. Pure string work over Graphviz's own output.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use crate::docs::escape;
 
@@ -34,13 +34,16 @@ pub struct Node {
     pub href: Option<String>,
 }
 
-/// A view inlined for a page: the markup, and the edges it draws as
-/// pairs of LikeC4 ids, in drawing order, so the page can say what each
-/// stands for.
-#[derive(Debug, Clone, PartialEq, Eq)]
+/// A view inlined for a page: the markup, the edges it draws as pairs of
+/// LikeC4 ids, in drawing order, so the page can say what each stands
+/// for, and for its legend the element kinds its nodes and group boxes
+/// are and the (arrowhead, line) pairs its edges are drawn with.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct Inlined {
     pub html: String,
     pub edges: Vec<(String, String)>,
+    pub kinds: BTreeSet<String>,
+    pub edge_styles: BTreeSet<(String, String)>,
 }
 
 /// The clusters an edge is drawn out of and into (`ltail`, `lhead`),
@@ -75,6 +78,39 @@ fn compound_ends(dot: &str) -> BTreeMap<(String, String), (Option<String>, Optio
         }
     }
     ends
+}
+
+/// How a view's edges are drawn: each edge statement's arrowhead and line
+/// style, as LikeC4 wrote them for Graphviz, with Graphviz's own defaults
+/// (`normal`, solid) where one is absent. What the legend lists is what
+/// the diagram shows, whatever the view's predicates kept.
+fn edge_styles(dot: &str) -> BTreeSet<(String, String)> {
+    let mut styles = BTreeSet::new();
+    let mut current: Option<(Option<String>, Option<String>)> = None;
+    for line in dot.lines().map(str::trim) {
+        if line
+            .split_once('[')
+            .is_some_and(|(head, _)| head.contains("->"))
+        {
+            current = Some((None, None));
+        }
+        if let Some((head, style)) = &mut current {
+            for (attr, slot) in [("arrowhead=", &mut *head), ("style=", &mut *style)] {
+                if let Some(at) = line.find(attr) {
+                    *slot = Some(attr_value(&line[at + attr.len()..]));
+                }
+            }
+            if line.ends_with("];") {
+                let (head, style) = current.take().unwrap_or_default();
+                let style = style.filter(|s| !s.is_empty());
+                styles.insert((
+                    head.unwrap_or_else(|| "normal".into()),
+                    style.unwrap_or_else(|| "solid".into()),
+                ));
+            }
+        }
+    }
+    styles
 }
 
 /// The two Graphviz names an edge's title joins, `a->b` as the SVG
@@ -289,6 +325,7 @@ pub fn inline(
     let ids = likec4_ids(dot);
     let compound = compound_ends(dot);
     let mut edges: Vec<(String, String)> = Vec::new();
+    let mut kinds: BTreeSet<String> = BTreeSet::new();
     let mut rest = &source.svg[source.svg.find("<svg")?..];
     let mut out = String::with_capacity(rest.len());
     let mut groups: Vec<Group> = Vec::new();
@@ -353,6 +390,7 @@ pub fn inline(
                     }
                 } else if let Some(node) = ids.get(name).and_then(|id| nodes.get(id)) {
                     out.insert_str(at, &format!(" c4-k-{}", node.kind));
+                    kinds.insert(node.kind.clone());
                     if group.role == Some(Role::Node) {
                         // The element names itself on hover, and its node
                         // is a link to where the page documents it.
@@ -441,7 +479,12 @@ pub fn inline(
         tag.write(&mut out);
     }
     out.push_str(rest);
-    Some(Inlined { html: out, edges })
+    Some(Inlined {
+        html: out,
+        edges,
+        kinds,
+        edge_styles: edge_styles(dot),
+    })
 }
 
 #[cfg(test)]
@@ -876,5 +919,36 @@ mod tests {
             dot: Some(DOT.into()),
         };
         assert_eq!(inline(&source, "view_app", "app", &nodes()), None);
+    }
+
+    #[test]
+    fn an_inlined_view_reports_the_element_kinds_it_draws() {
+        assert_eq!(
+            inlined_view().kinds,
+            ["component", "container", "process"]
+                .map(String::from)
+                .into()
+        );
+    }
+
+    #[test]
+    fn edge_styles_reads_each_edge_s_head_and_line() {
+        let dot = "digraph {\n    edge [style=\"\"];\n    a -> b [arrowhead=onormal,\n        style=solid];\n    c -> d [arrowhead=odot, style=dotted, likec4_id=\"1\"];\n}\n";
+        assert_eq!(
+            edge_styles(dot),
+            BTreeSet::from([
+                ("odot".to_string(), "dotted".to_string()),
+                ("onormal".to_string(), "solid".to_string()),
+            ])
+        );
+    }
+
+    #[test]
+    fn an_edge_without_a_head_or_line_takes_graphviz_s_defaults() {
+        let dot = "digraph {\n    a -> b [likec4_id=\"1\", style=\"\"];\n}\n";
+        assert_eq!(
+            edge_styles(dot),
+            BTreeSet::from([("normal".to_string(), "solid".to_string())])
+        );
     }
 }

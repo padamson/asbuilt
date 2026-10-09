@@ -28,7 +28,7 @@
       "title": "Relation kinds you can see",
       "blurb": "A line and arrowhead per kind, so implements and uses differ at a glance, and a legend.",
       "horizon": "now",
-      "status": "in-progress"
+      "status": "done"
     },
     {
       "id": "roadmap-next-rules",

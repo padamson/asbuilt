@@ -143,7 +143,7 @@ pub fn stylesheet(kinds: &BTreeSet<String>, theme: &BTreeMap<String, ThemeColor>
         .collect();
 
     let mut out = String::from(
-        "/* Diagram colors for the asbuilt docs pages, generated from [theme].\n   Group boxes, edges and labels follow the page tokens; a host\n   stylesheet linked after this one can restate any variable. */\n",
+        "/* Diagram colors for the asbuilt docs pages, generated from [theme].\n   Group boxes, edges and labels follow the page tokens, and so does\n   each diagram's legend, styled here so a figure embedded with this\n   file alone has it; a host stylesheet linked after this one can\n   restate any variable. */\n",
     );
     out.push_str(":root {\n");
     out.push_str("  --c4-edge: color-mix(in srgb, var(--fg) 45%, var(--bg));\n");
@@ -169,7 +169,14 @@ pub fn stylesheet(kinds: &BTreeSet<String>, theme: &BTreeMap<String, ThemeColor>
          svg.c4 .edge :is(polygon, ellipse):not(.c4-label-bg):not([fill=\"none\"]) { fill: var(--c4-edge); stroke: var(--c4-edge); }\n\
          svg.c4 .edge :is(polygon, ellipse)[fill=\"none\"] { stroke: var(--c4-edge); }\n\
          svg.c4 .edge .c4-label-bg { fill: var(--c4-label-bg); fill-opacity: 1; }\n\
-         svg.c4 .edge text { fill: var(--c4-edge-text); }\n",
+         svg.c4 .edge text { fill: var(--c4-edge-text); }\n\
+         .legend ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.25rem 0.9rem; margin: 0.4rem 0 0; padding: 0; font-size: 0.8em; color: var(--muted); }\n\
+         .legend li { display: inline-flex; align-items: center; gap: 0.35em; }\n\
+         .legend-swatch { display: inline-block; width: 0.9em; height: 0.9em; border: 1px solid var(--rule); border-radius: 2px; }\n\
+         .legend-line { width: 2.25em; height: 0.75em; overflow: visible; }\n\
+         .legend-line line { stroke: var(--c4-edge); stroke-width: 1.5; stroke-linecap: round; }\n\
+         .legend-line :is(polygon, circle):not([fill=\"none\"]) { fill: var(--c4-edge); stroke: var(--c4-edge); }\n\
+         .legend-line :is(polygon, circle)[fill=\"none\"] { stroke: var(--c4-edge); stroke-width: 1.2; }\n",
     );
     for (kind, _, _) in &colored {
         let _ = writeln!(
@@ -187,6 +194,10 @@ pub fn stylesheet(kinds: &BTreeSet<String>, theme: &BTreeMap<String, ThemeColor>
         let _ = writeln!(
             out,
             "svg.c4 .cluster.c4-k-{kind} > :is(polygon, path) {{ fill: color-mix(in srgb, var(--c4-{kind}-fill) var(--c4-group-fill-mix), var(--bg)); stroke: color-mix(in srgb, var(--c4-{kind}-fill) var(--c4-group-stroke-mix), var(--bg)); }}"
+        );
+        let _ = writeln!(
+            out,
+            ".legend-swatch.c4-k-{kind} {{ background: var(--c4-{kind}-fill); border-color: var(--c4-{kind}-stroke); }}"
         );
     }
     out
@@ -412,6 +423,24 @@ mod tests {
             css.contains(
                 "svg.c4 .edge :is(polygon, ellipse)[fill=\"none\"] { stroke: var(--c4-edge); }"
             ),
+            "{css}"
+        );
+    }
+
+    #[test]
+    fn a_legend_swatch_takes_its_kind_s_colors() {
+        let css = stylesheet(&kinds(&["container"]), &BTreeMap::new());
+        assert!(
+            css.contains(".legend-swatch.c4-k-container { background: var(--c4-container-fill); border-color: var(--c4-container-stroke); }"),
+            "{css}"
+        );
+    }
+
+    #[test]
+    fn the_legend_is_styled_with_the_diagram_colors() {
+        let css = stylesheet(&kinds(&["container"]), &BTreeMap::new());
+        assert!(
+            css.contains(".legend-line line { stroke: var(--c4-edge); stroke-width: 1.5; stroke-linecap: round; }"),
             "{css}"
         );
     }

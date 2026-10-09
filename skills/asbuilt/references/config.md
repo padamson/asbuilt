@@ -44,7 +44,7 @@ color_scheme = "system"
 # behind it. Set false to leave it out.
 scheme_toggle = true
 # The diagram viewer on every inlined view (a frame at a readable scale;
-# zoom and pan; Fit, 1:1, Wide, Fullscreen) and viewer.js behind it. Set false to leave
+# zoom and pan; Fit, 1:1, Wide, Legend, Fullscreen) and viewer.js behind it. Set false to leave
 # it out; with both false the tree has no script.
 viewer = true
 

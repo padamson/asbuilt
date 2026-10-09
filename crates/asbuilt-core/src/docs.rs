@@ -19,7 +19,9 @@ use pulldown_cmark::{Event, Options, Parser, html};
 
 use crate::config::{ColorScheme, ThemeColor};
 use crate::emit::{children_of, link_encode, view_ids};
-use crate::model::{Element, ElementKind, Id, Model, Relation, dotted, sanitize_id};
+use crate::model::{
+    Element, ElementKind, Id, Model, Relation, RelationKind, SURVEY_KINDS, dotted, sanitize_id,
+};
 use crate::svg::{self, ViewSource};
 use crate::theme;
 
@@ -56,9 +58,13 @@ pub struct DocsOptions {
     /// with it `theme.js`.
     pub scheme_toggle: bool,
     /// Whether every inlined view gets the viewer (`viewer.js`): a frame
-    /// at a readable scale, zoom and pan, and Fit, 1:1, Wide and
+    /// at a readable scale, zoom and pan, and Fit, 1:1, Wide, Legend and
     /// Fullscreen controls.
     pub viewer: bool,
+    /// The surveyed language's word for an element kind (`container` is
+    /// a crate in Rust), for each diagram's legend; a kind absent here is
+    /// called by its own name.
+    pub nouns: BTreeMap<String, String>,
     /// The asbuilt release writing the tree, named in every page's
     /// generator meta and footer; neither names one when absent.
     pub asbuilt_version: Option<String>,
@@ -114,7 +120,7 @@ pub const VIEWER_STYLESHEET: &str = include_str!("viewer.css");
 /// readout is visual only: it changes on every resize, and the pressed
 /// buttons already say the mode. The hint names the zoom modifier for
 /// the platform, which only the script knows.
-const VIEWER_BAR: &str = "<div class=\"viewer-bar\" hidden><span class=\"viewer-scale\"></span><button type=\"button\" data-viewer-zoom=\"out\" aria-label=\"Zoom out\" title=\"Zoom out (\u{2212})\">\u{2212}</button><button type=\"button\" data-viewer-zoom=\"in\" aria-label=\"Zoom in\" title=\"Zoom in (+)\">+</button><button type=\"button\" data-viewer-mode=\"fit\" aria-pressed=\"false\">Fit</button><button type=\"button\" data-viewer-mode=\"one\" aria-pressed=\"false\">1:1</button><button type=\"button\" data-viewer-wide aria-pressed=\"false\">Wide</button><button type=\"button\" data-viewer-full>Fullscreen</button><span class=\"viewer-hint\"></span></div>";
+const VIEWER_BAR: &str = "<div class=\"viewer-bar\" hidden><span class=\"viewer-scale\"></span><button type=\"button\" data-viewer-zoom=\"out\" aria-label=\"Zoom out\" title=\"Zoom out (\u{2212})\">\u{2212}</button><button type=\"button\" data-viewer-zoom=\"in\" aria-label=\"Zoom in\" title=\"Zoom in (+)\">+</button><button type=\"button\" data-viewer-mode=\"fit\" aria-pressed=\"false\">Fit</button><button type=\"button\" data-viewer-mode=\"one\" aria-pressed=\"false\">1:1</button><button type=\"button\" data-viewer-wide aria-pressed=\"false\">Wide</button><button type=\"button\" data-viewer-legend aria-pressed=\"true\">Legend</button><button type=\"button\" data-viewer-full>Fullscreen</button><span class=\"viewer-hint\"></span></div>";
 
 /// The visitor's scheme control. It ships hidden, and `theme.js` reveals
 /// it, so a page without the script shows no dead control.
@@ -437,7 +443,7 @@ impl Ctx<'_> {
                     escape(view),
                     escape(alt)
                 ),
-                edges: Vec::new(),
+                ..Default::default()
             },
         })
     }
@@ -450,19 +456,14 @@ impl Ctx<'_> {
     /// relations are sorted by source, so one source prefix is one range.
     fn edge_data(&self, edges: &[(String, String)], nodes: &BTreeMap<String, svg::Node>) -> String {
         let href = |id: &Id| json_opt(nodes.get(&sanitize_id(id)).and_then(|n| n.href.clone()));
-        let relations = &self.model.relations;
         let mut entries = Vec::new();
         for (from, to) in edges {
             let (Some(from_el), Some(to_el)) = (self.by_likec4.get(from), self.by_likec4.get(to))
             else {
                 continue;
             };
-            let (from_id, to_id) = (&from_el.id, &to_el.id);
-            let start = relations.partition_point(|r| r.source.as_slice() < from_id.as_slice());
-            let behind: Vec<String> = relations[start..]
-                .iter()
-                .take_while(|r| r.source.starts_with(from_id))
-                .filter(|r| r.target.starts_with(to_id))
+            let behind: Vec<String> = self
+                .behind(&from_el.id, &to_el.id)
                 .map(|r| {
                     format!(
                         "{{\"source\":{},\"source_href\":{},\"target\":{},\"target_href\":{},\"kind\":{},\"items\":[{}],\"technology\":{}}}",
@@ -494,19 +495,99 @@ impl Ctx<'_> {
         )
     }
 
+    /// The relations an edge between `from` and `to` stands for: every
+    /// relation from inside one to inside the other. Relations are sorted
+    /// by source, so one source prefix is one range.
+    fn behind<'m>(&'m self, from: &'m Id, to: &'m Id) -> impl Iterator<Item = &'m Relation> {
+        let relations = &self.model.relations;
+        let start = relations.partition_point(|r| r.source.as_slice() < from.as_slice());
+        relations[start..]
+            .iter()
+            .take_while(move |r| r.source.starts_with(from))
+            .filter(move |r| r.target.starts_with(to))
+    }
+
+    /// A diagram's legend: each element kind it draws, by the language's
+    /// word for it with a swatch in its color, then each relation kind
+    /// its edges are drawn as, with a sample of its line and head, read
+    /// off the drawing itself. An edge merging relations of several kinds
+    /// is drawn with LikeC4's filled triangle, on the kinds' line when
+    /// they share one and dashed when they do not: one entry per such
+    /// line, named for what it says (several strong kinds, several weak
+    /// kinds, or several kinds). Empty when the view draws nothing the
+    /// page can name.
+    fn legend(&self, inlined: &svg::Inlined) -> String {
+        let mut items: Vec<String> = Vec::new();
+        let survey: Vec<&str> = SURVEY_KINDS.iter().map(ElementKind::keyword).collect();
+        let order = |kind: &String| {
+            (
+                survey
+                    .iter()
+                    .position(|k| k == kind)
+                    .unwrap_or(survey.len()),
+                kind.clone(),
+            )
+        };
+        let mut kinds: Vec<&String> = inlined.kinds.iter().collect();
+        kinds.sort_by_key(|kind| order(kind));
+        for kind in kinds {
+            let word = self.options.nouns.get(kind).unwrap_or(kind);
+            items.push(format!(
+                "<li><span class=\"legend-swatch c4-k-{}\"></span>{}</li>",
+                escape(kind),
+                escape(word)
+            ));
+        }
+        // Each kind has its own head, so a drawn head is a drawn kind;
+        // the filled triangle no kind takes is an edge merging several,
+        // on their shared line or dashed. Solid is the strong evidence and
+        // dotted the weak, so a merged edge on one of them says which.
+        let drawn = |head: &str| inlined.edge_styles.iter().any(|(h, _)| h == head);
+        for kind in RelationKind::ALL {
+            if drawn(kind.head()) {
+                items.push(format!(
+                    "<li>{}{}</li>",
+                    legend_line(kind.line(), kind.head()),
+                    kind.keyword()
+                ));
+            }
+        }
+        for (line, label) in [
+            ("solid", "several strong kinds"),
+            ("dotted", "several weak kinds"),
+            ("dashed", "several kinds"),
+        ] {
+            if inlined
+                .edge_styles
+                .contains(&("normal".to_string(), line.to_string()))
+            {
+                items.push(format!("<li>{}{label}</li>", legend_line(line, "normal")));
+            }
+        }
+        if items.is_empty() {
+            return String::new();
+        }
+        format!(
+            "<div class=\"legend\" role=\"group\" aria-label=\"Legend\"><ul>{}</ul></div>",
+            items.concat()
+        )
+    }
+
     /// A view's `<figure>`: with the viewer, an inlined SVG sits in a
     /// frame (a group named for the view; the script makes it a tab stop
     /// when it takes it over) under the controls, with the relations
     /// behind its edges beside it; an `<img>` (a view LikeC4 did not
     /// draw) and a tree without the viewer keep the bare figure.
-    fn figure(&self, label: &str, caption: &str, markup: &str, edges: &str) -> String {
+    fn figure(&self, label: &str, caption: &str, inlined: &svg::Inlined, edges: &str) -> String {
+        let markup = &inlined.html;
+        let legend = self.legend(inlined);
         if self.options.viewer && markup.starts_with("<svg") {
             format!(
-                "<figure class=\"view\" data-viewer>{caption}{VIEWER_BAR}{edges}<div class=\"viewer-frame\" role=\"group\" aria-label=\"{}: diagram\">{markup}</div></figure>",
+                "<figure class=\"view\" data-viewer>{caption}{VIEWER_BAR}{edges}<div class=\"viewer-frame\" role=\"group\" aria-label=\"{}: diagram\">{markup}</div>{legend}</figure>",
                 escape(label)
             )
         } else {
-            format!("<figure class=\"view\">{caption}{markup}</figure>")
+            format!("<figure class=\"view\">{caption}{markup}{legend}</figure>")
         }
     }
 
@@ -522,7 +603,7 @@ impl Ctx<'_> {
         match self.view_markup(depth, nodes, view, alt) {
             Some(inlined) => {
                 let edges = self.edge_data(&inlined.edges, nodes);
-                format!("{}\n", self.figure(alt, "", &inlined.html, &edges))
+                format!("{}\n", self.figure(alt, "", &inlined, &edges))
             }
             None => {
                 self.missing.insert(view.to_string());
@@ -779,22 +860,35 @@ impl Ctx<'_> {
         let mut body = String::from("<h1>Curated views</h1>\n");
         let nodes = self.nodes(0, Here::Views);
         for view in &self.curated {
-            let inlined = self
-                .view_markup(0, &nodes, view, view)
-                .unwrap_or(svg::Inlined {
-                    html: String::new(),
-                    edges: Vec::new(),
-                });
+            let inlined = self.view_markup(0, &nodes, view, view).unwrap_or_default();
             let caption = format!("<figcaption>{}</figcaption>", escape(view));
             let edges = self.edge_data(&inlined.edges, &nodes);
-            let _ = writeln!(
-                body,
-                "{}",
-                self.figure(view, &caption, &inlined.html, &edges)
-            );
+            let _ = writeln!(body, "{}", self.figure(view, &caption, &inlined, &edges));
         }
         Some(self.layout(0, Here::Views, Some("Curated views"), &body))
     }
+}
+
+/// A legend's sample of a relation: a short line with `line`'s dash and
+/// `head` (a LikeC4 arrowhead) at its end, drawn as the diagrams draw
+/// them; a hollow head is `fill="none"`, as Graphviz writes it.
+fn legend_line(line: &str, head: &str) -> String {
+    let dash = match line {
+        "dotted" => " stroke-dasharray=\"1,3\"",
+        "dashed" => " stroke-dasharray=\"4,2\"",
+        _ => "",
+    };
+    let shape = match head {
+        "onormal" => "<polygon points=\"26,2 35,6 26,10\" fill=\"none\"/>",
+        "diamond" => "<polygon points=\"25,6 30,2 35,6 30,10\"/>",
+        "vee" => "<polygon points=\"26,2 35,6 26,10 29,6\"/>",
+        "dot" => "<circle cx=\"31\" cy=\"6\" r=\"3.5\"/>",
+        "odot" => "<circle cx=\"31\" cy=\"6\" r=\"3.5\" fill=\"none\"/>",
+        _ => "<polygon points=\"26,2 35,6 26,10\"/>",
+    };
+    format!(
+        "<svg class=\"legend-line\" viewBox=\"0 0 36 12\" width=\"27\" height=\"9\" aria-hidden=\"true\"><line x1=\"1\" y1=\"6\" x2=\"26\" y2=\"6\"{dash}/>{shape}</svg>"
+    )
 }
 
 /// The whole tree for a model. The model is normalized on a copy first,
@@ -1003,7 +1097,7 @@ mod tests {
     fn likec4_view() -> ViewSource {
         ViewSource {
             svg: "<svg width=\"10pt\" height=\"10pt\" viewBox=\"0 0 10 10\" xmlns=\"http://www.w3.org/2000/svg\">\n<g id=\"node1\" class=\"node\">\n<title>app</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node2\" class=\"node\">\n<title>lib</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node3\" class=\"node\">\n<title>driver_1</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"edge1\" class=\"edge\">\n<title>app&#45;&gt;lib</title>\n<path fill=\"none\" stroke=\"#8d8d8d\" d=\"M0,0\"/>\n</g>\n<g id=\"edge2\" class=\"edge\">\n<title>lib&#45;&gt;driver_1</title>\n<path fill=\"none\" stroke=\"#8d8d8d\" d=\"M0,0\"/>\n</g>\n</svg>\n".into(),
-            dot: Some("digraph {\n    graph [likec4_viewId=index];\n    app [likec4_id=app];\n    lib [likec4_id=lib];\n    driver_1 [likec4_id=node_driver];\n    app -> lib [likec4_id=\"1ab\"];\n    lib -> driver_1 [likec4_id=\"1ac\"];\n}\n".into()),
+            dot: Some("digraph {\n    graph [likec4_viewId=index];\n    app [likec4_id=app];\n    lib [likec4_id=lib];\n    driver_1 [likec4_id=node_driver];\n    app -> lib [arrowhead=dot, style=dotted, likec4_id=\"1ab\"];\n    lib -> driver_1 [arrowhead=odot, style=dotted, likec4_id=\"1ac\"];\n}\n".into()),
         }
     }
 
@@ -1020,7 +1114,7 @@ mod tests {
     fn likec4_scoped_view() -> ViewSource {
         ViewSource {
             svg: "<svg width=\"10pt\" height=\"10pt\" viewBox=\"0 0 10 10\" xmlns=\"http://www.w3.org/2000/svg\">\n<g id=\"node1\" class=\"node\">\n<title>app</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node2\" class=\"node\">\n<title>server</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"node3\" class=\"node\">\n<title>driver_1</title>\n<polygon fill=\"#3b82f6\" points=\"0,0 1,1\"/>\n</g>\n<g id=\"edge1\" class=\"edge\">\n<title>server&#45;&gt;driver_1</title>\n<path fill=\"none\" stroke=\"#8d8d8d\" d=\"M0,0\"/>\n</g>\n</svg>\n".into(),
-            dot: Some("digraph {\n    graph [likec4_viewId=view_app];\n    app [likec4_id=app];\n    server [likec4_id=\"app.server\"];\n    driver_1 [likec4_id=node_driver];\n    server -> driver_1 [likec4_id=\"1ab\"];\n}\n".into()),
+            dot: Some("digraph {\n    graph [likec4_viewId=view_app];\n    app [likec4_id=app];\n    server [likec4_id=\"app.server\"];\n    driver_1 [likec4_id=node_driver];\n    server -> driver_1 [arrowhead=odot, style=dotted, likec4_id=\"1ab\"];\n}\n".into()),
         }
     }
     fn options() -> DocsOptions {
@@ -1106,8 +1200,8 @@ mod tests {
         );
         scoped.dot = scoped.dot.map(|d| {
             d.replace(
-                "server -> driver_1 [likec4_id=\"1ab\"];",
-                "driver_1 -> app [likec4_id=\"1ab\"];",
+                "server -> driver_1 [arrowhead=odot, style=dotted, likec4_id=\"1ab\"];",
+                "driver_1 -> app [arrowhead=odot, style=dotted, likec4_id=\"1ab\"];",
             )
         });
         let mut model = sample();
@@ -2108,5 +2202,192 @@ mod tests {
         };
         assert_eq!(place.href(1), "../index.html#x");
         assert_eq!(container_page(&id("my-app")), "containers/my_app.html");
+    }
+
+    /// The sample's pages with LikeC4-drawn `index` and `view_app`, and
+    /// Rust's words for the survey's kinds.
+    fn drawn(model: &Model) -> Site {
+        let mut opts = options();
+        opts.views.insert("index".into(), likec4_view());
+        opts.views.insert("view_app".into(), likec4_scoped_view());
+        opts.nouns = BTreeMap::from([
+            ("container".to_string(), "crate".to_string()),
+            ("component".to_string(), "module".to_string()),
+        ]);
+        generate(model, &opts)
+    }
+
+    /// The labels of a page's first legend, in order.
+    fn legend_labels(site: &Site, path: &str) -> Vec<String> {
+        let page = page(site, path);
+        let Some(start) = page.find("<div class=\"legend\"") else {
+            return vec![];
+        };
+        let legend = &page[start..start + page[start..].find("</div>").unwrap()];
+        legend
+            .split("</li>")
+            .filter(|item| item.contains("<li>"))
+            .map(|item| item.rsplit('>').next().unwrap().to_string())
+            .collect()
+    }
+
+    #[test]
+    fn a_legend_names_the_element_kinds_its_view_draws_then_its_relation_kinds() {
+        assert_eq!(
+            legend_labels(&drawn(&sample()), "containers/app.html"),
+            ["crate", "module", "process", "uses"]
+        );
+    }
+
+    #[test]
+    fn a_legend_lists_only_the_kinds_its_view_draws() {
+        assert_eq!(
+            legend_labels(&drawn(&sample()), "index.html"),
+            ["crate", "process", "names", "uses"]
+        );
+    }
+
+    /// The sample drawn with the index's app -> lib edge drawn `attrs`.
+    fn with_index_edge(attrs: &str) -> Site {
+        let mut opts = options();
+        let mut index = likec4_view();
+        index.dot = index
+            .dot
+            .map(|d| d.replace("arrowhead=dot, style=dotted, likec4_id=\"1ab\"", attrs));
+        opts.views.insert("index".into(), index);
+        generate(&sample(), &opts)
+    }
+
+    #[test]
+    fn a_dashed_filled_triangle_is_a_several_kinds_entry() {
+        let site = with_index_edge("arrowhead=normal, style=dashed");
+        assert!(
+            page(&site, "index.html").contains("<li><svg class=\"legend-line\" viewBox=\"0 0 36 12\" width=\"27\" height=\"9\" aria-hidden=\"true\"><line x1=\"1\" y1=\"6\" x2=\"26\" y2=\"6\" stroke-dasharray=\"4,2\"/><polygon points=\"26,2 35,6 26,10\"/></svg>several kinds</li>"),
+            "{}",
+            page(&site, "index.html")
+        );
+    }
+
+    #[test]
+    fn a_dotted_filled_triangle_is_a_several_weak_kinds_entry() {
+        assert_eq!(
+            legend_labels(
+                &with_index_edge("arrowhead=normal, style=dotted"),
+                "index.html"
+            )
+            .last()
+            .map(String::as_str),
+            Some("several weak kinds")
+        );
+    }
+
+    #[test]
+    fn an_edge_of_one_kind_is_no_several_kinds_entry() {
+        assert!(
+            !legend_labels(&drawn(&sample()), "index.html")
+                .iter()
+                .any(|label| label.starts_with("several"))
+        );
+    }
+
+    #[test]
+    fn a_solid_filled_triangle_is_a_several_strong_kinds_entry() {
+        assert_eq!(
+            legend_labels(
+                &with_index_edge("arrowhead=normal, style=solid"),
+                "index.html"
+            )
+            .last()
+            .map(String::as_str),
+            Some("several strong kinds")
+        );
+    }
+
+    #[test]
+    fn a_legend_swatch_carries_its_kind_s_class() {
+        let site = drawn(&sample());
+        assert!(
+            page(&site, "containers/app.html")
+                .contains("<li><span class=\"legend-swatch c4-k-container\"></span>crate</li>"),
+        );
+    }
+
+    #[test]
+    fn a_kind_without_a_word_is_called_by_its_own_name() {
+        let mut opts = options();
+        opts.views.insert("view_app".into(), likec4_scoped_view());
+        let site = generate(&sample(), &opts);
+        assert_eq!(
+            legend_labels(&site, "containers/app.html")[..2],
+            ["container".to_string(), "component".to_string()]
+        );
+    }
+
+    #[test]
+    fn the_viewer_lays_the_legend_after_the_frame_inside_the_figure() {
+        let mut opts = options();
+        opts.viewer = true;
+        opts.views.insert("view_app".into(), likec4_scoped_view());
+        let site = generate(&sample(), &opts);
+        assert!(
+            page(&site, "containers/app.html").contains("</svg></div><div class=\"legend\""),
+            "{}",
+            page(&site, "containers/app.html")
+        );
+    }
+
+    #[test]
+    fn without_the_viewer_the_legend_follows_the_diagram() {
+        let mut opts = options();
+        opts.viewer = false;
+        opts.views.insert("view_app".into(), likec4_scoped_view());
+        let site = generate(&sample(), &opts);
+        assert!(
+            page(&site, "containers/app.html").contains("</svg><div class=\"legend\""),
+            "{}",
+            page(&site, "containers/app.html")
+        );
+    }
+
+    #[test]
+    fn a_view_not_drawn_by_likec4_has_no_legend() {
+        let site = generate(&sample(), &options());
+        assert!(!page(&site, "index.html").contains("class=\"legend\""));
+    }
+
+    #[test]
+    fn the_viewer_bar_has_a_legend_button_pressed_by_default() {
+        assert!(VIEWER_BAR.contains(
+            "<button type=\"button\" data-viewer-legend aria-pressed=\"true\">Legend</button>"
+        ));
+    }
+
+    #[test]
+    fn each_head_s_sample_is_drawn_as_the_diagrams_draw_it() {
+        let shape = |head: &str| {
+            let svg = legend_line("solid", head);
+            svg[svg.find("/>").unwrap() + 2..svg.len() - "</svg>".len()].to_string()
+        };
+        assert_eq!(
+            ["onormal", "diamond", "vee", "dot", "odot", "normal"].map(shape),
+            [
+                "<polygon points=\"26,2 35,6 26,10\" fill=\"none\"/>",
+                "<polygon points=\"25,6 30,2 35,6 30,10\"/>",
+                "<polygon points=\"26,2 35,6 26,10 29,6\"/>",
+                "<circle cx=\"31\" cy=\"6\" r=\"3.5\"/>",
+                "<circle cx=\"31\" cy=\"6\" r=\"3.5\" fill=\"none\"/>",
+                "<polygon points=\"26,2 35,6 26,10\"/>",
+            ]
+            .map(String::from)
+        );
+    }
+
+    #[test]
+    fn a_sample_s_line_takes_its_kind_s_dash() {
+        assert_eq!(
+            ["solid", "dotted", "dashed"]
+                .map(|line| legend_line(line, "normal").contains("stroke-dasharray=\"")),
+            [false, true, true]
+        );
     }
 }

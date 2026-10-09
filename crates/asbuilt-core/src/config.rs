@@ -203,7 +203,8 @@ pub struct DocsConfig {
     #[serde(default)]
     pub scheme_toggle: Option<bool>,
     /// Whether every inlined view gets the viewer (`viewer.js`): a frame
-    /// at a readable scale with Fit, 1:1, Wide and Fullscreen controls.
+    /// at a readable scale with Fit, 1:1, Wide, Legend and Fullscreen
+    /// controls.
     /// On when absent.
     #[serde(default)]
     pub viewer: Option<bool>,
