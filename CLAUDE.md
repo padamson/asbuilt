@@ -233,8 +233,9 @@ step is not a no-op.
    `asbuilt = "X.Y.Z"` pin examples in the README and
    `skills/asbuilt/references/config.md`
    (bump the skill's `metadata.version` with them); in
-   `crates/site/public/roadmap.json` delete the done items and move
-   `milestone` and `next_milestone` on
+   `crates/site/public/roadmap.json` delete the done items, move
+   `milestone` and `next_milestone` on, and set `now_theme` and
+   `next_theme`
 3. `./scripts/check-release-refs.sh X.Y.Z` must pass; the release
    workflow runs it on the tag and stops before building anything if it
    does not

@@ -1,6 +1,10 @@
 {
   "milestone": "0.3.0",
   "next_milestone": "0.4.0",
+  "themes": {
+    "0.3.0": "Drop-in and readable",
+    "0.4.0": "Architecture review"
+  },
   "items": [
     {
       "id": "roadmap-now-pin",
@@ -31,22 +35,46 @@
       "status": "done"
     },
     {
+      "id": "roadmap-next-diff",
+      "title": "Architecture diff between revisions",
+      "blurb": "asbuilt diff main..HEAD names how the architecture changed between two commits (modules added, relations moved), and the action can post it on a pull request.",
+      "horizon": "next"
+    },
+    {
       "id": "roadmap-next-rules",
-      "title": "Architecture rules and metrics",
-      "blurb": "Rules you declare (no cycles, which layers may depend on which) checked like drift, and coupling metrics per crate and module on their pages.",
+      "title": "Architecture rules",
+      "blurb": "Rules you declare (no cycles, which layers may depend on which), checked like drift and reported the same way.",
       "horizon": "next"
     },
     {
-      "id": "roadmap-next-python",
+      "id": "roadmap-next-popover",
+      "title": "Edges that list only what they draw",
+      "blurb": "An edge's popover lists the relations that edge draws, not every relation between its endpoints, so a filtered view stays filtered.",
+      "horizon": "next"
+    },
+    {
+      "id": "roadmap-later-python",
       "title": "A second language: Python",
-      "blurb": "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations.",
-      "horizon": "next"
+      "blurb": "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations, and the docs pages in Python's own words.",
+      "horizon": "later"
     },
     {
-      "id": "roadmap-next-deps",
+      "id": "roadmap-later-install",
+      "title": "Installing without cargo",
+      "blurb": "An install script that checks the release's attestation, and a Homebrew tap, for teams without a Rust toolchain.",
+      "horizon": "later"
+    },
+    {
+      "id": "roadmap-later-metrics",
+      "title": "Coupling metrics",
+      "blurb": "Coupling metrics per crate and module on their pages.",
+      "horizon": "later"
+    },
+    {
+      "id": "roadmap-later-deps",
       "title": "Dependencies as externals",
       "blurb": "Opt-in externals from Cargo.toml, and crate-to-crate summaries on each container page.",
-      "horizon": "next"
+      "horizon": "later"
     },
     {
       "id": "roadmap-later-cfg",
@@ -67,9 +95,15 @@
       "horizon": "later"
     },
     {
-      "id": "roadmap-later-diff",
-      "title": "Architecture diff between revisions",
-      "blurb": "asbuilt diff main..HEAD names how the architecture changed between two commits (modules added, relations moved), for a pull request comment or a release note.",
+      "id": "roadmap-later-relation-styles",
+      "title": "Relation styles in [theme]",
+      "blurb": "Choose each relation kind's line and arrowhead, as [theme] chooses each element kind's color.",
+      "horizon": "later"
+    },
+    {
+      "id": "roadmap-later-svg-legend",
+      "title": "A legend in rendered SVGs",
+      "blurb": "The legend inside the SVG files asbuilt render writes, for diagrams embedded outside the docs.",
       "horizon": "later"
     }
   ]

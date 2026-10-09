@@ -6,6 +6,8 @@ use crate::version::{fetch_json, is_dev};
 
 const ISSUES: &str = "https://github.com/padamson/asbuilt/issues";
 const CHANGELOG: &str = "https://github.com/padamson/asbuilt/blob/main/CHANGELOG.md";
+/// Later's line under its heading, where Now and Next show their theme.
+const LATER: &str = "Under consideration, not yet planned";
 
 /// Now, Next and Later, from `public/roadmap.json`. Now is the next release
 /// and carries each item's status and a progress bar, Next the release
@@ -81,25 +83,29 @@ fn column(data: &Data, horizon: Horizon) -> impl IntoView + use<> {
         Horizon::Next => format!("Next · {}", data.next_milestone),
         other => other.label().to_string(),
     };
+    let note = match horizon {
+        Horizon::Later => Some(LATER.to_string()),
+        _ => data.theme(horizon).map(String::from),
+    };
     let progress = (horizon == Horizon::Now).then(|| {
         let (done, total) = data.progress();
         (done, total, data.milestone.clone())
     });
     let items: Vec<Item> = data.column(horizon).cloned().collect();
-    view! { <Column horizon heading progress items/> }
+    view! { <Column horizon heading note progress items/> }
 }
 
 #[component]
 fn Column(
     horizon: Horizon,
     heading: String,
+    /// What the column's release is about (Later: that nothing is planned).
+    note: Option<String>,
     progress: Option<(usize, usize, String)>,
     items: Vec<Item>,
 ) -> impl IntoView {
-    let note = (horizon == Horizon::Later).then(|| {
-        view! {
-            <p class="mt-1 text-xs text-rust-50/60">"Under consideration, not yet planned"</p>
-        }
+    let note = note.map(|note| {
+        view! { <p data-roadmap-theme class="mt-1 text-xs text-rust-50/60">{note}</p> }
     });
     let progress = progress.map(|(done, total, milestone)| {
         let percent = (done * 100).checked_div(total).unwrap_or(0);

@@ -7,8 +7,11 @@
 //! an edit to the file, made in the commit that does the work.
 //!
 //! When a release ships, delete its done items (the changelog keeps
-//! them), move `milestone` and `next_milestone` on a version and promote
-//! from Next.
+//! them), move `milestone` and `next_milestone` on a version, promote
+//! from Next, and give `now_theme` and `next_theme` the few words each
+//! release is about.
+
+use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
@@ -39,6 +42,11 @@ pub struct Roadmap {
     pub milestone: String,
     /// The release after it, which the Next column is planned for.
     pub next_milestone: String,
+    /// What each release is about, in a few words, by version: Now and
+    /// Next show their milestone's. Keyed by version, so a theme cannot
+    /// outlive its release when the milestones move.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub themes: BTreeMap<String, String>,
     pub items: Vec<Item>,
 }
 
@@ -53,6 +61,21 @@ impl Roadmap {
         self.items
             .iter()
             .filter(move |item| item.horizon == horizon)
+    }
+
+    /// What the release a column is building toward is about: the theme
+    /// of Now's or Next's milestone, none for Later, a blank theme, or a
+    /// milestone without one.
+    pub fn theme(&self, horizon: Horizon) -> Option<&str> {
+        let version = match horizon {
+            Horizon::Now => &self.milestone,
+            Horizon::Next => &self.next_milestone,
+            Horizon::Later | Horizon::Unknown => return None,
+        };
+        self.themes
+            .get(version)
+            .map(String::as_str)
+            .filter(|theme| !theme.trim().is_empty())
     }
 
     /// Done and total for the Now column.
@@ -207,6 +230,7 @@ mod tests {
         let roadmap = Roadmap {
             milestone: "0.1.0".into(),
             next_milestone: "0.2.0".into(),
+            themes: BTreeMap::new(),
             items: vec![
                 item("roadmap-now-a", Horizon::Now, Status::Done),
                 item("roadmap-now-b", Horizon::Now, Status::InProgress),
@@ -281,5 +305,61 @@ mod tests {
     #[test]
     fn the_dev_build_never_says_it_is_main_s() {
         assert!(!says_main(true, true));
+    }
+
+    fn themed(themes: &[(&str, &str)]) -> Roadmap {
+        Roadmap {
+            milestone: "0.4.0".into(),
+            next_milestone: "0.5.0".into(),
+            themes: themes
+                .iter()
+                .map(|(v, t)| (v.to_string(), t.to_string()))
+                .collect(),
+            ..Roadmap::built()
+        }
+    }
+
+    #[test]
+    fn now_shows_its_milestone_s_theme() {
+        assert_eq!(
+            themed(&[("0.4.0", "Architecture review")]).theme(Horizon::Now),
+            Some("Architecture review")
+        );
+    }
+
+    #[test]
+    fn next_shows_its_milestone_s_theme() {
+        assert_eq!(
+            themed(&[("0.5.0", "Reach beyond Rust users")]).theme(Horizon::Next),
+            Some("Reach beyond Rust users")
+        );
+    }
+
+    #[test]
+    fn a_theme_for_a_release_no_column_is_building_toward_is_not_shown() {
+        // The milestones moved on; 0.3.0's theme does not follow them.
+        assert_eq!(
+            themed(&[("0.3.0", "Drop-in and readable")]).theme(Horizon::Now),
+            None
+        );
+    }
+
+    #[test]
+    fn a_blank_theme_is_none() {
+        assert_eq!(themed(&[("0.4.0", "  ")]).theme(Horizon::Now), None);
+    }
+
+    #[test]
+    fn later_has_no_theme() {
+        assert_eq!(themed(&[("0.4.0", "x")]).theme(Horizon::Later), None);
+    }
+
+    #[test]
+    fn the_built_roadmap_s_now_and_next_have_themes() {
+        let roadmap = Roadmap::built();
+        assert_eq!(
+            [Horizon::Now, Horizon::Next].map(|h| roadmap.theme(h).is_some()),
+            [true, true]
+        );
     }
 }

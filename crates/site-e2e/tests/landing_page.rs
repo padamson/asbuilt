@@ -430,6 +430,33 @@ fn current_roadmap() -> Router {
     )
 }
 
+/// Now and Next each say what their release is about, under the heading
+/// and above Now's progress bar, the way Later says nothing there is
+/// planned yet.
+#[tokio::test]
+#[ignore = "needs a Trunk-built site and Chromium; run with: cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(/^site_/)'"]
+async fn site_roadmap_columns_say_what_their_release_is_about() {
+    let dist = dist();
+    let (_pw, browser, page) = open_site_in_process(&dist, None).await;
+
+    for column in ["#roadmap-now", "#roadmap-next"] {
+        expect(page.locator(format!("{column} h3 + [data-roadmap-theme]")))
+            .to_be_visible()
+            .await
+            .unwrap_or_else(|e| panic!("{column} shows its theme under its heading: {e:?}"));
+    }
+    expect(page.locator("#roadmap-later h3 + [data-roadmap-theme]"))
+        .to_have_text("Under consideration, not yet planned")
+        .await
+        .expect("Later says nothing there is planned yet");
+    expect(page.locator("#roadmap-now [data-roadmap-theme] + div #roadmap-progress"))
+        .to_be_visible()
+        .await
+        .expect("Now's progress bar follows its theme");
+
+    browser.close().await.expect("close browser");
+}
+
 /// The roadmap's progress bar agrees with its Now column: the bar's value
 /// is the number of done items and its maximum the number of items.
 #[tokio::test]

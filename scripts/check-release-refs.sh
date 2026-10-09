@@ -17,7 +17,8 @@
 #     every `asbuilt = "X.Y.Z"` pin a consumer copies into asbuilt.toml;
 #   - a `## [X.Y.Z]` section in CHANGELOG.md (the release notes);
 #   - the README's Status paragraph, which opens with the version;
-#   - the site roadmap's milestone, which must already name the next one.
+#   - the site roadmap's milestone, which must already name the next one,
+#     and a theme for it and for the release after it.
 set -euo pipefail
 
 [ $# -eq 1 ] || { echo "usage: $(basename "$0") <version, e.g. 0.2.0>" >&2; exit 2; }
@@ -80,6 +81,13 @@ milestone=$(grep -o -E '"milestone"[[:space:]]*:[[:space:]]*"[^"]*"' crates/site
 [ -n "$milestone" ] || fail "crates/site/public/roadmap.json: no milestone found"
 [ "$milestone" != "$version" ] ||
   fail "crates/site/public/roadmap.json: milestone is still \"$milestone\"; move it to the next release"
+next_milestone=$(grep -o -E '"next_milestone"[[:space:]]*:[[:space:]]*"[^"]*"' crates/site/public/roadmap.json \
+  | head -n 1 | sed -E 's/.*"([^"]*)"$/\1/')
+for release in "$milestone" "$next_milestone"; do
+  [ -n "$release" ] || continue
+  grep -q -E "\"${release//./\\.}\"[[:space:]]*:[[:space:]]*\"[^\"[:space:]]" crates/site/public/roadmap.json ||
+    fail "crates/site/public/roadmap.json: no theme for $release under themes"
+done
 
 if [ "$failures" -gt 0 ]; then
   echo "$failures reference(s) disagree with release $version" >&2
