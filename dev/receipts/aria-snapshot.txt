@@ -120,7 +120,7 @@
       - listitem [box=318,2294,76,19]: names
       - listitem [box=408,2294,63,19]: uses
       - listitem [box=485,2294,118,19]: several kinds
-- text: "asbuilt.toml: the release pin, and the externals nothing static can state # The release the model is surveyed by: any other one stops with its # install line. A top-level key, so above the first table. asbuilt = \"0.3.0\" # What no code can state: the processes and the browser asbuilt itself # talks to (asbuilt's own externals). [[externals]] id = \"cargo\" kind = \"process\" title = \"cargo metadata\" technology = \"cargo subprocess\" description = \"Lists the workspace's packages and targets; `--no-deps --offline`, so no lockfile is touched.\" [[externals.relations]] from = \"asbuilt_rust.discover\" title = \"runs\" [[externals]] id = \"likec4\" kind = \"process\" title = \"LikeC4 CLI\" technology = \"Node.js via npx, pinned version\" description = \"Validates, exports, and lays out the model. Only `validate`, `export json`, `render`, and `docs` reach it.\" [[externals.relations]] from = \"asbuilt.likec4\" title = \"runs\" [[externals]] id = \"graphviz\" kind = \"process\" title = \"Graphviz dot\" technology = \"dot subprocess\" description = \"Renders the Graphviz files LikeC4 generates to SVG.\" [[externals.relations]] from = \"asbuilt.likec4\" title = \"renders with\" [[externals]] id = \"chromium\" kind = \"process\" title = \"Chromium\" technology = \"Playwright driver, via playwright-rs\" description = \"The browser the site's end-to-end tests drive against the built landing page.\" [[externals.relations]] from = \"asbuilt_site_e2e.tests\" title = \"drives\" the pre-commit hook and CI step # .pre-commit-config.yaml (pre-commit or prek) repos: - repo: https://github.com/padamson/asbuilt rev: v0.2.0 hooks: - id: asbuilt-check # .github/workflows/test.yml, on every platform steps: - uses: padamson/asbuilt@v0.3.0"
+- text: "asbuilt.toml: the release pin, and the externals nothing static can state # The release the model is surveyed by: any other one stops with its # install line. A top-level key, so above the first table. asbuilt = \"0.3.0\" # What no code can state: the processes and the browser asbuilt itself # talks to (asbuilt's own externals). [[externals]] id = \"cargo\" kind = \"process\" title = \"cargo metadata\" technology = \"cargo subprocess\" description = \"Lists the workspace's packages and targets; `--no-deps --offline`, so no lockfile is touched.\" [[externals.relations]] from = \"asbuilt_rust.discover\" title = \"runs\" [[externals]] id = \"likec4\" kind = \"process\" title = \"LikeC4 CLI\" technology = \"Node.js via npx, pinned version\" description = \"Validates, exports, and lays out the model. Only `validate`, `export json`, `render`, and `docs` reach it.\" [[externals.relations]] from = \"asbuilt.likec4\" title = \"runs\" [[externals]] id = \"graphviz\" kind = \"process\" title = \"Graphviz dot\" technology = \"dot subprocess\" description = \"Renders the Graphviz files LikeC4 generates to SVG.\" [[externals.relations]] from = \"asbuilt.likec4\" title = \"renders with\" [[externals]] id = \"chromium\" kind = \"process\" title = \"Chromium\" technology = \"Playwright driver, via playwright-rs\" description = \"The browser the site's end-to-end tests drive against the built landing page.\" [[externals.relations]] from = \"asbuilt_site_e2e.tests\" title = \"drives\" the pre-commit hook and CI step # .pre-commit-config.yaml (pre-commit or prek) repos: - repo: https://github.com/padamson/asbuilt rev: v0.3.0 hooks: - id: asbuilt-check # .github/workflows/test.yml, on every platform steps: - uses: padamson/asbuilt@v0.3.0"
 - heading "What you get" [level=2] [box=152,3648,976,32]
 - heading "A drift check, not a diagram" [level=3] [box=173,3725,285,28]
 - paragraph [box=173,3757,436,80]: check surveys in memory and diffs against the committed model. Exit 1 is a stale model, with the diff and a line for each element or relation that changed; --format json gives tools the same.
@@ -170,89 +170,76 @@
     - /url: https://github.com/padamson/asbuilt/blob/main/crates/site-e2e/tests/landing_page.rs
 - heading "Roadmap" [level=2] [box=152,5756,976,32]
 - paragraph [box=152,5796,768,40]:
-  - text: Now is 0.3.0, Next is 0.4.0, and Later is under consideration beyond that. What already shipped is in the
+  - text: Now is 0.4.0, Next is 0.5.0, and Later is under consideration beyond that. What already shipped is in the
   - link "changelog" [box=152,5818,73,16]:
     - /url: https://github.com/padamson/asbuilt/blob/main/CHANGELOG.md
   - text: .
-- heading "Now · 0.3.0" [level=3] [box=173,5881,270,28]
-- paragraph [box=173,5913,270,16]: Drop-in and readable
-- progressbar "0.3.0 progress" [box=173,5937,270,6]
-- paragraph [box=173,5947,270,16]: 4 of 4 done
-- list [box=173,5979,270,464]:
-  - listitem [box=173,5979,270,108]:
-    - heading "A pinned release" [level=4] [box=173,5979,152,24]
-    - text: Done
-    - paragraph [box=173,6007,270,80]: asbuilt = "X.Y.Z" in asbuilt.toml, and any other release stops with the install line instead of showing its output as drift.
-  - listitem [box=173,6103,270,108]:
-    - heading "Drop-in CI" [level=4] [box=173,6103,90,24]
-    - text: Done
-    - paragraph [box=173,6131,270,80]: A GitHub Action that installs the release asbuilt.toml pins and notes a newer one, cargo-binstall metadata, and aarch64 Linux and musl builds.
-  - listitem [box=173,6227,270,88]:
-    - heading "Drift you can read" [level=4] [box=173,6227,163,24]
-    - text: Done
-    - paragraph [box=173,6255,270,60]: check names what changed (a relation added, a module removed) and speaks JSON with --format json.
-  - listitem [box=173,6331,270,112]:
-    - heading "Relation kinds you can see" [level=4] [box=173,6331,210,48]
-    - text: Done
-    - paragraph [box=173,6383,270,60]: A line and arrowhead per kind, so implements and uses differ at a glance, and a legend.
-- heading "Next · 0.4.0" [level=3] [box=505,5881,270,28]
-- paragraph [box=505,5913,270,16]: Architecture review
-- list [box=505,5945,270,424]:
-  - listitem [box=505,5945,270,152]:
-    - heading "Architecture diff between revisions" [level=4] [box=505,5945,270,48]
-    - paragraph [box=505,5997,270,100]: asbuilt diff main..HEAD names how the architecture changed between two commits (modules added, relations moved), and the action can post it on a pull request.
-  - listitem [box=505,6113,270,108]:
-    - heading "Architecture rules" [level=4] [box=505,6113,163,24]
-    - paragraph [box=505,6141,270,80]: Rules you declare (no cycles, which layers may depend on which), checked like drift and reported the same way.
-  - listitem [box=505,6237,270,132]:
-    - heading "Edges that list only what they draw" [level=4] [box=505,6237,270,48]
-    - paragraph [box=505,6289,270,80]: An edge's popover lists the relations that edge draws, not every relation between its endpoints, so a filtered view stays filtered.
+- heading "Now · 0.4.0" [level=3] [box=173,5881,270,28]
+- paragraph [box=173,5913,270,16]: Architecture review
+- progressbar "0.4.0 progress" [box=173,5937,270,6]
+- paragraph [box=173,5947,270,16]: 0 of 3 done
+- list [box=173,5979,270,424]:
+  - listitem [box=173,5979,270,152]:
+    - heading "Architecture diff between revisions" [level=4] [box=173,5979,187,48]
+    - text: Planned
+    - paragraph [box=173,6031,270,100]: asbuilt diff main..HEAD names how the architecture changed between two commits (modules added, relations moved), and the action can post it on a pull request.
+  - listitem [box=173,6147,270,108]:
+    - heading "Architecture rules" [level=4] [box=173,6147,163,24]
+    - text: Planned
+    - paragraph [box=173,6175,270,80]: Rules you declare (no cycles, which layers may depend on which), checked like drift and reported the same way.
+  - listitem [box=173,6271,270,132]:
+    - heading "Edges that list only what they draw" [level=4] [box=173,6271,187,48]
+    - text: Planned
+    - paragraph [box=173,6323,270,80]: An edge's popover lists the relations that edge draws, not every relation between its endpoints, so a filtered view stays filtered.
+- heading "Next · 0.5.0" [level=3] [box=505,5881,270,28]
+- paragraph [box=505,5913,270,16]: Reach beyond Rust users
+- list [box=505,5945,270,440]:
+  - listitem [box=505,5945,270,128]:
+    - 'heading "A second language: Python" [level=4] [box=505,5945,247,24]'
+    - paragraph [box=505,5973,270,100]: "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations, and the docs pages in Python's own words."
+  - listitem [box=505,6089,270,108]:
+    - heading "Installing without cargo" [level=4] [box=505,6089,216,24]
+    - paragraph [box=505,6117,270,80]: An install script that checks the release's attestation, and a Homebrew tap, for teams without a Rust toolchain.
+  - listitem [box=505,6213,270,68]:
+    - heading "Coupling metrics" [level=4] [box=505,6213,153,24]
+    - paragraph [box=505,6241,270,40]: Coupling metrics per crate and module on their pages.
+  - listitem [box=505,6297,270,88]:
+    - heading "Dependencies as externals" [level=4] [box=505,6297,243,24]
+    - paragraph [box=505,6325,270,60]: Opt-in externals from Cargo.toml, and crate-to-crate summaries on each container page.
 - heading "Later" [level=3] [box=837,5881,270,28]
 - paragraph [box=837,5913,270,16]: Under consideration, not yet planned
-- list [box=837,5945,270,940]:
-  - listitem [box=837,5945,270,128]:
-    - 'heading "A second language: Python" [level=4] [box=837,5945,247,24]'
-    - paragraph [box=837,5973,270,100]: "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations, and the docs pages in Python's own words."
-  - listitem [box=837,6089,270,108]:
-    - heading "Installing without cargo" [level=4] [box=837,6089,216,24]
-    - paragraph [box=837,6117,270,80]: An install script that checks the release's attestation, and a Homebrew tap, for teams without a Rust toolchain.
-  - listitem [box=837,6213,270,68]:
-    - heading "Coupling metrics" [level=4] [box=837,6213,153,24]
-    - paragraph [box=837,6241,270,40]: Coupling metrics per crate and module on their pages.
-  - listitem [box=837,6297,270,88]:
-    - heading "Dependencies as externals" [level=4] [box=837,6297,243,24]
-    - paragraph [box=837,6325,270,60]: Opt-in externals from Cargo.toml, and crate-to-crate summaries on each container page.
-  - listitem [box=837,6401,270,68]:
-    - heading "Features and cfg" [level=4] [box=837,6401,152,24]
-    - paragraph [box=837,6429,270,40]: Know which modules and relations a feature or platform turns on.
-  - listitem [box=837,6485,270,88]:
-    - heading "LikeC4's interactive viewer" [level=4] [box=837,6485,243,24]
-    - paragraph [box=837,6513,270,60]: "An option to embed LikeC4's own web component: element details, a relationship browser, search."
-  - listitem [box=837,6589,270,88]:
-    - heading "A deployment front-end" [level=4] [box=837,6589,216,24]
-    - paragraph [box=837,6617,270,60]: Infrastructure as the model's deployment section, which is empty today.
-  - listitem [box=837,6693,270,88]:
-    - heading "Relation styles in [theme]" [level=4] [box=837,6693,234,24]
-    - paragraph [box=837,6721,270,60]: Choose each relation kind's line and arrowhead, as [theme] chooses each element kind's color.
-  - listitem [box=837,6797,270,88]:
-    - heading "A legend in rendered SVGs" [level=4] [box=837,6797,242,24]
-    - paragraph [box=837,6825,270,60]: The legend inside the SVG files asbuilt render writes, for diagrams embedded outside the docs.
-- contentinfo [box=0,6986,1280,193]:
-  - navigation [box=128,7027,1024,20]:
-    - link "GitHub" [box=128,7027,49,20]:
+- list [box=837,5945,270,484]:
+  - listitem [box=837,5945,270,68]:
+    - heading "Features and cfg" [level=4] [box=837,5945,152,24]
+    - paragraph [box=837,5973,270,40]: Know which modules and relations a feature or platform turns on.
+  - listitem [box=837,6029,270,88]:
+    - heading "LikeC4's interactive viewer" [level=4] [box=837,6029,243,24]
+    - paragraph [box=837,6057,270,60]: "An option to embed LikeC4's own web component: element details, a relationship browser, search."
+  - listitem [box=837,6133,270,88]:
+    - heading "A deployment front-end" [level=4] [box=837,6133,216,24]
+    - paragraph [box=837,6161,270,60]: Infrastructure as the model's deployment section, which is empty today.
+  - listitem [box=837,6237,270,88]:
+    - heading "Relation styles in [theme]" [level=4] [box=837,6237,234,24]
+    - paragraph [box=837,6265,270,60]: Choose each relation kind's line and arrowhead, as [theme] chooses each element kind's color.
+  - listitem [box=837,6341,270,88]:
+    - heading "A legend in rendered SVGs" [level=4] [box=837,6341,242,24]
+    - paragraph [box=837,6369,270,60]: The legend inside the SVG files asbuilt render writes, for diagrams embedded outside the docs.
+- contentinfo [box=0,6530,1280,193]:
+  - navigation [box=128,6571,1024,20]:
+    - link "GitHub" [box=128,6571,49,20]:
       - /url: https://github.com/padamson/asbuilt
-    - link "Architecture" [box=197,7027,86,20]:
+    - link "Architecture" [box=197,6571,86,20]:
       - /url: architecture/
-    - link "Roadmap" [box=302,7027,66,20]:
+    - link "Roadmap" [box=302,6571,66,20]:
       - /url: "#roadmap"
-    - link "LikeC4" [box=388,7027,47,20]:
+    - link "LikeC4" [box=388,6571,47,20]:
       - /url: https://likec4.dev
-  - paragraph [box=128,7063,768,40]:
+  - paragraph [box=128,6607,768,40]:
     - text: Everything downstream of the model is
-    - link "LikeC4" [box=409,7065,47,16]:
+    - link "LikeC4" [box=409,6609,47,16]:
       - /url: https://likec4.dev
     - text: "'s: validation, export, and layout. This page is tested with"
-    - link "playwright-rs" [box=128,7085,92,16]:
+    - link "playwright-rs" [box=128,6629,92,16]:
       - /url: https://playwright-rust.dev
     - text: .
-  - paragraph [box=128,7119,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.
+  - paragraph [box=128,6663,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.

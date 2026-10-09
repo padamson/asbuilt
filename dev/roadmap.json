@@ -1,80 +1,52 @@
 {
-  "milestone": "0.3.0",
-  "next_milestone": "0.4.0",
+  "milestone": "0.4.0",
+  "next_milestone": "0.5.0",
   "themes": {
-    "0.3.0": "Drop-in and readable",
-    "0.4.0": "Architecture review"
+    "0.4.0": "Architecture review",
+    "0.5.0": "Reach beyond Rust users"
   },
   "items": [
     {
-      "id": "roadmap-now-pin",
-      "title": "A pinned release",
-      "blurb": "asbuilt = \"X.Y.Z\" in asbuilt.toml, and any other release stops with the install line instead of showing its output as drift.",
-      "horizon": "now",
-      "status": "done"
-    },
-    {
-      "id": "roadmap-now-ci",
-      "title": "Drop-in CI",
-      "blurb": "A GitHub Action that installs the release asbuilt.toml pins and notes a newer one, cargo-binstall metadata, and aarch64 Linux and musl builds.",
-      "horizon": "now",
-      "status": "done"
-    },
-    {
-      "id": "roadmap-now-drift",
-      "title": "Drift you can read",
-      "blurb": "check names what changed (a relation added, a module removed) and speaks JSON with --format json.",
-      "horizon": "now",
-      "status": "done"
-    },
-    {
-      "id": "roadmap-now-kinds",
-      "title": "Relation kinds you can see",
-      "blurb": "A line and arrowhead per kind, so implements and uses differ at a glance, and a legend.",
-      "horizon": "now",
-      "status": "done"
-    },
-    {
-      "id": "roadmap-next-diff",
+      "id": "roadmap-now-diff",
       "title": "Architecture diff between revisions",
       "blurb": "asbuilt diff main..HEAD names how the architecture changed between two commits (modules added, relations moved), and the action can post it on a pull request.",
-      "horizon": "next"
+      "horizon": "now"
     },
     {
-      "id": "roadmap-next-rules",
+      "id": "roadmap-now-rules",
       "title": "Architecture rules",
       "blurb": "Rules you declare (no cycles, which layers may depend on which), checked like drift and reported the same way.",
-      "horizon": "next"
+      "horizon": "now"
     },
     {
-      "id": "roadmap-next-popover",
+      "id": "roadmap-now-popover",
       "title": "Edges that list only what they draw",
       "blurb": "An edge's popover lists the relations that edge draws, not every relation between its endpoints, so a filtered view stays filtered.",
+      "horizon": "now"
+    },
+    {
+      "id": "roadmap-next-python",
+      "title": "A second language: Python",
+      "blurb": "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations, and the docs pages in Python's own words.",
       "horizon": "next"
     },
     {
-      "id": "roadmap-later-python",
-      "title": "A second language: Python",
-      "blurb": "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations, and the docs pages in Python's own words.",
-      "horizon": "later"
-    },
-    {
-      "id": "roadmap-later-install",
+      "id": "roadmap-next-install",
       "title": "Installing without cargo",
       "blurb": "An install script that checks the release's attestation, and a Homebrew tap, for teams without a Rust toolchain.",
-      "horizon": "later"
+      "horizon": "next"
     },
     {
-      "id": "roadmap-later-metrics",
+      "id": "roadmap-next-metrics",
       "title": "Coupling metrics",
       "blurb": "Coupling metrics per crate and module on their pages.",
-      "horizon": "later"
+      "horizon": "next"
     },
     {
-      "id": "roadmap-later-deps",
+      "id": "roadmap-next-deps",
       "title": "Dependencies as externals",
       "blurb": "Opt-in externals from Cargo.toml, and crate-to-crate summaries on each container page.",
-      "horizon": "later"
+      "horizon": "next"
     },
     {
       "id": "roadmap-later-cfg",
