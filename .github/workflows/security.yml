@@ -71,11 +71,16 @@ jobs:
         with:
           toolchain: stable
 
+      # Built from source: install-action's prebuilt cargo-vet stops at
+      # 0.10.0, which cannot read the `trusted-publisher` entries a newer
+      # local `cargo vet trust` writes.
+      # `--locked` builds against cargo-vet's own Cargo.lock. No version pin
+      # on purpose: Dependabot cannot bump a `run:` line, and cargo-vet
+      # refuses a store written by a newer version, so a pinned CI copy
+      # older than a contributor's local one goes red.
       - name: Install cargo-vet
         if: steps.vet.outputs.enabled == 'true'
-        uses: taiki-e/install-action@4cef1412cce204788f482e778a0b9187f9626a29 # v2.87.21
-        with:
-          tool: cargo-vet
+        run: cargo install --locked cargo-vet
 
       - name: Run cargo vet
         if: steps.vet.outputs.enabled == 'true'

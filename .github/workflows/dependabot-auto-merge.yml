@@ -30,8 +30,9 @@ jobs:
   auto-merge:
     name: Enable auto-merge
     runs-on: ubuntu-latest
-    # Only Dependabot's own PRs, never anyone else's.
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    # Only Dependabot's own PRs, never anyone else's: Dependabot wrote the
+    # PR (the actor alone is whoever acted last) and made this push.
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' && github.actor == 'dependabot[bot]' }}
     steps:
       - name: Mint a token for the merge App
         id: app-token
