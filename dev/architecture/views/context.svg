@@ -31,12 +31,12 @@
 <!-- likec4 -->
 <g id="node3" class="node">
 <title>likec4</title>
-<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="631,-470 311,-470 311,-290 631,-290 631,-470"/>
-<text text-anchor="start" x="421.5" y="-411" font-family="Arial" font-size="20.00" fill="#48382f">LikeC4 CLI</text>
-<text text-anchor="start" x="377" y="-390.6" font-family="Arial" font-size="13.00" fill="#59493f">Node.js via npx, pinned version</text>
-<text text-anchor="start" x="331" y="-371" font-family="Arial" font-size="15.00" fill="#59493f">Validates, exports and lays out the model.</text>
-<text text-anchor="start" x="332" y="-354" font-family="Arial" font-size="15.00" fill="#59493f">Only `validate`, `export json` and `render`</text>
-<text text-anchor="start" x="443.5" y="-337" font-family="Arial" font-size="15.00" fill="#59493f">reach it.</text>
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="634.5,-470 307.5,-470 307.5,-290 634.5,-290 634.5,-470"/>
+<text text-anchor="start" x="422" y="-411" font-family="Arial" font-size="20.00" fill="#48382f">LikeC4 CLI</text>
+<text text-anchor="start" x="377.5" y="-390.6" font-family="Arial" font-size="13.00" fill="#59493f">Node.js via npx, pinned version</text>
+<text text-anchor="start" x="329.5" y="-371" font-family="Arial" font-size="15.00" fill="#59493f">Validates, exports, and lays out the model.</text>
+<text text-anchor="start" x="328" y="-354" font-family="Arial" font-size="15.00" fill="#59493f">Only `validate`, `export json`, `render`, and</text>
+<text text-anchor="start" x="421" y="-337" font-family="Arial" font-size="15.00" fill="#59493f">`docs` reach it.</text>
 </g>
 <!-- graphviz -->
 <g id="node4" class="node">

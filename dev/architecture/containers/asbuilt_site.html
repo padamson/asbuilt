@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="generator" content="asbuilt docs 0.2.0 (484dc71)">
+<meta name="generator" content="asbuilt docs 0.2.0 (31b405d)">
 <title>asbuilt · Architecture · asbuilt-site</title>
 <link rel="stylesheet" href="../style.css">
 <link rel="stylesheet" href="../theme.css">
@@ -660,11 +660,12 @@
 <p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/roadmap.rs"><code>crates/site/src/roadmap.rs</code></a></p>
 <p>The roadmap as data, in <code>public/roadmap.json</code>: Now (the next release,
 with each item's status), Next and Later. Trunk copies the file into
-every build, so main's copy is published at <code>/asbuilt/dev/roadmap.json</code>,
-and every build fetches that one: whichever version a visitor views,
-the roadmap is the current one. The copy compiled in here is what a
-build shows until that fetch succeeds, or if it fails. Moving an item is
-an edit to the file, made in the commit that does the work.</p>
+every build, so main's copy is published at <code>/asbuilt/dev/roadmap.json</code>.
+The dev build shows its own copy, which is main's; every release build
+fetches the dev one, so whichever version a visitor views, the roadmap
+is the current one, and shows the copy compiled in here only if that
+fetch fails. Moving an item is an edit to the file, made in the commit
+that does the work.</p>
 <h3>Uses</h3>
 <table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
 <tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>snapshot_url</td><td></td></tr>
@@ -709,6 +710,6 @@ to know that: every other asset path is relative.</p>
 </tbody></table>
 </section>
 </main>
-<footer>Built with <a href="https://padamson.github.io/asbuilt/">asbuilt</a> v0.2.0 (484dc71)</footer>
+<footer>Built with <a href="https://padamson.github.io/asbuilt/">asbuilt</a> v0.2.0 (31b405d)</footer>
 </body>
 </html>
