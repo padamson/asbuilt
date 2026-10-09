@@ -16,7 +16,7 @@ the survey spells them.
   per crate, whatever the number of targets.
 - **Reserved words:** LikeC4 refuses its grammar's keywords as
   ids (`view`, `views`, `link`, `title`, `kind`, `from`, `import`,
-  `style`, `icon`, `icons`, `size`, `summary`, `order` and about fifty
+  `style`, `icon`, `icons`, `size`, `summary`, `order`, and about fifty
   more), so a module with one of those names gets a trailing `_`: a
   module `icons` is `crate.icons_`. `model` and `element` are accepted
   as they are.

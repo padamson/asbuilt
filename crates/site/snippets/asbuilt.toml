@@ -1,18 +1,9 @@
-# asbuilt surveying itself. `asbuilt check` runs in the pre-commit hook
-# and in CI, so docs/architecture/model.c4 cannot drift from the code.
+# The release the model is surveyed by: any other one stops with its
+# install line. A top-level key, so above the first table.
+asbuilt = "0.3.0"
 
-[output]
-path = "docs/architecture/model.c4"
-
-[docs]
-title = "asbuilt"
-source_url = "https://github.com/padamson/asbuilt/blob/main/"
-
-[rust]
-# The landing site crates are excluded from the workspace (wasm32, big
-# trees); they are still part of the architecture.
-extra_manifests = ["crates/site/Cargo.toml", "crates/site-e2e/Cargo.toml"]
-
+# What no code can state: the processes and the browser asbuilt itself
+# talks to (asbuilt's own externals).
 [[externals]]
 id = "cargo"
 kind = "process"
@@ -29,7 +20,7 @@ id = "likec4"
 kind = "process"
 title = "LikeC4 CLI"
 technology = "Node.js via npx, pinned version"
-description = "Validates, exports and lays out the model. Only `validate`, `export json` and `render` reach it."
+description = "Validates, exports, and lays out the model. Only `validate`, `export json`, `render`, and `docs` reach it."
 
 [[externals.relations]]
 from = "asbuilt.likec4"

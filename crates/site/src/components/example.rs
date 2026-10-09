@@ -45,7 +45,7 @@ pub fn Example() -> impl IntoView {
                     .into_any()
             }}
             <div class="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2">
-                <CodeBlock html=snippets::ASBUILT_TOML caption="asbuilt.toml: the externals nothing static can state"/>
+                <CodeBlock html=snippets::ASBUILT_TOML caption="asbuilt.toml: the release pin, and the externals nothing static can state"/>
                 <CodeBlock html=snippets::PRE_COMMIT_YAML caption="the pre-commit hook and CI step"/>
             </div>
         </section>

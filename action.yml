@@ -14,7 +14,7 @@ branding:
 #
 # The version comes from the `asbuilt = "X.Y.Z"` pin at the top of
 # asbuilt.toml, so the one line a release bump edits moves CI, the
-# pre-commit hook's binary and every contributor together. The action's
+# pre-commit hook's binary, and every contributor together. The action's
 # own ref only selects this file.
 
 inputs:

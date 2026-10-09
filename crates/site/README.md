@@ -85,7 +85,7 @@ snippets/               code samples, one file per language (.rs/.sh/.toml/.c4/.
 public/receipts/        written by the dogfood test (ignored, .gitkeep tracked)
 public/views/           context.svg from `asbuilt render` (ignored, .gitkeep tracked)
 deploy/update-manifest.sh   versions.json and the root redirect for the gh-pages tree
-src/version.rs          SITE_VERSION, is_dev(), SITE_PREFIX and the two URL helpers
+src/version.rs          SITE_VERSION, is_dev(), SITE_PREFIX, and the two URL helpers
 src/app.rs              composes the page sections
 src/components/         Hero, Install, HowItWorks, Example, Features, DogfoodBanner,
                         Roadmap, VersionSwitcher, UnreleasedBadge, CodeBlock, CodeTabs,

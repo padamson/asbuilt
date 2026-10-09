@@ -21,7 +21,18 @@ pub fn Install() -> impl IntoView {
                 }
                     .into_any()
             } else {
-                view! { <CodeBlock html=snippets::INSTALL_SH/> }.into_any()
+                view! {
+                    <CodeBlock html=snippets::INSTALL_SH/>
+                    <p class="mt-4 text-sm text-rust-50/70">
+                        "Each release also carries archives for Linux, macOS, and Windows, each "
+                        "with a build-provenance attestation, and in CI the GitHub Action "
+                        <code class="text-rust-300">"padamson/asbuilt"</code>
+                        " installs the release "
+                        <code class="text-rust-300">"asbuilt.toml"</code>
+                        " pins and checks it."
+                    </p>
+                }
+                    .into_any()
             }}
             <p class="mt-4 text-sm text-rust-50/70">
                 <code class="text-rust-300">"survey"</code>
@@ -33,13 +44,19 @@ pub fn Install() -> impl IntoView {
                 <code class="text-rust-300">"export json"</code>
                 ", "
                 <code class="text-rust-300">"render"</code>
-                " and "
+                ", and "
                 <code class="text-rust-300">"docs"</code>
                 " shell out to a pinned "
                 <code class="text-rust-300">"npx likec4"</code>
-                " (Node), and rendering also needs Graphviz "
+                " (Node); "
+                <code class="text-rust-300">"render"</code>
+                " and "
+                <code class="text-rust-300">"docs"</code>
+                " also need Graphviz "
                 <code class="text-rust-300">"dot"</code>
-                "."
+                ", and "
+                <code class="text-rust-300">"docs --no-render"</code>
+                " needs neither."
             </p>
         </section>
     }

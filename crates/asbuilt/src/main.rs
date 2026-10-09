@@ -34,7 +34,7 @@ enum Command {
         #[arg(short, long, value_name = "PATH")]
         output: Option<PathBuf>,
     },
-    /// Survey in memory; if the committed model differs, print the diff, name what changed and exit 1.
+    /// Survey in memory; if the committed model differs, print the diff, name what changed, and exit 1.
     Check {
         /// The repository root; the current directory by default.
         root: Option<PathBuf>,
@@ -80,10 +80,10 @@ enum Command {
         /// A stylesheet linked last on every page; `[docs] stylesheet` by default.
         #[arg(long, value_name = "URL")]
         stylesheet: Option<String>,
-        /// Replace pages, stylesheets or SVGs in the output directory that no earlier run wrote.
+        /// Replace pages, stylesheets, or SVGs in the output directory that no earlier run wrote.
         #[arg(long)]
         force: bool,
-        /// The scheme pages show before a visitor chooses: system, light or dark; `[docs] color_scheme` by default.
+        /// The scheme pages show before a visitor chooses: system, light, or dark; `[docs] color_scheme` by default.
         #[arg(long, value_name = "SCHEME")]
         color_scheme: Option<asbuilt_core::ColorScheme>,
         /// Leave out the visitor's System / Light / Dark control and its script.

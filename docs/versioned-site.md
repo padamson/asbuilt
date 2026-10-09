@@ -54,7 +54,7 @@ resolve under the subpath.
 ## Deploy ([.github/workflows/pages.yml](../.github/workflows/pages.yml))
 
 One job: lint the site crates, `asbuilt render` this repo's model (the
-context view is the landing page's example figure) and write its
+context view is the landing page's example figure), and write its
 `asbuilt docs` tree into `crates/site/public/architecture/`, which Trunk
 copies into every build. Then build a root-served `SITE_VERSION=dev` site
 and run the playwright-rs **dogfood gate** against it.
@@ -68,7 +68,7 @@ with the `/asbuilt` prefix), and commit.
 
 Triggers:
 - **push to `main`** touching `crates/**`, `docs/architecture/**`,
-  `asbuilt.toml`, `brand/**` or the workflow → rebuilds `/asbuilt/dev/`. The paths
+  `asbuilt.toml`, `brand/**`, or the workflow → rebuilds `/asbuilt/dev/`. The paths
   are that wide because the documentation is generated from the code.
 - **pull request** → runs both gates and deploys nothing. It is a
   required check, so it has no paths filter.

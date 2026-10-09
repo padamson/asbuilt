@@ -82,7 +82,7 @@ commit when it is not a tagged release); `docs` recognizes a tree as its
 own by the meta's `asbuilt docs` prefix, so a tree any release wrote is
 replaced without `--force`. Every link but the footer's is relative, so
 the tree serves from any directory. This layout, the
-classes and the variables below are stable within 0.x; a change to any
+classes, and the variables below are stable within 0.x; a change to any
 of them is called out in the changelog.
 
 A view LikeC4 drew (its `.dot` carries `likec4_viewId`) is inlined as
@@ -99,9 +99,9 @@ carries `<script type="application/json" class="viewer-edges">` mapping
 each `from->to` to the relations the edge stands for (endpoint ids and
 links, kind, items, technology). Any other SVG is an `<img>`.
 `theme.css` colors the inlined views from `[theme]`: per kind,
-`--c4-<kind>-fill`, `-stroke`, `-text` and `-muted`, for light and for
+`--c4-<kind>-fill`, `-stroke`, `-text`, and `-muted`, for light and for
 dark; group boxes are a tint of their kind's color over `--bg`, and
-edges and labels follow `--fg`, `--bg` and `--muted` (`--c4-edge`,
+edges and labels follow `--fg`, `--bg`, and `--muted` (`--c4-edge`,
 `--c4-edge-text`, `--c4-label-bg`), and how strongly a group box takes
 its kind's color is `--c4-group-fill-mix` and `--c4-group-stroke-mix`.
 A host stylesheet can restate any of these.
@@ -118,11 +118,11 @@ that fits offers neither; a drag that starts on a node pans without
 following its link). A click on an edge opens the relations it stands
 for, one line each with both endpoints linked: the whole list behind
 an edge LikeC4 labels `[...]`, or every item of one it truncates.
-Escape, the close button or a click elsewhere dismisses it. The bar's hint names the modifier for the platform (⌘ on a Mac,
+Escape, the close button, or a click elsewhere dismisses it. The bar's hint names the modifier for the platform (⌘ on a Mac,
 Ctrl elsewhere) and is left out on a touch-only device. The other
 controls: Fit (the whole view at any scale), 1:1 (as
 LikeC4 laid it out), Wide (every figure on the site takes the window's
-width, kept in `localStorage` under `asbuilt-docs-wide`), Legend and
+width, kept in `localStorage` under `asbuilt-docs-wide`), Legend, and
 Fullscreen. Every diagram carries a legend of what it draws: each
 element kind, by the surveyed language's word with a swatch in its
 color, and each relation kind its edges stand for, with a sample of
@@ -135,14 +135,14 @@ strip, inside its border, and Legend hides every figure's, kept under
 diagram. Its styles are in `theme.css`, so an embedded figure has them. The controls
 ship hidden and the script reveals them, so without JavaScript a view
 is scaled to the column as before. `--no-viewer` (or `[docs] viewer =
-false`) leaves the viewer, its stylesheet and its script out. A host
+false`) leaves the viewer, its stylesheet, and its script out. A host
 page can embed one of the tree's figures (the `<figure data-viewer>`
-from a page, its links re-based) with `theme.css`, `viewer.css` and
-`viewer.js` and the page tokens defined; the script also sets up a
+from a page, its links re-based) with the page tokens defined and
+`theme.css`, `viewer.css`, and `viewer.js` loaded; the script also sets up a
 figure added after the page loads.
 
 The pages follow the system's light or dark setting. With the scheme
-control (the default), a visitor can pick System, Light or Dark in the
+control (the default), a visitor can pick System, Light, or Dark in the
 header; the choice is kept in `localStorage` under
 `asbuilt-docs-scheme` for the whole site, and applied before the first
 paint. The control ships hidden and the script reveals it, so without
@@ -181,7 +181,7 @@ directory above the tree from every page.
   before anything runs), no model yet, no `Cargo.toml` at the root, a
   config typo, an externals `from` or a `[theme]` key naming nothing, a
   bin named like a module, `npx` or `dot` missing, `docs` refusing tree
-  files it did not write. The message names the file, id or directory.
+  files it did not write. The message names the file, id, or directory.
 
 ## The pre-commit hook and the CI action
 
@@ -201,7 +201,7 @@ contributor on any other one gets the install line instead of a diff;
 the CI action reads the same line, so one edit moves both. Without a pin, a stale model reported right after an upgrade is
 the binary and the committed model disagreeing about the new release's
 output, fixed by `asbuilt survey`. It runs when a `.rs` file, a `Cargo.toml`,
-`asbuilt.toml` or anything under `docs/architecture/` changes; a model
+`asbuilt.toml`, or anything under `docs/architecture/` changes; a model
 kept elsewhere (`[output] path`) overrides `files:` on the hook:
 
 ```yaml

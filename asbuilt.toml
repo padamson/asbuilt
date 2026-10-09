@@ -16,7 +16,7 @@ source_url = "https://github.com/padamson/asbuilt/blob/main/"
 stylesheet = "../architecture.css"
 
 # The landing site's ink-and-rust palette on every element kind: white
-# module cards, rust crates and tan external tools on a light page; warm
+# module cards, rust crates, and tan external tools on a light page; warm
 # brown cards and a deeper rust on the site's ink in the dark. The docs
 # pages switch between the two; the rendered SVG files use the light set.
 [theme]
@@ -50,7 +50,7 @@ id = "likec4"
 kind = "process"
 title = "LikeC4 CLI"
 technology = "Node.js via npx, pinned version"
-description = "Validates, exports and lays out the model. Only `validate`, `export json` and `render` reach it."
+description = "Validates, exports, and lays out the model. Only `validate`, `export json`, `render`, and `docs` reach it."
 
 [[externals.relations]]
 from = "asbuilt.likec4"

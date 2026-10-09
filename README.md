@@ -25,7 +25,7 @@ relations labeled with the item names they reference, and the metadata
 that ties every element to a path in the tree. Nothing in the model is
 hand-written and nothing in the code is annotated. `asbuilt check` surveys
 again and fails when the committed model no longer matches, so it runs as
-a pre-commit hook and as a CI step. Validation, export and rendering are
+a pre-commit hook and as a CI step. Validation, export, and rendering are
 LikeC4's; `asbuilt` shells out to a pinned `npx likec4` for those and
 reimplements none of it.
 
@@ -45,13 +45,13 @@ rendered. The site is built, driven with playwright-rs, and deployed by
 ## Status
 
 0.2.0. The model, the Rust front-end, `survey`, `check`, the LikeC4
-wrappers and `docs`, now with a viewer (a readable scale, zoom and pan,
+wrappers, and `docs`, now with a viewer (a readable scale, zoom and pan,
 nodes that link to their pages, edges that open the relations behind
 them), are in use on this repo and on
 [playwright-rust](https://github.com/padamson/playwright-rust). Before
 1.0 a minor version may change the model's shape or the CLI, and
 `CHANGELOG.md` names every such change; 0.2.0 changes every model with
-a bin, tests or examples.
+a bin, tests, or examples.
 
 ## Installation
 
@@ -61,14 +61,14 @@ cargo binstall asbuilt     # the release's prebuilt binary, no compile
 ```
 
 Each GitHub release also carries the archives directly: Linux
-(static for x86_64 and aarch64, and a glibc x86_64 build), macOS and
+(static for x86_64 and aarch64, and a glibc x86_64 build), macOS, and
 Windows, each with a
 build-provenance attestation (`gh attestation verify <archive> --repo
 padamson/asbuilt`). To try what is on `main` before it is released, `cargo install --git
 https://github.com/padamson/asbuilt asbuilt`.
 
 `survey` and `check` need only cargo. `validate`, `export json`,
-`render` and `docs` shell out to `npx likec4` (Node) at the release
+`render`, and `docs` shell out to `npx likec4` (Node) at the release
 the badge above names, and
 `render` and `docs` also need Graphviz `dot`; `docs --no-render`
 reuses SVGs already rendered and needs neither.
@@ -91,12 +91,13 @@ an invalid model, 2 anything else, with the file or id in the message.
 
 ### What the model says
 
-One container per crate, one component per module nested as in the code,
-a `tests`, an `examples` and a `bin` element per crate that has them
-(each a kind of its own, so `[theme]` colors them apart), and one
-relation per pair of modules with the referenced item names as the label
-and the strongest evidence as the kind (`implements`, `constructs`,
-`calls`, `names`, `uses`), each drawn with its own line and arrowhead.
+One container per crate; one component per module, nested as in the
+code; a `tests`, an `examples`, and a `bin` element per crate that has
+them (each a kind of its own, so `[theme]` colors them apart); and one
+relation per pair of modules, with the referenced item names as the
+label and the strongest evidence as the kind (`implements`,
+`constructs`, `calls`, `names`, or `uses`), each drawn with its own line
+and arrowhead.
 Descriptions come from the first paragraph of
 each module's `//!` doc. Paths resolve through `pub use` chains and glob
 re-exports to the defining module; an edge from a module to its own
@@ -146,15 +147,15 @@ its output as drift. It is a top-level key, so it goes above the first
 table. A `from` that names no generated element fails the survey, so a
 typo is an error rather than a missing edge. `[docs] title` and `source_url`
 name the documentation tree and turn its paths into links;
-`home_url`, `home_title` and `stylesheet` fit it into a host site.
+`home_url`, `home_title`, and `stylesheet` fit it into a host site.
 `docs` replaces only the files an earlier run wrote, and refuses to
 overwrite tree files it did not write unless `--force`. `[theme]`
 colors each element kind in the rendered diagrams, with a light and a
 dark color the docs pages switch between; a visitor can pick System,
-Light or Dark in the header, and `[docs] color_scheme` and
+Light, or Dark in the header, and `[docs] color_scheme` and
 `scheme_toggle` set the default or leave the control out. Every
 diagram sits in a frame at a readable scale with Fit, 1:1, Wide,
-Legend and Fullscreen controls, zooms with the wheel and Ctrl or ⌘ (or
+Legend, and Fullscreen controls, zooms with the wheel and Ctrl or ⌘ (or
 a pinch) and pans by drag, and carries a legend of the element and
 relation kinds it draws; `[docs] viewer = false` (or `--no-viewer`) leaves
 the viewer and its script out. Curated views go in
@@ -176,7 +177,7 @@ repos:
 The hook runs the `asbuilt` on the PATH, so install the release `rev`
 names; with the release pinned in `asbuilt.toml`, any other one stops
 with the install line instead of reporting drift. It runs when a `.rs`
-file, a `Cargo.toml`, `asbuilt.toml` or anything under
+file, a `Cargo.toml`, `asbuilt.toml`, or anything under
 `docs/architecture/` changes; a model kept elsewhere (`[output] path`)
 sets `files:` on the hook to include its directory.
 

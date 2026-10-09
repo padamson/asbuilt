@@ -493,7 +493,7 @@ to know that: every other asset path is relative.'
   }
   likec4 = process 'LikeC4 CLI' {
     #external
-    description 'Validates, exports and lays out the model. Only `validate`, `export json` and `render` reach it.'
+    description 'Validates, exports, and lays out the model. Only `validate`, `export json`, `render`, and `docs` reach it.'
     technology 'Node.js via npx, pinned version'
   }
 

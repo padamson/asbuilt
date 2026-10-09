@@ -25,7 +25,7 @@ pub fn Footer() -> impl IntoView {
                 <p id="credits" class="max-w-3xl">
                     "Everything downstream of the model is "
                     <a href=LIKEC4 class="underline hover:text-rust-300">"LikeC4"</a>
-                    "'s: validation, export, layout and browsing. This page is tested with "
+                    "'s: validation, export, and layout. This page is tested with "
                     <a href=PLAYWRIGHT_RUST class="underline hover:text-rust-300">"playwright-rs"</a>
                     "."
                 </p>

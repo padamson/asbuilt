@@ -1,7 +1,7 @@
 # asbuilt.toml
 
 Optional, at the repository root. Every key has a default; an unknown key
-inside `[output]`, `[docs]`, `[rust]`, an `[[externals]]` entry or a
+inside `[output]`, `[docs]`, `[rust]`, an `[[externals]]` entry, or a
 `[theme]` color table is an error naming the file, and so is a
 top-level entry asbuilt does not read (`[rsut]`, `[[external]]` for
 `[[externals]]`, or a key such as `title` outside `[docs]`).
@@ -38,7 +38,7 @@ home_title = "playwright-rust"
 # variables (--c4-*) in the host's palette.
 stylesheet = "../architecture.css"
 # The scheme pages show before a visitor chooses: "system" (the default),
-# "light" or "dark".
+# "light", or "dark".
 color_scheme = "system"
 # A System / Light / Dark control in every page's header, and theme.js
 # behind it. Set false to leave it out.

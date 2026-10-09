@@ -16,7 +16,9 @@ pub fn HowItWorks() -> impl IntoView {
                 "a relation labeled with the item names it references. "
                 <code class="text-rust-300">"asbuilt check"</code>
                 " surveys again and exits 1 with a diff when the committed model no longer "
-                "matches, so it runs as a pre-commit hook and a CI step."
+                "matches, so it runs as a pre-commit hook and a CI step. Pin the release in "
+                <code class="text-rust-300">"asbuilt.toml"</code>
+                " and any other one stops with its install line instead of reporting drift."
             </p>
             <CodeTabs tabs=vec![
                 ("survey", snippets::STEP_SURVEY_SH),

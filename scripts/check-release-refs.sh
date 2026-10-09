@@ -64,7 +64,7 @@ check_refs "the hook's rev:" '^[[:space:]]*rev: *v[0-9]' 's/.*rev: *v?([^ ]*).*/
 check_refs "the action's uses:" '^[[:space:]]*(- )?uses: *padamson/asbuilt@v[0-9]' 's/.*padamson\/asbuilt@v([0-9][0-9A-Za-z.-]*).*/\1/' \
   README.md skills/asbuilt/references/cli.md crates/site/snippets/pre_commit.yaml
 check_refs "the asbuilt.toml pin" '^[[:space:]]*asbuilt *= *"' 's/^[[:space:]]*asbuilt *= *"([^"]*)".*/\1/' \
-  README.md skills/asbuilt/references/config.md
+  README.md skills/asbuilt/references/config.md crates/site/snippets/asbuilt.toml
 
 grep -q -F "## [$version]" CHANGELOG.md || fail "CHANGELOG.md: no ## [$version] section"
 

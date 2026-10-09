@@ -1,4 +1,4 @@
 [rust]
 extra_manifests = ["crates/site/Cargo.toml"]   # crates outside the workspace
-include_tests = true                            # one `tests` component per crate
+include_tests = true                            # a `tests` element per crate
 include_examples = true
