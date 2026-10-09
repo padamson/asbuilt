@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-09
+
 ### Added
 - The landing page's roadmap gives Now and Next a theme, a line under each heading saying what the release is about, kept by version in `roadmap.json` (`themes`) so a theme cannot outlive its release; the release check requires one for both milestones. Snapshots built before this (v0.2.0) show main's roadmap without them
 - A legend in every diagram `asbuilt docs` writes, listing only what that diagram draws: each element kind by the surveyed language's word (`crate`, `module`) with a swatch in its color, and each relation kind its edges stand for with a sample of its line and head, plus "several strong kinds", "several weak kinds", or "several kinds" for an edge merging relations. The legend is read off the drawing itself (each kind has its own arrowhead), so a filtered view lists only what it shows. The viewer makes it the frame's last strip, inside its border, and its new Legend button hides every figure's, remembered site-wide like Wide; without the viewer or without JavaScript it is a row under the diagram. `DocsOptions::nouns` carries the words, a new field: a `DocsOptions` built as a full struct literal adds it (`..Default::default()` covers it)
@@ -82,6 +84,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Gates for the excluded site crates: a pre-commit lockfile check and per-manifest fmt/clippy/host tests, `cargo deny` over every manifest (hook, security job, advisory monitor), an `Excluded crates compile` CI job, Dependabot `directories:` for all three lockfiles; the site tree's four unmaintained-crate advisories accepted in `deny.toml` with reasons
 - `.github/workflows/pages.yml`: the versioned Pages deploy to https://padamson.github.io/asbuilt/ (`/asbuilt/dev/` from main, `/asbuilt/vX.Y.Z/` on dispatch), gated on the playwright-rs suite; every snapshot carries `asbuilt docs` over this repo's model at `architecture/`, and `site_architecture_section_lists_every_crate_and_embeds_a_view` gates that tree (`docs/versioned-site.md`)
 
-[Unreleased]: https://github.com/padamson/asbuilt/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/padamson/asbuilt/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/padamson/asbuilt/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/padamson/asbuilt/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/padamson/asbuilt/releases/tag/v0.1.0

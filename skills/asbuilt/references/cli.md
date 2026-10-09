@@ -189,7 +189,7 @@ directory above the tree from every page.
 # .pre-commit-config.yaml (pre-commit or prek)
 repos:
   - repo: https://github.com/padamson/asbuilt
-    rev: v0.2.0
+    rev: v0.3.0
     hooks:
       - id: asbuilt-check
 ```

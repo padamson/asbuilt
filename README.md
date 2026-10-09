@@ -44,14 +44,16 @@ rendered. The site is built, driven with playwright-rs, and deployed by
 
 ## Status
 
-0.2.0. The model, the Rust front-end, `survey`, `check`, the LikeC4
-wrappers, and `docs`, now with a viewer (a readable scale, zoom and pan,
-nodes that link to their pages, edges that open the relations behind
-them), are in use on this repo and on
-[playwright-rust](https://github.com/padamson/playwright-rust). Before
-1.0 a minor version may change the model's shape or the CLI, and
-`CHANGELOG.md` names every such change; 0.2.0 changes every model with
-a bin, tests, or examples.
+0.3.0. The model, the Rust front-end, `survey`, `check`, the LikeC4
+wrappers, and `docs` are in use on this repo and on
+[playwright-rust](https://github.com/padamson/playwright-rust). This
+release adds a release pin in `asbuilt.toml`, a GitHub Action that
+installs the pinned release and checks, a `check` that names what
+changed (and speaks JSON), and relation kinds you can tell apart, with
+a legend in every diagram. Before 1.0 a minor version may change the
+model's shape or the CLI, and `CHANGELOG.md` names every such change;
+0.3.0 changes every model's `specification` block, so re-run `asbuilt
+survey` after upgrading.
 
 ## Installation
 
@@ -169,7 +171,7 @@ commit `model.c4` and the curated views, and ignore the rest.
 # .pre-commit-config.yaml (pre-commit or prek)
 repos:
   - repo: https://github.com/padamson/asbuilt
-    rev: v0.2.0
+    rev: v0.3.0
     hooks:
       - id: asbuilt-check
 ```
