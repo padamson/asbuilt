@@ -8,7 +8,7 @@ top-level entry asbuilt does not read (`[rsut]`, `[[external]]` for
 
 ```toml
 # The release this config and its model are written for. Every command
-# run by another release stops before reading the rest of the file, naming
+# run by another release stops before checking the rest of the file, naming
 # both releases and the `cargo install asbuilt --version X.Y.Z --locked`
 # line; absent, any release runs. Exact: a patch can change survey output.
 # A top-level key, so above the first table: written below one, TOML puts
@@ -67,8 +67,8 @@ include_tests = true
 include_examples = true
 
 [[externals]]
-id = "node_driver"            # a LikeC4 identifier; must not collide with a crate
-kind = "process"              # the LikeC4 element kind
+id = "node_driver"            # a LikeC4 identifier as written (letters, digits, _; no leading digit, no keyword); must not collide with a generated id
+kind = "process"              # the LikeC4 element kind; not one the survey generates (container, component, bin, tests, examples)
 title = "Playwright driver"
 technology = "Node.js process"
 description = "The official Playwright server, assembled by build.rs."

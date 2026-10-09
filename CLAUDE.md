@@ -229,13 +229,12 @@ step is not a no-op.
 2. Update `CHANGELOG.md`, the README's Status paragraph, the hook
    `rev: vX.Y.Z` in the README, `skills/asbuilt/references/cli.md` and
    `crates/site/snippets/pre_commit.yaml`, the action's `uses:
-   padamson/asbuilt@vX.Y.Z` in the README and that `cli.md`, and the
-   `asbuilt = "X.Y.Z"` pin examples in the README and
-   `skills/asbuilt/references/config.md`
-   (bump the skill's `metadata.version` with them); in
-   `crates/site/public/roadmap.json` delete the done items, move
-   `milestone` and `next_milestone` on, and set `now_theme` and
-   `next_theme`
+   padamson/asbuilt@vX.Y.Z` in the README, that `cli.md` and that
+   snippet, and the `asbuilt = "X.Y.Z"` pin examples in the README and
+   `skills/asbuilt/references/config.md` (bump the skill's
+   `metadata.version` with them); in `crates/site/public/roadmap.json`
+   delete the done items, move `milestone` and `next_milestone` on, and
+   add a `themes` entry for the new `next_milestone`
 3. `./scripts/check-release-refs.sh X.Y.Z` must pass; the release
    workflow runs it on the tag and stops before building anything if it
    does not

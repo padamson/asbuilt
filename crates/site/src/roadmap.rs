@@ -1,15 +1,16 @@
 //! The roadmap as data, in `public/roadmap.json`: Now (the next release,
 //! with each item's status), Next and Later. Trunk copies the file into
-//! every build, so main's copy is published at `/asbuilt/dev/roadmap.json`,
-//! and every build fetches that one: whichever version a visitor views,
-//! the roadmap is the current one. The copy compiled in here is what a
-//! build shows until that fetch succeeds, or if it fails. Moving an item is
-//! an edit to the file, made in the commit that does the work.
+//! every build, so main's copy is published at `/asbuilt/dev/roadmap.json`.
+//! The dev build shows its own copy, which is main's; every release build
+//! fetches the dev one, so whichever version a visitor views, the roadmap
+//! is the current one, and shows the copy compiled in here only if that
+//! fetch fails. Moving an item is an edit to the file, made in the commit
+//! that does the work.
 //!
 //! When a release ships, delete its done items (the changelog keeps
 //! them), move `milestone` and `next_milestone` on a version, promote
-//! from Next, and give `now_theme` and `next_theme` the few words each
-//! release is about.
+//! from Next, and add the few words the new `next_milestone` is about to
+//! `themes` (the shipped release's entry can go).
 
 use std::collections::BTreeMap;
 

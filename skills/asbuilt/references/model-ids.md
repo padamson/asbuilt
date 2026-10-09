@@ -3,13 +3,15 @@
 A curated view names generated elements by id, so it helps to know how
 the survey spells them.
 
-- **Crate:** the crate name, which is the package name with `-` as `_`
-  (`playwright-rs` is `playwright_rs`; a tests-only package
-  `playwright-rs-site-e2e` is `playwright_rs_site_e2e`).
+- **Crate:** its lib target's name when it has a lib (`[lib] name`
+  included), else the package name with `-` as `_` (`playwright-rs` is
+  `playwright_rs`; a tests-only package `playwright-rs-site-e2e` is
+  `playwright_rs_site_e2e`).
 - **Module:** `crate.module.submodule`, following `mod` declarations,
-  inline modules included. A bin beside a lib is `crate.<bin name>`
-  with its modules under it; a bin-only package's `main.rs` modules sit
-  directly under the crate.
+  inline modules included. A bin other than the crate's own is
+  `crate.<bin name>` with its modules under it; in a package with no
+  lib, the bin named after the package is the crate, and its `main.rs`
+  modules sit directly under it.
 - **Tests and examples:** `crate.tests` and `crate.examples`, one each
   per crate, whatever the number of targets.
 - **Reserved words:** LikeC4 refuses its grammar's keywords as

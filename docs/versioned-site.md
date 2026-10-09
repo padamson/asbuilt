@@ -1,7 +1,8 @@
 # Versioned landing site (padamson.github.io/asbuilt)
 
 The landing page is published per version so a visitor on any release
-sees the site as it shipped, with a dropdown to switch versions and a
+sees the site as it shipped (except the roadmap, which is always main's;
+see below), with a dropdown to switch versions and a
 banner when they are not on the latest stable. Every snapshot carries
 this repo's own architecture documentation under `architecture/`, the
 output of `asbuilt docs` over the committed model.
@@ -67,7 +68,7 @@ with the `/asbuilt` prefix), and commit.
 
 Triggers:
 - **push to `main`** touching `crates/**`, `docs/architecture/**`,
-  `asbuilt.toml` or the workflow → rebuilds `/asbuilt/dev/`. The paths
+  `asbuilt.toml`, `brand/**` or the workflow → rebuilds `/asbuilt/dev/`. The paths
   are that wide because the documentation is generated from the code.
 - **pull request** → runs both gates and deploys nothing. It is a
   required check, so it has no paths filter.
@@ -95,7 +96,7 @@ gh workflow run pages.yml -f version=X.Y.Z --ref vX.Y.Z
 ```
 
 This builds `/asbuilt/vX.Y.Z/`, makes it the new `latest` (root redirect
-and manifest), and leaves older snapshots untouched. It is step 6 of the
+and manifest), and leaves older snapshots untouched. It is step 7 of the
 release process in `CLAUDE.md`.
 
 ## Running the gates locally

@@ -7,11 +7,11 @@ config from somewhere other than `<root>/asbuilt.toml`.
 | Command | Does | Needs |
 |---|---|---|
 | `asbuilt survey [root] [-o PATH]` | writes the model at the configured path, or at `-o` (relative to the root); creates parent directories; prints nothing on success | cargo |
-| `asbuilt check [root] [--format json]` | surveys in memory and compares with the committed model; on drift, prints the unified diff on stdout and names what changed on stderr (`+ module app.store`, `- app.client -[calls]-> app.server`, `~ crate app: description`); `--format json` puts all of it in one object on stdout (see "check's JSON") | cargo |
+| `asbuilt check [root] [--format text\|json]` | surveys in memory and compares with the committed model; when current, prints `<model> is current`; on drift, prints the unified diff on stdout and on stderr what changed (`+ module app.store`, `- app.client -[calls]-> app.server`, `~ crate app: description`) then the verdict; `--format json` (the default is `text`) puts all of it in one object on stdout (see "check's JSON") | cargo |
 | `asbuilt validate [root]` | `likec4 validate` over the model directory, which also checks curated `.c4` files beside the model | Node |
 | `asbuilt export json [root] [-o PATH]` | `likec4 export json`, normalized (the machine-specific `links[].relative` removed), to `<model dir>/model.json` by default | Node |
 | `asbuilt render [root] [-o DIR]` | `likec4 gen dot` then `dot -Tsvg`, one SVG per view with its `.dot` beside it, into `<model dir>/views` by default; see "What `render` replaces" | Node, Graphviz |
-| `asbuilt docs [root] [-o DIR] [--no-render] [--force] [--title TEXT] [--source-url URL] [--home-url URL] [--home-title TEXT] [--stylesheet URL] [--color-scheme SCHEME] [--no-scheme-toggle]` | a static HTML tree (index, one page per crate with modules and relations, the views inlined) into `<model dir>/site` by default; renders first unless `--no-render`; exits 1 on a stale model; see "What `docs` writes" | Node, Graphviz (neither with `--no-render`) |
+| `asbuilt docs [root] [-o DIR] [--no-render] [--force] [--title TEXT] [--source-url URL] [--home-url URL] [--home-title TEXT] [--stylesheet URL] [--color-scheme SCHEME] [--no-scheme-toggle] [--no-viewer]` | a static HTML tree (index, one page per crate with modules and relations, the views inlined) into `<model dir>/site` by default; renders first unless `--no-render`; exits 1 on a stale model; see "What `docs` writes" | Node, Graphviz (neither with `--no-render`) |
 | `asbuilt --version` | the version, with the build commit when not a tagged release | |
 
 ## check's JSON
@@ -102,8 +102,9 @@ links, kind, items, technology). Any other SVG is an `<img>`.
 `--c4-<kind>-fill`, `-stroke`, `-text` and `-muted`, for light and for
 dark; group boxes are a tint of their kind's color over `--bg`, and
 edges and labels follow `--fg`, `--bg` and `--muted` (`--c4-edge`,
-`--c4-edge-text`, `--c4-label-bg`). A host stylesheet can restate any of
-these.
+`--c4-edge-text`, `--c4-label-bg`), and how strongly a group box takes
+its kind's color is `--c4-group-fill-mix` and `--c4-group-stroke-mix`.
+A host stylesheet can restate any of these.
 
 Every inlined view sits in a frame the viewer sizes: at the scale that
 fits the text column, held between 0.7 and 1, so a wide view scrolls
@@ -169,8 +170,11 @@ directory above the tree from every page.
 
 - `0`: done, or the model is current.
 - `1`: `check` found drift (the unified diff alone on stdout, so it
-  pipes as a patch; what changed and the verdict on stderr, or for a
-  committed model this release did not write, a line saying so), `docs` refused because the committed model is stale, or
+  pipes as a patch; on stderr a heading, `<model>: N changes` with a
+  line per change, or `no element or relation changed; see the diff`,
+  or for a committed model this release did not write `not a model this
+  release wrote; see the diff`, and then the verdict), `docs` refused
+  because the committed model is stale, or
   `validate` found the model directory invalid (LikeC4's diagnostics on
   stderr).
 - `2`: anything else: `asbuilt.toml` pinning another release (checked
