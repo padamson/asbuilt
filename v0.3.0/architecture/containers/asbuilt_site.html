@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en" data-theme-default="system">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="asbuilt docs 0.3.0">
+<title>asbuilt · Architecture · asbuilt-site</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="../viewer.css">
+<script src="../theme.js"></script>
+<script src="../viewer.js" defer></script>
+<link rel="stylesheet" href="../../architecture.css">
+</head>
+<body>
+<header><div class="bar"><nav class="trail" aria-label="Breadcrumb"><a class="home" href="../../">asbuilt</a><span class="sep" aria-hidden="true">/</span><a class="site" href="../index.html"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.24 3.21L17.61 1.26L21.97 8.81L18.6 10.76zM3.06 11.38L15.28 4.33L18.15 9.3L5.93 16.36zM1 13.77L3.88 12.1L5.71 15.29L2.84 16.96zM20.65 13.45A10.32 10.32 0 0 1 17.16 18.37L15.06 15.65A6.88 6.88 0 0 0 17.39 12.37zM14.78 19.74A10.32 10.32 0 0 1 6.06 19.34L7.65 16.29A6.88 6.88 0 0 0 13.47 16.57zM17.95 12.13L23 14.59L21.8 17.07L16.75 14.6zM9.67 17.46L7.76 22.74L5.16 21.8L7.09 16.52zM10.36 10.49L11.79 12.97L12.78 12.4L11.35 9.91zM13.31 11.7L18.47 20.64L17.77 21.04L12.61 12.1zM11.62 12.68L16.78 21.61L16.08 22.01L10.92 13.08zM18.07 19.94L18.47 20.64L16.08 22.01L15.68 21.31z"/></svg>Architecture</a></nav><nav class="views" aria-label="Views"><a href="../views.html">Curated views</a></nav><label class="scheme" hidden>Theme <select id="scheme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div><nav class="containers" aria-label="Containers"><a href="../containers/asbuilt.html">asbuilt</a><a href="../containers/asbuilt_core.html">asbuilt-core</a><a href="../containers/asbuilt_rust.html">asbuilt-rust</a><span aria-current="page">asbuilt-site</span><a href="../containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a></nav></header>
+<main>
+<h1>asbuilt-site</h1>
+<p class="meta">binary crate · <a href="https://github.com/padamson/asbuilt/blob/main/crates/site"><code>crates/site</code></a></p>
+<figure class="view" data-viewer><div class="viewer-bar" hidden><span class="viewer-scale"></span><button type="button" data-viewer-zoom="out" aria-label="Zoom out" title="Zoom out (−)">−</button><button type="button" data-viewer-zoom="in" aria-label="Zoom in" title="Zoom in (+)">+</button><button type="button" data-viewer-mode="fit" aria-pressed="false">Fit</button><button type="button" data-viewer-mode="one" aria-pressed="false">1:1</button><button type="button" data-viewer-wide aria-pressed="false">Wide</button><button type="button" data-viewer-legend aria-pressed="true">Legend</button><button type="button" data-viewer-full>Fullscreen</button><span class="viewer-hint"></span></div><script type="application/json" class="viewer-edges">{"asbuilt_site.app->asbuilt_site.components":[{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.dogfood_banner","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.dogfood_banner","kind":"uses","items":["DogfoodBanner"],"technology":null},{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.example","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.example","kind":"uses","items":["Example"],"technology":null},{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.features","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.features","kind":"uses","items":["Features"],"technology":null},{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.footer","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.footer","kind":"uses","items":["Footer"],"technology":null},{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.hero","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.hero","kind":"uses","items":["Hero"],"technology":null},{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.how_it_works","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.how_it_works","kind":"uses","items":["HowItWorks"],"technology":null},{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.install","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.install","kind":"uses","items":["Install"],"technology":null},{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.roadmap","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.roadmap","kind":"uses","items":["Roadmap"],"technology":null},{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.version_switcher","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.version_switcher","kind":"uses","items":["VersionSwitcher"],"technology":null}],"asbuilt_site.components->asbuilt_site.roadmap":[{"source":"asbuilt_site.components.roadmap","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.roadmap","target":"asbuilt_site.roadmap","target_href":"../containers/asbuilt_site.html#asbuilt_site.roadmap","kind":"calls","items":["Horizon","Item","Roadmap","Status","current_url","roadmap","says_main"],"technology":null}],"asbuilt_site.components->asbuilt_site.snippets":[{"source":"asbuilt_site.components.example","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.example","target":"asbuilt_site.snippets","target_href":"../containers/asbuilt_site.html#asbuilt_site.snippets","kind":"uses","items":["snippets"],"technology":null},{"source":"asbuilt_site.components.features","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.features","target":"asbuilt_site.snippets","target_href":"../containers/asbuilt_site.html#asbuilt_site.snippets","kind":"uses","items":["snippets"],"technology":null},{"source":"asbuilt_site.components.how_it_works","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.how_it_works","target":"asbuilt_site.snippets","target_href":"../containers/asbuilt_site.html#asbuilt_site.snippets","kind":"uses","items":["snippets"],"technology":null},{"source":"asbuilt_site.components.install","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.install","target":"asbuilt_site.snippets","target_href":"../containers/asbuilt_site.html#asbuilt_site.snippets","kind":"uses","items":["snippets"],"technology":null}],"asbuilt_site.components->asbuilt_site.version":[{"source":"asbuilt_site.components.feature_card","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.feature_card","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["is_dev"],"technology":null},{"source":"asbuilt_site.components.footer","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.footer","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["is_dev"],"technology":null},{"source":"asbuilt_site.components.hero","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.hero","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["is_dev"],"technology":null},{"source":"asbuilt_site.components.install","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.install","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["is_dev"],"technology":null},{"source":"asbuilt_site.components.roadmap","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.roadmap","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["fetch_json","is_dev"],"technology":null},{"source":"asbuilt_site.components.version_switcher","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.version_switcher","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["SITE_VERSION","fetch_json","is_dev","manifest_url","snapshot_url"],"technology":null}],"asbuilt_site.roadmap->asbuilt_site.version":[{"source":"asbuilt_site.roadmap","source_href":"../containers/asbuilt_site.html#asbuilt_site.roadmap","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["snapshot_url"],"technology":null}]}</script><div class="viewer-frame" role="group" aria-label="asbuilt-site: diagram"><svg viewBox="0.00 0.00 1349.10 983.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="c4" data-view="view_asbuilt_site" role="img" aria-label="asbuilt-site">
+<g id="view_asbuilt_site-graph0" class="graph" transform="scale(1 1) rotate(0) translate(15.05 968.05)">
+
+<g id="view_asbuilt_site-clust1" class="cluster c4-k-container">
+
+<polygon fill="#722f24" stroke="#57130f" points="8,-8 8,-945 1311,-945 1311,-8 8,-8"/>
+<text text-anchor="start" x="16" y="-933.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT&#45;SITE</text>
+</g>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.app"><g id="view_asbuilt_site-node1" class="node c4-k-component">
+<title>asbuilt_site.app</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1271,-885 951,-885 951,-705 1271,-705 1271,-885"/>
+<text text-anchor="start" x="1094" y="-790" font-family="Arial" font-size="20.00" fill="#5b5b5b">app</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components"><g id="view_asbuilt_site-node2" class="node c4-k-component">
+<title>asbuilt_site.components</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="796,-564 476,-564 476,-384 796,-384 796,-564"/>
+<text text-anchor="start" x="581.5" y="-469" font-family="Arial" font-size="20.00" fill="#5b5b5b">components</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.roadmap"><g id="view_asbuilt_site-node3" class="node c4-k-component">
+<title>asbuilt_site.roadmap</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="535,-228 191,-228 191,-48 535,-48 535,-228"/>
+<text text-anchor="start" x="323" y="-177" font-family="Arial" font-size="20.00" fill="#5b5b5b">roadmap</text>
+<text text-anchor="start" x="281" y="-155" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The roadmap as data, in</text>
+<text text-anchor="start" x="211" y="-138" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`public/roadmap.json`: Now (the next release,</text>
+<text text-anchor="start" x="228.5" y="-121" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">with each item&#39;s status), Next and Later.</text>
+<text text-anchor="start" x="281.5" y="-104" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Trunk copies the file into</text>
+<text text-anchor="start" x="223" y="-87" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">every build, so main&#39;s copy is published at</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.snippets"><g id="view_asbuilt_site-node4" class="node c4-k-component">
+<title>asbuilt_site.snippets</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="841,-885 505,-885 505,-705 841,-705 841,-885"/>
+<text text-anchor="start" x="635.5" y="-834" font-family="Arial" font-size="20.00" fill="#5b5b5b">snippets</text>
+<text text-anchor="start" x="525" y="-812" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Syntax&#45;highlighted code snippets, generated</text>
+<text text-anchor="start" x="573" y="-795" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">at build time by `build.rs` from</text>
+<text text-anchor="start" x="529.5" y="-778" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">the files in `snippets/`. Each constant holds</text>
+<text text-anchor="start" x="596" y="-761" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">highlighted inner HTML</text>
+<text text-anchor="start" x="526.5" y="-744" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">(token spans with inline colors) rendered via</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.version"><g id="view_asbuilt_site-node5" class="node c4-k-component">
+<title>asbuilt_site.version</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="394.5,-885 47.5,-885 47.5,-705 394.5,-705 394.5,-885"/>
+<text text-anchor="start" x="189" y="-834" font-family="Arial" font-size="20.00" fill="#5b5b5b">version</text>
+<text text-anchor="start" x="84.5" y="-812" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The build&#39;s version identity, the one place</text>
+<text text-anchor="start" x="146.5" y="-795" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">the site&#39;s path prefix is</text>
+<text text-anchor="start" x="100" y="-778" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">spelled, and the fetch of the files the</text>
+<text text-anchor="start" x="112" y="-761" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">deploy shares between versions.</text>
+<text text-anchor="start" x="68" y="-744" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`build.rs` injects `SITE_VERSION`; the deploy</text>
+</g></a>
+
+<g id="view_asbuilt_site-edge1" class="edge" data-from="asbuilt_site.app" data-to="asbuilt_site.components">
+<title>asbuilt_site.app → asbuilt_site.components</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M978.37,-704.93C914.57,-662.08 838.13,-610.75 773.68,-567.46"/><path class="c4-hit" d="M978.37,-704.93C914.57,-662.08 838.13,-610.75 773.68,-567.46"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="771.16" cy="-565.77" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="887,-624 887,-645 914,-645 914,-624 887,-624" class="c4-label-bg"/>
+<text text-anchor="start" x="890.5" y="-631.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+
+<g id="view_asbuilt_site-edge2" class="edge" data-from="asbuilt_site.components" data-to="asbuilt_site.roadmap">
+<title>asbuilt_site.components → asbuilt_site.roadmap</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M563.2,-383.93C525.41,-337.7 479.22,-281.18 440.73,-234.1"/><path class="c4-hit" d="M563.2,-383.93C525.41,-337.7 479.22,-281.18 440.73,-234.1"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="435.83,-228.11 443.19,-231.78 438.59,-230.7 440.97,-233.6 440.58,-233.92 440.19,-234.23 437.82,-231.33 437.97,-236.05 435.83,-228.11 435.83,-228.11"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="507,-288 507,-324 712,-324 712,-288 507,-288" class="c4-label-bg"/>
+<text text-anchor="start" x="510.5" y="-309.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Horizon, Item, Roadmap, Status,</text>
+<text text-anchor="start" x="510.5" y="-294.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">current_url, roadmap, says_main</text>
+</g>
+
+<g id="view_asbuilt_site-edge3" class="edge" data-from="asbuilt_site.components" data-to="asbuilt_site.snippets">
+<title>asbuilt_site.components → asbuilt_site.snippets</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M646.35,-564.26C651.21,-606.16 657.01,-656.13 661.95,-698.75"/><path class="c4-hit" d="M646.35,-564.26C651.21,-606.16 657.01,-656.13 661.95,-698.75"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="662.3" cy="-701.74" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="655,-624 655,-645 712,-645 712,-624 655,-624" class="c4-label-bg"/>
+<text text-anchor="start" x="658.5" y="-630.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">snippets</text>
+</g>
+
+<g id="view_asbuilt_site-edge4" class="edge" data-from="asbuilt_site.components" data-to="asbuilt_site.version">
+<title>asbuilt_site.components → asbuilt_site.version</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M520.09,-564.1C464.9,-606.52 398.9,-657.26 342.95,-700.26"/><path class="c4-hit" d="M520.09,-564.1C464.9,-606.52 398.9,-657.26 342.95,-700.26"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="336.88,-704.93 340.77,-697.68 339.54,-702.25 342.52,-699.96 342.82,-700.36 343.13,-700.75 340.15,-703.04 344.88,-703.03 336.88,-704.93 336.88,-704.93"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="440,-624 440,-645 467,-645 467,-624 440,-624" class="c4-label-bg"/>
+<text text-anchor="start" x="443.5" y="-631.3" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+
+<g id="view_asbuilt_site-edge5" class="edge" data-from="asbuilt_site.roadmap" data-to="asbuilt_site.version">
+<title>asbuilt_site.roadmap → asbuilt_site.version</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M343.69,-228.09C317.08,-350.81 269.34,-571.03 241.91,-697.54"/><path class="c4-hit" d="M343.69,-228.09C317.08,-350.81 269.34,-571.03 241.91,-697.54"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="240.3,-704.98 238.59,-696.94 240.6,-701.21 241.4,-697.55 241.89,-697.65 242.38,-697.76 241.58,-701.42 245.19,-698.37 240.3,-704.98 240.3,-704.98"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="308,-463.5 308,-484.5 392,-484.5 392,-463.5 308,-463.5" class="c4-label-bg"/>
+<text text-anchor="start" x="311" y="-469.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">snapshot_url</text>
+</g>
+</g>
+</svg></div><div class="legend" role="group" aria-label="Legend"><ul><li><span class="legend-swatch c4-k-container"></span>crate</li><li><span class="legend-swatch c4-k-component"></span>module</li><li><svg class="legend-line" viewBox="0 0 36 12" width="27" height="9" aria-hidden="true"><line x1="1" y1="6" x2="26" y2="6"/><polygon points="26,2 35,6 26,10 29,6"/></svg>calls</li><li><svg class="legend-line" viewBox="0 0 36 12" width="27" height="9" aria-hidden="true"><line x1="1" y1="6" x2="26" y2="6" stroke-dasharray="1,3"/><circle cx="31" cy="6" r="3.5" fill="none"/></svg>uses</li></ul></div></figure>
+<h2>Modules</h2>
+<div class="modules"><ul>
+<li><a href="#asbuilt_site.app">app</a></li>
+<li><a href="#asbuilt_site.components">components</a><ul>
+<li><a href="#asbuilt_site.components.code_block">code_block</a></li>
+<li><a href="#asbuilt_site.components.code_tabs">code_tabs</a></li>
+<li><a href="#asbuilt_site.components.dogfood_banner">dogfood_banner</a></li>
+<li><a href="#asbuilt_site.components.example">example</a></li>
+<li><a href="#asbuilt_site.components.feature_card">feature_card</a></li>
+<li><a href="#asbuilt_site.components.features">features</a></li>
+<li><a href="#asbuilt_site.components.footer">footer</a></li>
+<li><a href="#asbuilt_site.components.hero">hero</a></li>
+<li><a href="#asbuilt_site.components.how_it_works">how_it_works</a></li>
+<li><a href="#asbuilt_site.components.icons_">icons</a></li>
+<li><a href="#asbuilt_site.components.install">install</a></li>
+<li><a href="#asbuilt_site.components.roadmap">roadmap</a></li>
+<li><a href="#asbuilt_site.components.unreleased_badge">unreleased_badge</a></li>
+<li><a href="#asbuilt_site.components.version_switcher">version_switcher</a></li>
+</ul>
+</li>
+<li><a href="#asbuilt_site.roadmap">roadmap</a></li>
+<li><a href="#asbuilt_site.snippets">snippets</a></li>
+<li><a href="#asbuilt_site.version">version</a></li>
+</ul>
+</div>
+<section id="asbuilt_site.app">
+<h2>app <small>asbuilt_site.app</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/app.rs"><code>crates/site/src/app.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.dogfood_banner">asbuilt_site.components.dogfood_banner</a></td><td>DogfoodBanner</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.example">asbuilt_site.components.example</a></td><td>Example</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.features">asbuilt_site.components.features</a></td><td>Features</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.footer">asbuilt_site.components.footer</a></td><td>Footer</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.hero">asbuilt_site.components.hero</a></td><td>Hero</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.how_it_works">asbuilt_site.components.how_it_works</a></td><td>HowItWorks</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.install">asbuilt_site.components.install</a></td><td>Install</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.roadmap">asbuilt_site.components.roadmap</a></td><td>Roadmap</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.version_switcher">asbuilt_site.components.version_switcher</a></td><td>VersionSwitcher</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components">
+<h2>components <small>asbuilt_site.components</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/mod.rs"><code>crates/site/src/components/mod.rs</code></a></p>
+<figure class="view" data-viewer><div class="viewer-bar" hidden><span class="viewer-scale"></span><button type="button" data-viewer-zoom="out" aria-label="Zoom out" title="Zoom out (−)">−</button><button type="button" data-viewer-zoom="in" aria-label="Zoom in" title="Zoom in (+)">+</button><button type="button" data-viewer-mode="fit" aria-pressed="false">Fit</button><button type="button" data-viewer-mode="one" aria-pressed="false">1:1</button><button type="button" data-viewer-wide aria-pressed="false">Wide</button><button type="button" data-viewer-legend aria-pressed="true">Legend</button><button type="button" data-viewer-full>Fullscreen</button><span class="viewer-hint"></span></div><script type="application/json" class="viewer-edges">{"asbuilt_site.components.example->asbuilt_site.components.code_block":[{"source":"asbuilt_site.components.example","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.example","target":"asbuilt_site.components.code_block","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.code_block","kind":"uses","items":["CodeBlock"],"technology":null}],"asbuilt_site.components.example->asbuilt_site.snippets":[{"source":"asbuilt_site.components.example","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.example","target":"asbuilt_site.snippets","target_href":"../containers/asbuilt_site.html#asbuilt_site.snippets","kind":"uses","items":["snippets"],"technology":null}],"asbuilt_site.components.features->asbuilt_site.components.feature_card":[{"source":"asbuilt_site.components.features","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.features","target":"asbuilt_site.components.feature_card","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.feature_card","kind":"uses","items":["FeatureCard"],"technology":null}],"asbuilt_site.components.features->asbuilt_site.components.code_block":[{"source":"asbuilt_site.components.features","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.features","target":"asbuilt_site.components.code_block","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.code_block","kind":"uses","items":["CodeBlock"],"technology":null}],"asbuilt_site.components.features->asbuilt_site.snippets":[{"source":"asbuilt_site.components.features","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.features","target":"asbuilt_site.snippets","target_href":"../containers/asbuilt_site.html#asbuilt_site.snippets","kind":"uses","items":["snippets"],"technology":null}],"asbuilt_site.components.footer->asbuilt_site.version":[{"source":"asbuilt_site.components.footer","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.footer","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["is_dev"],"technology":null}],"asbuilt_site.components.hero->asbuilt_site.components.icons_":[{"source":"asbuilt_site.components.hero","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.hero","target":"asbuilt_site.components.icons","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.icons_","kind":"uses","items":["Icon","icons"],"technology":null}],"asbuilt_site.components.hero->asbuilt_site.version":[{"source":"asbuilt_site.components.hero","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.hero","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["is_dev"],"technology":null}],"asbuilt_site.components.how_it_works->asbuilt_site.components.code_tabs":[{"source":"asbuilt_site.components.how_it_works","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.how_it_works","target":"asbuilt_site.components.code_tabs","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.code_tabs","kind":"uses","items":["CodeTabs"],"technology":null}],"asbuilt_site.components.how_it_works->asbuilt_site.snippets":[{"source":"asbuilt_site.components.how_it_works","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.how_it_works","target":"asbuilt_site.snippets","target_href":"../containers/asbuilt_site.html#asbuilt_site.snippets","kind":"uses","items":["snippets"],"technology":null}],"asbuilt_site.components.install->asbuilt_site.components.code_block":[{"source":"asbuilt_site.components.install","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.install","target":"asbuilt_site.components.code_block","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.code_block","kind":"uses","items":["CodeBlock"],"technology":null}],"asbuilt_site.components.install->asbuilt_site.snippets":[{"source":"asbuilt_site.components.install","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.install","target":"asbuilt_site.snippets","target_href":"../containers/asbuilt_site.html#asbuilt_site.snippets","kind":"uses","items":["snippets"],"technology":null}],"asbuilt_site.components.install->asbuilt_site.version":[{"source":"asbuilt_site.components.install","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.install","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["is_dev"],"technology":null}],"asbuilt_site.components.roadmap->asbuilt_site.version":[{"source":"asbuilt_site.components.roadmap","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.roadmap","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["fetch_json","is_dev"],"technology":null}],"asbuilt_site.components.roadmap->asbuilt_site.roadmap":[{"source":"asbuilt_site.components.roadmap","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.roadmap","target":"asbuilt_site.roadmap","target_href":"../containers/asbuilt_site.html#asbuilt_site.roadmap","kind":"calls","items":["Horizon","Item","Roadmap","Status","current_url","roadmap","says_main"],"technology":null}],"asbuilt_site.components.version_switcher->asbuilt_site.version":[{"source":"asbuilt_site.components.version_switcher","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.version_switcher","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["SITE_VERSION","fetch_json","is_dev","manifest_url","snapshot_url"],"technology":null}],"asbuilt_site.components.feature_card->asbuilt_site.version":[{"source":"asbuilt_site.components.feature_card","source_href":"../containers/asbuilt_site.html#asbuilt_site.components.feature_card","target":"asbuilt_site.version","target_href":"../containers/asbuilt_site.html#asbuilt_site.version","kind":"calls","items":["is_dev"],"technology":null}],"asbuilt_site.app->asbuilt_site.components.dogfood_banner":[{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.dogfood_banner","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.dogfood_banner","kind":"uses","items":["DogfoodBanner"],"technology":null}],"asbuilt_site.app->asbuilt_site.components.example":[{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.example","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.example","kind":"uses","items":["Example"],"technology":null}],"asbuilt_site.app->asbuilt_site.components.features":[{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.features","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.features","kind":"uses","items":["Features"],"technology":null}],"asbuilt_site.app->asbuilt_site.components.footer":[{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.footer","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.footer","kind":"uses","items":["Footer"],"technology":null}],"asbuilt_site.app->asbuilt_site.components.hero":[{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.hero","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.hero","kind":"uses","items":["Hero"],"technology":null}],"asbuilt_site.app->asbuilt_site.components.how_it_works":[{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.how_it_works","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.how_it_works","kind":"uses","items":["HowItWorks"],"technology":null}],"asbuilt_site.app->asbuilt_site.components.install":[{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.install","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.install","kind":"uses","items":["Install"],"technology":null}],"asbuilt_site.app->asbuilt_site.components.roadmap":[{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.roadmap","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.roadmap","kind":"uses","items":["Roadmap"],"technology":null}],"asbuilt_site.app->asbuilt_site.components.version_switcher":[{"source":"asbuilt_site.app","source_href":"../containers/asbuilt_site.html#asbuilt_site.app","target":"asbuilt_site.components.version_switcher","target_href":"../containers/asbuilt_site.html#asbuilt_site.components.version_switcher","kind":"uses","items":["VersionSwitcher"],"technology":null}]}</script><div class="viewer-frame" role="group" aria-label="asbuilt_site.components: diagram"><svg viewBox="0.00 0.00 6366.10 895.10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="c4" data-view="view_asbuilt_site_components" role="img" aria-label="asbuilt_site.components">
+<g id="view_asbuilt_site_components-graph0" class="graph" transform="scale(1 1) rotate(0) translate(15.05 880.05)">
+
+<g id="view_asbuilt_site_components-clust1" class="cluster c4-k-component">
+
+<polygon fill="#999999" stroke="#808080" points="8,-296 8,-596 6328,-596 6328,-296 8,-296"/>
+<text text-anchor="start" x="16" y="-584.2" font-family="Arial" font-weight="bold" font-size="11.00" fill="#6d6d6d" fill-opacity="0.701961">COMPONENTS</text>
+</g>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.dogfood_banner"><g id="view_asbuilt_site_components-node1" class="node c4-k-component">
+<title>asbuilt_site.components.dogfood_banner</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="798,-516 478,-516 478,-336 798,-336 798,-516"/>
+<text text-anchor="start" x="564" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">dogfood_banner</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.example"><g id="view_asbuilt_site_components-node2" class="node c4-k-component">
+<title>asbuilt_site.components.example</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2628,-516 2308,-516 2308,-336 2628,-336 2628,-516"/>
+<text text-anchor="start" x="2430" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">example</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.features"><g id="view_asbuilt_site_components-node3" class="node c4-k-component">
+<title>asbuilt_site.components.features</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1228,-516 908,-516 908,-336 1228,-336 1228,-516"/>
+<text text-anchor="start" x="1031.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">features</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.footer"><g id="view_asbuilt_site_components-node4" class="node c4-k-component">
+<title>asbuilt_site.components.footer</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="5858,-516 5538,-516 5538,-336 5858,-336 5858,-516"/>
+<text text-anchor="start" x="5672" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">footer</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.hero"><g id="view_asbuilt_site_components-node5" class="node c4-k-component">
+<title>asbuilt_site.components.hero</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4888,-516 4568,-516 4568,-336 4888,-336 4888,-516"/>
+<text text-anchor="start" x="4707.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">hero</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.how_it_works"><g id="view_asbuilt_site_components-node6" class="node c4-k-component">
+<title>asbuilt_site.components.how_it_works</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1658,-516 1338,-516 1338,-336 1658,-336 1658,-516"/>
+<text text-anchor="start" x="1437.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">how_it_works</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.install"><g id="view_asbuilt_site_components-node7" class="node c4-k-component">
+<title>asbuilt_site.components.install</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="3488,-516 3168,-516 3168,-336 3488,-336 3488,-516"/>
+<text text-anchor="start" x="3302" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">install</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.roadmap"><g id="view_asbuilt_site_components-node8" class="node c4-k-component">
+<title>asbuilt_site.components.roadmap</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="6288,-516 5968,-516 5968,-336 6288,-336 6288,-516"/>
+<text text-anchor="start" x="6088" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">roadmap</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.version_switcher"><g id="view_asbuilt_site_components-node9" class="node c4-k-component">
+<title>asbuilt_site.components.version_switcher</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="3058,-516 2738,-516 2738,-336 3058,-336 3058,-516"/>
+<text text-anchor="start" x="2823.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">version_switcher</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.feature_card"><g id="view_asbuilt_site_components-node10" class="node c4-k-component">
+<title>asbuilt_site.components.feature_card</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4458,-516 4138,-516 4138,-336 4458,-336 4458,-516"/>
+<text text-anchor="start" x="4241.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">feature_card</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.icons_"><g id="view_asbuilt_site_components-node11" class="node c4-k-component">
+<title>asbuilt_site.components.icons</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="5428,-516 5108,-516 5108,-336 5428,-336 5428,-516"/>
+<text text-anchor="start" x="5244.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">icons</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.code_tabs"><g id="view_asbuilt_site_components-node12" class="node c4-k-component">
+<title>asbuilt_site.components.code_tabs</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2198,-516 1878,-516 1878,-336 2198,-336 2198,-516"/>
+<text text-anchor="start" x="1991.5" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">code_tabs</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.code_block"><g id="view_asbuilt_site_components-node13" class="node c4-k-component">
+<title>asbuilt_site.components.code_block</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4028,-516 3708,-516 3708,-336 4028,-336 4028,-516"/>
+<text text-anchor="start" x="3817" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">code_block</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.components.unreleased_badge"><g id="view_asbuilt_site_components-node14" class="node c4-k-component">
+<title>asbuilt_site.components.unreleased_badge</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="368,-516 48,-516 48,-336 368,-336 368,-516"/>
+<text text-anchor="start" x="124" y="-421" font-family="Arial" font-size="20.00" fill="#5b5b5b">unreleased_badge</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.app"><g id="view_asbuilt_site_components-node15" class="node c4-k-component">
+<title>asbuilt_site.app</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="3058,-865 2738,-865 2738,-685 3058,-685 3058,-865"/>
+<text text-anchor="start" x="2881" y="-770" font-family="Arial" font-size="20.00" fill="#5b5b5b">app</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.snippets"><g id="view_asbuilt_site_components-node16" class="node c4-k-component">
+<title>asbuilt_site.snippets</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="2051,-180 1715,-180 1715,0 2051,0 2051,-180"/>
+<text text-anchor="start" x="1845.5" y="-129" font-family="Arial" font-size="20.00" fill="#5b5b5b">snippets</text>
+<text text-anchor="start" x="1735" y="-107" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Syntax&#45;highlighted code snippets, generated</text>
+<text text-anchor="start" x="1783" y="-90" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">at build time by `build.rs` from</text>
+<text text-anchor="start" x="1739.5" y="-73" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">the files in `snippets/`. Each constant holds</text>
+<text text-anchor="start" x="1806" y="-56" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">highlighted inner HTML</text>
+<text text-anchor="start" x="1736.5" y="-39" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">(token spans with inline colors) rendered via</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.version"><g id="view_asbuilt_site_components-node17" class="node c4-k-component">
+<title>asbuilt_site.version</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="4652.5,-180 4305.5,-180 4305.5,0 4652.5,0 4652.5,-180"/>
+<text text-anchor="start" x="4447" y="-129" font-family="Arial" font-size="20.00" fill="#5b5b5b">version</text>
+<text text-anchor="start" x="4342.5" y="-107" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The build&#39;s version identity, the one place</text>
+<text text-anchor="start" x="4404.5" y="-90" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">the site&#39;s path prefix is</text>
+<text text-anchor="start" x="4358" y="-73" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">spelled, and the fetch of the files the</text>
+<text text-anchor="start" x="4370" y="-56" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">deploy shares between versions.</text>
+<text text-anchor="start" x="4326" y="-39" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`build.rs` injects `SITE_VERSION`; the deploy</text>
+</g></a>
+
+<a href="../containers/asbuilt_site.html#asbuilt_site.roadmap"><g id="view_asbuilt_site_components-node18" class="node c4-k-component">
+<title>asbuilt_site.roadmap</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="6300,-180 5956,-180 5956,0 6300,0 6300,-180"/>
+<text text-anchor="start" x="6088" y="-129" font-family="Arial" font-size="20.00" fill="#5b5b5b">roadmap</text>
+<text text-anchor="start" x="6046" y="-107" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The roadmap as data, in</text>
+<text text-anchor="start" x="5976" y="-90" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`public/roadmap.json`: Now (the next release,</text>
+<text text-anchor="start" x="5993.5" y="-73" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">with each item&#39;s status), Next and Later.</text>
+<text text-anchor="start" x="6046.5" y="-56" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Trunk copies the file into</text>
+<text text-anchor="start" x="5988" y="-39" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">every build, so main&#39;s copy is published at</text>
+</g></a>
+
+<g id="view_asbuilt_site_components-edge10" class="edge" data-from="asbuilt_site.components.example" data-to="asbuilt_site.components.code_block">
+<title>asbuilt_site.components.example → asbuilt_site.components.code_block</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M2560.92,-516.08C2596.27,-544.48 2638.76,-572.27 2683,-587 2773.66,-617.18 3449.96,-608.78 3543,-587 3602.57,-573.05 3663.74,-546.5 3716.71,-518.92"/><path class="c4-hit" d="M2560.92,-516.08C2596.27,-544.48 2638.76,-572.27 2683,-587 2773.66,-617.18 3449.96,-608.78 3543,-587 3602.57,-573.05 3663.74,-546.5 3716.71,-518.92"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="3719.48" cy="-517.47" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3040,-604 3040,-625 3112,-625 3112,-604 3040,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="3043" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">CodeBlock</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge11" class="edge" data-from="asbuilt_site.components.example" data-to="asbuilt_site.snippets">
+<title>asbuilt_site.components.example → asbuilt_site.snippets</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M2320.94,-335.85C2298.26,-322.37 2275.06,-308.72 2253,-296 2187.72,-258.35 2115.33,-217.94 2052.01,-183.04"/><path class="c4-hit" d="M2320.94,-335.85C2298.26,-322.37 2275.06,-308.72 2253,-296 2187.72,-258.35 2115.33,-217.94 2052.01,-183.04"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="2049.32" cy="-181.56" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2213,-247.5 2213,-268.5 2270,-268.5 2270,-247.5 2213,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="2216.5" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">snippets</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge12" class="edge" data-from="asbuilt_site.components.features" data-to="asbuilt_site.components.feature_card">
+<title>asbuilt_site.components.features → asbuilt_site.components.feature_card</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M1160.92,-516.08C1196.27,-544.48 1238.76,-572.27 1283,-587 1430.59,-636.14 3935.41,-636.14 4083,-587 4125.17,-572.96 4165.74,-547.06 4200.06,-520.07"/><path class="c4-hit" d="M1160.92,-516.08C1196.27,-544.48 1238.76,-572.27 1283,-587 1430.59,-636.14 3935.41,-636.14 4083,-587 4125.17,-572.96 4165.74,-547.06 4200.06,-520.07"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="4202.73" cy="-517.95" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2567,-604 2567,-625 2649,-625 2649,-604 2567,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="2570" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">FeatureCard</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge13" class="edge" data-from="asbuilt_site.components.features" data-to="asbuilt_site.components.code_block">
+<title>asbuilt_site.components.features → asbuilt_site.components.code_block</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M1160.92,-516.08C1196.27,-544.48 1238.76,-572.27 1283,-587 1402.13,-626.66 3420.75,-615.62 3543,-587 3602.57,-573.05 3663.74,-546.5 3716.71,-518.92"/><path class="c4-hit" d="M1160.92,-516.08C1196.27,-544.48 1238.76,-572.27 1283,-587 1402.13,-626.66 3420.75,-615.62 3543,-587 3602.57,-573.05 3663.74,-546.5 3716.71,-518.92"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="3719.48" cy="-517.47" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2666,-604 2666,-625 2738,-625 2738,-604 2666,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="2669" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">CodeBlock</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge14" class="edge" data-from="asbuilt_site.components.features" data-to="asbuilt_site.snippets">
+<title>asbuilt_site.components.features → asbuilt_site.snippets</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M1206.77,-335.96C1231.66,-321.67 1257.73,-307.74 1283,-296 1421.94,-231.47 1587.13,-176.52 1708.97,-139.8"/><path class="c4-hit" d="M1206.77,-335.96C1231.66,-321.67 1257.73,-307.74 1283,-296 1421.94,-231.47 1587.13,-176.52 1708.97,-139.8"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="1711.87" cy="-138.93" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1411,-247.5 1411,-268.5 1468,-268.5 1468,-247.5 1411,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="1414.5" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">snippets</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge15" class="edge" data-from="asbuilt_site.components.footer" data-to="asbuilt_site.version">
+<title>asbuilt_site.components.footer → asbuilt_site.version</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M5565.38,-335.99C5538.9,-320.96 5510.69,-306.77 5483,-296 5207.03,-188.67 4865.5,-134.25 4660.33,-109.31"/><path class="c4-hit" d="M5565.38,-335.99C5538.9,-320.96 5510.69,-306.77 5483,-296 5207.03,-188.67 4865.5,-134.25 4660.33,-109.31"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4652.78,-108.39 4660.63,-105.94 4656.56,-108.35 4660.29,-108.8 4660.23,-109.29 4660.17,-109.79 4656.44,-109.34 4659.82,-112.64 4652.78,-108.39 4652.78,-108.39"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="5405,-247.5 5405,-268.5 5451,-268.5 5451,-247.5 5405,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="5408" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">is_dev</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge16" class="edge" data-from="asbuilt_site.components.hero" data-to="asbuilt_site.components.icons_">
+<title>asbuilt_site.components.hero → asbuilt_site.components.icons_</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M4888.19,-426C4955.5,-426 5033.79,-426 5101.73,-426"/><path class="c4-hit" d="M4888.19,-426C4955.5,-426 5033.79,-426 5101.73,-426"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="5104.86" cy="-426" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4962.5,-429 4962.5,-450 5033.5,-450 5033.5,-429 4962.5,-429" class="c4-label-bg"/>
+<text text-anchor="start" x="4966" y="-435.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Icon, icons</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge17" class="edge" data-from="asbuilt_site.components.hero" data-to="asbuilt_site.version">
+<title>asbuilt_site.components.hero → asbuilt_site.version</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M4661.6,-335.93C4627.2,-289.79 4585.17,-233.41 4550.11,-186.38"/><path class="c4-hit" d="M4661.6,-335.93C4627.2,-289.79 4585.17,-233.41 4550.11,-186.38"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4545.43,-180.11 4552.62,-184.1 4548.07,-182.82 4550.31,-185.82 4549.91,-186.12 4549.51,-186.42 4547.27,-183.41 4547.21,-188.14 4545.43,-180.11 4545.43,-180.11"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4610,-247.5 4610,-268.5 4656,-268.5 4656,-247.5 4610,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="4613" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">is_dev</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge18" class="edge" data-from="asbuilt_site.components.how_it_works" data-to="asbuilt_site.components.code_tabs">
+<title>asbuilt_site.components.how_it_works → asbuilt_site.components.code_tabs</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M1658.19,-426C1725.5,-426 1803.79,-426 1871.73,-426"/><path class="c4-hit" d="M1658.19,-426C1725.5,-426 1803.79,-426 1871.73,-426"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="1874.86" cy="-426" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1734.5,-429 1734.5,-450 1801.5,-450 1801.5,-429 1734.5,-429" class="c4-label-bg"/>
+<text text-anchor="start" x="1738" y="-435.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">CodeTabs</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge19" class="edge" data-from="asbuilt_site.components.how_it_works" data-to="asbuilt_site.snippets">
+<title>asbuilt_site.components.how_it_works → asbuilt_site.snippets</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M1600.67,-335.93C1654.72,-289.04 1720.97,-231.57 1775.7,-184.09"/><path class="c4-hit" d="M1600.67,-335.93C1654.72,-289.04 1720.97,-231.57 1775.7,-184.09"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="1778.02" cy="-182.07" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1702,-247.5 1702,-268.5 1759,-268.5 1759,-247.5 1702,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="1705.5" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">snippets</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge20" class="edge" data-from="asbuilt_site.components.install" data-to="asbuilt_site.components.code_block">
+<title>asbuilt_site.components.install → asbuilt_site.components.code_block</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M3488.19,-426C3555.5,-426 3633.79,-426 3701.73,-426"/><path class="c4-hit" d="M3488.19,-426C3555.5,-426 3633.79,-426 3701.73,-426"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="3704.86" cy="-426" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3562,-429 3562,-450 3634,-450 3634,-429 3562,-429" class="c4-label-bg"/>
+<text text-anchor="start" x="3565" y="-435.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">CodeBlock</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge21" class="edge" data-from="asbuilt_site.components.install" data-to="asbuilt_site.snippets">
+<title>asbuilt_site.components.install → asbuilt_site.snippets</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M3273.08,-335.88C3246.25,-300.09 3210.71,-262.14 3169,-240 2980.35,-139.84 2362.94,-106.27 2057.43,-95.63"/><path class="c4-hit" d="M3273.08,-335.88C3246.25,-300.09 3210.71,-262.14 3169,-240 2980.35,-139.84 2362.94,-106.27 2057.43,-95.63"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="2054.16" cy="-95.51" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3217,-247.5 3217,-268.5 3274,-268.5 3274,-247.5 3217,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="3220.5" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">snippets</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge22" class="edge" data-from="asbuilt_site.components.install" data-to="asbuilt_site.version">
+<title>asbuilt_site.components.install → asbuilt_site.version</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M3488.03,-356.52C3540.11,-335.58 3598.52,-313.48 3653,-296 3871.68,-225.82 4129.33,-165.28 4298,-128.56"/><path class="c4-hit" d="M3488.03,-356.52C3540.11,-335.58 3598.52,-313.48 3653,-296 3871.68,-225.82 4129.33,-165.28 4298,-128.56"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4305.46,-126.93 4298.85,-131.83 4301.9,-128.22 4298.24,-129.02 4298.13,-128.53 4298.02,-128.04 4301.69,-127.24 4297.41,-125.23 4305.46,-126.93 4305.46,-126.93"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3831,-247.5 3831,-268.5 3877,-268.5 3877,-247.5 3831,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="3834" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">is_dev</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge24" class="edge" data-from="asbuilt_site.components.roadmap" data-to="asbuilt_site.version">
+<title>asbuilt_site.components.roadmap → asbuilt_site.version</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M5998.2,-335.97C5971.01,-320.56 5941.82,-306.23 5913,-296 5481.27,-142.7 4937.84,-103.77 4660.3,-94.06"/><path class="c4-hit" d="M5998.2,-335.97C5971.01,-320.56 5941.82,-306.23 5913,-296 5481.27,-142.7 4937.84,-103.77 4660.3,-94.06"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4652.57,-93.8 4660.18,-90.68 4656.34,-93.43 4660.08,-93.56 4660.07,-94.06 4660.05,-94.56 4656.3,-94.43 4659.95,-97.43 4652.57,-93.8 4652.57,-93.8"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="5839,-247.5 5839,-268.5 5954,-268.5 5954,-247.5 5839,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="5842.5" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">fetch_json, is_dev</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge23" class="edge" data-from="asbuilt_site.components.roadmap" data-to="asbuilt_site.roadmap">
+<title>asbuilt_site.components.roadmap → asbuilt_site.roadmap</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M6128,-335.93C6128,-290.26 6128,-234.56 6128,-187.83"/><path class="c4-hit" d="M6128,-335.93C6128,-290.26 6128,-234.56 6128,-187.83"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="6128,-180.11 6131.38,-187.61 6128.5,-183.86 6128.5,-187.61 6128,-187.61 6127.5,-187.61 6127.5,-183.86 6124.63,-187.61 6128,-180.11 6128,-180.11"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="6128,-240 6128,-276 6333,-276 6333,-240 6128,-240" class="c4-label-bg"/>
+<text text-anchor="start" x="6131.5" y="-261.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Horizon, Item, Roadmap, Status,</text>
+<text text-anchor="start" x="6131.5" y="-246.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">current_url, roadmap, says_main</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge25" class="edge" data-from="asbuilt_site.components.version_switcher" data-to="asbuilt_site.version">
+<title>asbuilt_site.components.version_switcher → asbuilt_site.version</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M2885.43,-335.58C2885.74,-301.27 2893.18,-264.52 2918,-240 3014.54,-144.66 3907.43,-107.45 4297.78,-95.65"/><path class="c4-hit" d="M2885.43,-335.58C2885.74,-301.27 2893.18,-264.52 2918,-240 3014.54,-144.66 3907.43,-107.45 4297.78,-95.65"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4305.48,-95.42 4298.09,-99.02 4301.75,-96.03 4298,-96.15 4297.98,-95.65 4297.97,-95.15 4301.72,-95.03 4297.88,-92.27 4305.48,-95.42 4305.48,-95.42"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2918,-240 2918,-276 3142,-276 3142,-240 2918,-240" class="c4-label-bg"/>
+<text text-anchor="start" x="2921" y="-261.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">SITE_VERSION, fetch_json, is_dev,</text>
+<text text-anchor="start" x="2921" y="-246.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">manifest_url, snapshot_url</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge26" class="edge" data-from="asbuilt_site.components.feature_card" data-to="asbuilt_site.version">
+<title>asbuilt_site.components.feature_card → asbuilt_site.version</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M4346.27,-335.93C4371.17,-289.98 4401.57,-233.87 4427,-186.96"/><path class="c4-hit" d="M4346.27,-335.93C4371.17,-289.98 4401.57,-233.87 4427,-186.96"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="4430.71,-180.11 4430.1,-188.31 4429.36,-183.64 4427.58,-186.94 4427.14,-186.7 4426.7,-186.46 4428.48,-183.17 4424.17,-185.09 4430.71,-180.11 4430.71,-180.11"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4393,-247.5 4393,-268.5 4439,-268.5 4439,-247.5 4393,-247.5" class="c4-label-bg"/>
+<text text-anchor="start" x="4396" y="-253.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">is_dev</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge1" class="edge" data-from="asbuilt_site.app" data-to="asbuilt_site.components.dogfood_banner">
+<title>asbuilt_site.app → asbuilt_site.components.dogfood_banner</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M2737.83,-760.29C2433.63,-734.22 1751.34,-675.57 1177,-625 1032.98,-612.32 987.38,-649.32 853,-596 809.29,-578.66 767.21,-549.43 732.06,-520.12"/><path class="c4-hit" d="M2737.83,-760.29C2433.63,-734.22 1751.34,-675.57 1177,-625 1032.98,-612.32 987.38,-649.32 853,-596 809.29,-578.66 767.21,-549.43 732.06,-520.12"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="729.66" cy="-518.1" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1177,-604 1177,-625 1278,-625 1278,-604 1177,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="1180.5" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">DogfoodBanner</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge2" class="edge" data-from="asbuilt_site.app" data-to="asbuilt_site.components.example">
+<title>asbuilt_site.app → asbuilt_site.components.example</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M2737.89,-759.48C2647.23,-742.31 2540.23,-705.14 2480,-625 2458.29,-596.11 2452.36,-557.64 2452.92,-522.3"/><path class="c4-hit" d="M2737.89,-759.48C2647.23,-742.31 2540.23,-705.14 2480,-625 2458.29,-596.11 2452.36,-557.64 2452.92,-522.3"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="2453.01" cy="-519.19" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2480,-604 2480,-625 2540,-625 2540,-604 2480,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="2483" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Example</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge3" class="edge" data-from="asbuilt_site.app" data-to="asbuilt_site.components.features">
+<title>asbuilt_site.app → asbuilt_site.components.features</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M2737.79,-767.51C2383.48,-751.36 1544.2,-702.75 1283,-596 1239.68,-578.29 1197.84,-549.17 1162.77,-520.04"/><path class="c4-hit" d="M2737.79,-767.51C2383.48,-751.36 1544.2,-702.75 1283,-596 1239.68,-578.29 1197.84,-549.17 1162.77,-520.04"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="1160.39" cy="-518.04" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1353,-604 1353,-625 1413,-625 1413,-604 1353,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="1356" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Features</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge4" class="edge" data-from="asbuilt_site.app" data-to="asbuilt_site.components.footer">
+<title>asbuilt_site.app → asbuilt_site.components.footer</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M3058.31,-768.45C3587.42,-749.37 5257.35,-682.86 5483,-596 5527.21,-578.98 5569.61,-549.56 5604.91,-519.99"/><path class="c4-hit" d="M3058.31,-768.45C3587.42,-749.37 5257.35,-682.86 5483,-596 5527.21,-578.98 5569.61,-549.56 5604.91,-519.99"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="5607.33" cy="-517.94" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="5441,-604 5441,-625 5487,-625 5487,-604 5441,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="5444" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Footer</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge5" class="edge" data-from="asbuilt_site.app" data-to="asbuilt_site.components.hero">
+<title>asbuilt_site.app → asbuilt_site.components.hero</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M3058.21,-767.51C3412.52,-751.36 4251.8,-702.75 4513,-596 4556.32,-578.29 4598.16,-549.17 4633.23,-520.04"/><path class="c4-hit" d="M3058.21,-767.51C3412.52,-751.36 4251.8,-702.75 4513,-596 4556.32,-578.29 4598.16,-549.17 4633.23,-520.04"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="4635.61" cy="-518.04" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="4491,-604 4491,-625 4527,-625 4527,-604 4491,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="4494" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Hero</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge6" class="edge" data-from="asbuilt_site.app" data-to="asbuilt_site.components.how_it_works">
+<title>asbuilt_site.app → asbuilt_site.components.how_it_works</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M2737.56,-763.26C2524.09,-745.44 2137.06,-700.71 1823,-596 1764.53,-576.51 1703.74,-547.55 1650.78,-519.09"/><path class="c4-hit" d="M2737.56,-763.26C2524.09,-745.44 2137.06,-700.71 1823,-596 1764.53,-576.51 1703.74,-547.55 1650.78,-519.09"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="1647.99" cy="-517.58" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="1907,-604 1907,-625 1986,-625 1986,-604 1907,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="1910.5" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">HowItWorks</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge7" class="edge" data-from="asbuilt_site.app" data-to="asbuilt_site.components.install">
+<title>asbuilt_site.app → asbuilt_site.components.install</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M3055.3,-684.83C3084.05,-666.3 3113.11,-645.99 3139,-625 3177.33,-593.93 3215.66,-555.48 3247.69,-520.76"/><path class="c4-hit" d="M3055.3,-684.83C3084.05,-666.3 3113.11,-645.99 3139,-625 3177.33,-593.93 3215.66,-555.48 3247.69,-520.76"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="3249.93" cy="-518.32" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="3161,-604 3161,-625 3203,-625 3203,-604 3161,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="3164" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Install</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge8" class="edge" data-from="asbuilt_site.app" data-to="asbuilt_site.components.roadmap">
+<title>asbuilt_site.app → asbuilt_site.components.roadmap</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M3058.05,-765.76C3467.07,-744.51 4583.97,-685.28 5514,-625 5691.43,-613.5 5747.19,-660.19 5913,-596 5957.07,-578.94 5999.37,-549.6 6034.62,-520.11"/><path class="c4-hit" d="M3058.05,-765.76C3467.07,-744.51 4583.97,-685.28 5514,-625 5691.43,-613.5 5747.19,-660.19 5913,-596 5957.07,-578.94 5999.37,-549.6 6034.62,-520.11"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="6037.03" cy="-518.07" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="5884,-604 5884,-625 5950,-625 5950,-604 5884,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="5887" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">Roadmap</text>
+</g>
+
+<g id="view_asbuilt_site_components-edge9" class="edge" data-from="asbuilt_site.app" data-to="asbuilt_site.components.version_switcher">
+<title>asbuilt_site.app → asbuilt_site.components.version_switcher</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M2898,-684.64C2898,-634.85 2898,-572.87 2898,-522.18"/><path class="c4-hit" d="M2898,-684.64C2898,-634.85 2898,-572.87 2898,-522.18"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="2898" cy="-519.06" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="2898,-604 2898,-625 3001,-625 3001,-604 2898,-604" class="c4-label-bg"/>
+<text text-anchor="start" x="2901.5" y="-610.3" font-family="Arial" font-size="14.00" fill="#c9c9c9">VersionSwitcher</text>
+</g>
+</g>
+</svg></div><div class="legend" role="group" aria-label="Legend"><ul><li><span class="legend-swatch c4-k-component"></span>module</li><li><svg class="legend-line" viewBox="0 0 36 12" width="27" height="9" aria-hidden="true"><line x1="1" y1="6" x2="26" y2="6"/><polygon points="26,2 35,6 26,10 29,6"/></svg>calls</li><li><svg class="legend-line" viewBox="0 0 36 12" width="27" height="9" aria-hidden="true"><line x1="1" y1="6" x2="26" y2="6" stroke-dasharray="1,3"/><circle cx="31" cy="6" r="3.5" fill="none"/></svg>uses</li></ul></div></figure>
+</section>
+<section id="asbuilt_site.components.code_block">
+<h2>code_block <small>asbuilt_site.components.code_block</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/code_block.rs"><code>crates/site/src/components/code_block.rs</code></a></p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.example">asbuilt_site.components.example</a></td><td>CodeBlock</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.features">asbuilt_site.components.features</a></td><td>CodeBlock</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.install">asbuilt_site.components.install</a></td><td>CodeBlock</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.code_tabs">
+<h2>code_tabs <small>asbuilt_site.components.code_tabs</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/code_tabs.rs"><code>crates/site/src/components/code_tabs.rs</code></a></p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.how_it_works">asbuilt_site.components.how_it_works</a></td><td>CodeTabs</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.dogfood_banner">
+<h2>dogfood_banner <small>asbuilt_site.components.dogfood_banner</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/dogfood_banner.rs"><code>crates/site/src/components/dogfood_banner.rs</code></a></p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>DogfoodBanner</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.example">
+<h2>example <small>asbuilt_site.components.example</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/example.rs"><code>crates/site/src/components/example.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.code_block">asbuilt_site.components.code_block</a></td><td>CodeBlock</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.snippets">asbuilt_site.snippets</a></td><td>snippets</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>Example</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.feature_card">
+<h2>feature_card <small>asbuilt_site.components.feature_card</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/feature_card.rs"><code>crates/site/src/components/feature_card.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>is_dev</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.features">asbuilt_site.components.features</a></td><td>FeatureCard</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.features">
+<h2>features <small>asbuilt_site.components.features</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/features.rs"><code>crates/site/src/components/features.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.code_block">asbuilt_site.components.code_block</a></td><td>CodeBlock</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.feature_card">asbuilt_site.components.feature_card</a></td><td>FeatureCard</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.snippets">asbuilt_site.snippets</a></td><td>snippets</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>Features</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.footer">
+<h2>footer <small>asbuilt_site.components.footer</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/footer.rs"><code>crates/site/src/components/footer.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>is_dev</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>Footer</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.hero">
+<h2>hero <small>asbuilt_site.components.hero</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/hero.rs"><code>crates/site/src/components/hero.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.icons_">asbuilt_site.components.icons</a></td><td>Icon, icons</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>is_dev</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>Hero</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.how_it_works">
+<h2>how_it_works <small>asbuilt_site.components.how_it_works</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/how_it_works.rs"><code>crates/site/src/components/how_it_works.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.code_tabs">asbuilt_site.components.code_tabs</a></td><td>CodeTabs</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.snippets">asbuilt_site.snippets</a></td><td>snippets</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>HowItWorks</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.icons_">
+<h2>icons <small>asbuilt_site.components.icons</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/icons.rs"><code>crates/site/src/components/icons.rs</code></a></p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.hero">asbuilt_site.components.hero</a></td><td>Icon, icons</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.install">
+<h2>install <small>asbuilt_site.components.install</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/install.rs"><code>crates/site/src/components/install.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.code_block">asbuilt_site.components.code_block</a></td><td>CodeBlock</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.snippets">asbuilt_site.snippets</a></td><td>snippets</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>is_dev</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>Install</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.roadmap">
+<h2>roadmap <small>asbuilt_site.components.roadmap</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/roadmap.rs"><code>crates/site/src/components/roadmap.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.roadmap">asbuilt_site.roadmap</a></td><td>Horizon, Item, Roadmap, Status, current_url, roadmap, says_main</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>fetch_json, is_dev</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>Roadmap</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.components.unreleased_badge">
+<h2>unreleased_badge <small>asbuilt_site.components.unreleased_badge</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/unreleased_badge.rs"><code>crates/site/src/components/unreleased_badge.rs</code></a></p>
+</section>
+<section id="asbuilt_site.components.version_switcher">
+<h2>version_switcher <small>asbuilt_site.components.version_switcher</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/components/version_switcher.rs"><code>crates/site/src/components/version_switcher.rs</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>SITE_VERSION, fetch_json, is_dev, manifest_url, snapshot_url</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.app">asbuilt_site.app</a></td><td>VersionSwitcher</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.roadmap">
+<h2>roadmap <small>asbuilt_site.roadmap</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/roadmap.rs"><code>crates/site/src/roadmap.rs</code></a></p>
+<p>The roadmap as data, in <code>public/roadmap.json</code>: Now (the next release,
+with each item's status), Next and Later. Trunk copies the file into
+every build, so main's copy is published at <code>/asbuilt/dev/roadmap.json</code>.
+The dev build shows its own copy, which is main's; every release build
+fetches the dev one, so whichever version a visitor views, the roadmap
+is the current one, and shows the copy compiled in here only if that
+fetch fails. Moving an item is an edit to the file, made in the commit
+that does the work.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.version">asbuilt_site.version</a></td><td>snapshot_url</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.roadmap">asbuilt_site.components.roadmap</a></td><td>Horizon, Item, Roadmap, Status, current_url, roadmap, says_main</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.snippets">
+<h2>snippets <small>asbuilt_site.snippets</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/snippets.rs"><code>crates/site/src/snippets.rs</code></a></p>
+<p>Syntax-highlighted code snippets, generated at build time by <code>build.rs</code> from
+the files in <code>snippets/</code>. Each constant holds highlighted inner HTML
+(token spans with inline colors) rendered via <code>inner_html</code>.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.example">asbuilt_site.components.example</a></td><td>snippets</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.features">asbuilt_site.components.features</a></td><td>snippets</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.how_it_works">asbuilt_site.components.how_it_works</a></td><td>snippets</td><td></td></tr>
+<tr><td>uses</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.install">asbuilt_site.components.install</a></td><td>snippets</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_site.version">
+<h2>version <small>asbuilt_site.version</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/site/src/version.rs"><code>crates/site/src/version.rs</code></a></p>
+<p>The build's version identity, the one place the site's path prefix is
+spelled, and the fetch of the files the deploy shares between versions.
+<code>build.rs</code> injects <code>SITE_VERSION</code>; the deploy serves every snapshot
+under <code>/asbuilt/&lt;dev|vX.Y.Z&gt;/</code> (project Pages), and only what reads a
+shared file (the version switcher's manifest, the roadmap's data) needs
+to know that: every other asset path is relative.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.feature_card">asbuilt_site.components.feature_card</a></td><td>is_dev</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.footer">asbuilt_site.components.footer</a></td><td>is_dev</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.hero">asbuilt_site.components.hero</a></td><td>is_dev</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.install">asbuilt_site.components.install</a></td><td>is_dev</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.roadmap">asbuilt_site.components.roadmap</a></td><td>fetch_json, is_dev</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.components.version_switcher">asbuilt_site.components.version_switcher</a></td><td>SITE_VERSION, fetch_json, is_dev, manifest_url, snapshot_url</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_site.html#asbuilt_site.roadmap">asbuilt_site.roadmap</a></td><td>snapshot_url</td><td></td></tr>
+</tbody></table>
+</section>
+</main>
+<footer>Built with <a href="https://padamson.github.io/asbuilt/">asbuilt</a> v0.3.0</footer>
+</body>
+</html>

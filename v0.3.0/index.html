@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>asbuilt: architecture models that cannot drift</title>
+    <meta
+      name="description"
+      content="asbuilt surveys a Rust code base into a LikeC4 architecture model and fails CI when the committed model no longer matches the code. Nothing hand-written, nothing annotated."
+    />
+    <!-- OG/Twitter tags so crawlers see content even though the page is CSR/WASM. -->
+    <link rel="canonical" href="https://padamson.github.io/asbuilt/" />
+    <meta property="og:title" content="asbuilt: architecture models that cannot drift" />
+    <meta
+      property="og:description"
+      content="Survey a Rust code base into a LikeC4 model; fail CI when it drifts."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://padamson.github.io/asbuilt/" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="stylesheet" href="/asbuilt/v0.3.0/input-32cd98ab60b7c930.css" integrity="sha384-OW5UWaFQodx0zfBdv+dSpVT3vIVBXSwZrryqY6LnaJcCT3GPy7eWcb8cL/TSB1Xs"/>
+    <!-- The architecture tree's diagram styles and viewer, and the palette
+         its pages use, for the context figure the page lifts from the tree.
+         The page is dark, so data-theme on <html> selects the dark tokens.
+         Plain links: Trunk leaves them, and relative paths hold under a
+         snapshot path. -->
+    <link rel="stylesheet" href="architecture.css" />
+    <link rel="stylesheet" href="architecture/theme.css" />
+    <link rel="stylesheet" href="architecture/viewer.css" />
+    <script src="architecture/viewer.js" defer></script>
+    <!-- Receipts (written by the dogfood test), the rendered views
+         (written by `asbuilt render`) and the architecture tree (written
+         by `asbuilt docs`). Copied on every build, so they survive
+         `trunk serve` rebuilds. -->
+    
+    
+    
+    <!-- The architecture pages' palette, linked from the tree as
+         ../architecture.css (`[docs] stylesheet` in asbuilt.toml). -->
+    
+    <!-- The roadmap's data, at the build's root: the dev build's copy is
+         the current roadmap every version fetches (src/roadmap.rs). -->
+    
+    <!-- The brand from the repo's brand/ directory: the wordmark's faces
+         (OFL, license alongside) beside the built stylesheet, and the mark
+         as the favicon. -->
+    
+    
+    <link rel="icon" type="image/svg+xml" href="mark.svg" />
+  <link rel="modulepreload" href="/asbuilt/v0.3.0/asbuilt-site-4fed6c63b2368694.js" crossorigin="anonymous" integrity="sha384-wL23PVVyqhVzqGCxE2AmfncgC9zu7DQiaevPDs50XU1ScuErjUst53m4ZHRQnK61"><link rel="preload" href="/asbuilt/v0.3.0/asbuilt-site-4fed6c63b2368694_bg.wasm" crossorigin="anonymous" integrity="sha384-kw49GspuDfAn0Z/70ShfhIl/LI/LAUdbw40SMXbQA6Q5jp3xpa4alNmzcJAmz/G0" as="fetch" type="application/wasm"></head>
+  <body>
+<script type="module">
+import init, * as bindings from '/asbuilt/v0.3.0/asbuilt-site-4fed6c63b2368694.js';
+const wasm = await init({ module_or_path: '/asbuilt/v0.3.0/asbuilt-site-4fed6c63b2368694_bg.wasm' });
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
+</html>
