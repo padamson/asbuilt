@@ -141,9 +141,11 @@ Skills of tools this crate depends on are managed installs, not vendored:
 links it from `.claude/skills/`. Both paths are gitignored, so run the
 installs once after cloning, from a plain terminal (the sandbox denies
 writes under `.claude/skills/`). Verify with `ls -l .claude/skills/`: one
-entry per installed skill. `npx skills update`
-defaults to Global scope at its prompt; choose Project, and confirm by
-reading `metadata.version` out of the installed `SKILL.md`.
+entry per installed skill. Refresh with `npx skills update -p` (its
+prompt defaults to Global scope; `-p` answers Project). It rewrites the
+files under `.agents/` and leaves the links alone, so it runs inside a
+session too. Confirm by reading `metadata.version` out of the installed
+`SKILL.md`, not by its summary line.
 
 ## Mutation testing
 
