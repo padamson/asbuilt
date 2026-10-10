@@ -51,7 +51,7 @@ them. What covers them instead:
   CI checks both crates with `--locked`.
 - `scripts/deny-all-manifests.sh` runs `cargo deny` over the root and both
   crates with the one `deny.toml`; the hook, the security job, and the
-  advisory monitor all use it. The four unmaintained-crate advisories the
+  advisory monitor all use it. The three unmaintained-crate advisories the
   site's wasm and build-script tree carries are accepted in `deny.toml`'s
   ignore list, each with its path; the root workspace reaches none of them.
 - The `site-crates-lint` hook runs fmt, clippy (wasm target for the site),
