@@ -1,7 +1,17 @@
 
 # cargo-vet audits file
 
-[audits]
+[[audits.serde_spanned]]
+who = "Paul Adamson <paul@seekingeta.ai>"
+criteria = "safe-to-deploy"
+delta = "1.1.1 -> 1.1.2"
+notes = "Release-tooling sweep only: include paths anchored with a leading /, clippy and rustc lint settings, the Apache license copyright placeholder filled in, and a README badge renamed from master to main. No change under src/."
+
+[[audits.toml_datetime]]
+who = "Paul Adamson <paul@seekingeta.ai>"
+criteria = "safe-to-deploy"
+delta = "1.1.1+spec-1.1.0 -> 1.1.2+spec-1.1.0"
+notes = "Release-tooling sweep only: include paths anchored with a leading /, clippy and rustc lint settings, the Apache license copyright placeholder filled in, and a README badge renamed from master to main. No change under src/."
 
 [[trusted.anstream]]
 criteria = "safe-to-deploy"
