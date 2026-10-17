@@ -252,10 +252,11 @@ async fn site_architecture_follows_the_system_scheme_until_the_visitor_chooses_o
 #[tokio::test]
 #[ignore = "needs a snapshot build with its architecture tree and Chromium; run with: SNAPSHOT_DIST=... SNAPSHOT_BASE=/asbuilt/dev/ SNAPSHOT_VERSION=dev cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(site_architecture)'"]
 async fn site_architecture_without_its_script_follows_the_system_and_shows_no_control() {
-    // The script blocked, as a strict content security policy or a failed
-    // load would leave it. playwright-rs 0.19's `javascript_enabled` does
-    // not reach the driver (it sends `javascriptEnabled`; Playwright reads
-    // `javaScriptEnabled`), so blocking the one script stands in for it.
+    // The scripts blocked, as a strict content security policy or a failed
+    // load would leave them: the browser still runs JavaScript, and only
+    // the two files the docs load fail. They are the only executable
+    // scripts the generator emits (the viewer's inline `<script>` is JSON
+    // data), so blocking them leaves the page as no script would.
     let root = serve_snapshot().await;
     let session = open_session(ColorScheme::Dark).await;
     let page = &session.page;
