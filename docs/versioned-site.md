@@ -102,7 +102,7 @@ release process in `CLAUDE.md`.
 ## Running the gates locally
 
 The e2e tests need a Trunk-built site and a Chromium that playwright-rs
-installed (`cargo install --locked playwright-rs --version 0.19.0
+installed (`cargo install --locked playwright-rs --version 0.20.1
 --features cli && playwright-rs install chromium`). The sequence the
 workflow runs, from the repo root:
 
