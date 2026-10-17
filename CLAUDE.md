@@ -79,11 +79,16 @@ cargo vet                # supply chain review
 ```
 
 When `cargo vet` fails on a Dependabot PR, new unvetted code is arriving;
-never regenerate exemptions in CI to make it pass. For each entry, on the
-PR branch: `cargo vet certify <crate> <version>` after reading the diff,
-`cargo vet regenerate exemptions` only for a patch bump from a known
-publisher (never a new transitive dependency or a major version), or
-reject the PR.
+never regenerate exemptions in CI to make it pass. The fix lands on
+`main`, not on the PR branch: Dependabot's rebase is a force-push that
+drops any commit added there, and a human push makes the auto-merge job
+skip the PR. For each entry, on `main`: `cargo vet certify <crate>
+<version>` after reading the diff (`diff -ru` of the two versions under
+`~/.cargo/registry/src/`), an exemption for the new version added beside
+the old one's entry only for a patch bump from a known publisher (never a
+new transitive dependency or a major version), or reject the PR. Push,
+comment `@dependabot rebase` on the PR so its next run picks up the
+audits, and run `cargo vet prune` once it merges.
 
 ## Claude Code sandbox
 
