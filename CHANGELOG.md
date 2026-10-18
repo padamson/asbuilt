@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+- The landing page's version switcher offers a newer release only when the manifest's latest is a later `X.Y.Z` than the snapshot being viewed. It compared the two as text, so a cached `versions.json` older than the snapshot could send a visitor on v0.3.0 back to v0.2.0. A latest that is not three numbers (`0.4.0-rc.1`, `v0.4.0`) never counts as newer
+
 ## [0.3.0] - 2026-10-09
 
 ### Added
