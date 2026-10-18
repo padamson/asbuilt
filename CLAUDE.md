@@ -37,7 +37,7 @@ survey and commit `model.c4` with the change. Never edit it by hand.
   with playwright-rs. They are `#[ignore]`d (a built site and Chromium);
   the command is at the top of `tests/landing_page.rs`. Chromium cannot
   launch inside the Claude Code sandbox (a Seatbelt Mach-port denial), so
-  run them from a plain terminal or let the Pages job prove them.
+  run them from a plain terminal ("Manual checks" below).
 
 One version for the workspace, set in the root `Cargo.toml`.
 
@@ -95,6 +95,35 @@ audits, and run `cargo vet prune` once it merges.
 The sandbox is on in user settings for every repo, and a session never
 writes outside its own working tree. There is no per-repo sandbox file
 to look for.
+
+## Manual checks
+
+What a session cannot check, and the person reviewing the work can.
+Name each one that applies in the hand-off before a commit, as its
+command and what a pass looks like; CI is the backstop, not the plan.
+
+**From a plain terminal** (the sandbox blocks these):
+
+- Any change under `crates/site/` or `crates/site-e2e/`:
+  `crates/site/preview.sh`. It renders the context view, writes the docs
+  tree into the site, builds, runs the `site_` e2e gate, and then serves
+  the page with hot reload. A pass is every test green. It leaves out
+  `site_architecture_` and `site_deployed_snapshot_`, which the Pages job
+  runs against the built snapshot.
+- Installing or refreshing a managed skill: `npx skills add` ("Agent
+  skills" above).
+
+**Not from a session at all:** GitHub settings, rulesets, and secrets
+(the merge App's among them), changed on github.com.
+
+**By eye**, in the page `preview.sh` serves:
+
+- what the change draws: a popover opens, closes, and reads right; a
+  banner or badge shows only when it should;
+- a change to `asbuilt docs` (`docs.rs`, `docs.css`, `viewer.js`,
+  `theme.js`): the tree under `/architecture/`, in light and dark;
+- prose a reader will act on: roadmap criteria, a README section, the
+  changelog entry.
 
 ## Pre-commit hooks
 
