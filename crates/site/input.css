@@ -24,3 +24,8 @@
 :root {
   --brand-accent: var(--color-rust-300);
 }
+
+/* A roadmap item's criteria open as a native popover, in the top layer. */
+[popover]::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}

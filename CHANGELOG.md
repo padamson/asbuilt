@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- Each Now and Next item on the landing page's roadmap says what done means: a button under it opens its acceptance criteria in a popover, and on a done item each criterion links to the test that proves it. The criteria live in `roadmap.json` (`acceptance`, each a `criterion` and a `test` as `<path>::<function>` from the repository root), and the site's host tests fail when a Now or Next item has none, a test is not named that way, or a done item names a test that is missing, ignored, or not a test. Release snapshots built before this (v0.2.0, v0.3.0) show the same items without the button
+
 ### Fixed
 - The landing page's version switcher offers a newer release only when the manifest's latest is a later `X.Y.Z` than the snapshot being viewed. It compared the two as text, so a cached `versions.json` older than the snapshot could send a visitor on v0.3.0 back to v0.2.0. A latest that is not three numbers (`0.4.0-rc.1`, `v0.4.0`) never counts as newer
 

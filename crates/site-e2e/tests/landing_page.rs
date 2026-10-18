@@ -458,7 +458,9 @@ async fn site_roadmap_columns_say_what_their_release_is_about() {
 }
 
 /// The roadmap's progress bar agrees with its Now column: the bar's value
-/// is the number of done items and its maximum the number of items.
+/// is the number of done items and its maximum the number of items. Items
+/// are the column list's own children; each holds its criteria in a list
+/// of its own.
 #[tokio::test]
 #[ignore = "needs a Trunk-built site and Chromium; run with: cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(/^site_/)'"]
 async fn site_roadmap_progress_counts_the_done_items_in_now() {
@@ -472,12 +474,12 @@ async fn site_roadmap_progress_counts_the_done_items_in_now() {
             .unwrap_or_else(|e| panic!("roadmap column {column} should render: {e:?}"));
     }
     let done = page
-        .locator("#roadmap-now li [data-status='Done']")
+        .locator("#roadmap-now > ul > li [data-status='Done']")
         .count()
         .await
         .expect("count done items");
     let total = page
-        .locator("#roadmap-now li")
+        .locator("#roadmap-now > ul > li")
         .count()
         .await
         .expect("count Now items");
@@ -494,6 +496,57 @@ async fn site_roadmap_progress_counts_the_done_items_in_now() {
         (value, max),
         (Some(done.to_string()), Some(total.to_string()))
     );
+
+    browser.close().await.expect("close browser");
+}
+
+/// A Now item's criteria button opens its criteria in a popover, as many
+/// as the button says, and Escape closes it again.
+#[tokio::test]
+#[ignore = "needs a Trunk-built site and Chromium; run with: cargo nextest run --manifest-path crates/site-e2e/Cargo.toml --config-file .config/nextest.toml --run-ignored only -E 'test(/^site_/)'"]
+async fn site_roadmap_criteria_open_in_a_popover_and_close_on_escape() {
+    let dist = dist();
+    let (_pw, browser, page) = open_site_in_process(&dist, None).await;
+
+    let button = page.locator("#roadmap-now [data-criteria-button]").first();
+    let target = button
+        .get_attribute("popovertarget")
+        .await
+        .expect("read the button's target")
+        .expect("the button names its popover");
+    let label = button
+        .text_content()
+        .await
+        .expect("read the button's label");
+    let count: usize = label
+        .as_deref()
+        .and_then(|l| l.split_whitespace().next())
+        .and_then(|n| n.parse().ok())
+        .unwrap_or_else(|| panic!("the label starts with a count: {label:?}"));
+    let popover = page.locator(format!("#{target}"));
+    expect(popover.clone())
+        .to_be_hidden()
+        .await
+        .expect("the criteria are hidden until asked for");
+
+    button.click(None).await.expect("click the criteria button");
+    expect(popover.clone())
+        .to_be_visible()
+        .await
+        .expect("the criteria open");
+    expect(popover.locator("[data-criterion]"))
+        .to_have_count(count)
+        .await
+        .expect("the popover lists as many criteria as its button says");
+
+    page.keyboard()
+        .press("Escape", None)
+        .await
+        .expect("press Escape");
+    expect(popover)
+        .to_be_hidden()
+        .await
+        .expect("Escape closes the criteria");
 
     browser.close().await.expect("close browser");
 }

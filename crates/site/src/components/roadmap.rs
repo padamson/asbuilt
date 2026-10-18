@@ -1,11 +1,14 @@
 use leptos::prelude::*;
 use leptos::task::spawn_local;
 
-use crate::roadmap::{self, Horizon, Item, Roadmap as Data, Status};
+use super::icons::{self, Icon};
+use crate::roadmap::{self, Criterion, Horizon, Item, Roadmap as Data, Status};
 use crate::version::{fetch_json, is_dev};
 
 const ISSUES: &str = "https://github.com/padamson/asbuilt/issues";
 const CHANGELOG: &str = "https://github.com/padamson/asbuilt/blob/main/CHANGELOG.md";
+/// Where a criterion's proving test is linked to, by its path from the root.
+const SOURCE: &str = "https://github.com/padamson/asbuilt/blob/main";
 /// Later's line under its heading, where Now and Next show their theme.
 const LATER: &str = "Under consideration, not yet planned";
 
@@ -168,6 +171,16 @@ fn RoadmapItem(item: Item) -> impl IntoView {
             </a>
         }
     });
+    let criteria = (!item.acceptance.is_empty()).then(|| {
+        view! {
+            <Criteria
+                id=format!("{}-criteria", item.id)
+                title=item.title.clone()
+                done=item.status == Status::Done
+                criteria=item.acceptance
+            />
+        }
+    });
 
     view! {
         <li id=item.id>
@@ -176,6 +189,111 @@ fn RoadmapItem(item: Item) -> impl IntoView {
                 {status}
             </div>
             <p class="mt-1 text-sm text-rust-50/70">{item.blurb} " " {issue}</p>
+            {criteria}
         </li>
+    }
+}
+
+/// The criteria button's label: how many there are, which the popover
+/// lists in full.
+fn count_label(count: usize) -> String {
+    if count == 1 {
+        "1 criterion".to_string()
+    } else {
+        format!("{count} criteria")
+    }
+}
+
+/// The item's acceptance criteria, behind a button, as a native popover:
+/// the browser handles the top layer, Escape and a click outside. On a done
+/// item each criterion links to its proving test, which a host test holds
+/// to being in the tree. A planned item's tests may still be renamed or
+/// split, so the page shows only its criteria.
+#[component]
+fn Criteria(id: String, title: String, done: bool, criteria: Vec<Criterion>) -> impl IntoView {
+    let label = count_label(criteria.len());
+    let mark = if done { icons::TICK } else { icons::BOX };
+    let button_label = format!("{label} for {title}");
+    let dialog_label = format!("Criteria for {title}");
+    view! {
+        <button
+            type="button"
+            popovertarget=id.clone()
+            aria-label=button_label
+            data-criteria-button
+            class="mt-2 inline-flex items-center gap-1.5 rounded-md border border-rust-700/40 px-2.5 py-1.5 text-xs font-semibold text-rust-300 transition hover:border-rust-300"
+        >
+            <Icon path=mark class="h-3.5 w-3.5"/>
+            {label}
+        </button>
+        <div
+            id=id
+            popover="auto"
+            role="dialog"
+            aria-label=dialog_label
+            class="m-auto w-[min(32rem,calc(100vw-2rem))] rounded-xl border border-rust-700/40 bg-ink-800 p-6 text-left text-rust-50 shadow-2xl"
+        >
+            <div class="flex items-start gap-3">
+                <div class="flex-1">
+                    <p class="text-xs font-bold uppercase tracking-wider text-rust-300">"Done when"</p>
+                    <h5 class="mt-1 text-lg font-bold">{title}</h5>
+                </div>
+                <button
+                    type="button"
+                    popovertarget=id.clone()
+                    popovertargetaction="hide"
+                    aria-label="Close criteria"
+                    class="-mt-1 -mr-2 rounded p-2 text-rust-50/70 hover:text-rust-50"
+                >
+                    <Icon path=icons::CLOSE/>
+                </button>
+            </div>
+            <ol class="mt-4 flex flex-col gap-3">
+                {criteria
+                    .into_iter()
+                    .map(|c| {
+                        // Main's file reaches an older snapshot unchecked by its
+                        // host tests, so a test with no location is shown, not
+                        // linked.
+                        let href = c.test_location().map(|(path, _)| format!("{SOURCE}/{path}"));
+                        let Criterion { criterion, test } = c;
+                        let test = done.then(|| {
+                            let shown = match href {
+                                Some(href) => view! {
+                                    <a href=href class="text-rust-50/60 underline hover:text-rust-300">{test}</a>
+                                }
+                                .into_any(),
+                                None => view! { <span class="text-rust-50/60">{test}</span> }.into_any(),
+                            };
+                            view! { <code class="mt-0.5 block text-xs break-all">{shown}</code> }
+                        });
+                        view! {
+                            <li data-criterion class="flex gap-3">
+                                <Icon path=mark class="mt-0.5 h-4 w-4 shrink-0 text-rust-300"/>
+                                <div class="min-w-0">
+                                    <p class="text-sm">{criterion}</p>
+                                    {test}
+                                </div>
+                            </li>
+                        }
+                    })
+                    .collect_view()}
+            </ol>
+        </div>
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn one_criterion_is_singular() {
+        assert_eq!(count_label(1), "1 criterion");
+    }
+
+    #[test]
+    fn several_criteria_are_plural() {
+        assert_eq!(count_label(4), "4 criteria");
     }
 }

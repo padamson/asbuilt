@@ -37,7 +37,9 @@ main's. A release snapshot fetches the dev one and shows it, saying it is
 main's, so the roadmap is current whichever version a visitor views; it shows
 nothing until the fetch answers, and its own copy only if the fetch fails (a
 local preview), so it never shows its release's roadmap as current. A status or
-column a newer main adds reads as unknown rather than failing the fetch.
+column a newer main adds reads as unknown rather than failing the fetch, and a
+key it adds is dropped: v0.2.0 and v0.3.0 show main's items without their
+acceptance criteria, which only later snapshots draw.
 v0.2.0 was rebuilt once for this, from the tag `site-v0.2.0`: the v0.2.0
 release with only the live-roadmap change applied, so its snapshot is otherwise
 as it shipped (republish with `gh workflow run pages.yml -f version=0.2.0 --ref
