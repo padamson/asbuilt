@@ -178,34 +178,41 @@
 - paragraph [box=173,5913,270,16]: Architecture review
 - progressbar "0.4.0 progress" [box=173,5937,270,6]
 - paragraph [box=173,5947,270,16]: 0 of 3 done
-- list [box=173,5979,270,424]:
-  - listitem [box=173,5979,270,152]:
+- list [box=173,5979,270,538]:
+  - listitem [box=173,5979,270,190]:
     - heading "Architecture diff between revisions" [level=4] [box=173,5979,187,48]
     - text: Planned
     - paragraph [box=173,6031,270,100]: asbuilt diff main..HEAD names how the architecture changed between two commits (modules added, relations moved), and the action can post it on a pull request.
-  - listitem [box=173,6147,270,108]:
-    - heading "Architecture rules" [level=4] [box=173,6147,163,24]
+    - button "4 criteria for Architecture diff between revisions" [box=173,6139,104,30]: 4 criteria
+  - listitem [box=173,6185,270,146]:
+    - heading "Architecture rules" [level=4] [box=173,6185,163,24]
     - text: Planned
-    - paragraph [box=173,6175,270,80]: Rules you declare (no cycles, which layers may depend on which), checked like drift and reported the same way.
-  - listitem [box=173,6271,270,132]:
-    - heading "Edges that list only what they draw" [level=4] [box=173,6271,187,48]
+    - paragraph [box=173,6213,270,80]: Rules you declare (no cycles, which layers may depend on which), checked like drift and reported the same way.
+    - button "3 criteria for Architecture rules" [box=173,6301,104,30]: 3 criteria
+  - listitem [box=173,6347,270,170]:
+    - heading "Edges that list only what they draw" [level=4] [box=173,6347,187,48]
     - text: Planned
-    - paragraph [box=173,6323,270,80]: An edge's popover lists the relations that edge draws, not every relation between its endpoints, so a filtered view stays filtered.
+    - paragraph [box=173,6399,270,80]: An edge's popover lists the relations that edge draws, not every relation between its endpoints, so a filtered view stays filtered.
+    - button "2 criteria for Edges that list only what they draw" [box=173,6487,104,30]: 2 criteria
 - heading "Next · 0.5.0" [level=3] [box=505,5881,270,28]
 - paragraph [box=505,5913,270,16]: Reach beyond Rust users
-- list [box=505,5945,270,440]:
-  - listitem [box=505,5945,270,128]:
+- list [box=505,5945,270,592]:
+  - listitem [box=505,5945,270,166]:
     - 'heading "A second language: Python" [level=4] [box=505,5945,247,24]'
     - paragraph [box=505,5973,270,100]: "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations, and the docs pages in Python's own words."
-  - listitem [box=505,6089,270,108]:
-    - heading "Installing without cargo" [level=4] [box=505,6089,216,24]
-    - paragraph [box=505,6117,270,80]: An install script that checks the release's attestation, and a Homebrew tap, for teams without a Rust toolchain.
-  - listitem [box=505,6213,270,68]:
-    - heading "Coupling metrics" [level=4] [box=505,6213,153,24]
-    - paragraph [box=505,6241,270,40]: Coupling metrics per crate and module on their pages.
-  - listitem [box=505,6297,270,88]:
-    - heading "Dependencies as externals" [level=4] [box=505,6297,243,24]
-    - paragraph [box=505,6325,270,60]: Opt-in externals from Cargo.toml, and crate-to-crate summaries on each container page.
+    - 'button "2 criteria for A second language: Python" [box=505,6081,104,30]': 2 criteria
+  - listitem [box=505,6127,270,146]:
+    - heading "Installing without cargo" [level=4] [box=505,6127,216,24]
+    - paragraph [box=505,6155,270,80]: An install script that checks the release's attestation, and a Homebrew tap, for teams without a Rust toolchain.
+    - button "2 criteria for Installing without cargo" [box=505,6243,104,30]: 2 criteria
+  - listitem [box=505,6289,270,106]:
+    - heading "Coupling metrics" [level=4] [box=505,6289,153,24]
+    - paragraph [box=505,6317,270,40]: Coupling metrics per crate and module on their pages.
+    - button "2 criteria for Coupling metrics" [box=505,6365,104,30]: 2 criteria
+  - listitem [box=505,6411,270,126]:
+    - heading "Dependencies as externals" [level=4] [box=505,6411,243,24]
+    - paragraph [box=505,6439,270,60]: Opt-in externals from Cargo.toml, and crate-to-crate summaries on each container page.
+    - button "3 criteria for Dependencies as externals" [box=505,6507,104,30]: 3 criteria
 - heading "Later" [level=3] [box=837,5881,270,28]
 - paragraph [box=837,5913,270,16]: Under consideration, not yet planned
 - list [box=837,5945,270,484]:
@@ -224,22 +231,22 @@
   - listitem [box=837,6341,270,88]:
     - heading "A legend in rendered SVGs" [level=4] [box=837,6341,242,24]
     - paragraph [box=837,6369,270,60]: The legend inside the SVG files asbuilt render writes, for diagrams embedded outside the docs.
-- contentinfo [box=0,6530,1280,193]:
-  - navigation [box=128,6571,1024,20]:
-    - link "GitHub" [box=128,6571,49,20]:
+- contentinfo [box=0,6638,1280,193]:
+  - navigation [box=128,6679,1024,20]:
+    - link "GitHub" [box=128,6679,49,20]:
       - /url: https://github.com/padamson/asbuilt
-    - link "Architecture" [box=197,6571,86,20]:
+    - link "Architecture" [box=197,6679,86,20]:
       - /url: architecture/
-    - link "Roadmap" [box=302,6571,66,20]:
+    - link "Roadmap" [box=302,6679,66,20]:
       - /url: "#roadmap"
-    - link "LikeC4" [box=388,6571,47,20]:
+    - link "LikeC4" [box=388,6679,47,20]:
       - /url: https://likec4.dev
-  - paragraph [box=128,6607,768,40]:
+  - paragraph [box=128,6715,768,40]:
     - text: Everything downstream of the model is
-    - link "LikeC4" [box=409,6609,47,16]:
+    - link "LikeC4" [box=409,6717,47,16]:
       - /url: https://likec4.dev
     - text: "'s: validation, export, and layout. This page is tested with"
-    - link "playwright-rs" [box=128,6629,92,16]:
+    - link "playwright-rs" [box=128,6737,92,16]:
       - /url: https://playwright-rust.dev
     - text: .
-  - paragraph [box=128,6663,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.
+  - paragraph [box=128,6771,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.

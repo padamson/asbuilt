@@ -71,9 +71,9 @@
 <title>components&#45;&gt;roadmap</title>
 <path fill="none" stroke="#8d8d8d" stroke-width="2" d="M563.2,-383.93C525.41,-337.7 479.22,-281.18 440.73,-234.1"/>
 <polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="435.83,-228.11 443.19,-231.78 438.59,-230.7 440.97,-233.6 440.58,-233.92 440.19,-234.23 437.82,-231.33 437.97,-236.05 435.83,-228.11 435.83,-228.11"/>
-<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="507,-288 507,-324 712,-324 712,-288 507,-288"/>
-<text text-anchor="start" x="510.5" y="-309.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Horizon, Item, Roadmap, Status,</text>
-<text text-anchor="start" x="510.5" y="-294.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">current_url, roadmap, says_main</text>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="transparent" points="507,-288 507,-324 758,-324 758,-288 507,-288"/>
+<text text-anchor="start" x="510.5" y="-309.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Criterion, Horizon, Item, Roadmap,</text>
+<text text-anchor="start" x="510.5" y="-294.8" font-family="Arial" font-size="14.00" fill="#c9c9c9">Status, current_url, roadmap, says_main</text>
 </g>
 <!-- components&#45;&gt;snippets -->
 <g id="edge3" class="edge">

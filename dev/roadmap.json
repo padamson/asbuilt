@@ -10,43 +10,129 @@
       "id": "roadmap-now-diff",
       "title": "Architecture diff between revisions",
       "blurb": "asbuilt diff main..HEAD names how the architecture changed between two commits (modules added, relations moved), and the action can post it on a pull request.",
-      "horizon": "now"
+      "horizon": "now",
+      "acceptance": [
+        {
+          "criterion": "asbuilt diff <a>..<b> names each element and relation added, removed, or changed between the two revisions",
+          "test": "crates/asbuilt/tests/cli.rs::diff_names_what_changed_between_two_revisions"
+        },
+        {
+          "criterion": "Two revisions with the same architecture report no change",
+          "test": "crates/asbuilt/tests/cli.rs::diff_between_revisions_with_one_architecture_reports_no_change"
+        },
+        {
+          "criterion": "--format json names the changes in the shape check --format json does",
+          "test": "crates/asbuilt/tests/cli.rs::diff_json_names_changes_as_check_json_does"
+        },
+        {
+          "criterion": "--format markdown writes the comment the action posts on a pull request",
+          "test": "crates/asbuilt/tests/cli.rs::diff_markdown_is_the_pull_request_comment"
+        }
+      ]
     },
     {
       "id": "roadmap-now-rules",
       "title": "Architecture rules",
       "blurb": "Rules you declare (no cycles, which layers may depend on which), checked like drift and reported the same way.",
-      "horizon": "now"
+      "horizon": "now",
+      "acceptance": [
+        {
+          "criterion": "asbuilt conform exits 1 and names each relation that breaks a rule declared in asbuilt.toml",
+          "test": "crates/asbuilt/tests/cli.rs::conform_names_each_relation_that_breaks_a_rule"
+        },
+        {
+          "criterion": "A model that keeps every declared rule passes with exit 0",
+          "test": "crates/asbuilt/tests/cli.rs::conform_passes_a_model_that_keeps_its_rules"
+        },
+        {
+          "criterion": "asbuilt check still reports drift alone: a broken rule does not fail it",
+          "test": "crates/asbuilt/tests/cli.rs::check_does_not_fail_on_a_broken_rule"
+        }
+      ]
     },
     {
       "id": "roadmap-now-popover",
       "title": "Edges that list only what they draw",
       "blurb": "An edge's popover lists the relations that edge draws, not every relation between its endpoints, so a filtered view stays filtered.",
-      "horizon": "now"
+      "horizon": "now",
+      "acceptance": [
+        {
+          "criterion": "In a view that draws only some of the relations between two elements, an edge's popover lists only the ones it draws",
+          "test": "crates/asbuilt-core/src/docs.rs::a_filtered_view_s_edge_lists_only_the_relations_it_draws"
+        },
+        {
+          "criterion": "In a view that draws every relation between them, the popover lists them all",
+          "test": "crates/asbuilt-core/src/docs.rs::a_view_that_draws_every_relation_lists_them_all"
+        }
+      ]
     },
     {
       "id": "roadmap-next-python",
       "title": "A second language: Python",
       "blurb": "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations, and the docs pages in Python's own words.",
-      "horizon": "next"
+      "horizon": "next",
+      "acceptance": [
+        {
+          "criterion": "A Python project surveys to a model: packages to containers, modules to components, and imports to relations",
+          "test": "crates/asbuilt-python/tests/fixtures.rs::a_package_s_imports_become_relations_between_its_modules"
+        },
+        {
+          "criterion": "The docs pages call a Python model's elements packages and modules",
+          "test": "crates/asbuilt-python/src/lib.rs::the_nouns_are_python_s"
+        }
+      ]
     },
     {
       "id": "roadmap-next-install",
       "title": "Installing without cargo",
       "blurb": "An install script that checks the release's attestation, and a Homebrew tap, for teams without a Rust toolchain.",
-      "horizon": "next"
+      "horizon": "next",
+      "acceptance": [
+        {
+          "criterion": "The install script refuses an archive whose attestation does not verify, and installs nothing",
+          "test": "crates/asbuilt/tests/install.rs::the_install_script_refuses_an_unattested_archive"
+        },
+        {
+          "criterion": "The Homebrew formula installs the release archive for each macOS and Linux target",
+          "test": "crates/asbuilt/tests/install.rs::the_formula_names_each_release_archive"
+        }
+      ]
     },
     {
       "id": "roadmap-next-metrics",
       "title": "Coupling metrics",
       "blurb": "Coupling metrics per crate and module on their pages.",
-      "horizon": "next"
+      "horizon": "next",
+      "acceptance": [
+        {
+          "criterion": "Each crate's and module's page shows its afferent and efferent coupling and its instability",
+          "test": "crates/asbuilt-core/src/docs.rs::a_module_page_shows_its_coupling"
+        },
+        {
+          "criterion": "Coupling is counted from the model's relations between elements, not from item references",
+          "test": "crates/asbuilt-core/src/metrics.rs::coupling_counts_related_elements_not_items"
+        }
+      ]
     },
     {
       "id": "roadmap-next-deps",
       "title": "Dependencies as externals",
       "blurb": "Opt-in externals from Cargo.toml, and crate-to-crate summaries on each container page.",
-      "horizon": "next"
+      "horizon": "next",
+      "acceptance": [
+        {
+          "criterion": "With the opt-in, each dependency in Cargo.toml is an external, with a relation from the crate that declares it",
+          "test": "crates/asbuilt-rust/tests/fixtures.rs::declared_dependencies_become_externals"
+        },
+        {
+          "criterion": "Without the opt-in, the model is unchanged",
+          "test": "crates/asbuilt-rust/tests/fixtures.rs::dependencies_are_not_externals_unless_asked"
+        },
+        {
+          "criterion": "Each container page summarizes its crate-to-crate relations",
+          "test": "crates/asbuilt-core/src/docs.rs::a_container_page_summarizes_its_crate_dependencies"
+        }
+      ]
     },
     {
       "id": "roadmap-later-cfg",
