@@ -82,6 +82,10 @@ criteria = "safe-to-run"
 version = "3.2.0"
 criteria = "safe-to-deploy"
 
+[[exemptions.similar]]
+version = "3.2.1"
+criteria = "safe-to-deploy"
+
 [[exemptions.windows-sys]]
 version = "0.61.2"
 criteria = "safe-to-deploy"
