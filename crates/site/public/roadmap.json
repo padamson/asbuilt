@@ -88,6 +88,26 @@
       ]
     },
     {
+      "id": "roadmap-now-wasm-graphviz",
+      "title": "Rendering without a system Graphviz",
+      "blurb": "`render` and `docs` lay views out with the WebAssembly Graphviz that LikeC4 already ships, so they need Node and nothing else, every machine draws with the same Graphviz release, and the action stops installing one.",
+      "horizon": "now",
+      "acceptance": [
+        {
+          "criterion": "`render` lays every view out with the WebAssembly Graphviz at the version LikeC4 pins, run through npx, and never runs a system `dot`",
+          "test": "crates/asbuilt/src/likec4.rs::render_lays_out_with_the_pinned_wasm_graphviz"
+        },
+        {
+          "criterion": "All of a model's views are laid out in one Node process, not one per view",
+          "test": "crates/asbuilt/src/likec4.rs::every_view_is_laid_out_in_one_run"
+        },
+        {
+          "criterion": "A view Graphviz cannot lay out fails `render` and `docs`, and the error names that view",
+          "test": "crates/asbuilt/src/likec4.rs::a_view_that_fails_to_lay_out_fails_render_and_is_named"
+        }
+      ]
+    },
+    {
       "id": "roadmap-next-python",
       "title": "A second language: Python",
       "blurb": "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations, and the docs pages in Python's own words.",
