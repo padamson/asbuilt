@@ -129,7 +129,7 @@ jobs:
           tool: cargo-nextest
 
       - name: Install Graphviz
-        run: sudo apt-get update && sudo apt-get install -y graphviz
+        run: action/install-graphviz.sh
 
       - name: Tool versions
         run: node --version && npx --version && dot -V
@@ -268,8 +268,8 @@ jobs:
         shell: bash
         run: test "$(asbuilt --version)" = "asbuilt 0.2.0"
 
-      # Graphviz installed by the action (apt, brew, choco), then the tree
-      # rendered with it.
+      # Graphviz installed by the action (action/install-graphviz.sh),
+      # then the tree rendered with it.
       - name: Write the fixture's documentation tree
         uses: ./
         with:
@@ -283,6 +283,20 @@ jobs:
           site=crates/asbuilt/tests/fixtures/consumer/site
           test -f "$site/index.html"
           ls "$site"/views/*.svg
+
+      # Red when the script fell back to apt here: the runner image moved
+      # off Ubuntu 24.04, or the pinned package could not be downloaded.
+      - name: The action installed the pinned Graphviz
+        if: runner.os == 'Linux' && runner.arch == 'X64'
+        shell: bash
+        run: |
+          pinned=$(sed -n 's/^GRAPHVIZ_VERSION=//p' action/install-graphviz.sh)
+          got=$(dot -V 2>&1)
+          echo "$got"
+          case "$got" in
+            *"version $pinned "*) ;;
+            *) echo "expected Graphviz $pinned, the pinned package; see the install step's warning"; exit 1 ;;
+          esac
 
       # Which commands get Graphviz, decided by the script the action runs.
       - name: Graphviz is installed for render and docs only

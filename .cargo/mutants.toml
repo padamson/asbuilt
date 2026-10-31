@@ -49,4 +49,9 @@ exclude_re = [
   # The trait's default body is `None`; replacing it with `None` is the
   # same function. Rust's own nouns are mutated and tested.
   "replace Frontend::noun -> Option<&'static str> with None",
+  # Not equivalent: `dot_banner` is `dot -V` and nothing else, so only a
+  # real Graphviz can tell it from a stub, and this run has none.
+  # `likec4_dot_banner_names_a_graphviz_version` checks it in the LikeC4
+  # job, which installs Graphviz.
+  "replace dot_banner -> Option<String> with",
 ]

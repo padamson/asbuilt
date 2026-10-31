@@ -502,3 +502,13 @@ fn likec4_docs_renders_every_view_and_embeds_them() {
     assert!(app.contains("class=\"c4\" data-view=\"view_app\""), "{app}");
     assert!(app.contains("class=\"cluster c4-k-container\""), "{app}");
 }
+
+#[test]
+#[ignore = "needs Graphviz dot; run with: cargo nextest run --workspace --run-ignored only -E 'test(/^likec4_/)'"]
+fn likec4_dot_banner_names_a_graphviz_version() {
+    let banner = likec4::dot_banner().expect("dot -V ran");
+    assert!(
+        likec4::graphviz_version(&banner).is_some(),
+        "got {banner:?}"
+    );
+}

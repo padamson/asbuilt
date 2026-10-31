@@ -229,8 +229,11 @@ code builds on, which proves the survey byte-identical across them. It
 runs one command per step, so `validate` (needs Node) is a second step
 with `command: validate`, not a replacement for `check`. For `render`,
 and `docs` without `--no-render`, it installs Graphviz when `dot` is
-missing: apt on Linux (where the runner has it), brew on macOS, choco on
-Windows.
+missing: Graphviz's own package, pinned by checksum, on Ubuntu 24.04
+(amd64); apt on other Linux runners, with a warning, since Ubuntu's
+2.43 fails to lay out some views; brew on macOS; choco on Windows. A
+`dot` already on the runner is kept. When `dot` fails and `dot -V` names
+a release before 3.0, `render` and `docs` say so in the error.
 
 ## Installing
 

@@ -126,7 +126,7 @@ jobs:
         run: ./scripts/quiesce-apt.sh
 
       - name: Install Graphviz
-        run: sudo apt-get update && sudo apt-get install -y graphviz
+        run: action/install-graphviz.sh
 
       - name: Tool versions
         run: |

@@ -213,6 +213,49 @@ pub fn svg_args(dot_file: &Path) -> (PathBuf, Vec<String>) {
     (svg, args)
 }
 
+/// What `dot -V` printed (to stderr), or `None` when it would not run.
+pub fn dot_banner() -> Option<String> {
+    run_program("dot", &["-V".to_string()]).ok()
+}
+
+/// The release `dot -V` names ("dot - graphviz version 2.43.0 (0)" is
+/// `2.43.0`), when it names one.
+pub fn graphviz_version(banner: &str) -> Option<&str> {
+    let rest = banner.split_once("graphviz version ")?.1;
+    rest.split_whitespace().next()
+}
+
+/// What a failed `dot` adds to its output when `banner` (from `dot -V`)
+/// names a Graphviz before 3.0: Ubuntu's apt ships 2.43, whose spline
+/// router fails ("triangulation failed") on some layouts a current release
+/// draws.
+fn old_graphviz_advice(banner: &str) -> Option<String> {
+    let version = graphviz_version(banner)?;
+    let major: u32 = version.split('.').next()?.parse().ok()?;
+    (major < 3).then(|| {
+        format!(
+            "This is Graphviz {version}, which fails to lay out some views a current release draws: install one from https://graphviz.org/download/"
+        )
+    })
+}
+
+/// `err` from a `dot` run, with [`old_graphviz_advice`] added to a failure's
+/// output. `banner` runs `dot -V`, only once the render has failed.
+fn with_graphviz_advice(
+    mut err: LikeC4Error,
+    banner: impl FnOnce() -> Option<String>,
+) -> LikeC4Error {
+    if let LikeC4Error::Failed { output, .. } = &mut err
+        && let Some(advice) = banner().and_then(|b| old_graphviz_advice(&b))
+    {
+        if !output.ends_with('\n') {
+            output.push('\n');
+        }
+        output.push_str(&advice);
+    }
+    err
+}
+
 /// The directory a render writes into, inside its output directory so
 /// the final moves are renames on one filesystem. Never a view: views are
 /// files with an extension.
@@ -285,9 +328,11 @@ pub fn render(dir: &Path, out_dir: &Path) -> Result<Vec<PathBuf>, LikeC4Error> {
     let existed = out_dir.exists();
     let scratch = prepare_scratch(out_dir)?;
     let rendered = gen_dot(dir, &scratch).and_then(|dot_files| {
-        dot_files
-            .iter()
-            .try_for_each(|dot_file| run_program("dot", &svg_args(dot_file).1).map(|_| ()))
+        dot_files.iter().try_for_each(|dot_file| {
+            run_program("dot", &svg_args(dot_file).1)
+                .map(|_| ())
+                .map_err(|err| with_graphviz_advice(err, dot_banner))
+        })
     });
     if let Err(err) = rendered {
         // The primary error is the one to report; cleanup is best effort.
@@ -481,6 +526,106 @@ mod tests {
         let (svg, args) = svg_args(Path::new("views/index.dot"));
         assert_eq!(svg, PathBuf::from("views/index.svg"));
         assert_eq!(args, ["-Tsvg", "views/index.dot", "-o", "views/index.svg"]);
+    }
+
+    const UBUNTU_APT_BANNER: &str = "dot - graphviz version 2.43.0 (0)\n";
+    const CURRENT_BANNER: &str = "dot - graphviz version 15.1.1 (20250805.1200)\n";
+
+    #[test]
+    fn graphviz_version_is_the_release_dot_v_names() {
+        assert_eq!(graphviz_version(UBUNTU_APT_BANNER), Some("2.43.0"));
+    }
+
+    #[test]
+    fn graphviz_version_of_output_that_is_not_dot_v_is_none() {
+        assert_eq!(graphviz_version("dot: command not found"), None);
+    }
+
+    #[test]
+    fn old_graphviz_advice_names_a_2_x_release_and_where_to_get_a_current_one() {
+        let advice = old_graphviz_advice(UBUNTU_APT_BANNER).expect("advice for 2.43");
+        assert!(advice.contains("Graphviz 2.43.0"), "got {advice:?}");
+        assert!(
+            advice.contains("https://graphviz.org/download/"),
+            "got {advice:?}"
+        );
+    }
+
+    #[test]
+    fn old_graphviz_advice_is_none_from_3_0_on() {
+        for banner in ["dot - graphviz version 3.0.0 (0)", CURRENT_BANNER] {
+            assert_eq!(old_graphviz_advice(banner), None, "for {banner:?}");
+        }
+    }
+
+    #[test]
+    fn old_graphviz_advice_is_none_when_the_version_is_not_a_number() {
+        assert_eq!(old_graphviz_advice("dot - graphviz version dev"), None);
+    }
+
+    fn failed_dot(output: &str) -> LikeC4Error {
+        LikeC4Error::Failed {
+            command: "dot -Tsvg v.dot -o v.svg".to_string(),
+            status: "exit status: 1".to_string(),
+            output: output.to_string(),
+        }
+    }
+
+    fn output_of(err: LikeC4Error) -> String {
+        match err {
+            LikeC4Error::Failed { output, .. } => output,
+            other => panic!("expected Failed, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn a_dot_failure_on_an_old_graphviz_carries_the_advice_after_its_output() {
+        let output = output_of(with_graphviz_advice(
+            failed_dot("triangulation failed\n"),
+            || Some(UBUNTU_APT_BANNER.to_string()),
+        ));
+        let advice = old_graphviz_advice(UBUNTU_APT_BANNER).unwrap();
+        assert_eq!(output, format!("triangulation failed\n{advice}"));
+    }
+
+    #[test]
+    fn the_advice_starts_a_line_of_its_own_after_output_without_a_final_newline() {
+        let output = output_of(with_graphviz_advice(
+            failed_dot("triangulation failed"),
+            || Some(UBUNTU_APT_BANNER.to_string()),
+        ));
+        let advice = old_graphviz_advice(UBUNTU_APT_BANNER).unwrap();
+        assert_eq!(output, format!("triangulation failed\n{advice}"));
+    }
+
+    #[test]
+    fn a_dot_failure_on_a_current_graphviz_is_left_as_it_was() {
+        let output = output_of(with_graphviz_advice(
+            failed_dot("triangulation failed\n"),
+            || Some(CURRENT_BANNER.to_string()),
+        ));
+        assert_eq!(output, "triangulation failed\n");
+    }
+
+    #[test]
+    fn a_dot_failure_whose_version_cannot_be_read_is_left_as_it_was() {
+        let output = output_of(with_graphviz_advice(
+            failed_dot("triangulation failed\n"),
+            || None,
+        ));
+        assert_eq!(output, "triangulation failed\n");
+    }
+
+    #[test]
+    fn a_dot_that_could_not_start_is_not_asked_its_version() {
+        let err = LikeC4Error::NotRunnable {
+            command: "dot -Tsvg v.dot".to_string(),
+            source: std::io::Error::from(std::io::ErrorKind::NotFound),
+        };
+        match with_graphviz_advice(err, || panic!("dot -V was run")) {
+            LikeC4Error::NotRunnable { command, .. } => assert_eq!(command, "dot -Tsvg v.dot"),
+            other => panic!("expected NotRunnable, got {other:?}"),
+        }
     }
 
     #[test]

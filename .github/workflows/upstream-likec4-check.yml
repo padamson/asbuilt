@@ -77,7 +77,7 @@ jobs:
 
       - name: Install Graphviz
         if: steps.current.outputs.version != steps.upstream.outputs.version
-        run: sudo apt-get update && sudo apt-get install -y graphviz
+        run: action/install-graphviz.sh
 
       # The pin moved in this checkout only. `validate` first installs the
       # release into the npx cache once, so the tests do not race to

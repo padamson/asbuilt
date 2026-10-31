@@ -177,7 +177,7 @@ runs:
 
     # `render`, and `docs` unless --no-render, lay the views out with
     # Graphviz `dot`, which the hosted runners lack. Node, for `npx
-    # likec4`, they have.
+    # likec4`, they have. A `dot` already on the runner is kept.
     - name: Install Graphviz
       shell: bash
       env:
@@ -188,28 +188,7 @@ runs:
         needs=$(bash "$GITHUB_ACTION_PATH/action/needs-graphviz.sh" "$COMMAND")
         [ -n "$needs" ] || exit 0
         command -v dot > /dev/null && exit 0
-        case "$RUNNER_OS" in
-          Linux)
-            if ! command -v apt-get > /dev/null; then
-              echo "::error title=asbuilt::asbuilt $needs needs Graphviz dot, which this action installs with apt-get, and this runner has none: install Graphviz before this step."
-              exit 1
-            fi
-            sudo=""
-            [ "$(id -u)" = 0 ] || sudo=sudo
-            $sudo apt-get update -qq
-            $sudo apt-get install -y -qq graphviz
-            ;;
-          macOS) brew install graphviz ;;
-          Windows)
-            choco install graphviz -y --no-progress
-            bin="C:\Program Files\Graphviz\bin"
-            echo "$bin" >> "$GITHUB_PATH"
-            PATH="$(cygpath -u "$bin"):$PATH"
-            # Registers the layout plugins, which the installer may not.
-            dot -c
-            ;;
-        esac
-        dot -V
+        bash "$GITHUB_ACTION_PATH/action/install-graphviz.sh" "asbuilt $needs"
 
     - name: asbuilt ${{ inputs.command }}
       shell: bash
