@@ -96,7 +96,7 @@ jobs:
       # Three trees: the root workspace (asbuilt itself renders and writes
       # the documentation) and the two excluded site crates.
       - name: Cache Cargo
-        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
         with:
           shared-key: pages
           workspaces: |
@@ -106,7 +106,7 @@ jobs:
 
       # Trunk is pinned to the version used locally; bump both together.
       - name: Install Trunk and cargo-nextest
-        uses: taiki-e/install-action@8cca0918f8471c33515202b73f56ab27f2bed283 # v2.87.29
+        uses: taiki-e/install-action@1e29709c0ec63babbe8f266397a465f29a825f91 # v2.87.31
         with:
           tool: trunk@0.21.14,cargo-nextest
 
