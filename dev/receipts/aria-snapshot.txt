@@ -177,8 +177,8 @@
 - heading "Now · 0.4.0" [level=3] [box=173,5881,270,28]
 - paragraph [box=173,5913,270,16]: Architecture review
 - progressbar "0.4.0 progress" [box=173,5937,270,6]
-- paragraph [box=173,5947,270,16]: 0 of 3 done
-- list [box=173,5979,270,538]:
+- paragraph [box=173,5947,270,16]: 1 of 5 done
+- list [box=173,5979,270,990]:
   - listitem [box=173,5979,270,190]:
     - heading "Architecture diff between revisions" [level=4] [box=173,5979,187,48]
     - text: Planned
@@ -194,6 +194,16 @@
     - text: Planned
     - paragraph [box=173,6399,270,80]: An edge's popover lists the relations that edge draws, not every relation between its endpoints, so a filtered view stays filtered.
     - button "2 criteria for Edges that list only what they draw" [box=173,6487,104,30]: 2 criteria
+  - listitem [box=173,6533,270,190]:
+    - heading "Site styles generated in Rust" [level=4] [box=173,6533,210,48]
+    - text: Done
+    - paragraph [box=173,6585,270,100]: The landing page's utility classes become CSS through encre-css, a Rust crate, in a host test that commits the stylesheet, so the site's build downloads no Tailwind binary.
+    - button "3 criteria for Site styles generated in Rust" [box=173,6693,104,30]: 3 criteria
+  - listitem [box=173,6739,270,230]:
+    - heading "Rendering without a system Graphviz" [level=4] [box=173,6739,187,48]
+    - text: Planned
+    - paragraph [box=173,6791,270,140]: "`render` and `docs` lay views out with the WebAssembly Graphviz that LikeC4 already ships, so they need Node and nothing else, every machine draws with the same Graphviz release, and the action stops installing one."
+    - button "3 criteria for Rendering without a system Graphviz" [box=173,6939,104,30]: 3 criteria
 - heading "Next · 0.5.0" [level=3] [box=505,5881,270,28]
 - paragraph [box=505,5913,270,16]: Reach beyond Rust users
 - list [box=505,5945,270,592]:
@@ -231,22 +241,22 @@
   - listitem [box=837,6341,270,88]:
     - heading "A legend in rendered SVGs" [level=4] [box=837,6341,242,24]
     - paragraph [box=837,6369,270,60]: The legend inside the SVG files asbuilt render writes, for diagrams embedded outside the docs.
-- contentinfo [box=0,6638,1280,193]:
-  - navigation [box=128,6679,1024,20]:
-    - link "GitHub" [box=128,6679,49,20]:
+- contentinfo [box=0,7070,1280,193]:
+  - navigation [box=128,7111,1024,20]:
+    - link "GitHub" [box=128,7111,49,20]:
       - /url: https://github.com/padamson/asbuilt
-    - link "Architecture" [box=197,6679,86,20]:
+    - link "Architecture" [box=197,7111,86,20]:
       - /url: architecture/
-    - link "Roadmap" [box=302,6679,66,20]:
+    - link "Roadmap" [box=302,7111,66,20]:
       - /url: "#roadmap"
-    - link "LikeC4" [box=388,6679,47,20]:
+    - link "LikeC4" [box=388,7111,47,20]:
       - /url: https://likec4.dev
-  - paragraph [box=128,6715,768,40]:
+  - paragraph [box=128,7147,768,40]:
     - text: Everything downstream of the model is
-    - link "LikeC4" [box=409,6717,47,16]:
+    - link "LikeC4" [box=409,7149,47,16]:
       - /url: https://likec4.dev
     - text: "'s: validation, export, and layout. This page is tested with"
-    - link "playwright-rs" [box=128,6737,92,16]:
+    - link "playwright-rs" [box=128,7169,92,16]:
       - /url: https://playwright-rust.dev
     - text: .
-  - paragraph [box=128,6771,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.
+  - paragraph [box=128,7203,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.
