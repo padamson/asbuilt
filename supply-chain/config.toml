@@ -38,20 +38,12 @@ audit-as-crates-io = false
 version = "2.13.2"
 criteria = "safe-to-deploy"
 
-[[exemptions.camino]]
-version = "1.2.6"
-criteria = "safe-to-deploy"
-
 [[exemptions.cfg-if]]
 version = "1.0.5"
 criteria = "safe-to-run"
 
 [[exemptions.fastrand]]
 version = "2.5.0"
-criteria = "safe-to-run"
-
-[[exemptions.getrandom]]
-version = "0.4.3"
 criteria = "safe-to-run"
 
 [[exemptions.libc]]
@@ -77,10 +69,6 @@ criteria = "safe-to-run"
 [[exemptions.rustix]]
 version = "1.1.5"
 criteria = "safe-to-run"
-
-[[exemptions.similar]]
-version = "3.2.0"
-criteria = "safe-to-deploy"
 
 [[exemptions.similar]]
 version = "3.2.1"
