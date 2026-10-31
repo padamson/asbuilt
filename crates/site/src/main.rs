@@ -4,6 +4,8 @@ mod app;
 mod components;
 mod roadmap;
 mod snippets;
+#[cfg(test)]
+mod style;
 mod version;
 
 fn main() {

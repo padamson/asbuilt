@@ -3,3 +3,4 @@
 # into CRLF and fail every comparison.
 *.c4 text eol=lf
 crates/*/tests/fixtures/** text eol=lf
+crates/site/utilities.css text eol=lf

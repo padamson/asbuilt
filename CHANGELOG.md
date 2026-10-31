@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- The landing page's stylesheet is generated from the components' utility classes by encre-css, a Rust crate, in a host test, and committed as `crates/site/utilities.css`, so the site's build runs no CSS tool. It replaces the Tailwind 4 standalone binary Trunk downloaded, whose macOS build ships with a signature that does not verify, so macOS kills it. The site's tests fail when the committed stylesheet is stale or a class the components name has no rule
+
 ## [0.3.1] - 2026-10-31
 
 ### Added

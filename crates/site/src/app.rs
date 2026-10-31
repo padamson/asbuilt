@@ -9,7 +9,7 @@ use crate::components::{
 #[component]
 pub fn App() -> impl IntoView {
     view! {
-        <div class="min-h-screen bg-ink-900 text-rust-50 antialiased">
+        <div class="min-h-screen bg-ink-900 text-rust-50">
             <VersionSwitcher/>
             <Hero/>
             <Install/>

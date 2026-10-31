@@ -139,7 +139,7 @@ pub fn VersionSwitcher() -> impl IntoView {
                 <label for="version-select" class="text-rust-50/60">"Version"</label>
                 <select
                     id="version-select"
-                    class="rounded border border-rust-700/40 bg-ink-900 px-2 py-1 text-rust-50"
+                    class="rounded-sm border border-rust-700/40 bg-ink-900 px-2 py-1 text-rust-50"
                     on:change=move |ev| navigate_to(&event_target_value(&ev))
                 >
                     {move || {

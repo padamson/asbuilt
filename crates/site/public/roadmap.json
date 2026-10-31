@@ -67,6 +67,27 @@
       ]
     },
     {
+      "id": "roadmap-now-encre-css",
+      "title": "Site styles generated in Rust",
+      "blurb": "The landing page's utility classes become CSS through encre-css, a Rust crate, in a host test that commits the stylesheet, so the site's build downloads no Tailwind binary.",
+      "horizon": "now",
+      "status": "done",
+      "acceptance": [
+        {
+          "criterion": "The committed stylesheet is the one encre-css generates from the components, so a class added or removed without regenerating fails the site's tests",
+          "test": "crates/site/src/style.rs::the_committed_stylesheet_is_current"
+        },
+        {
+          "criterion": "Every class the components name has a rule, in the generated utilities or in the page's own CSS",
+          "test": "crates/site/src/style.rs::every_class_the_site_names_has_a_rule"
+        },
+        {
+          "criterion": "The page links only plain stylesheets from the tree, so Trunk runs no CSS tool",
+          "test": "crates/site/src/style.rs::every_stylesheet_the_page_links_is_plain_css_in_the_tree"
+        }
+      ]
+    },
+    {
       "id": "roadmap-next-python",
       "title": "A second language: Python",
       "blurb": "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations, and the docs pages in Python's own words.",

@@ -243,7 +243,7 @@ fn Criteria(id: String, title: String, done: bool, criteria: Vec<Criterion>) -> 
                     popovertarget=id.clone()
                     popovertargetaction="hide"
                     aria-label="Close criteria"
-                    class="-mt-1 -mr-2 rounded p-2 text-rust-50/70 hover:text-rust-50"
+                    class="-mt-1 -mr-2 rounded-sm p-2 text-rust-50/70 hover:text-rust-50"
                 >
                     <Icon path=icons::CLOSE/>
                 </button>

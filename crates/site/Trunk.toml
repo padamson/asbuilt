@@ -4,11 +4,6 @@ target = "index.html"
 # the snapshot with `--public-url /asbuilt/<dest>/` (project Pages).
 public_url = "/"
 
-[tools]
-# Pin the Tailwind v4 standalone binary (Trunk defaults to a v3 release,
-# which cannot parse the v4 `@import "tailwindcss"` / `@theme` input.css).
-tailwindcss = "4.3.0"
-
 [watch]
 # `copy-dir` re-copies public/receipts, public/views and
 # public/architecture into dist on every build. Without ignoring the
