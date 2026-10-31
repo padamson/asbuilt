@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en" data-theme-default="system">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="asbuilt docs 0.3.1">
+<title>asbuilt · Architecture · asbuilt-rust</title>
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="../theme.css">
+<link rel="stylesheet" href="../viewer.css">
+<script src="../theme.js"></script>
+<script src="../viewer.js" defer></script>
+<link rel="stylesheet" href="../../architecture.css">
+</head>
+<body>
+<header><div class="bar"><nav class="trail" aria-label="Breadcrumb"><a class="home" href="../../">asbuilt</a><span class="sep" aria-hidden="true">/</span><a class="site" href="../index.html"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.24 3.21L17.61 1.26L21.97 8.81L18.6 10.76zM3.06 11.38L15.28 4.33L18.15 9.3L5.93 16.36zM1 13.77L3.88 12.1L5.71 15.29L2.84 16.96zM20.65 13.45A10.32 10.32 0 0 1 17.16 18.37L15.06 15.65A6.88 6.88 0 0 0 17.39 12.37zM14.78 19.74A10.32 10.32 0 0 1 6.06 19.34L7.65 16.29A6.88 6.88 0 0 0 13.47 16.57zM17.95 12.13L23 14.59L21.8 17.07L16.75 14.6zM9.67 17.46L7.76 22.74L5.16 21.8L7.09 16.52zM10.36 10.49L11.79 12.97L12.78 12.4L11.35 9.91zM13.31 11.7L18.47 20.64L17.77 21.04L12.61 12.1zM11.62 12.68L16.78 21.61L16.08 22.01L10.92 13.08zM18.07 19.94L18.47 20.64L16.08 22.01L15.68 21.31z"/></svg>Architecture</a></nav><nav class="views" aria-label="Views"><a href="../views.html">Curated views</a></nav><label class="scheme" hidden>Theme <select id="scheme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div><nav class="containers" aria-label="Containers"><a href="../containers/asbuilt.html">asbuilt</a><a href="../containers/asbuilt_core.html">asbuilt-core</a><span aria-current="page">asbuilt-rust</span><a href="../containers/asbuilt_site.html">asbuilt-site</a><a href="../containers/asbuilt_site_e2e.html">asbuilt-site-e2e</a></nav></header>
+<main>
+<h1>asbuilt-rust</h1>
+<p class="meta">library crate · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust"><code>crates/asbuilt-rust</code></a></p>
+<p>Rust front-end for asbuilt.</p>
+<figure class="view" data-viewer><div class="viewer-bar" hidden><span class="viewer-scale"></span><button type="button" data-viewer-zoom="out" aria-label="Zoom out" title="Zoom out (−)">−</button><button type="button" data-viewer-zoom="in" aria-label="Zoom in" title="Zoom in (+)">+</button><button type="button" data-viewer-mode="fit" aria-pressed="false">Fit</button><button type="button" data-viewer-mode="one" aria-pressed="false">1:1</button><button type="button" data-viewer-wide aria-pressed="false">Wide</button><button type="button" data-viewer-legend aria-pressed="true">Legend</button><button type="button" data-viewer-full>Fullscreen</button><span class="viewer-hint"></span></div><script type="application/json" class="viewer-edges">{"asbuilt_rust.aggregate->asbuilt_rust.resolve":[{"source":"asbuilt_rust.aggregate","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.aggregate","target":"asbuilt_rust.resolve","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.resolve","kind":"constructs","items":["Location","ResolveTree","TargetKey","TargetRole","resolve"],"technology":null}],"asbuilt_rust.aggregate->asbuilt_rust.visit":[{"source":"asbuilt_rust.aggregate","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.aggregate","target":"asbuilt_rust.visit","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.visit","kind":"names","items":["ModuleFacts"],"technology":null}],"asbuilt_rust.aggregate->asbuilt_rust.walk":[{"source":"asbuilt_rust.aggregate","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.aggregate","target":"asbuilt_rust.walk","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.walk","kind":"names","items":["ModulePath"],"technology":null}],"asbuilt_rust.aggregate->asbuilt_core":[{"source":"asbuilt_rust.aggregate","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.aggregate","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"constructs","items":["Id","Relation","RelationKind","is_lineal"],"technology":null}],"asbuilt_rust.tests->asbuilt_rust.discover":[{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_rust.discover","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.discover","kind":"calls","items":["TECHNOLOGY_BINARY","TECHNOLOGY_EXAMPLES","TECHNOLOGY_LIBRARY","TECHNOLOGY_LIBRARY_AND_BINARY","TECHNOLOGY_PROC_MACRO","TECHNOLOGY_PROC_MACRO_AND_BINARY","TECHNOLOGY_TESTS","TargetKind","discover"],"technology":null}],"asbuilt_rust.tests->asbuilt_rust.config":[{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_rust.config","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.config","kind":"constructs","items":["RustConfig"],"technology":null}],"asbuilt_rust.tests->asbuilt_rust.error":[{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_rust.error","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.error","kind":"names","items":["RustFrontendError"],"technology":null}],"asbuilt_rust.tests->asbuilt_core":[{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"calls","items":["Config"],"technology":null},{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_core.emit","target_href":"../containers/asbuilt_core.html#asbuilt_core.emit","kind":"calls","items":["emit"],"technology":null},{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_core.frontend","target_href":"../containers/asbuilt_core.html#asbuilt_core.frontend","kind":"calls","items":["survey"],"technology":null},{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"calls","items":["Element","ElementKind","Model","Relation","RelationKind","sanitize_id"],"technology":null},{"source":"asbuilt_rust.tests","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.tests","target":"asbuilt_core.read","target_href":"../containers/asbuilt_core.html#asbuilt_core.read","kind":"calls","items":["read"],"technology":null}],"asbuilt_rust.resolve->asbuilt_rust.visit":[{"source":"asbuilt_rust.resolve","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.resolve","target":"asbuilt_rust.visit","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.visit","kind":"names","items":["Anchor","RawPath"],"technology":null}],"asbuilt_rust.resolve->asbuilt_rust.walk":[{"source":"asbuilt_rust.resolve","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.resolve","target":"asbuilt_rust.walk","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.walk","kind":"names","items":["ModulePath"],"technology":null}],"asbuilt_rust.discover->asbuilt_rust.config":[{"source":"asbuilt_rust.discover","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.discover","target":"asbuilt_rust.config","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.config","kind":"names","items":["RustConfig"],"technology":null}],"asbuilt_rust.discover->asbuilt_rust.error":[{"source":"asbuilt_rust.discover","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.discover","target":"asbuilt_rust.error","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.error","kind":"constructs","items":["RustFrontendError"],"technology":null}],"asbuilt_rust.discover->cargo":[{"source":"asbuilt_rust.discover","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.discover","target":"cargo","target_href":"../index.html#cargo","kind":"uses","items":["runs"],"technology":null}],"asbuilt_rust.visit->asbuilt_rust.walk":[{"source":"asbuilt_rust.visit","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.visit","target":"asbuilt_rust.walk","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.walk","kind":"calls","items":["ModulePath","is_cfg_test"],"technology":null}],"asbuilt_rust.visit->asbuilt_core":[{"source":"asbuilt_rust.visit","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.visit","target":"asbuilt_core.model","target_href":"../containers/asbuilt_core.html#asbuilt_core.model","kind":"names","items":["RelationKind"],"technology":null}],"asbuilt_rust.config->asbuilt_core":[{"source":"asbuilt_rust.config","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.config","target":"asbuilt_core.config","target_href":"../containers/asbuilt_core.html#asbuilt_core.config","kind":"names","items":["Config"],"technology":null},{"source":"asbuilt_rust.config","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.config","target":"asbuilt_core.error","target_href":"../containers/asbuilt_core.html#asbuilt_core.error","kind":"names","items":["Result"],"technology":null}],"asbuilt_rust.walk->asbuilt_rust.error":[{"source":"asbuilt_rust.walk","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.walk","target":"asbuilt_rust.error","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.error","kind":"constructs","items":["RustFrontendError"],"technology":null}],"asbuilt_rust.walk->asbuilt_rust.source":[{"source":"asbuilt_rust.walk","source_href":"../containers/asbuilt_rust.html#asbuilt_rust.walk","target":"asbuilt_rust.source","target_href":"../containers/asbuilt_rust.html#asbuilt_rust.source","kind":"names","items":["FileSource"],"technology":null}]}</script><div class="viewer-frame" role="group" aria-label="asbuilt-rust: diagram"><svg viewBox="0.00 0.00 2734.00 1967.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="c4" data-view="view_asbuilt_rust" role="img" aria-label="asbuilt-rust">
+<g id="view_asbuilt_rust-graph0" class="graph" transform="scale(1 1) rotate(0) translate(15.05 1952.05)">
+<g id="view_asbuilt_rust-clust1" class="cluster c4-k-container">
+
+<polygon fill="#722f24" stroke="#57130f" points="8,-281.75 8,-1929 1584,-1929 1584,-281.75 8,-281.75"/>
+<text xml:space="preserve" text-anchor="start" x="16" y="-1915.55" font-family="Arial" font-weight="bold" font-size="11.00" fill="#ffffe5" fill-opacity="0.701961">ASBUILT&#45;RUST</text>
+</g>
+
+<a href="../containers/asbuilt_rust.html#asbuilt_rust.aggregate"><g id="view_asbuilt_rust-node1" class="node c4-k-component">
+<title>asbuilt_rust.aggregate</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="601.68,-1867.5 262.32,-1867.5 262.32,-1687.5 601.68,-1687.5 601.68,-1867.5"/>
+<text xml:space="preserve" text-anchor="start" x="386.62" y="-1817.38" font-family="Arial" font-size="20.00" fill="#5b5b5b">aggregate</text>
+<text xml:space="preserve" text-anchor="start" x="282.38" y="-1794.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">From resolved references to model relations:</text>
+<text xml:space="preserve" text-anchor="start" x="358.88" y="-1776.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">element ids per target</text>
+<text xml:space="preserve" text-anchor="start" x="294.38" y="-1758.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">role, one relation per (source, target) pair</text>
+<text xml:space="preserve" text-anchor="start" x="372.75" y="-1740.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">with the strongest</text>
+<text xml:space="preserve" text-anchor="start" x="283.12" y="-1722.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">kind and the sorted item names, and nothing</text>
+</g></a>
+
+<a href="../containers/asbuilt_rust.html#asbuilt_rust.tests"><g id="view_asbuilt_rust-node2" class="node c4-k-tests">
+<title>asbuilt_rust.tests</title>
+<polygon fill="#d9d4cf" stroke="#b1aca8" stroke-width="0" points="1282.02,-1867.5 961.98,-1867.5 961.98,-1687.5 1282.02,-1687.5 1282.02,-1867.5"/>
+<text xml:space="preserve" text-anchor="start" x="1101.38" y="-1770.38" font-family="Arial" font-size="20.00" fill="#3c3834">tests</text>
+</g></a>
+
+<a href="../containers/asbuilt_rust.html#asbuilt_rust.resolve"><g id="view_asbuilt_rust-node3" class="node c4-k-component">
+<title>asbuilt_rust.resolve</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="594.56,-1530 269.44,-1530 269.44,-1350 594.56,-1350 594.56,-1530"/>
+<text xml:space="preserve" text-anchor="start" x="399.75" y="-1479.88" font-family="Arial" font-size="20.00" fill="#5b5b5b">resolve</text>
+<text xml:space="preserve" text-anchor="start" x="292.88" y="-1457.12" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Path resolution over an in&#45;memory tree of</text>
+<text xml:space="preserve" text-anchor="start" x="340.5" y="-1439.12" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">targets and modules: which</text>
+<text xml:space="preserve" text-anchor="start" x="289.5" y="-1421.12" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">module, and which item in it, a path written</text>
+<text xml:space="preserve" text-anchor="start" x="357.38" y="-1403.12" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">in some module refers</text>
+<text xml:space="preserve" text-anchor="start" x="292.88" y="-1385.12" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">to. Pure functions; the tests build trees by</text>
+</g></a>
+
+<a href="../containers/asbuilt_rust.html#asbuilt_rust.discover"><g id="view_asbuilt_rust-node4" class="node c4-k-component">
+<title>asbuilt_rust.discover</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1544.02,-823.5 1223.98,-823.5 1223.98,-643.5 1544.02,-643.5 1544.02,-823.5"/>
+<text xml:space="preserve" text-anchor="start" x="1346.88" y="-773.38" font-family="Arial" font-size="20.00" fill="#5b5b5b">discover</text>
+<text xml:space="preserve" text-anchor="start" x="1261.38" y="-750.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Crates and their targets, from `cargo</text>
+<text xml:space="preserve" text-anchor="start" x="1288.38" y="-732.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">metadata &#45;&#45;no&#45;deps &#45;&#45;offline`</text>
+<text xml:space="preserve" text-anchor="start" x="1251.25" y="-714.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">on the root manifest and on each `[rust]</text>
+<text xml:space="preserve" text-anchor="start" x="1307.12" y="-696.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">extra_manifests` entry.</text>
+<text xml:space="preserve" text-anchor="start" x="1262.5" y="-678.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`&#45;&#45;no&#45;deps` reads manifests only: no</text>
+</g></a>
+
+<a href="../containers/asbuilt_rust.html#asbuilt_rust.visit"><g id="view_asbuilt_rust-node5" class="node c4-k-component">
+<title>asbuilt_rust.visit</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="801.18,-1145.25 458.82,-1145.25 458.82,-965.25 801.18,-965.25 801.18,-1145.25"/>
+<text xml:space="preserve" text-anchor="start" x="613.12" y="-1095.12" font-family="Arial" font-size="20.00" fill="#5b5b5b">visit</text>
+<text xml:space="preserve" text-anchor="start" x="478.88" y="-1072.38" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">What one parsed file references, per module:</text>
+<text xml:space="preserve" text-anchor="start" x="569.25" y="-1054.38" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">every `use`, every</text>
+<text xml:space="preserve" text-anchor="start" x="486.38" y="-1036.38" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">path in a type, expression or pattern, every</text>
+<text xml:space="preserve" text-anchor="start" x="566.62" y="-1018.38" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`impl Trait for`, and</text>
+<text xml:space="preserve" text-anchor="start" x="485.62" y="-1000.38" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">the names the module defines. Pure over a</text>
+</g></a>
+
+<a href="../containers/asbuilt_rust.html#asbuilt_rust.config"><g id="view_asbuilt_rust-node6" class="node c4-k-component">
+<title>asbuilt_rust.config</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1514.02,-501.75 1193.98,-501.75 1193.98,-321.75 1514.02,-321.75 1514.02,-501.75"/>
+<text xml:space="preserve" text-anchor="start" x="1327.38" y="-415.62" font-family="Arial" font-size="20.00" fill="#5b5b5b">config</text>
+<text xml:space="preserve" text-anchor="start" x="1241.88" y="-392.88" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The `[rust]` table of `asbuilt.toml`.</text>
+</g></a>
+
+<a href="../containers/asbuilt_rust.html#asbuilt_rust.walk"><g id="view_asbuilt_rust-node7" class="node c4-k-component">
+<title>asbuilt_rust.walk</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="584.81,-823.5 255.19,-823.5 255.19,-643.5 584.81,-643.5 584.81,-823.5"/>
+<text xml:space="preserve" text-anchor="start" x="400.12" y="-773.38" font-family="Arial" font-size="20.00" fill="#5b5b5b">walk</text>
+<text xml:space="preserve" text-anchor="start" x="275.25" y="-750.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">The module tree of one target, from its root</text>
+<text xml:space="preserve" text-anchor="start" x="348" y="-732.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">file down every `mod`</text>
+<text xml:space="preserve" text-anchor="start" x="286.5" y="-714.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">declaration. Follows `mod x;` to `x.rs` or</text>
+<text xml:space="preserve" text-anchor="start" x="358.12" y="-696.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`x/mod.rs`, honors</text>
+<text xml:space="preserve" text-anchor="start" x="292.12" y="-678.62" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">`#[path]`, enters inline `mod x { }`, and</text>
+</g></a>
+
+<a href="../containers/asbuilt_rust.html#asbuilt_rust.error"><g id="view_asbuilt_rust-node8" class="node c4-k-component">
+<title>asbuilt_rust.error</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="1083.81,-501.75 742.19,-501.75 742.19,-321.75 1083.81,-321.75 1083.81,-501.75"/>
+<text xml:space="preserve" text-anchor="start" x="891.62" y="-433.62" font-family="Arial" font-size="20.00" fill="#5b5b5b">error</text>
+<text xml:space="preserve" text-anchor="start" x="762.25" y="-410.88" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">What the Rust front&#45;end can get wrong, each</text>
+<text xml:space="preserve" text-anchor="start" x="850" y="-392.88" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">naming the path or</text>
+<text xml:space="preserve" text-anchor="start" x="857.12" y="-374.88" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">module involved.</text>
+</g></a>
+
+<a href="../containers/asbuilt_rust.html#asbuilt_rust.source"><g id="view_asbuilt_rust-node9" class="node c4-k-component">
+<title>asbuilt_rust.source</title>
+<polygon fill="#ffffff" stroke="#d6d6d6" stroke-width="0" points="598.31,-501.75 241.69,-501.75 241.69,-321.75 598.31,-321.75 598.31,-501.75"/>
+<text xml:space="preserve" text-anchor="start" x="390" y="-442.62" font-family="Arial" font-size="20.00" fill="#5b5b5b">source</text>
+<text xml:space="preserve" text-anchor="start" x="261.75" y="-419.88" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">Where source text comes from. The walk reads</text>
+<text xml:space="preserve" text-anchor="start" x="355.5" y="-401.88" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">through this trait so</text>
+<text xml:space="preserve" text-anchor="start" x="263.25" y="-383.88" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">its tests run over an in&#45;memory map and never</text>
+<text xml:space="preserve" text-anchor="start" x="377.62" y="-365.88" font-family="Arial" font-size="15.00" fill="#6d6d6d" class="c4-muted">touch a disk.</text>
+</g></a>
+
+<a href="../containers/asbuilt_core.html"><g id="view_asbuilt_rust-node10" class="node c4-k-container">
+<title>asbuilt_core</title>
+<polygon fill="#ce422b" stroke="#a11309" stroke-width="0" points="2397.02,-180 2076.98,-180 2076.98,0 2397.02,0 2397.02,-180"/>
+<text xml:space="preserve" text-anchor="start" x="2185.25" y="-103.38" font-family="Arial" font-size="20.00" fill="#fffffa">asbuilt&#45;core</text>
+<text xml:space="preserve" text-anchor="start" x="2201.75" y="-82.88" font-family="Arial" font-size="13.00" fill="#ffffe5" class="c4-muted">library crate</text>
+<text xml:space="preserve" text-anchor="start" x="2109.88" y="-61.62" font-family="Arial" font-size="15.00" fill="#ffffe5" class="c4-muted">The language&#45;agnostic core of asbuilt.</text>
+</g></a>
+
+<a href="../index.html#cargo"><g id="view_asbuilt_rust-node11" class="node c4-k-process">
+<title>cargo</title>
+<polygon fill="#e9d4c8" stroke="#c0aca1" stroke-width="0" points="1959.81,-501.75 1624.19,-501.75 1624.19,-321.75 1959.81,-321.75 1959.81,-501.75"/>
+<text xml:space="preserve" text-anchor="start" x="1722.62" y="-443.12" font-family="Arial" font-size="20.00" fill="#48382f">cargo metadata</text>
+<text xml:space="preserve" text-anchor="start" x="1738.75" y="-422.62" font-family="Arial" font-size="13.00" fill="#59493f" class="c4-muted">cargo subprocess</text>
+<text xml:space="preserve" text-anchor="start" x="1644.25" y="-401.38" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">Lists the workspace&#39;s packages and targets;</text>
+<text xml:space="preserve" text-anchor="start" x="1672.38" y="-383.38" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">`&#45;&#45;no&#45;deps &#45;&#45;offline`, so no lockfile is</text>
+<text xml:space="preserve" text-anchor="start" x="1763.12" y="-365.38" font-family="Arial" font-size="15.00" fill="#59493f" class="c4-muted">touched.</text>
+</g></a>
+
+<g id="view_asbuilt_rust-edge1" class="edge" data-from="asbuilt_rust.aggregate" data-to="asbuilt_rust.resolve">
+<title>asbuilt_rust.aggregate → asbuilt_rust.resolve</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M432,-1687.91C432,-1642.71 432,-1587.56 432,-1540.85"/><path class="c4-hit" d="M432,-1687.91C432,-1642.71 432,-1587.56 432,-1540.85"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="432,-1540.6 429,-1536.1 432,-1531.6 435,-1536.1 432,-1540.6"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="432,-1590 432,-1627.5 644.25,-1627.5 644.25,-1590 432,-1590" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="435" y="-1611.75" font-family="Arial" font-size="14.00" fill="#c9c9c9">Location, ResolveTree, TargetKey,</text>
+<text xml:space="preserve" text-anchor="start" x="435" y="-1596" font-family="Arial" font-size="14.00" fill="#c9c9c9">TargetRole, resolve</text>
+</g>
+
+<g id="view_asbuilt_rust-edge2" class="edge" data-from="asbuilt_rust.aggregate" data-to="asbuilt_rust.visit">
+<title>asbuilt_rust.aggregate → asbuilt_rust.visit</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M601.62,-1700.33C629.13,-1680.53 654.1,-1656.42 671,-1627.5 765.75,-1465.37 719.57,-1390.01 686,-1205.25 682.82,-1187.76 677.71,-1169.66 671.83,-1152.35"/><path class="c4-hit" d="M601.62,-1700.33C629.13,-1680.53 654.1,-1656.42 671,-1627.5 765.75,-1465.37 719.57,-1390.01 686,-1205.25 682.82,-1187.76 677.71,-1169.66 671.83,-1152.35"/>
+<ellipse fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" cx="670.58" cy="-1148.76" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="727.3,-1429.12 727.3,-1450.88 811.3,-1450.88 811.3,-1429.12 727.3,-1429.12" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="730.3" y="-1435.12" font-family="Arial" font-size="14.00" fill="#c9c9c9">ModuleFacts</text>
+</g>
+
+<g id="view_asbuilt_rust-edge3" class="edge" data-from="asbuilt_rust.aggregate" data-to="asbuilt_rust.walk">
+<title>asbuilt_rust.aggregate → asbuilt_rust.walk</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M324.76,-1687.63C281.62,-1644.99 236.76,-1590.1 214,-1530 110.99,-1258.04 182.79,-1142.53 315,-883.5 324.23,-865.43 335.42,-847.06 347.01,-829.68"/><path class="c4-hit" d="M324.76,-1687.63C281.62,-1644.99 236.76,-1590.1 214,-1530 110.99,-1258.04 182.79,-1142.53 315,-883.5 324.23,-865.43 335.42,-847.06 347.01,-829.68"/>
+<ellipse fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" cx="349.06" cy="-826.64" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="175.32,-1236.75 175.32,-1258.5 254.07,-1258.5 254.07,-1236.75 175.32,-1236.75" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="178.32" y="-1242.75" font-family="Arial" font-size="14.00" fill="#c9c9c9">ModulePath</text>
+</g>
+
+<g id="view_asbuilt_rust-edge4" class="edge" data-from="asbuilt_rust.aggregate" data-to="asbuilt_core">
+<title>asbuilt_rust.aggregate → asbuilt_core</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M601.43,-1744.08C692.03,-1726.92 805.52,-1705.68 907,-1687.5 1226.78,-1630.19 2348,-1765.87 2348,-1441 2348,-1441 2348,-1441 2348,-410.75 2348,-333.5 2318.73,-251.26 2290.25,-189.54"/><path class="c4-hit" d="M601.43,-1744.08C692.03,-1726.92 805.52,-1705.68 907,-1687.5 1226.78,-1630.19 2348,-1765.87 2348,-1441 2348,-1441 2348,-1441 2348,-410.75 2348,-333.5 2318.73,-251.26 2290.25,-189.54"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2290.27,-189.59 2285.65,-186.79 2286.45,-181.44 2291.08,-184.25 2290.27,-189.59"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="2348,-883.5 2348,-905.25 2562.5,-905.25 2562.5,-883.5 2348,-883.5" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="2351" y="-889.5" font-family="Arial" font-size="14.00" fill="#c9c9c9">Id, Relation, RelationKind, is_lineal</text>
+</g>
+
+<g id="view_asbuilt_rust-edge5" class="edge" data-from="asbuilt_rust.tests" data-to="asbuilt_rust.discover">
+<title>asbuilt_rust.tests → asbuilt_rust.discover</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M1187.78,-1687.73C1270.09,-1570.59 1406.61,-1354.65 1459,-1145.25 1485.46,-1039.51 1454.96,-916.28 1425.29,-832.59"/><path class="c4-hit" d="M1187.78,-1687.73C1270.09,-1570.59 1406.61,-1354.65 1459,-1145.25 1485.46,-1039.51 1454.96,-916.28 1425.29,-832.59"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1422.78,-825.64 1428.5,-831.55 1423.7,-826.7 1425.8,-832.52 1425.33,-832.69 1424.86,-832.86 1422.76,-827.04 1422.15,-833.84 1422.78,-825.64"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="1440.49,-1205.25 1440.49,-1290 1788.49,-1290 1788.49,-1205.25 1440.49,-1205.25" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="1443.49" y="-1274.25" font-family="Arial" font-size="14.00" fill="#c9c9c9">TECHNOLOGY_BINARY, TECHNOLOGY_EXAMPLES,</text>
+<text xml:space="preserve" text-anchor="start" x="1443.49" y="-1258.5" font-family="Arial" font-size="14.00" fill="#c9c9c9">TECHNOLOGY_LIBRARY,</text>
+<text xml:space="preserve" text-anchor="start" x="1443.49" y="-1242.75" font-family="Arial" font-size="14.00" fill="#c9c9c9">TECHNOLOGY_LIBRARY_AND_BINARY,</text>
+<text xml:space="preserve" text-anchor="start" x="1443.49" y="-1227" font-family="Arial" font-size="14.00" fill="#c9c9c9">TECHNOLOGY_PROC_MACRO,</text>
+<text xml:space="preserve" text-anchor="start" x="1443.49" y="-1211.25" font-family="Arial" font-size="14.00" fill="#c9c9c9">TECHNOLOGY_PROC_MACRO_AND_BINARY,</text>
+</g>
+
+<g id="view_asbuilt_rust-edge6" class="edge" data-from="asbuilt_rust.tests" data-to="asbuilt_rust.config">
+<title>asbuilt_rust.tests → asbuilt_rust.config</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M1128.77,-1687.71C1137.79,-1565.59 1153.48,-1338.9 1161,-1145.25 1162.08,-1117.39 1159.55,-669.73 1169,-643.5 1186.71,-594.34 1219.58,-547.81 1252.75,-509.57"/><path class="c4-hit" d="M1128.77,-1687.71C1137.79,-1565.59 1153.48,-1338.9 1161,-1145.25 1162.08,-1117.39 1159.55,-669.73 1169,-643.5 1186.71,-594.34 1219.58,-547.81 1252.75,-509.57"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1252.68,-509.65 1253.41,-504.29 1258.63,-502.89 1257.91,-508.25 1252.68,-509.65"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="1161.55,-1044.38 1161.55,-1066.12 1234.3,-1066.12 1234.3,-1044.38 1161.55,-1044.38" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="1164.55" y="-1050.38" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustConfig</text>
+</g>
+
+<g id="view_asbuilt_rust-edge8" class="edge" data-from="asbuilt_rust.tests" data-to="asbuilt_rust.error">
+<title>asbuilt_rust.tests → asbuilt_rust.error</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M1104.72,-1687.57C1101.04,-1667.82 1097.28,-1646.97 1094,-1627.5 1024.13,-1212.57 954.43,-715.52 926.15,-509.51"/><path class="c4-hit" d="M1104.72,-1687.57C1101.04,-1667.82 1097.28,-1646.97 1094,-1627.5 1024.13,-1212.57 954.43,-715.52 926.15,-509.51"/>
+<ellipse fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" cx="925.62" cy="-505.67" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="1016.39,-1044.38 1016.39,-1066.12 1134.14,-1066.12 1134.14,-1044.38 1016.39,-1044.38" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="1019.39" y="-1050.38" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustFrontendError</text>
+</g>
+
+<g id="view_asbuilt_rust-edge7" class="edge" data-from="asbuilt_rust.tests" data-to="asbuilt_core">
+<title>asbuilt_rust.tests → asbuilt_core</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M1281.93,-1775.6C1679,-1769.05 2678,-1724.43 2678,-1441 2678,-1441 2678,-1441 2678,-410.75 2678,-270.74 2530.52,-185.73 2406.13,-138.94"/><path class="c4-hit" d="M1281.93,-1775.6C1679,-1769.05 2678,-1724.43 2678,-1441 2678,-1441 2678,-1441 2678,-410.75 2678,-270.74 2530.52,-185.73 2406.13,-138.94"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="2399.12,-136.34 2407.33,-135.78 2400.52,-136.33 2406.33,-138.48 2406.15,-138.94 2405.98,-139.41 2400.18,-137.26 2404.98,-142.11 2399.12,-136.34"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="2678,-883.5 2678,-905.25 2704.25,-905.25 2704.25,-883.5 2678,-883.5" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="2681" y="-889.95" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+
+<g id="view_asbuilt_rust-edge9" class="edge" data-from="asbuilt_rust.resolve" data-to="asbuilt_rust.visit">
+<title>asbuilt_rust.resolve → asbuilt_rust.visit</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M477.92,-1350.23C508.61,-1290.9 548.97,-1212.9 580.39,-1152.15"/><path class="c4-hit" d="M477.92,-1350.23C508.61,-1290.9 548.97,-1212.9 580.39,-1152.15"/>
+<ellipse fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" cx="582.15" cy="-1148.76" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="548.73,-1236.75 548.73,-1258.5 658.98,-1258.5 658.98,-1236.75 548.73,-1236.75" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="551.73" y="-1242.75" font-family="Arial" font-size="14.00" fill="#c9c9c9">Anchor, RawPath</text>
+</g>
+
+<g id="view_asbuilt_rust-edge10" class="edge" data-from="asbuilt_rust.resolve" data-to="asbuilt_rust.walk">
+<title>asbuilt_rust.resolve → asbuilt_rust.walk</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M390.55,-1350.27C366.19,-1293.12 337.79,-1216.46 325.25,-1145.25 311.38,-1066.46 309.76,-1043.74 325.25,-965.25 334.31,-919.36 352.59,-871.11 370.7,-830.67"/><path class="c4-hit" d="M390.55,-1350.27C366.19,-1293.12 337.79,-1216.46 325.25,-1145.25 311.38,-1066.46 309.76,-1043.74 325.25,-965.25 334.31,-919.36 352.59,-871.11 370.7,-830.67"/>
+<ellipse fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" cx="372.31" cy="-827.12" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="325.25,-1044.38 325.25,-1066.12 404,-1066.12 404,-1044.38 325.25,-1044.38" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="328.25" y="-1050.38" font-family="Arial" font-size="14.00" fill="#c9c9c9">ModulePath</text>
+</g>
+
+<g id="view_asbuilt_rust-edge11" class="edge" data-from="asbuilt_rust.discover" data-to="asbuilt_rust.config">
+<title>asbuilt_rust.discover → asbuilt_rust.config</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M1375.68,-643.86C1371.77,-602.1 1367.08,-552.19 1363.07,-509.46"/><path class="c4-hit" d="M1375.68,-643.86C1371.77,-602.1 1367.08,-552.19 1363.07,-509.46"/>
+<ellipse fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" cx="1362.71" cy="-505.55" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="1369.9,-561.75 1369.9,-583.5 1442.65,-583.5 1442.65,-561.75 1369.9,-561.75" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="1372.9" y="-567.75" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustConfig</text>
+</g>
+
+<g id="view_asbuilt_rust-edge13" class="edge" data-from="asbuilt_rust.discover" data-to="asbuilt_rust.error">
+<title>asbuilt_rust.discover → asbuilt_rust.error</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M1253.11,-643.64C1190.84,-601.37 1116.33,-550.79 1052.94,-507.75"/><path class="c4-hit" d="M1253.11,-643.64C1190.84,-601.37 1116.33,-550.79 1052.94,-507.75"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="1053.01,-507.8 1047.6,-507.75 1045.56,-502.74 1050.97,-502.79 1053.01,-507.8"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="1162.62,-561.75 1162.62,-583.5 1280.37,-583.5 1280.37,-561.75 1162.62,-561.75" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="1165.62" y="-567.75" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustFrontendError</text>
+</g>
+
+<g id="view_asbuilt_rust-edge12" class="edge" data-from="asbuilt_rust.discover" data-to="cargo">
+<title>asbuilt_rust.discover → cargo</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M1497.38,-643.64C1551.87,-600.94 1617.19,-549.75 1672.46,-506.43"/><path class="c4-hit" d="M1497.38,-643.64C1551.87,-600.94 1617.19,-549.75 1672.46,-506.43"/>
+<ellipse fill="none" stroke="#8d8d8d" stroke-width="2" cx="1675.31" cy="-504.2" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="1600.23,-561.75 1600.23,-583.5 1632.48,-583.5 1632.48,-561.75 1600.23,-561.75" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="1603.23" y="-567.75" font-family="Arial" font-size="14.00" fill="#c9c9c9">runs</text>
+</g>
+
+<g id="view_asbuilt_rust-edge14" class="edge" data-from="asbuilt_rust.visit" data-to="asbuilt_rust.walk">
+<title>asbuilt_rust.visit → asbuilt_rust.walk</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M571.78,-965.61C544.41,-923.94 511.72,-874.15 483.69,-831.47"/><path class="c4-hit" d="M571.78,-965.61C544.41,-923.94 511.72,-874.15 483.69,-831.47"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="479.67,-825.35 486.61,-829.77 480.81,-826.18 484.2,-831.35 483.79,-831.62 483.37,-831.9 479.97,-826.72 480.97,-833.47 479.67,-825.35"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="531.3,-883.5 531.3,-905.25 682.05,-905.25 682.05,-883.5 531.3,-883.5" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="534.3" y="-889.5" font-family="Arial" font-size="14.00" fill="#c9c9c9">ModulePath, is_cfg_test</text>
+</g>
+
+<g id="view_asbuilt_rust-edge15" class="edge" data-from="asbuilt_rust.visit" data-to="asbuilt_core">
+<title>asbuilt_rust.visit → asbuilt_core</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M801.12,-990.6C828.63,-981.44 856.95,-972.63 884,-965.25 1196.54,-879.97 1304.13,-957.67 1599,-823.5 1811.75,-726.69 1863.71,-679.92 2015,-501.75 2096.52,-405.74 2160.87,-274.96 2198.86,-186.98"/><path class="c4-hit" d="M801.12,-990.6C828.63,-981.44 856.95,-972.63 884,-965.25 1196.54,-879.97 1304.13,-957.67 1599,-823.5 1811.75,-726.69 1863.71,-679.92 2015,-501.75 2096.52,-405.74 2160.87,-274.96 2198.86,-186.98"/>
+<ellipse fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" cx="2200.42" cy="-183.34" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="1963.17,-561.75 1963.17,-583.5 2045.67,-583.5 2045.67,-561.75 1963.17,-561.75" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="1966.17" y="-567.75" font-family="Arial" font-size="14.00" fill="#c9c9c9">RelationKind</text>
+</g>
+
+<g id="view_asbuilt_rust-edge16" class="edge" data-from="asbuilt_rust.config" data-to="asbuilt_core">
+<title>asbuilt_rust.config → asbuilt_core</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M1490.23,-321.78C1515.79,-307.19 1542.74,-293.14 1569,-281.75 1733.25,-210.5 1931.62,-157.74 2069.32,-125.99"/><path class="c4-hit" d="M1490.23,-321.78C1515.79,-307.19 1542.74,-293.14 1569,-281.75 1733.25,-210.5 1931.62,-157.74 2069.32,-125.99"/>
+<ellipse fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" cx="2073.16" cy="-125.11" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="1656.53,-240 1656.53,-261.75 1682.78,-261.75 1682.78,-240 1656.53,-240" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="1659.53" y="-246.45" font-family="Arial" font-weight="bold" font-size="14.00" fill="#c9c9c9">[...]</text>
+</g>
+
+<g id="view_asbuilt_rust-edge17" class="edge" data-from="asbuilt_rust.walk" data-to="asbuilt_rust.error">
+<title>asbuilt_rust.walk → asbuilt_rust.error</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" d="M557,-643.64C622.18,-601.37 700.17,-550.79 766.52,-507.75"/><path class="c4-hit" d="M557,-643.64C622.18,-601.37 700.17,-550.79 766.52,-507.75"/>
+<polygon fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" points="766.74,-507.61 768.89,-502.64 774.29,-502.71 772.15,-507.68 766.74,-507.61"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="681.28,-561.75 681.28,-583.5 799.03,-583.5 799.03,-561.75 681.28,-561.75" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="684.28" y="-567.75" font-family="Arial" font-size="14.00" fill="#c9c9c9">RustFrontendError</text>
+</g>
+
+<g id="view_asbuilt_rust-edge18" class="edge" data-from="asbuilt_rust.walk" data-to="asbuilt_rust.source">
+<title>asbuilt_rust.walk → asbuilt_rust.source</title>
+<path fill="none" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="1,5" d="M420,-643.86C420,-602.1 420,-552.19 420,-509.46"/><path class="c4-hit" d="M420,-643.86C420,-602.1 420,-552.19 420,-509.46"/>
+<ellipse fill="#8d8d8d" stroke="#8d8d8d" stroke-width="2" cx="420" cy="-505.57" rx="3" ry="3"/>
+<polygon fill="#18191b" fill-opacity="0.627451" stroke="none" points="420,-561.75 420,-583.5 490.5,-583.5 490.5,-561.75 420,-561.75" class="c4-label-bg"/>
+<text xml:space="preserve" text-anchor="start" x="423" y="-567.75" font-family="Arial" font-size="14.00" fill="#c9c9c9">FileSource</text>
+</g>
+</g>
+</svg></div><div class="legend" role="group" aria-label="Legend"><ul><li><span class="legend-swatch c4-k-container"></span>crate</li><li><span class="legend-swatch c4-k-component"></span>module</li><li><span class="legend-swatch c4-k-tests"></span>tests</li><li><span class="legend-swatch c4-k-process"></span>process</li><li><svg class="legend-line" viewBox="0 0 36 12" width="27" height="9" aria-hidden="true"><line x1="1" y1="6" x2="26" y2="6"/><polygon points="25,6 30,2 35,6 30,10"/></svg>constructs</li><li><svg class="legend-line" viewBox="0 0 36 12" width="27" height="9" aria-hidden="true"><line x1="1" y1="6" x2="26" y2="6"/><polygon points="26,2 35,6 26,10 29,6"/></svg>calls</li><li><svg class="legend-line" viewBox="0 0 36 12" width="27" height="9" aria-hidden="true"><line x1="1" y1="6" x2="26" y2="6" stroke-dasharray="1,3"/><circle cx="31" cy="6" r="3.5"/></svg>names</li><li><svg class="legend-line" viewBox="0 0 36 12" width="27" height="9" aria-hidden="true"><line x1="1" y1="6" x2="26" y2="6" stroke-dasharray="1,3"/><circle cx="31" cy="6" r="3.5" fill="none"/></svg>uses</li></ul></div></figure>
+<h2>Modules</h2>
+<div class="modules"><ul>
+<li><a href="#asbuilt_rust.aggregate">aggregate</a></li>
+<li><a href="#asbuilt_rust.config">config</a></li>
+<li><a href="#asbuilt_rust.discover">discover</a></li>
+<li><a href="#asbuilt_rust.error">error</a></li>
+<li><a href="#asbuilt_rust.resolve">resolve</a></li>
+<li><a href="#asbuilt_rust.source">source</a></li>
+<li><a href="#asbuilt_rust.tests">tests</a></li>
+<li><a href="#asbuilt_rust.visit">visit</a></li>
+<li><a href="#asbuilt_rust.walk">walk</a></li>
+</ul>
+</div>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Error, Result</td><td></td></tr>
+<tr><td>implements</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>Frontend</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, ElementKind, Id, Model</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt.html#asbuilt.commands">asbuilt.commands</a></td><td>RustFrontend</td><td></td></tr>
+</tbody></table>
+<section id="asbuilt_rust.aggregate">
+<h2>aggregate <small>asbuilt_rust.aggregate</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/aggregate.rs"><code>crates/asbuilt-rust/src/aggregate.rs</code></a></p>
+<p>From resolved references to model relations: element ids per target
+role, one relation per (source, target) pair with the strongest
+kind and the sorted item names, and nothing between an element and
+its own ancestors or descendants.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Id, Relation, RelationKind, is_lineal</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.resolve">asbuilt_rust.resolve</a></td><td>Location, ResolveTree, TargetKey, TargetRole, resolve</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.visit">asbuilt_rust.visit</a></td><td>ModuleFacts</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.walk">asbuilt_rust.walk</a></td><td>ModulePath</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.config">
+<h2>config <small>asbuilt_rust.config</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/config.rs"><code>crates/asbuilt-rust/src/config.rs</code></a></p>
+<p>The <code>[rust]</code> table of <code>asbuilt.toml</code>.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.error">asbuilt_core.error</a></td><td>Result</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.discover">asbuilt_rust.discover</a></td><td>RustConfig</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>RustConfig</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.discover">
+<h2>discover <small>asbuilt_rust.discover</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/discover.rs"><code>crates/asbuilt-rust/src/discover.rs</code></a></p>
+<p>Crates and their targets, from <code>cargo metadata --no-deps --offline</code>
+on the root manifest and on each <code>[rust] extra_manifests</code> entry.
+<code>--no-deps</code> reads manifests only: no resolution, no network, no
+lockfile written.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.config">asbuilt_rust.config</a></td><td>RustConfig</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.error">asbuilt_rust.error</a></td><td>RustFrontendError</td><td></td></tr>
+<tr><td>uses</td><td><a href="../index.html#cargo">cargo</a></td><td>runs</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>TECHNOLOGY_BINARY, TECHNOLOGY_EXAMPLES, TECHNOLOGY_LIBRARY, TECHNOLOGY_LIBRARY_AND_BINARY, TECHNOLOGY_PROC_MACRO, TECHNOLOGY_PROC_MACRO_AND_BINARY, TECHNOLOGY_TESTS, TargetKind, discover</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.error">
+<h2>error <small>asbuilt_rust.error</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/error.rs"><code>crates/asbuilt-rust/src/error.rs</code></a></p>
+<p>What the Rust front-end can get wrong, each naming the path or
+module involved.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.discover">asbuilt_rust.discover</a></td><td>RustFrontendError</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.tests">asbuilt_rust.tests</a></td><td>RustFrontendError</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.walk">asbuilt_rust.walk</a></td><td>RustFrontendError</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.resolve">
+<h2>resolve <small>asbuilt_rust.resolve</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/resolve.rs"><code>crates/asbuilt-rust/src/resolve.rs</code></a></p>
+<p>Path resolution over an in-memory tree of targets and modules: which
+module, and which item in it, a path written in some module refers
+to. Pure functions; the tests build trees by hand. Re-exports are
+followed by substitution to a fixed point, globs are consulted when
+a direct lookup fails, and a path that stops at a segment that is
+neither module nor re-export is attributed to the module reached
+(the lenient stop), which is what keeps derive-generated names
+resolvable.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.visit">asbuilt_rust.visit</a></td><td>Anchor, RawPath</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.walk">asbuilt_rust.walk</a></td><td>ModulePath</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.aggregate">asbuilt_rust.aggregate</a></td><td>Location, ResolveTree, TargetKey, TargetRole, resolve</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.source">
+<h2>source <small>asbuilt_rust.source</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/source.rs"><code>crates/asbuilt-rust/src/source.rs</code></a></p>
+<p>Where source text comes from. The walk reads through this trait so
+its tests run over an in-memory map and never touch a disk.</p>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.walk">asbuilt_rust.walk</a></td><td>FileSource</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.tests">
+<h2>tests <small>asbuilt_rust.tests</small></h2>
+<p class="meta"><span class="tag">tests</span> · <a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/tests"><code>crates/asbuilt-rust/tests</code></a></p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.config">asbuilt_core.config</a></td><td>Config</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.emit">asbuilt_core.emit</a></td><td>emit</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.frontend">asbuilt_core.frontend</a></td><td>survey</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>Element, ElementKind, Model, Relation, RelationKind, sanitize_id</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.read">asbuilt_core.read</a></td><td>read</td><td></td></tr>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.config">asbuilt_rust.config</a></td><td>RustConfig</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.discover">asbuilt_rust.discover</a></td><td>TECHNOLOGY_BINARY, TECHNOLOGY_EXAMPLES, TECHNOLOGY_LIBRARY, TECHNOLOGY_LIBRARY_AND_BINARY, TECHNOLOGY_PROC_MACRO, TECHNOLOGY_PROC_MACRO_AND_BINARY, TECHNOLOGY_TESTS, TargetKind, discover</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.error">asbuilt_rust.error</a></td><td>RustFrontendError</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.visit">
+<h2>visit <small>asbuilt_rust.visit</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/visit.rs"><code>crates/asbuilt-rust/src/visit.rs</code></a></p>
+<p>What one parsed file references, per module: every <code>use</code>, every
+path in a type, expression or pattern, every <code>impl Trait for</code>, and
+the names the module defines. Pure over a <code>syn::File</code>; the tests
+parse strings. A macro invocation's body is parsed as Rust where it
+is Rust (comma-separated expressions, statements, or items), so
+<code>fuzz_target!</code>, <code>assert_eq!</code> and both forms of <code>vec!</code> yield their
+references; a body in another syntax (Leptos <code>view!</code>, <code>macro_rules!</code>
+arms) yields only the macro's own path. Method calls on values are
+not paths and produce no reference.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_core.html#asbuilt_core.model">asbuilt_core.model</a></td><td>RelationKind</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.walk">asbuilt_rust.walk</a></td><td>ModulePath, is_cfg_test</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.aggregate">asbuilt_rust.aggregate</a></td><td>ModuleFacts</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.resolve">asbuilt_rust.resolve</a></td><td>Anchor, RawPath</td><td></td></tr>
+</tbody></table>
+</section>
+<section id="asbuilt_rust.walk">
+<h2>walk <small>asbuilt_rust.walk</small></h2>
+<p class="meta"><a href="https://github.com/padamson/asbuilt/blob/main/crates/asbuilt-rust/src/walk.rs"><code>crates/asbuilt-rust/src/walk.rs</code></a></p>
+<p>The module tree of one target, from its root file down every <code>mod</code>
+declaration. Follows <code>mod x;</code> to <code>x.rs</code> or <code>x/mod.rs</code>, honors
+<code>#[path]</code>, enters inline <code>mod x { }</code>, and skips anything under
+<code>#[cfg(test)]</code>. Every file comes from a declaration, never from a
+directory listing, so discovery order is out of the picture.</p>
+<h3>Uses</h3>
+<table><thead><tr><th>Kind</th><th>Target</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>constructs</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.error">asbuilt_rust.error</a></td><td>RustFrontendError</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.source">asbuilt_rust.source</a></td><td>FileSource</td><td></td></tr>
+</tbody></table>
+<h3>Used by</h3>
+<table><thead><tr><th>Kind</th><th>Source</th><th>Items</th><th>Technology</th></tr></thead><tbody>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.aggregate">asbuilt_rust.aggregate</a></td><td>ModulePath</td><td></td></tr>
+<tr><td>names</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.resolve">asbuilt_rust.resolve</a></td><td>ModulePath</td><td></td></tr>
+<tr><td>calls</td><td><a href="../containers/asbuilt_rust.html#asbuilt_rust.visit">asbuilt_rust.visit</a></td><td>ModulePath, is_cfg_test</td><td></td></tr>
+</tbody></table>
+</section>
+</main>
+<footer>Built with <a href="https://padamson.github.io/asbuilt/">asbuilt</a> v0.3.1</footer>
+</body>
+</html>
