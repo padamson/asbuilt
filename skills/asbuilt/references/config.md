@@ -13,7 +13,7 @@ top-level entry asbuilt does not read (`[rsut]`, `[[external]]` for
 # line; absent, any release runs. Exact: a patch can change survey output.
 # A top-level key, so above the first table: written below one, TOML puts
 # it in that table, which rejects it.
-asbuilt = "0.3.0"
+asbuilt = "0.3.1"
 
 [output]
 # Where `survey` writes and `check` reads, relative to the root.

@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-31
+
 ### Added
 - Each Now and Next item on the landing page's roadmap says what done means: a button under it opens its acceptance criteria in a popover, and on a done item each criterion links to the test that proves it. The criteria live in `roadmap.json` (`acceptance`, each a `criterion` and a `test` as `<path>::<function>` from the repository root), and the site's host tests fail when a Now or Next item has none, a test is not named that way, or a done item names a test that is missing, ignored, or not a test. Release snapshots built before this (v0.2.0, v0.3.0) show the same items without the button
 
@@ -92,7 +94,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Gates for the excluded site crates: a pre-commit lockfile check and per-manifest fmt/clippy/host tests, `cargo deny` over every manifest (hook, security job, advisory monitor), an `Excluded crates compile` CI job, Dependabot `directories:` for all three lockfiles; the site tree's four unmaintained-crate advisories accepted in `deny.toml` with reasons
 - `.github/workflows/pages.yml`: the versioned Pages deploy to https://padamson.github.io/asbuilt/ (`/asbuilt/dev/` from main, `/asbuilt/vX.Y.Z/` on dispatch), gated on the playwright-rs suite; every snapshot carries `asbuilt docs` over this repo's model at `architecture/`, and `site_architecture_section_lists_every_crate_and_embeds_a_view` gates that tree (`docs/versioned-site.md`)
 
-[Unreleased]: https://github.com/padamson/asbuilt/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/padamson/asbuilt/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/padamson/asbuilt/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/padamson/asbuilt/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/padamson/asbuilt/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/padamson/asbuilt/releases/tag/v0.1.0

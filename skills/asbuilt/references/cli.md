@@ -189,7 +189,7 @@ directory above the tree from every page.
 # .pre-commit-config.yaml (pre-commit or prek)
 repos:
   - repo: https://github.com/padamson/asbuilt
-    rev: v0.3.0
+    rev: v0.3.1
     hooks:
       - id: asbuilt-check
 ```
@@ -212,7 +212,7 @@ kept elsewhere (`[output] path`) overrides `files:` on the hook:
 In CI, the action installs the pinned release and runs `asbuilt check`:
 
 ```yaml
-- uses: padamson/asbuilt@v0.3.0
+- uses: padamson/asbuilt@v0.3.1
   # with:
   #   version: "X.Y.Z"            # instead of the pin in asbuilt.toml
   #   working-directory: path     # where asbuilt.toml is and the command runs

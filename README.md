@@ -44,16 +44,19 @@ rendered. The site is built, driven with playwright-rs, and deployed by
 
 ## Status
 
-0.3.0. The model, the Rust front-end, `survey`, `check`, the LikeC4
+0.3.1. The model, the Rust front-end, `survey`, `check`, the LikeC4
 wrappers, and `docs` are in use on this repo and on
-[playwright-rust](https://github.com/padamson/playwright-rust). This
-release adds a release pin in `asbuilt.toml`, a GitHub Action that
+[playwright-rust](https://github.com/padamson/playwright-rust). 0.3.1
+fixes the action's Graphviz install: on Ubuntu 24.04 (amd64) it now
+installs Graphviz's own 15.1.1 package rather than apt's 2.43, which
+fails to lay out some views.
+0.3.0 added a release pin in `asbuilt.toml`, a GitHub Action that
 installs the pinned release and checks, a `check` that names what
 changed (and speaks JSON), and relation kinds you can tell apart, with
 a legend in every diagram. Before 1.0 a minor version may change the
 model's shape or the CLI, and `CHANGELOG.md` names every such change;
-0.3.0 changes every model's `specification` block, so re-run `asbuilt
-survey` after upgrading.
+0.3.0 changed every model's `specification` block, so re-run `asbuilt
+survey` after upgrading from 0.2.
 
 ## Installation
 
@@ -112,7 +115,7 @@ values are not resolved.
 Optional `asbuilt.toml` at the root:
 
 ```toml
-asbuilt = "0.3.0"                                   # the release the model is surveyed by
+asbuilt = "0.3.1"                                   # the release the model is surveyed by
 
 [output]
 path = "docs/architecture/model.c4"
@@ -171,7 +174,7 @@ commit `model.c4` and the curated views, and ignore the rest.
 # .pre-commit-config.yaml (pre-commit or prek)
 repos:
   - repo: https://github.com/padamson/asbuilt
-    rev: v0.3.0
+    rev: v0.3.1
     hooks:
       - id: asbuilt-check
 ```
@@ -186,7 +189,7 @@ sets `files:` on the hook to include its directory.
 In CI, one step:
 
 ```yaml
-- uses: padamson/asbuilt@v0.3.0
+- uses: padamson/asbuilt@v0.3.1
 ```
 
 The action reads the release from the pin in `asbuilt.toml` (or its

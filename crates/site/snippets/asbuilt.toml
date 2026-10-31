@@ -1,6 +1,6 @@
 # The release the model is surveyed by: any other one stops with its
 # install line. A top-level key, so above the first table.
-asbuilt = "0.3.0"
+asbuilt = "0.3.1"
 
 # What no code can state: the processes and the browser asbuilt itself
 # talks to (asbuilt's own externals).
