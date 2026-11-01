@@ -12,7 +12,7 @@
   - link "CI" [box=658,459,0,0]:
     - /url: https://github.com/padamson/asbuilt
     - img "CI" [box=658,459,0,0]
-  - img "LikeC4 1.59.4" [box=666,449,92,20]
+  - img "LikeC4 1.60.0" [box=666,449,92,20]
   - link "See asbuilt's own architecture" [box=397,506,342,44]:
     - /url: architecture/
   - link "GitHub" [box=751,505,133,46]:
