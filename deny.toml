@@ -15,9 +15,9 @@ feature-depth = 1
 # this list and nothing can drift from it. Give each entry a reason:
 #   { id = "RUSTSEC-2026-XXXX", reason = "no fix upstream; not reachable from our call graph" }
 #
-# `scripts/deny-all-manifests.sh` applies this file to the root workspace
-# and to crates/site and crates/site-e2e, so an entry here is accepted for
-# all three. The three below are unmaintained-crate notices, not
+# `scripts/check-advisories.sh` applies this file to every tracked
+# Cargo.lock (the root workspace, crates/site, and crates/site-e2e), so an
+# entry here is accepted for all three. The three below are unmaintained-crate notices, not
 # vulnerabilities, all reached only from the site's wasm and build-script
 # tree; none ships in a crate a user installs. Each names its path, so a
 # future root dependency on the same crate is a reason to revisit, not a

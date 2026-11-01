@@ -103,6 +103,9 @@ jobs:
       - name: Generate documentation
         run: cargo doc --no-deps --workspace
 
+      - name: Verify the advisory checker classifies cargo-deny output
+        run: scripts/test-check-advisories.sh
+
   # The `likec4_` tests are `#[ignore]`d because they need Node (for
   # `npx likec4`) and Graphviz, which a fresh clone may lack. The ubuntu
   # runner image has Node; this job adds Graphviz and runs only them.

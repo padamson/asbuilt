@@ -49,11 +49,17 @@ them. What covers them instead:
   lockfile is behind its manifest; refresh with `cargo metadata
   --manifest-path crates/<crate>/Cargo.toml >/dev/null` and stage the lock.
   CI checks both crates with `--locked`.
-- `scripts/deny-all-manifests.sh` runs `cargo deny` over the root and both
-  crates with the one `deny.toml`; the hook, the security job, and the
-  advisory monitor all use it. The three unmaintained-crate advisories the
-  site's wasm and build-script tree carries are accepted in `deny.toml`'s
-  ignore list, each with its path; the root workspace reaches none of them.
+- `scripts/deny-all-manifests.sh` runs `cargo deny check bans licenses
+  sources` over the root and both crates with the one `deny.toml`, and
+  `scripts/check-advisories.sh` runs the advisory check over every tracked
+  `Cargo.lock`, exiting 2 when the tool broke rather than found something.
+  The hook and the security job run both; the advisory monitor files its
+  issue from the second one's report, and `scripts/test-check-advisories.sh`
+  (a Lint step and a hook) replays real cargo-deny output through the
+  checker and the issue renderer. The three unmaintained-crate advisories
+  the site's wasm and build-script tree carries are accepted in
+  `deny.toml`'s ignore list, each with its path; the root workspace reaches
+  none of them.
 - The `site-crates-lint` hook runs fmt, clippy (wasm target for the site),
   and the site's host tests whenever a file under either crate is staged.
 - `Excluded crates compile` in `test.yml` does the same compile check on

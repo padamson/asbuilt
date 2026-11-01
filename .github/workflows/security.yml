@@ -17,12 +17,13 @@ permissions:
   contents: read
 
 jobs:
-  # `cargo deny check` is the single advisory gate (it reads the RustSec
-  # database like `cargo audit` does) as well as the license, bans and
-  # sources check. One tool means one ignore list, in `deny.toml`, that
-  # cannot drift from a mirrored copy here or in the pre-commit hook.
-  # Advisories published between pushes are caught by
-  # `advisory-monitor.yml`.
+  # cargo deny is the single advisory gate (it reads the RustSec database
+  # like `cargo audit` does) as well as the license, bans, and sources
+  # check. One tool means one ignore list, in `deny.toml`, that cannot
+  # drift from a mirrored copy here or in the pre-commit hook. Advisories
+  # run through scripts/check-advisories.sh, which covers every tracked
+  # Cargo.lock; `advisory-monitor.yml` runs the same script daily to catch
+  # advisories published between pushes.
   deny:
     name: License & Dependency Check
     runs-on: ubuntu-latest
@@ -42,7 +43,10 @@ jobs:
 
       # Over the root and the two excluded site crates, one deny.toml.
       - name: Run cargo deny
-        run: scripts/deny-all-manifests.sh
+        run: scripts/deny-all-manifests.sh bans licenses sources
+
+      - name: Check advisories in every lockfile
+        run: scripts/check-advisories.sh
 
   supply-chain:
     name: Supply Chain Review
