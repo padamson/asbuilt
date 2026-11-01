@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 ### Changed
+- LikeC4 is pinned at 1.60.0 (was 1.59.4). Its grammar adds one word an element id cannot be, `sizing` (a new element style property), so a module named `sizing` gets a trailing `_` like the other reserved words; the other new keywords (`routing`, `spline`, `ortho`, `auto`, `fixed`, and the `agent` shape) are accepted as ids. `gen dot` writes the same files for this repository's views under both releases
 - The landing page's stylesheet is generated from the components' utility classes by encre-css, a Rust crate, in a host test, and committed as `crates/site/utilities.css`, so the site's build runs no CSS tool. It replaces the Tailwind 4 standalone binary Trunk downloaded, whose macOS build ships with a signature that does not verify, so macOS kills it. The site's tests fail when the committed stylesheet is stale or a class the components name has no rule
 
 ## [0.3.1] - 2026-10-31

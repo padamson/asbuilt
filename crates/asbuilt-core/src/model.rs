@@ -200,14 +200,17 @@ pub fn dotted(id: &[String]) -> String {
 /// `packages/language-server/src/*.langium` between the two tags, probe
 /// any new word by validating a model that uses it as a nested element,
 /// then move this.
-pub const RESERVED_GRAMMAR_VERSION: &str = "1.59.4";
+pub const RESERVED_GRAMMAR_VERSION: &str = "1.60.0";
 
 /// Words likec4 refuses as an element id: every keyword token of the
 /// grammar at [`RESERVED_GRAMMAR_VERSION`] (extracted from the language
-/// server bundle) plus `this`, `it`, `true` and `false`, each confirmed
-/// by validating a model with the word as a nested element. `model`, `element`, `deployment` and
-/// `relationship` are accepted and so are not here. A module named one
-/// of these gets a trailing `_`.
+/// server bundle) plus `this`, `it`, `true`, and `false`, each confirmed
+/// by validating a model with the word as a nested element. A keyword the
+/// grammar's `Id` rule also accepts is not here: `model`, `element`,
+/// `group`, `node`, `deployment`, `instance`, `relationship`, and
+/// `routing`, and every value a style property takes (`person`, `red`,
+/// `small`, `dashed`, `ortho`). A module named a word in this list gets
+/// a trailing `_`.
 pub const RESERVED: &[&str] = &[
     "BottomTop",
     "LeftRight",
@@ -261,6 +264,7 @@ pub const RESERVED: &[&str] = &[
     "rgba",
     "shape",
     "size",
+    "sizing",
     "specification",
     "style",
     "styleGroup",
@@ -469,6 +473,8 @@ mod tests {
         // `icons` was found the hard way: a playwright-rust module.
         assert_eq!(sanitize_segment("icons"), "icons_");
         assert_eq!(sanitize_segment("summary"), "summary_");
+        // New in likec4 1.60.0, an element style property.
+        assert_eq!(sanitize_segment("sizing"), "sizing_");
     }
 
     #[test]

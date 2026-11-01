@@ -52,6 +52,9 @@ fn probe_model() -> Model {
     model_mod.path = Some("crates/app/src/model.rs".into());
     let mut view_mod = element("app.view", ElementKind::Component);
     view_mod.path = Some("crates/app/src/view.rs".into());
+    // Reserved from likec4 1.60.0, so emitted as `sizing_`.
+    let mut sizing_mod = element("app.sizing", ElementKind::Component);
+    sizing_mod.path = Some("crates/app/src/sizing.rs".into());
     let mut inner = element("app.view.element", ElementKind::Component);
     inner.path = Some("crates/app/src/view/element.rs".into());
     let mut cli = element("app.cli", ElementKind::Bin);
@@ -77,7 +80,8 @@ fn probe_model() -> Model {
     spawns.technology = Some("stdio".into());
     Model {
         elements: vec![
-            app, model_mod, view_mod, inner, cli, tests, examples, views, digit, driver, browsers,
+            app, model_mod, view_mod, sizing_mod, inner, cli, tests, examples, views, digit,
+            driver, browsers,
         ],
         relations: vec![
             relation(

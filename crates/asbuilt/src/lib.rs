@@ -17,7 +17,7 @@ pub mod likec4;
 
 /// The LikeC4 release every `npx likec4` call is pinned to. The emitter
 /// facts in `asbuilt-core` were verified against this version.
-pub const LIKEC4_VERSION: &str = "1.59.4";
+pub const LIKEC4_VERSION: &str = "1.60.0";
 
 /// The package spec handed to `npx --yes`, so every call resolves the
 /// same release.

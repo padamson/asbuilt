@@ -30,6 +30,9 @@ and layout differs between Graphviz releases.
   build of Graphviz 15.0.0. LikeC4 lays out with it by default; its
   `--use-dot` flag switches to a system `dot`. So the package is already in
   the tree every asbuilt user installs.
+- LikeC4 1.60.0, pinned since issue #9, depends on `@hpcc-js/wasm-graphviz`
+  at exactly 1.29.2. The measurements below were taken against 1.22.2, so
+  they are rerun against 1.29.2 before slice 1.
 - LikeC4's CLI has no SVG export (`export png`/`jpg` drive Chromium through
   Playwright), so asbuilt has to call the WebAssembly Graphviz itself.
 - A Node script importing the cached package laid out all 10 of this repo's
