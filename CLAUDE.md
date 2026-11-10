@@ -144,18 +144,11 @@ and the skill version guard.
 
 ## Watching CI
 
-```bash
-./scripts/ci-watch.sh            # stream job results for HEAD until they finish
-./scripts/ci-watch.sh <sha>      # for a specific commit
-./scripts/ci-watch.sh --poll 15 --timeout 600
-```
-
-One line per job as it reaches a terminal state, then an exit code:
-0 all green, 1 something failed, 2 timed out. A `gh` call inside a
-shell loop is not matched by the sandbox's command exclusion, so this
-script is excluded as a whole in `.claude/settings.json`. Pass the
-interval and timeout as flags: `TIMEOUT=600 ./scripts/ci-watch.sh` is not
-the excluded command, so it runs sandboxed and every `gh` call fails.
+From a session, run `~/.claude/skills/conductor/scripts/ci-watch.sh`
+from the repo root, written exactly that way and with flags (`--help`
+prints its usage and exit codes). That path is the form the sandbox
+exclusion in user settings matches, and an inline `gh` loop is matched
+by none. From a terminal, `gh run watch` does the same job.
 
 ## Brand
 
