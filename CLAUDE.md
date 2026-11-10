@@ -51,15 +51,15 @@ them. What covers them instead:
   CI checks both crates with `--locked`.
 - `scripts/deny-all-manifests.sh` runs `cargo deny check bans licenses
   sources` over the root and both crates with the one `deny.toml`, and
-  `scripts/check-advisories.sh` runs the advisory check over every tracked
-  `Cargo.lock`, exiting 2 when the tool broke rather than found something.
-  The hook and the security job run both; the advisory monitor files its
-  issue from the second one's report, and `scripts/test-check-advisories.sh`
-  (a Lint step and a hook) replays real cargo-deny output through the
-  checker and the issue renderer. The three unmaintained-crate advisories
-  the site's wasm and build-script tree carries are accepted in
-  `deny.toml`'s ignore list, each with its path; the root workspace reaches
-  none of them.
+  cargo-lockpatrol runs the advisory check over every tracked `Cargo.lock`
+  with that file, telling a finding from a broken tool. The security job
+  and the hooks run both, each with `--locked`, so a lock behind its
+  manifest fails rather than being rewritten. The advisory monitor runs
+  cargo-lockpatrol's action, which keeps the tracking issue; triage goes
+  in the issue's comments, since each run rewrites its body. The three
+  unmaintained-crate advisories the site's wasm and build-script tree
+  carries are accepted in `deny.toml`'s ignore list, each with its path;
+  the root workspace reaches none of them.
 - The `site-crates-lint` hook runs fmt, clippy (wasm target for the site),
   and the site's host tests whenever a file under either crate is staged.
 - `Excluded crates compile` in `test.yml` does the same compile check on
@@ -80,7 +80,8 @@ cargo nextest run --workspace
 cargo test --doc --workspace
 cargo clippy --all-targets --all-features -- -D warnings
 cargo fmt --all
-cargo deny check         # advisories, licenses, bans, sources (one ignore list: deny.toml)
+cargo deny check         # advisories (root lockfile only), licenses, bans, sources (one ignore list: deny.toml)
+prek run cargo-lockpatrol --all-files  # advisories in every tracked Cargo.lock, the way CI gates them
 cargo vet                # supply chain review
 ```
 

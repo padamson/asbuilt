@@ -15,7 +15,7 @@ feature-depth = 1
 # this list and nothing can drift from it. Give each entry a reason:
 #   { id = "RUSTSEC-2026-XXXX", reason = "no fix upstream; not reachable from our call graph" }
 #
-# `scripts/check-advisories.sh` applies this file to every tracked
+# cargo-lockpatrol applies this file to every tracked
 # Cargo.lock (the root workspace, crates/site, and crates/site-e2e), so an
 # entry here is accepted for all three. The three below are unmaintained-crate notices, not
 # vulnerabilities, all reached only from the site's wasm and build-script

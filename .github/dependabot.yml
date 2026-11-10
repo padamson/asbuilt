@@ -78,3 +78,25 @@ updates:
           - "*"
         exclude-patterns:
           - "actions/create-github-app-token"
+
+  # cargo-lockpatrol's hook rev in .pre-commit-config.yaml. Its action pin
+  # moves in the actions PR above and its hook rev in this one, so the
+  # commit hook and the CI gate can sit a release apart until both have
+  # merged. CI runs on these PRs but never runs the hooks, so a bad bump
+  # shows up at the next local commit. `allow` keeps the other hook repos
+  # (pre-commit-hooks) to hand bumps: their new code would auto-merge
+  # unreviewed and run outside the sandbox at the next commit. Only
+  # default-days, as for github-actions.
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "04:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    # pre-commit dependency names are full repo URLs, hence the wildcards.
+    allow:
+      - dependency-name: "*padamson/cargo-lockpatrol*"
