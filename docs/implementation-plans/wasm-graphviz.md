@@ -19,9 +19,9 @@ writes one `.dot` file per view, and asbuilt runs `dot -Tsvg` on each. 0.3.1
 had to teach the action a per-OS install (`action/install-graphviz.sh`)
 because Ubuntu's apt ships Graphviz 2.43, whose spline router fails
 ("triangulation failed") on some layouts. That install covers only Ubuntu
-24.04 on amd64; arm runners, Ubuntu 26.04 (where `ubuntu-latest` is moving),
-and every machine outside the action still get whatever `dot` is installed,
-and layout differs between Graphviz releases.
+24.04 and 26.04 on amd64 (26.04 added once `ubuntu-latest` moved to it); arm
+runners and every machine outside the action still get whatever `dot` is
+installed, and layout differs between Graphviz releases.
 
 ## Research (2026-10-31)
 

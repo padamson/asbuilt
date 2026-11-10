@@ -236,8 +236,11 @@ jobs:
     timeout-minutes: 30
     strategy:
       fail-fast: false
+      # ubuntu-latest and ubuntu-24.04 are the two Ubuntu releases the
+      # Graphviz install pins a package for (26.04 and 24.04), so each
+      # checksum is downloaded and checked on every push.
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest]
+        os: [ubuntu-latest, ubuntu-24.04, ubuntu-24.04-arm, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
@@ -285,7 +288,8 @@ jobs:
           ls "$site"/views/*.svg
 
       # Red when the script fell back to apt here: the runner image moved
-      # off Ubuntu 24.04, or the pinned package could not be downloaded.
+      # to an Ubuntu release the script has no checksum for, or the pinned
+      # package could not be downloaded.
       - name: The action installed the pinned Graphviz
         if: runner.os == 'Linux' && runner.arch == 'X64'
         shell: bash

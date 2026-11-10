@@ -8,15 +8,24 @@
 #
 # Ubuntu's apt ships Graphviz 2.43 (2020), whose spline router fails
 # ("triangulation failed") on some layouts a current release draws. So on
-# Ubuntu 24.04 (amd64) this installs Graphviz's own package, pinned by
-# checksum. Graphviz builds that package per Ubuntu release and for amd64
-# only, so any other Linux gets apt's, with a warning, and so does a
-# 24.04 runner that cannot download it. brew on macOS, choco on Windows.
+# Ubuntu 24.04 and 26.04 (amd64) this installs Graphviz's own package,
+# pinned by checksum. Graphviz builds that package per Ubuntu release and
+# for amd64 only, so any other Linux gets apt's, with a warning, and so
+# does a runner that cannot download it. brew on macOS, choco on Windows.
 set -euo pipefail
 
 GRAPHVIZ_VERSION=15.1.1
-GRAPHVIZ_SHA256=02c70b9d42149f5e2ba0e3882643b22904720de50a0a3da84a30b8f32e8a1497
-GRAPHVIZ_URL="https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/${GRAPHVIZ_VERSION}/ubuntu_24.04_graphviz-${GRAPHVIZ_VERSION}-cmake.deb"
+GRAPHVIZ_RELEASES="https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/${GRAPHVIZ_VERSION}"
+
+# The sha256 of ubuntu_<release>_graphviz-<version>-cmake.deb, as the
+# release's package files on GitLab list it. A release with none here
+# gets apt's Graphviz.
+graphviz_sha256() {
+  case "$1" in
+    24.04) echo 02c70b9d42149f5e2ba0e3882643b22904720de50a0a3da84a30b8f32e8a1497 ;;
+    26.04) echo 291bf778a7c9c582805b29997f3dfb06b966c16bf952eaeafe7f4dc5dc9aaf4e ;;
+  esac
+}
 
 who="${1:-asbuilt}"
 
@@ -32,12 +41,14 @@ case "$RUNNER_OS" in
     . /etc/os-release
     arch=$(dpkg --print-architecture)
     deb="$RUNNER_TEMP/graphviz-$GRAPHVIZ_VERSION.deb"
+    sha=""
+    [ "${ID:-}" = ubuntu ] && sha=$(graphviz_sha256 "${VERSION_ID:-}")
     $sudo apt-get update -qq
-    if [ "${ID:-}" = ubuntu ] && [ "${VERSION_ID:-}" = 24.04 ] && [ "$arch" = amd64 ] &&
-      curl -fsSL --retry 3 -o "$deb" "$GRAPHVIZ_URL"; then
+    if [ -n "$sha" ] && [ "$arch" = amd64 ] &&
+      curl -fsSL --retry 3 -o "$deb" "$GRAPHVIZ_RELEASES/ubuntu_${VERSION_ID}_graphviz-${GRAPHVIZ_VERSION}-cmake.deb"; then
       # A download that fails falls back to apt; one that does not match
       # the pin fails the step.
-      echo "$GRAPHVIZ_SHA256  $deb" | sha256sum -c -
+      echo "$sha  $deb" | sha256sum -c -
       # The package declares no dependencies; these are the libraries its
       # own link against, Pango's included, so labels are measured with
       # real fonts rather than estimated.
@@ -45,7 +56,7 @@ case "$RUNNER_OS" in
         libcairo2 libglib2.0-0t64 libpango-1.0-0 libpangocairo-1.0-0 fonts-liberation \
         "$deb"
     else
-      echo "::warning title=asbuilt::Installing Graphviz from apt on ${PRETTY_NAME:-this runner} ($arch), where it may be too old: Ubuntu's 2.43 fails to lay out some views that a current release draws. If a render fails, install Graphviz from https://graphviz.org/download/ before this step."
+      echo "::warning title=asbuilt::Installing Graphviz from apt on ${PRETTY_NAME:-this runner} ($arch), which may be older than $GRAPHVIZ_VERSION: Ubuntu 24.04's 2.43 fails to lay out some views that a current release draws. If a render fails, install Graphviz from https://graphviz.org/download/ before this step."
       $sudo apt-get install -y -qq graphviz
     fi
     ;;
