@@ -142,14 +142,6 @@ prek install --overwrite   # --overwrite replaces any legacy pre-commit hook
 Hooks mirror CI checks: fmt, clippy, check, nextest, doctest, deny, vet,
 and the skill version guard.
 
-## Watching CI
-
-From a session, run `~/.claude/skills/conductor/scripts/ci-watch.sh`
-from the repo root, written exactly that way and with flags (`--help`
-prints its usage and exit codes). That path is the form the sandbox
-exclusion in user settings matches, and an inline `gh` loop is matched
-by none. From a terminal, `gh run watch` does the same job.
-
 ## Brand
 
 `brand/` holds the mark (`mark.path`, the source; `mark.svg`) and the
