@@ -256,7 +256,10 @@ way to adopt it on a code base that does not conform yet. In order:
    layer order has to come from `dot`'s own ranking (which follows edge
    direction, so a conforming layered architecture is already drawn in
    order), and the hexagon reads top to bottom as layers, not left to
-   right. Report what the spike finds on #2465, with the sample.
+   right. Report what the spike finds on #2465, with the sample. Run this
+   item after "Rendering without a system Graphviz"
+   (`roadmap-now-wasm-graphviz`) lands, since that changes which Graphviz
+   lays the views out; the other items do not wait on it.
 
 The output is an ADR recording the choice on each point and its reasons,
 and a revision of the slices below to match. Where the result is read
@@ -460,6 +463,7 @@ domain = ["thiserror"]
 **Notes:**
 - Only direct dependencies count. "The domain pulls in tokio through a crate it uses" needs the resolved graph, which this design rules out; the allowlist is where that judgment is made instead.
 - With slices 1 and 3 released, rust-service-template can restore the whole rule its guppy test carried, with no preset: `layers = ["api", ["application", "persistence"], "domain"]` over its four crates, and `domain = []` under `externals`. Its `api` and `persistence` crates declare dependencies they do not yet reference, which is why the manifest has to count there.
+- Undecided: whether the external-crate allowlist gets an acceptance criterion of its own on the roadmap item `roadmap-now-rules`. Its two new criteria cover cycles and a declared dependency between crates, not the allowlist, so as written the item can show done with the allowlist unbuilt.
 
 ---
 
@@ -494,6 +498,7 @@ style, and a docs page that says which rule each one concerns and why.
 - In a repo where `conform` gates every commit, the committed view carries exceptions and cycles and no violations. The violation style is seen in a working tree (`asbuilt survey`, then `render`) and in a repo that runs `conform` without failing on it while it adopts the architecture.
 - A manifest-only violation has no relation to style; it is listed on the docs page and not drawn.
 - The emitted model now depends on the rules as well as the code; the docs say so, since a change to `[conform]` changes `model.c4`.
+- Undecided: whether the Later item "Relation styles in [theme]" (`roadmap-later-relation-styles`) moves up beside this one or is folded into it. This slice adds exception and violation edge styles to `[theme]`, which is the mechanism that item asks for.
 
 ---
 
