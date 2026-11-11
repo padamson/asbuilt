@@ -47,6 +47,14 @@
         {
           "criterion": "asbuilt check still reports drift alone: a broken rule does not fail it",
           "test": "crates/asbuilt/tests/cli.rs::check_does_not_fail_on_a_broken_rule"
+        },
+        {
+          "criterion": "asbuilt conform reports each cycle among sibling modules, and fails on one only when the config says to",
+          "test": "crates/asbuilt/tests/cli.rs::conform_reports_a_module_cycle_without_failing"
+        },
+        {
+          "criterion": "Between crates, a dependency declared in Cargo.toml that breaks a rule fails before any code uses it",
+          "test": "crates/asbuilt/tests/cli.rs::conform_fails_on_a_declared_dependency_no_code_uses"
         }
       ]
     },
@@ -174,6 +182,36 @@
           "test": "crates/asbuilt-core/src/docs.rs::a_container_page_summarizes_its_crate_dependencies"
         }
       ]
+    },
+    {
+      "id": "roadmap-next-architecture-view",
+      "title": "A view of each declared architecture",
+      "blurb": "Each architecture you declare for asbuilt conform gets its own view: its groups as boxes in layer order, with each excepted edge, cycle, and violation drawn in its own style, and a docs page that names the rule behind each one.",
+      "horizon": "next",
+      "acceptance": [
+        {
+          "criterion": "survey emits a view for each declared architecture, with one group box per group holding its members",
+          "test": "crates/asbuilt-core/src/emit.rs::a_declared_architecture_gets_a_view_of_its_groups"
+        },
+        {
+          "criterion": "A relation that breaks a rule is drawn in the violation style, labelled with the items that make it",
+          "test": "crates/asbuilt-core/src/emit.rs::a_violating_relation_is_drawn_in_the_violation_style"
+        },
+        {
+          "criterion": "asbuilt docs writes a page per architecture that lists each violation, cycle, and exception with its rule and its reason",
+          "test": "crates/asbuilt-core/src/docs.rs::an_architecture_page_lists_what_departs_from_it"
+        },
+        {
+          "criterion": "A model with no declared architecture is emitted unchanged",
+          "test": "crates/asbuilt-core/src/emit.rs::a_model_without_an_architecture_emits_no_view_for_one"
+        }
+      ]
+    },
+    {
+      "id": "roadmap-later-patterns",
+      "title": "Named architecture patterns",
+      "blurb": "Hexagonal, layered, and modular-monolith presets that expand to rules asbuilt conform already checks, and the rules layers cannot say: groups that must stay independent, and an edge that is forbidden.",
+      "horizon": "later"
     },
     {
       "id": "roadmap-later-cfg",
