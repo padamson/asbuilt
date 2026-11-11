@@ -133,7 +133,7 @@ extra_manifests = ["crates/site-e2e/Cargo.toml"]   # crates in the repo but outs
 include_tests = true
 include_examples = true
 
-[[externals]]                                       # what the code cannot state
+[[externals]]                                       # what a survey of the code cannot find
 id = "node_driver"
 kind = "process"
 title = "Playwright driver"

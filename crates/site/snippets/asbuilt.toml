@@ -2,8 +2,8 @@
 # install line. A top-level key, so above the first table.
 asbuilt = "0.3.1"
 
-# What no code can state: the processes and the browser asbuilt itself
-# talks to (asbuilt's own externals).
+# What a survey of the code cannot find: the processes and the browser
+# asbuilt itself talks to (asbuilt's own externals).
 [[externals]]
 id = "cargo"
 kind = "process"
