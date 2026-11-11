@@ -4,8 +4,8 @@
 //! code base and produces a [`Model`]: elements with ids, kinds, titles
 //! and paths, and relations between them labeled with the item names
 //! they reference. This crate owns that model, the `asbuilt.toml`
-//! [`Config`] that adds what no code can state (externals, the theme,
-//! the documentation settings), the `.c4` emitter and its reader, the
+//! [`Config`] that adds what the code does not say (externals, the
+//! theme, the documentation settings), the `.c4` emitter and its reader, the
 //! drift check, and the generator of the documentation tree. It never
 //! spawns a process.
 

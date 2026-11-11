@@ -1,6 +1,6 @@
 //! `asbuilt.toml`: the release it is written for, the output path, the
-//! externals nothing static in the code can state, and every front-end's
-//! own table kept raw for it to parse.
+//! externals a survey of the code cannot find, and every front-end's own
+//! table kept raw for it to parse.
 
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
