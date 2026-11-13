@@ -1,0 +1,21 @@
+/* The landing page's own rules, after the generated utilities.css and the
+   wordmark. The palette is in src/style.rs, which generates the
+   `text-rust-300`-style utilities from it and writes it into utilities.css
+   as `--color-<name>` variables for the rules here. */
+
+/* The wordmark's accent: rust-300 on the ink ground. */
+:root {
+  --brand-accent: var(--color-rust-300);
+}
+
+/* Glyphs smoothed on the dark ground: Tailwind's `antialiased`, which
+   encre-css 0.21 does not generate. */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* A roadmap item's criteria open as a native popover, in the top layer. */
+[popover]::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
