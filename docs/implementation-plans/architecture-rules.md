@@ -29,10 +29,10 @@ hold crates. Nothing here is built yet.
 
 This implementation follows **vertical slicing** - each slice delivers end-to-end user value and can be tested/released independently.
 
-The roadmap's 0.4.0 item "Architecture rules" (`roadmap-now-rules` in
+The roadmap's 0.5.0 item "Architecture rules" (`roadmap-now-rules` in
 `crates/site/public/roadmap.json`) is done when slices 1 to 3 have landed:
 declared layers, cycles, and what `Cargo.toml` declares. Slice 4, the
-view, is the 0.5.0 item `roadmap-next-architecture-view`, and slice 5, the
+view, is the 0.6.0 item `roadmap-next-architecture-view`, and slice 5, the
 remaining rules with the presets, is `roadmap-later-patterns`, which waits
 for someone to ask.
 
@@ -578,7 +578,7 @@ preset, two routes:
 
 Robert Martin's stable-dependencies principle as a finding: a crate or
 module depending on one less stable than itself (instability as outgoing
-over total coupling). It needs the coupling metrics planned for 0.5.0
+over total coupling). It needs the coupling metrics planned for 0.6.0
 (`roadmap-next-metrics`), so it waits for them.
 
 ### Later: `std` paths
@@ -601,19 +601,19 @@ them.
 | Slice 4: a view per architecture | Should Have | Slice 1 (slice 2 for marked cycles) | Not Started |
 | Slice 5: the other rules, and presets | Nice to Have | Slice 1 | Not Started |
 | Later: a drawn hexagon | Nice to Have | Slices 4 and 5 | Not Started |
-| Later: dependencies against stability | Nice to Have | 0.5.0 coupling metrics | Not Started |
+| Later: dependencies against stability | Nice to Have | 0.6.0 coupling metrics | Not Started |
 | Later: `std` paths | Nice to Have | Slice 3 | Not Started |
 
 Slices 2 to 5 each need only slice 1's engine, so after it they can land in
-any order. Slices 1 to 3 are 0.4.0's roadmap item, and slice 3 is the one
-rust-service-template waits on; slice 4 is planned for 0.5.0, and slice 5
+any order. Slices 1 to 3 are 0.5.0's roadmap item, and slice 3 is the one
+rust-service-template waits on; slice 4 is planned for 0.6.0, and slice 5
 has no release.
 
 ---
 
 ## Definition of Done
 
-The roadmap's 0.4.0 item is done when slices 1 to 3 are. The feature is
+The roadmap's 0.5.0 item is done when slices 1 to 3 are. The feature is
 complete when ALL of the following are true:
 
 - [ ] All acceptance criteria from user story are met
@@ -671,6 +671,9 @@ complete when ALL of the following are true:
   - The view no longer assumes a `rank` rule works inside a group, and says
     where a violation is and is not seen.
   - The hexagonal preset is documented as the ports-in-the-domain dialect.
+- 2026-11-13: 0.4.0 shipped the LikeC4 1.60.0 pin and the action's
+  Graphviz install on Ubuntu 26.04, so the roadmap moved on by one
+  release: slices 1 to 3 are 0.5.0's item, and the view is 0.6.0's.
 
 ### Lessons for Future Features
 

@@ -10,7 +10,9 @@ runner's Graphviz is old, and the diagrams I see locally are the ones CI
 draws.
 
 **Roadmap:** `roadmap-now-wasm-graphviz` in `crates/site/public/roadmap.json`
-(0.4.0). Its acceptance criteria are the three unit tests named in slice 1.
+(0.5.0; planned for 0.4.0, which shipped the LikeC4 1.60.0 pin and the
+action's Graphviz install on Ubuntu 26.04 without it). Its acceptance
+criteria are the three unit tests named in slice 1.
 
 ## Why
 

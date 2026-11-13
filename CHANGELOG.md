@@ -5,9 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-13
+
 ### Changed
+- LikeC4 is pinned at 1.60.0 (was 1.59.4). Its grammar adds one word an element id cannot be, `sizing` (a new element style property), so a module named `sizing` gets a trailing `_` like the other reserved words, and a model with one changes; re-run `asbuilt survey` after upgrading. The other new keywords (`routing`, `spline`, `ortho`, `auto`, `fixed`, and the `agent` shape) are accepted as ids. `gen dot` writes the same files for this repository's views under both releases
 - The daily advisory monitor runs the same check as the gates: cargo-lockpatrol (v0.1.1, as a GitHub Action in the security job and the monitor, and as a pre-commit hook) runs `cargo deny check advisories` over every tracked `Cargo.lock` with the root `deny.toml`, and tells a finding from a broken check, so a fetch error no longer files a security issue and a dead check cannot hide behind a live one. Every lockfile must match its manifests (`--locked`), in the advisory check and in `scripts/deny-all-manifests.sh`, which now runs only `bans licenses sources`, so a stale lock fails rather than being re-resolved before the check reads it. The monitor rewrites the tracking issue's body on every run, so triage goes in comments; it adds a comment when a finding comes or goes, or when a run moves notes out of the body
-- LikeC4 is pinned at 1.60.0 (was 1.59.4). Its grammar adds one word an element id cannot be, `sizing` (a new element style property), so a module named `sizing` gets a trailing `_` like the other reserved words; the other new keywords (`routing`, `spline`, `ortho`, `auto`, `fixed`, and the `agent` shape) are accepted as ids. `gen dot` writes the same files for this repository's views under both releases
 - The landing page's stylesheet is generated from the components' utility classes by encre-css, a Rust crate, in a host test, and committed as `crates/site/utilities.css`, so the site's build runs no CSS tool. It replaces the Tailwind 4 standalone binary Trunk downloaded, whose macOS build ships with a signature that does not verify, so macOS kills it. The site's tests fail when the committed stylesheet is stale or a class the components name has no rule
 
 ### Fixed
@@ -102,7 +104,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Gates for the excluded site crates: a pre-commit lockfile check and per-manifest fmt/clippy/host tests, `cargo deny` over every manifest (hook, security job, advisory monitor), an `Excluded crates compile` CI job, Dependabot `directories:` for all three lockfiles; the site tree's four unmaintained-crate advisories accepted in `deny.toml` with reasons
 - `.github/workflows/pages.yml`: the versioned Pages deploy to https://padamson.github.io/asbuilt/ (`/asbuilt/dev/` from main, `/asbuilt/vX.Y.Z/` on dispatch), gated on the playwright-rs suite; every snapshot carries `asbuilt docs` over this repo's model at `architecture/`, and `site_architecture_section_lists_every_crate_and_embeds_a_view` gates that tree (`docs/versioned-site.md`)
 
-[Unreleased]: https://github.com/padamson/asbuilt/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/padamson/asbuilt/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/padamson/asbuilt/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/padamson/asbuilt/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/padamson/asbuilt/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/padamson/asbuilt/compare/v0.1.0...v0.2.0

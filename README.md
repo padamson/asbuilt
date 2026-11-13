@@ -44,12 +44,14 @@ rendered. The site is built, driven with playwright-rs, and deployed by
 
 ## Status
 
-0.3.1. The model, the Rust front-end, `survey`, `check`, the LikeC4
+0.4.0. The model, the Rust front-end, `survey`, `check`, the LikeC4
 wrappers, and `docs` are in use on this repo and on
-[playwright-rust](https://github.com/padamson/playwright-rust). 0.3.1
-fixes the action's Graphviz install: on Ubuntu 24.04 (amd64) it now
-installs Graphviz's own 15.1.1 package rather than apt's 2.43, which
-fails to lay out some views.
+[playwright-rust](https://github.com/padamson/playwright-rust). 0.4.0
+pins LikeC4 1.60.0, whose grammar reserves `sizing`, so a module by
+that name is emitted as `sizing_` (re-run `asbuilt survey` after
+upgrading if you have one). The action installs Graphviz's own 15.1.1
+package on Ubuntu 26.04 as well as 24.04 (amd64); 0.3.1 added it for
+24.04, whose apt ships Graphviz 2.43, which fails to lay out some views.
 0.3.0 added a release pin in `asbuilt.toml`, a GitHub Action that
 installs the pinned release and checks, a `check` that names what
 changed (and speaks JSON), and relation kinds you can tell apart, with
@@ -115,7 +117,7 @@ values are not resolved.
 Optional `asbuilt.toml` at the root:
 
 ```toml
-asbuilt = "0.3.1"                                   # the release the model is surveyed by
+asbuilt = "0.4.0"                                   # the release the model is surveyed by
 
 [output]
 path = "docs/architecture/model.c4"
@@ -174,7 +176,7 @@ commit `model.c4` and the curated views, and ignore the rest.
 # .pre-commit-config.yaml (pre-commit or prek)
 repos:
   - repo: https://github.com/padamson/asbuilt
-    rev: v0.3.1
+    rev: v0.4.0
     hooks:
       - id: asbuilt-check
 ```
@@ -189,7 +191,7 @@ sets `files:` on the hook to include its directory.
 In CI, one step:
 
 ```yaml
-- uses: padamson/asbuilt@v0.3.1
+- uses: padamson/asbuilt@v0.4.0
 ```
 
 The action reads the release from the pin in `asbuilt.toml` (or its
