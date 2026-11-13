@@ -1,9 +1,9 @@
 {
-  "milestone": "0.4.0",
-  "next_milestone": "0.5.0",
+  "milestone": "0.5.0",
+  "next_milestone": "0.6.0",
   "themes": {
-    "0.4.0": "Architecture review",
-    "0.5.0": "Reach beyond Rust users"
+    "0.5.0": "Architecture review",
+    "0.6.0": "Reach beyond Rust users"
   },
   "items": [
     {
@@ -71,27 +71,6 @@
         {
           "criterion": "In a view that draws every relation between them, the popover lists them all",
           "test": "crates/asbuilt-core/src/docs.rs::a_view_that_draws_every_relation_lists_them_all"
-        }
-      ]
-    },
-    {
-      "id": "roadmap-now-encre-css",
-      "title": "Site styles generated in Rust",
-      "blurb": "The landing page's utility classes become CSS through encre-css, a Rust crate, in a host test that commits the stylesheet, so the site's build downloads no Tailwind binary.",
-      "horizon": "now",
-      "status": "done",
-      "acceptance": [
-        {
-          "criterion": "The committed stylesheet is the one encre-css generates from the components, so a class added or removed without regenerating fails the site's tests",
-          "test": "crates/site/src/style.rs::the_committed_stylesheet_is_current"
-        },
-        {
-          "criterion": "Every class the components name has a rule, in the generated utilities or in the page's own CSS",
-          "test": "crates/site/src/style.rs::every_class_the_site_names_has_a_rule"
-        },
-        {
-          "criterion": "The page links only plain stylesheets from the tree, so Trunk runs no CSS tool",
-          "test": "crates/site/src/style.rs::every_stylesheet_the_page_links_is_plain_css_in_the_tree"
         }
       ]
     },
