@@ -1,6 +1,6 @@
 # ADR 0001: Architecture rules over groups, checked on direct edges
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Date:** 2026-11-14
 
@@ -207,6 +207,11 @@ itself a violation. This is stricter than any of the four tools (none
 requires a reason, and import-linter's stale check asks only whether the
 import exists).
 
+An exception is a top-level `[[conform.allow]]` entry that names its
+`architecture`. Nested under `[[conform.architecture]]`, a pasted entry
+would belong to whichever architecture precedes it in the file, so where it
+was pasted would decide what it excuses.
+
 `from` and `to` match by prefix, as the plan has it, so one entry can excuse
 `server.object_factory`'s 25 edges into `protocol`. Prefix matching is the
 wildcard of import-linter #375: a new edge under the same prefixes passes
@@ -222,12 +227,12 @@ out of date.
 ### 5. Adoption by exceptions, with no baseline file
 
 No frozen store and no count. When `conform` finds violations, its text
-output ends with an `allow` entry for each, ready to paste into
-`asbuilt.toml`, with `reason = ""`. An entry pasted as it is fails as a
-config error until someone writes the reason, so the ratchet is a list of
-decisions rather than a snapshot. `conform` never writes `asbuilt.toml`
-itself. A code base moving toward an architecture can also run `conform`
-outside its hooks until the list is short.
+output ends with a `[[conform.allow]]` entry for each, ready to paste
+anywhere in `asbuilt.toml`, with `reason = ""`. An entry pasted as it is
+fails as a config error until someone writes the reason, so the ratchet is
+a list of decisions rather than a snapshot. `conform` never writes
+`asbuilt.toml` itself. A code base moving toward an architecture can also
+run `conform` outside its hooks until the list is short.
 
 *Alternative:* a recorded baseline that fails only on new violations
 (ArchUnit's freeze, dependency-cruiser's `--ignore-known`). It is quicker to

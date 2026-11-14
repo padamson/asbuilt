@@ -13,16 +13,14 @@ without a hand-written fitness test.
 
 **Related ADR (if applicable):** [ADR 0001: Architecture rules over
 groups, checked on direct edges](../adr/0001-architecture-rules.md),
-proposed. Slice 1 starts once it is accepted.
+accepted.
 
 **Approach:** Vertical Slicing with Outside-In TDD
 
-**Status:** Proposed, second pass (2026-11-10), revised the same day after
-a review. The first pass made named patterns the config surface and checked
-crate edges against `Cargo.toml`; this one makes rules over groups the
-surface, with patterns as presets that expand to them, and checks the
-model's relations, with the manifest as a second source where the groups
-hold crates. Nothing here is built yet.
+**Status:** Accepted with ADR 0001: rules over groups are the config
+surface, with patterns as presets that expand to them, and the model's
+relations are the evidence, with the manifest as a second source where the
+groups hold crates. Nothing here is built yet.
 
 ---
 
@@ -303,12 +301,15 @@ base   = ["asbuilt_core.error"]
 
 The groups above are a candidate for asbuilt's own `asbuilt-core`. Its
 eleven modules conform to them today (checked by hand against the
-2026-11-10 model); the research may change them. An exception goes beside
-the rules it excuses, as in this one from a service's architecture, and
-must match an edge those rules would otherwise fail:
+2026-11-10 model); the research may change them. An exception names
+the architecture whose rule it excuses, as in this one from a service's
+architecture, and must match an edge that rule would otherwise fail. It is
+a top-level table, so an entry pasted anywhere in the file belongs to the
+architecture it names:
 
 ```toml
-[[conform.architecture.allow]]
+[[conform.allow]]
+architecture = "service"
 from   = "svc_persistence.legacy"
 to     = "svc_application"
 reason = "the v1 import path; removed with the v1 API"
@@ -323,15 +324,18 @@ reason = "the v1 import path; removed with the v1 API"
 - [ ] Without `within`, the scope is every surveyed crate (`extra_manifests` included); with `within = "<id>"`, it is that element's children; a member of the scope in no group and not in `exempt` is a violation, and so is a group entry that names no element
 - [ ] A `tests` or `examples` element is not part of any scope (the `tests` child of `asbuilt_core` needs no group), and a relation whose source is one is never a violation; edges to `[[externals]]` elements (a spawned process, a browser) are never checked
 - [ ] An id in two groups, or under another group's member, is a config error (exit 2) naming both; so is a group entry outside the scope
-- [ ] An `allow` entry suppresses the violations its `from` and `to` match, by prefix; one that matches no violation is itself a violation
+- [ ] An `allow` entry suppresses the violations of its `architecture` that its `from` and `to` match, by prefix; one that matches no violation is itself a violation
+- [ ] An `allow` with an empty `reason`, or naming an architecture the config does not declare, is a config error (exit 2) naming the entry
+- [ ] Every run lists each edge an exception excused, in text and JSON, so an excused edge that is new shows in the output
+- [ ] With violations, the text output ends with a `[[conform.allow]]` entry for each, with `reason = ""`, ready to paste
 - [ ] Each architecture in the config is checked, and each violation names its architecture
 - [ ] `conform` with no `[conform]` table is an error that says so (slice 2 changes this to findings only)
-- [ ] `--format json` writes one object: `conforms`, and per architecture its `name`, `violations` (each with `rule`, `from`, `to`, `from_group`, `to_group`, and `evidence`, a list whose entries here have `source` of `relation` with the `kind` and `items`), `mapping` (unplaced members and entries that name nothing), and `exceptions` (each with whether it matched)
+- [ ] `--format json` writes one object: `conforms`, and per architecture its `name`, `violations` (each with `rule`, `from`, `to`, `from_group`, `to_group`, and `evidence`, a list whose entries here have `source` of `relation` with the `kind` and `items`), `mapping` (unplaced members and entries that name nothing), and `exceptions` (each with the edges it excused, empty when it is stale)
 - [ ] The emitted `.c4` is byte-identical before and after, for asbuilt itself and the consumer fixture
 - [ ] asbuilt's own `asbuilt.toml` declares two architectures and conforms to both: the crates (`asbuilt` above `asbuilt_rust` above `asbuilt_core`, the two site crates `exempt`) and `asbuilt-core`'s modules (above)
 
 **Core Library Implementation (`asbuilt-core`):**
-- [ ] `config.rs`: `Config::conform`, parsed with `deny_unknown_fields`; `[conform]` added to `OWN_TABLES`; ids as the file writes them
+- [ ] `config.rs`: `Config::conform`, parsed with `deny_unknown_fields`; `[conform]` added to `OWN_TABLES`; ids as the file writes them; `layers` entries are a group name or an array of them (a shared layer)
 - [ ] New module `conform.rs`: `conform(&Model, &ConformConfig) -> Report`, pure, with `Report`, `Violation`, `Rule`, `Evidence`, and `MappingProblem` as values the CLI formats
 - [ ] Errors for the config cases in `error.rs`, each carrying the offending entry
 - [ ] No change to `model.rs` or `emit.rs`: the slice reads only what the model already holds
@@ -341,12 +345,12 @@ reason = "the v1 import path; removed with the v1 API"
 - [ ] Membership by prefix, including `a.b` against `a.bc`
 - [ ] Scope with and without `within`; a `tests` child left out of it; both directions of mapping drift; the overlap and out-of-scope config errors
 - [ ] `tests` and `examples` sources exempt; edges to externals unchecked
-- [ ] A matched and an unmatched exception
+- [ ] A matched and an unmatched exception; an exception's excused edges; an empty `reason` and an unknown `architecture`
 - [ ] A doctest on `conform` showing a three-group model and its report
 
 **CLI Implementation (`asbuilt`):**
 - [ ] `Command::Conform { root, format }` in `main.rs`, and `commands::conform`, using `survey_model`
-- [ ] Text: one block per violation on stdout (the edge, the rule, then the relation's kind and items indented under it), and on stderr the verdict line (`asbuilt: 2 violations of core`); `<root> conforms` on stdout when clean
+- [ ] Text: one block per violation on stdout (the edge, the rule, then the relation's kind and items indented under it), then the excused edges, then a paste-ready `[[conform.allow]]` entry per violation, and on stderr the verdict line (`asbuilt: 2 violations of core`); `<root> conforms` on stdout when clean
 - [ ] Exit codes `EXIT_OK`, `EXIT_DRIFT` (renamed or aliased so it reads right for a violation), and `EXIT_ERROR`
 - [ ] Element kinds in messages through `Frontend::noun`, as `check` does (a crate, a module)
 
@@ -357,7 +361,7 @@ reason = "the v1 import path; removed with the v1 API"
 - [ ] `conform` in this repo's own pre-commit config and in `test.yml`, so asbuilt's own architecture is held on every commit
 
 **Documentation:**
-- [ ] `config.md`: `[[conform.architecture]]`, `layers`, `within`, `exempt`, and `allow`
+- [ ] `config.md`: `[[conform.architecture]]`, `layers`, `within`, `exempt`, and `[[conform.allow]]`
 - [ ] `cli.md`: the command, its streams and exit codes, and the JSON shape
 - [ ] README: a `conform` section, what it catches and what it does not, and the `asbuilt-conform` hook
 - [ ] `.pre-commit-hooks.yaml`: the `asbuilt-conform` hook, with the same `files` pattern as `asbuilt-check`
@@ -367,7 +371,14 @@ reason = "the v1 import path; removed with the v1 API"
 - `conform` checks the code, not the committed model; a stale model is `check`'s job, so `conform` does not refuse one the way `docs` does.
 - `evidence` is a list from the start so that slice 3 adds a second source without changing the JSON shape.
 - A `strict` option (a layer may use only the next one down) is left out until someone asks for it.
-- For review before code: the key names (`architecture`, `groups`, `within`, `exempt`, `allow`), a mixed array for a shared layer against a separate table, and the text layout of a violation.
+- A violation's text block reads:
+  ```
+  asbuilt_rust.visit (visit) -> asbuilt_rust.walk (walk)
+    breaks layers in rust: visit is below walk
+    calls ModulePath, is_cfg_test
+  ```
+  and the paste-ready entries follow every violation under `# To accept, paste and give each a reason:`.
+- Rules are checked on direct edges only: a path through an `exempt` member is not followed, and the docs say so.
 
 ---
 
@@ -389,7 +400,7 @@ reason  = "..."
 
 **Acceptance Criteria:**
 - [ ] `conform` with no architecture reports findings only, instead of slice 1's error
-- [ ] Each strongly connected set of sibling modules (children of the same element) is one finding, listing its members and one relation per edge of a cycle through them
+- [ ] Each strongly connected set of sibling modules (children of the same element), over `implements`, `constructs`, and `calls` relations, is one finding, listing its members and one relation per edge of a cycle through them; a cycle of `names` or `uses` relations alone is not reported
 - [ ] `cycles = "warn"` is the default: findings are printed and the exit code is 0 (the roadmap's `conform_reports_a_module_cycle_without_failing`)
 - [ ] `cycles = "error"` makes a cycle exit 1; `"off"` skips the check
 - [ ] A `cycle_allow` entry suppresses the finding whose members it lists; one that matches no finding is a violation
@@ -397,11 +408,11 @@ reason  = "..."
 - [ ] asbuilt's own two cycles in the 2026-11-10 model, `check` with `read` and `docs` with `svg`, are each fixed or allowed with a reason
 
 **Core Library Implementation:**
-- [ ] Strongly connected components over sibling modules (Tarjan's algorithm, written here; no new dependency), lifted from the model's relations (a relation between descendants counts for their sibling ancestors)
+- [ ] Strongly connected components over sibling modules (Tarjan's algorithm, written here; no new dependency), lifted from the model's `implements`, `constructs`, and `calls` relations (a relation between descendants counts for their sibling ancestors)
 - [ ] `Finding` beside `Violation` in `Report`, with a severity
 
 **Library Unit Tests:**
-- [ ] Two-module and three-module cycles, a cycle through nested modules lifted to siblings, an acyclic tree, each severity, a matched and a stale `cycle_allow`
+- [ ] Two-module and three-module cycles, a cycle through nested modules lifted to siblings, a cycle of `names` relations not reported, an acyclic tree, each severity, a matched and a stale `cycle_allow`
 
 **CLI Implementation:**
 - [ ] Findings in text after violations, and as `findings` in JSON; the verdict line counts both
@@ -411,6 +422,7 @@ reason  = "..."
 
 **Documentation:**
 - [ ] `config.md`, `cli.md`, CHANGELOG
+- [ ] The roadmap's cycle criterion in `roadmap.json` says the cycle is one of calls, constructions, or implementations
 
 **Notes:**
 - Mutual `use` between sibling modules is legal Rust and common, which is why the default is a warning and not an error.
@@ -600,7 +612,7 @@ them.
 
 | Slice | Priority | Depends On |  Status |
 |-------|----------|------------|--------|
-| Research and ADR | Must Have | None | In progress: items 1 to 4 done, ADR 0001 proposed; item 5 after `roadmap-now-wasm-graphviz` |
+| Research and ADR | Must Have | None | Items 1 to 4 done and ADR 0001 accepted; item 5 after `roadmap-now-wasm-graphviz` |
 | Slice 1: groups in layers | Must Have | Research and ADR | Not Started |
 | Slice 2: cycles, as a finding | Must Have | Slice 1 | Not Started |
 | Slice 3: what `Cargo.toml` declares | Must Have | Slice 1 | Not Started |
