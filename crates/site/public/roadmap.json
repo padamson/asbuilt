@@ -187,6 +187,26 @@
       ]
     },
     {
+      "id": "roadmap-next-docs-links",
+      "title": "Links to a service's other docs",
+      "blurb": "An element's page links to the schema and API docs its service publishes, declared per element in `asbuilt.toml`.",
+      "horizon": "next",
+      "acceptance": [
+        {
+          "criterion": "An element's page shows each link declared for it in `[[docs.links]]`, beside its source link",
+          "test": "crates/asbuilt-core/src/docs.rs::an_element_page_shows_its_declared_links"
+        },
+        {
+          "criterion": "A relative link resolves from each page the way `home_url` does",
+          "test": "crates/asbuilt-core/src/docs.rs::a_relative_declared_link_resolves_like_home_url"
+        },
+        {
+          "criterion": "`asbuilt docs` fails on a link whose element names nothing in the model, and names the id",
+          "test": "crates/asbuilt/tests/cli.rs::docs_fails_on_a_link_to_an_unknown_element"
+        }
+      ]
+    },
+    {
       "id": "roadmap-later-patterns",
       "title": "Named architecture patterns",
       "blurb": "Hexagonal, layered, and modular-monolith presets that expand to rules asbuilt conform already checks, and the rules layers cannot say: groups that must stay independent, and an edge that is forbidden.",
