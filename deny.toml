@@ -1,5 +1,5 @@
 # cargo-deny configuration
-# Run: cargo deny check
+# Run: cargo deny check bans licenses sources (advisories: cargo-lockpatrol)
 # Docs: https://embarkstudios.github.io/cargo-deny/
 
 [graph]
@@ -22,6 +22,12 @@ feature-depth = 1
 # tree; none ships in a crate a user installs. Each names its path, so a
 # future root dependency on the same crate is a reason to revisit, not a
 # silent pass.
+#
+# An entry that matches nothing in any tree fails the check, in
+# cargo-lockpatrol and in the advisory monitor, so a fixed advisory's ignore
+# has to go with it. cargo-lockpatrol reads this across all three trees; a
+# plain `cargo deny check` reads one tree and fails on the site-only entries.
+unused-ignored-advisory = "deny"
 ignore = [
   { id = "RUSTSEC-2025-0141", reason = "bincode 1 is unmaintained; syntect's dump-load feature reads its bundled syntax set with it at site build time only; no syntect release without it" },
   { id = "RUSTSEC-2024-0320", reason = "yaml-rust is unmaintained; syntect 5's yaml-load feature, site build time only; syntect 5 has no other loader" },

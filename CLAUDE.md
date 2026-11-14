@@ -59,7 +59,9 @@ them. What covers them instead:
   in the issue's comments, since each run rewrites its body. The three
   unmaintained-crate advisories the site's wasm and build-script tree
   carries are accepted in `deny.toml`'s ignore list, each with its path;
-  the root workspace reaches none of them.
+  the root workspace reaches none of them. An entry that no tree matches
+  fails the check (`unused-ignored-advisory = "deny"`), so the list cannot
+  outlive the advisories it names.
 - The `site-crates-lint` hook runs fmt, clippy (wasm target for the site),
   and the site's host tests whenever a file under either crate is staged.
 - `Excluded crates compile` in `test.yml` does the same compile check on
@@ -80,7 +82,7 @@ cargo nextest run --workspace
 cargo test --doc --workspace
 cargo clippy --all-targets --all-features -- -D warnings
 cargo fmt --all
-cargo deny check         # advisories (root lockfile only), licenses, bans, sources (one ignore list: deny.toml)
+cargo deny check bans licenses sources  # advisories belong to cargo-lockpatrol (next line); a plain `check` fails on the site-only ignores
 prek run cargo-lockpatrol --all-files  # advisories in every tracked Cargo.lock, the way CI gates them
 cargo vet                # supply chain review
 ```
