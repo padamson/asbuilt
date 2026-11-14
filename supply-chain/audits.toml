@@ -145,6 +145,12 @@ user-id = 3618 # David Tolnay (dtolnay)
 start = "2019-02-28"
 end = "2027-09-26"
 
+[[trusted.serde_spanned]]
+criteria = "safe-to-deploy"
+user-id = 6743 # Ed Page (epage)
+start = "2023-01-20"
+end = "2027-11-14"
+
 [[trusted.syn]]
 criteria = "safe-to-deploy"
 user-id = 3618 # David Tolnay (dtolnay)
@@ -168,6 +174,12 @@ criteria = "safe-to-deploy"
 user-id = 6743 # Ed Page (epage)
 start = "2022-12-14"
 end = "2027-09-26"
+
+[[trusted.toml_datetime]]
+criteria = "safe-to-deploy"
+user-id = 6743 # Ed Page (epage)
+start = "2022-10-21"
+end = "2027-11-14"
 
 [[trusted.toml_parser]]
 criteria = "safe-to-deploy"
