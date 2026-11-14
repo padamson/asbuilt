@@ -11,8 +11,9 @@ architecture so I can see where the code departs from it and why, so that
 the architecture I describe is the one the code has and stays that way
 without a hand-written fitness test.
 
-**Related ADR (if applicable):** none yet. An ADR should come out of the
-research below, before slice 1 starts.
+**Related ADR (if applicable):** [ADR 0001: Architecture rules over
+groups, checked on direct edges](../adr/0001-architecture-rules.md),
+proposed. Slice 1 starts once it is accepted.
 
 **Approach:** Vertical Slicing with Outside-In TDD
 
@@ -198,9 +199,11 @@ See [Later: a drawn hexagon](#later-a-drawn-hexagon) for the alternative.
 `cargo-pup` (a pinned nightly and compiler internals) are each a larger
 supply chain than asbuilt's own, and `rust_arkitect` parses with `syn` as
 asbuilt does and has not been pushed to since January 2025. They are
-references, and `cargo-modules` is the oracle for research item 2. The
-cycle search in slice 2 is written by hand (Tarjan's algorithm on a few
-dozen nodes) to keep `asbuilt-core` at its five dependencies.
+references. None of them can count the edges the model misses:
+`cargo-modules` does not read function bodies, so it sees fewer module
+edges than the model, not more. The cycle search in slice 2 is written by
+hand (Tarjan's algorithm on a few dozen nodes) to keep `asbuilt-core` at
+its five dependencies.
 
 ---
 
@@ -230,12 +233,12 @@ way to adopt it on a code base that does not conform yet. In order:
    relation kind (`implements`, `constructs`, `calls`, `names`, `uses`)
    should count, and whether resolving a `pub use` through to the defining
    module (which the model does) loses a rule anyone wants, such as "only
-   through the facade". Then, for the edges the model does not have, run
-   `cargo modules dependencies` on the same workspaces (it resolves through
-   rust-analyzer's type inference, so it sees method calls) and diff its
-   module edges against the model's. The count decides whether "catches
-   named references" is good enough for a gate, and whether the diff is
-   worth keeping as an `#[ignore]`d test beside the `likec4_*` ones.
+   through the facade". Then, for the edges the model does not have, take
+   rust-analyzer's SCIP index of the same workspaces (it resolves method
+   calls through type inference) and diff its module edges against the
+   model's. The count decides whether "catches named references" is good
+   enough for a gate, and whether the diff is worth keeping as an
+   `#[ignore]`d test beside the `likec4_*` ones.
 3. **Adopting on a code base that does not conform.** Compare per-edge
    exceptions with reasons (import-linter's `ignore_imports`, which fail
    when stale) with a recorded baseline that fails only on new violations
@@ -260,6 +263,9 @@ way to adopt it on a code base that does not conform yet. In order:
    item after "Rendering without a system Graphviz"
    (`roadmap-now-wasm-graphviz`) lands, since that changes which Graphviz
    lays the views out; the other items do not wait on it.
+
+Items 1 to 4 are done, and ADR 0001 records what they found. The count of
+missing edges in item 2 has not run.
 
 The output is an ADR recording the choice on each point and its reasons,
 and a revision of the slices below to match. Where the result is read
@@ -594,7 +600,7 @@ them.
 
 | Slice | Priority | Depends On |  Status |
 |-------|----------|------------|--------|
-| Research and ADR | Must Have | None | Not Started |
+| Research and ADR | Must Have | None | In progress: items 1 to 4 done, ADR 0001 proposed; item 5 after `roadmap-now-wasm-graphviz` |
 | Slice 1: groups in layers | Must Have | Research and ADR | Not Started |
 | Slice 2: cycles, as a finding | Must Have | Slice 1 | Not Started |
 | Slice 3: what `Cargo.toml` declares | Must Have | Slice 1 | Not Started |
