@@ -6,13 +6,13 @@
   - heading "Architecture models that cannot drift" [level=1] [box=33,229,1213,60]
   - paragraph [box=304,309,672,84]: asbuilt surveys a Rust code base into a LikeC4 model, the way as-built drawings describe a building as constructed rather than as designed, and fails CI when the committed model no longer matches the code.
   - paragraph [box=425,405,429,16]: Nothing in the model is hand-written. Nothing in the code is annotated.
-  - 'link "crates.io: unreleased" [box=472,449,128,20]':
+  - 'link "crates.io: unreleased" [box=522,449,128,20]':
     - /url: https://crates.io/crates/asbuilt
-    - 'img "crates.io: unreleased" [box=472,449,128,20]'
-  - link "CI" [box=608,449,101,20]:
+    - 'img "crates.io: unreleased" [box=522,449,128,20]'
+  - link "CI" [box=658,459,0,0]:
     - /url: https://github.com/padamson/asbuilt
-    - img "CI" [box=608,449,101,20]
-  - img "LikeC4 1.60.0" [box=717,449,92,20]
+    - img "CI" [box=658,459,0,0]
+  - img "LikeC4 1.60.0" [box=666,449,92,20]
   - link "See asbuilt's own architecture" [box=397,506,342,44]:
     - /url: architecture/
   - link "GitHub" [box=751,505,133,46]:
@@ -201,7 +201,7 @@
     - button "3 criteria for Rendering without a system Graphviz" [box=173,6733,104,30]: 3 criteria
 - heading "Next · 0.6.0" [level=3] [box=505,5881,270,28]
 - paragraph [box=505,5913,270,16]: Reach beyond Rust users
-- list [box=505,5945,270,838]:
+- list [box=505,5945,270,1024]:
   - listitem [box=505,5945,270,166]:
     - 'heading "A second language: Python" [level=4] [box=505,5945,247,24]'
     - paragraph [box=505,5973,270,100]: "A Python front-end, dogfooded on a FastAPI code base: packages to containers, modules to components, imports to relations, and the docs pages in Python's own words."
@@ -222,6 +222,10 @@
     - heading "A view of each declared architecture" [level=4] [box=505,6553,270,48]
     - paragraph [box=505,6605,270,140]: "Each architecture you declare for asbuilt conform gets its own view: its groups as boxes in layer order, with each excepted edge, cycle, and violation drawn in its own style, and a docs page that names the rule behind each one."
     - button "4 criteria for A view of each declared architecture" [box=505,6753,104,30]: 4 criteria
+  - listitem [box=505,6799,270,170]:
+    - heading "Links to a service's other docs" [level=4] [box=505,6799,270,48]
+    - paragraph [box=505,6851,270,80]: "An element's page links to the schema and API docs its service publishes, declared per element in `asbuilt.toml`."
+    - button "3 criteria for Links to a service's other docs" [box=505,6939,104,30]: 3 criteria
 - heading "Later" [level=3] [box=837,5881,270,28]
 - paragraph [box=837,5913,270,16]: Under consideration, not yet planned
 - list [box=837,5945,270,648]:
@@ -243,22 +247,22 @@
   - listitem [box=837,6505,270,88]:
     - heading "A legend in rendered SVGs" [level=4] [box=837,6505,242,24]
     - paragraph [box=837,6533,270,60]: The legend inside the SVG files asbuilt render writes, for diagrams embedded outside the docs.
-- contentinfo [box=0,6884,1280,193]:
-  - navigation [box=128,6925,1024,20]:
-    - link "GitHub" [box=128,6925,49,20]:
+- contentinfo [box=0,7070,1280,193]:
+  - navigation [box=128,7111,1024,20]:
+    - link "GitHub" [box=128,7111,49,20]:
       - /url: https://github.com/padamson/asbuilt
-    - link "Architecture" [box=197,6925,86,20]:
+    - link "Architecture" [box=197,7111,86,20]:
       - /url: architecture/
-    - link "Roadmap" [box=302,6925,66,20]:
+    - link "Roadmap" [box=302,7111,66,20]:
       - /url: "#roadmap"
-    - link "LikeC4" [box=388,6925,47,20]:
+    - link "LikeC4" [box=388,7111,47,20]:
       - /url: https://likec4.dev
-  - paragraph [box=128,6961,768,40]:
+  - paragraph [box=128,7147,768,40]:
     - text: Everything downstream of the model is
-    - link "LikeC4" [box=409,6963,47,16]:
+    - link "LikeC4" [box=409,7149,47,16]:
       - /url: https://likec4.dev
     - text: "'s: validation, export, and layout. This page is tested with"
-    - link "playwright-rs" [box=128,6983,92,16]:
+    - link "playwright-rs" [box=128,7169,92,16]:
       - /url: https://playwright-rust.dev
     - text: .
-  - paragraph [box=128,7017,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.
+  - paragraph [box=128,7203,1024,20]: Licensed under MIT or Apache-2.0. Built with Leptos and Trunk.
